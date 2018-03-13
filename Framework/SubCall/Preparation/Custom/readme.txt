@@ -1,0 +1,1 @@
+put your custom preparation scripts in this folder, this will be executed during sealing the base image

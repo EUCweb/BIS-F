@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources revision="1.0" schemaVersion="1.0">
+  <displayName>
+  </displayName>
+  <description>Base Image Script Framework (BIS-F helps you to seal and personalize your Base Image for Citrix, VMWare View and Microsoft environments. With this Group Policy you can configure the CLI commands to fully automate BIS-F and runs the sealing process without any needed interaction.)
+@Login Consultants 2017</description>
+  <resources>
+    <stringTable>
+      <string id="CAT_BISF">Base Image Script Framework (BIS-F)</string>
+      <string id="CAT_SilentConfig">Silent Configuration</string>
+      <string id="CAT_Global">Global</string>
+      <string id="CAT_3P">3rd Party Tools</string>
+      <string id="CAT_MS">Microsoft</string>
+      <string id="CAT_CTX">Citrix</string>
+      <string id="CAT_Misc">Miscellaneous</string>
+      <string id="CAT_NV">Novell</string>
+      <string id="CAT_AV">Anti-Virus</string>
+      <string id="CAT_FSX">FSLogix</string>
+      <string id="CAT_TBN">Turbo.net</string>
+      <string id="CAT_RES">Ivanti</string>
+      <string id="SUPPORTED_WindowsVista">At least Microsoft Windows Vista</string>
+      <string id="POL_CTXOE">Configure Citrix Optimizer</string>
+      <string id="LIST_CTXOE_Groups">Enter the Groups that should be executed:</string>
+      <string id="POL_CTXOE_Help">Run Citrix Optimizer
+
+If you enable this policy setting, Citrix Optimizer (CtxOptimizerEngine.ps1) will be executed. Optional you can define the name of a template that should be used during execution. If there is no template specified, BIS-F will search for an OS-specific default template. If there is no appropriate template available, the execution of Citrix Optimizer will be skipped.
+It is also possible to define a list of GroupIDs (defined in the template) of setting groups that should be executed. The value must be a comma-separated string; e.g. "DisableServices,OptionalServices". If there are no GroupIDs specified, Citrix Optimizer will execute all available setting groups.
+To run Citrix Optimizer in analyze-only mode, check "Mode: Analyze only".
+
+If you disable this policy setting, Citrix Optimizer will not be executed.
+If you do not configure this policy setting, you'll be prompted during the sealing process.
+
+Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\Citrix Optimizer </string>
+      <string id="POL_SDelete">Run SDelete</string>
+      <string id="POL_SDelete_Help">Run SDelete on PVS WriteCacheDisk if vDisk is in shared mode only 
+
+If you enable this policy setting, SDelete will be executed. for the PVS WriteCache disk in shared mode.
+If you disable this policy setting, SDelete will not be executed.
+If you do not configure this policy setting, you'll be prompted during the sealing process.
+
+Prerequisites: SDelete must be installed on the Base Image first
+
+WARNING: SDelete 2.0 has an vendor bug and can run a very long time without finalize the sdelete process, please use the older sdelete version 1.6.1 or a newer one above 2.0
+
+You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do not configured or disable the Custom search folder option, the standard BIS-F Folders would be used.
+
+</string>
+      <string id="POL_Defrag">Run Defrag</string>
+      <string id="POL_Defrag_Help">This policy setting allows you to run a defrag on your base image disk (Citrix PVS or MCS) or your local system drive (VMware View or Microsoft Windows).
+
+If you enable this policy setting, Defrag will be executed.
+
+If you disable this policy setting, Defrag will not be executed.
+
+If you do not configure this policy setting, you will be prompted during the sealing process.
+
+Note: This setting affects the system drive only. It does not affect the write cache drive.</string>
+      <string id="POL_OSrearm">Rearm Microsoft Windows once</string>
+      <string id="POL_OSrearm_Help">Run Microsoft Windows rearm if needed
+
+If you enable this policy setting, Microsoft Windows rearm will be executed once if needed.
+
+If you disable this policy setting, Microsoft Windows rearm will not be executed.
+
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_OFrearm">Rearm Microsoft Office once</string>
+      <string id="POL_OFrearm_Help">Run Microsoft Office rearm if needed
+
+If you enable this policy setting, Microsoft Office rearm will be executed once if needed.
+
+If you disable this policy setting, Microsoft Office rearm will not be executed.
+
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_AVFullScan">Run AntiVirus full scan</string>
+      <string id="POL_AVFullScan_Help">Run AntiVirus full scan
+
+If you enable this policy setting, an Antivirus full scan will be executed.
+If you disable this policy setting, an AntiVirus full scan will not be executed.
+If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
+      <string id="GhostDeviceRemoval">Ghost Devices: Operation mode</string>
+      <string id="GhostDeviceRemoval_Help">Defines how the ghost device feature will operate.
+
+This policy has three operation modes:
+
+Remove ghost devices
+List all devices without removal
+List only ghost devices without removal
+
+Remove ghost devices:
+This option will enable the feature to execute device removal. This function can be modified by enabling and configuring the two filter group policy options.  Enabling and configuring filtering by class or friendly name will exclude devices in those lists from being removed.
+List all devices without removal:
+This option will output all devices detected into the log without removing any devices.
+List only ghost devices without removal:
+This option will output ghost devices detected into the log without removing any devices.
+	  
+If you enable this policy setting you must select a mode of operation.
+If you disable or do not configure this policy setting then Ghost Device Removal will not be executed.
+</string>
+      <string id="GhostDeviceClass">Ghost Devices: Classes to exclude from removal</string>
+      <string id="GhostDeviceClass_Help">Specifies the classes to be excluded from being removed by the ghost device removal tool.
+
+To use this policy setting, click Enabled and enter the classes you want exlcuded, separated by a semicolon ";". For example: LegacyDriver;Net;SCSIAdapter.
+
+The following is a list of classes:
+1394
+61883
+1394Debug
+Adapter
+APMSupport
+AVC
+Battery
+Biometric
+Bluetooth
+CDROM
+Computer
+Decoder
+DiskDrive
+Display
+Dot4
+Dot4Print
+Enum1394
+FDC
+FloppyDisk
+GPS
+HDC
+HIDClass
+Image
+Infrared
+Keyboard
+LegacyDriver
+Media
+MediumChanger
+Modem
+Monitor
+Mouse
+MTD
+Multifunction
+MultiportSerial
+Net
+NetClient
+NetService
+NetTrans
+NoDriver
+PCMCIA
+PNPPrinters
+Ports
+Printer
+PrinterUpgrade
+Processor
+SBP2
+SCSIAdapter
+SecurityAccelerator
+Sensor
+SideShow
+SmartCardReader
+Sound
+System
+TapeDrive
+Unknown
+USB
+USBDevice
+Volume
+VolumeSnapshot
+WCEUSBS
+WPD
+
+
+Important: Text is case sensitive.
+
+This policy requires the Ghost device removal policy to be enabled in order to function.
+
+If you disable this policy setting, or if you do not configure this policy setting, then the Ghost device removal will not filter by classes.</string>
+      <string id="GhostDeviceFriendlyName">Ghost Devices: Friendly named devices to exclude from removal</string>
+      <string id="GhostDeviceFriendlyName_Help">This policy allows you to specify devices by their friendly name to be excluded from being removed by the ghost device removal tool.
+
+To use this policy setting, click Enabled and enter the friendly name of the devices you want exlcuded, separated by a semicolon ";". For example: Citrix;Intel(R) HD Graphics 5500;Generic USB Hub.
+
+This policy works by doing a partial text search.  For instance, if you have the following devices:
+
+Intel(R) USB 3.0 eXtensible Host Controller - 1.0 (Microsoft)
+Mobile 5th Generation Intel(R) Core(TM) USB EHCI Controller - 9CA6
+Intel(R) Core(TM) i5-5300U CPU @ 2.30GHz
+
+Then putting "Intel" will match all three of these devices.
+
+This policy requires the Ghost device removal policy to be enabled in order to function.
+
+If you disable this policy setting, or if you do not configure this policy setting, then the Ghost device removal will not filter by friendly name.</string>
+      <string id="POL_VieScan">Run Symantec VIE Tool</string>
+      <string id="POL_VieScan_Help">Run Symantec VIEtool to flagged out the scanned files
+
+If you enable this policy setting, Symantec VIEtool will be executed.
+If you disable this policy setting, Symantec VIEtool will not be executed.
+If you do not configure this policy setting, you'll be prompted during the sealing process.
+
+Prerequisites: VIEtool.exe must be installed on the Base Image first
+
+(BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy</string>
+      <string id="POL_CtxPvD">Configure Citrix Personal vDisk</string>
+      <string id="POL_CtxPvD_Help">Run Citrix Personal vDisk inventory on VDI Clients only
+
+If you enable this policy setting, Citrix Personal vDisk inventory will be executed on VDI Clients only.
+If you disable this policy setting, Citrix Personal vDisk inventory will not be executed.
+If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
+      <string id="POL_CCleaner">Run CCleaner</string>
+      <string id="POL_CCleaner_Help">Run CCleaner on Base Image
+
+If you enable this policy setting, CCleaner will be executed.
+If you disable this policy setting, CCleaner will not be executed.
+If you do not configure this policy setting, you'll be prompted during the sealing process.
+
+Prerequisites: CCleaner must be installed on the Base Image first
+
+You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do not configured or disable the Custom search folder option, the standard BIS-F Folders would be used.</string>
+      <string id="POL_CMTrace">Enable CMTrace</string>
+      <string id="POL_CMTrace_Help">CMTrace log file viewer
+
+If you enable this policy setting, CMTrace will be registered as the default log file viewer for the BIS-F log files.
+If you disable or do not configure this policy setting, CMTrace will not be registered as the default log file viewer for the BIS-F LogFiles.
+
+Prerequisites: CMTrace.exe must be copied to the Base Image first
+
+You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do not configured or disable the Custom search folder option, the standard BIS-F Folders would be used.</string>
+      <string id="POL_PerfCnt">Rebuild Performance Counters</string>
+      <string id="POL_PerfCnt_Help">Rebuild the Performance Counters. See CTX129350 or CTX127151 for further information
+
+If you enable this policy setting, Performance Counters will be rebuilt.
+If you disable this policy setting, Performance Counters will not be rebuilt.
+If you do not configure this policy setting, you'll be prompted during the sealing process.
+
+</string>
+      <string id="POL_Shutdown">Shutdown Base Image after sealing</string>
+      <string id="POL_Shutdown_Help">Shutdown Base Image after successfully sealing. When running from an MDT or SCCM Task Sequence the Base Image will not shutdown.
+ 
+If you enable this policy setting, the Base Image will be shutdown after the sealing process.
+If you disable this policy setting, the Base Image will not be shutdown after the sealing process.
+If you do not configure this policy setting, the Base Image will be shutdown after the sealing process.
+</string>
+      <string id="POL_PndReboot">Suppress Pending Reboot</string>
+      <string id="POL_PndReboot_Help">Suppress Pending Reboot
+ 
+If you enable this policy setting, pending reboot will be suppressed.
+If you disable this policy setting, pending reboot will not be suppressed.
+If you do not configure this policy setting and a pending reboot exist, the scripts will stop working!</string>
+      <string id="POL_CfgVerySilent">Configure VerySilent</string>
+      <string id="POL_CfgVerySilent_Help">Configure VerySilent to suppress any BIS-F message boxes
+ 
+If you enable this policy setting, BIS-F message boxes will be suppressed.
+If you disable this policy setting, BIS-F message boxes will not be suppressed.
+If you do not configure this policy setting, BIS-F message boxes will not be suppressed.
+</string>
+      <string id="POL_FSXdelRules">Delete rules on Base Image</string>
+      <string id="POL_FSXdelRules_Help">Delete FSLogix rules
+ 
+If you enable this policy setting, FSLogix rules will be deleted.
+If you disable this policy setting, FSLogix rules will not be deleted.
+If you do not configure this policy setting, you'll be prompted during the sealing process.
+
+</string>
+      <string id="POL_FSXRulesShare">Configure FSLogix central rules share</string>
+      <string id="POL_FSXRulesShare_Help">Copy FSLogix rules (*.frx) and assignments (*.fxa) from central share during Device Personalization on System Startup
+
+If you enable this policy setting, you must enter a valid central share location \\Server\Share.
+If you disable this policy setting, a center share location will not be used.
+If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
+      <string id="POL_delAllUsersStartMenu">Delete AllUsersStartMenu content</string>
+      <string id="POL_delAllUsersStartMenu_Help">Delete AllUsersStartMenu content
+ 
+If you enable this policy setting, AllUsersStartMenu content will be deleted.
+If you disable this policy setting, AllUsersStartMenu content will not be deleted.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_IPv6">Disable IPv6</string>
+      <string id="POL_IPv6_Help">Disable IPv6 in registry and on network adapter
+
+If you enable this policy setting, IPv6 will be disabled.
+If you disable this policy setting, IPv6 will not be disabled.
+If you do not configure this policy setting, you will be prompted during the sealing process.
+
+Prerequisites: nvpsbind.exe must be installed on the Base Image first
+
+You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do not configured or disable the Custom search folder option, the standard BIS-F Folders would be used.</string>
+      <string id="POL_Sysprep">Run Sysprep</string>
+      <string id="POL_Sysprep_Help">If No Image Management software such as Citrix VDA, Citrix PVS Target Device Driver or VMware View Agent are detected, BIS-F will prompt to run Microsoft Sysprep at the end of the sealing process.
+
+If you enable this policy setting, sysprep will be executed if no Image Management software is detected.
+If you disable this policy setting, sysprep will not be executed.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_DelProf">Run DelProf2</string>
+      <string id="POL_DelProf_Help">Run DelProf2.exe
+
+If you enable this policy setting, DelProf2 will be executed.
+If you disable this policy setting, DelProf2 will not be executed.
+If you do not configure this policy setting, you will be prompted during the sealing process.
+
+Prerequisites: delprof2.exe must be installed on the Base Image first
+
+You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do not configured or disable the Custom search folder option, the standard BIS-F Folders would be used.
+
+Custom Arguments:
+You can specify custom arguments for delprof.
+
+If you enable this policy setting, you can specify your own arguments.
+If you do not configure this policy setting, delprof2 will executed with default arguments /u /r</string>
+      <string id="POL_DisableConsoleCheck">Enable RDP Session support</string>
+      <string id="POL_DisableConsoleCheck_Help">Enable Base Image Script Framework to be executed from an RDP Session
+
+If you enable this policy setting, BIS-F can be executed from an RDP Session.
+If you disable this policy setting, BIS-F can be executed in Console Session only.
+If you do not configure this policy setting, BIS-F can be executed in Console Session only.</string>
+      <string id="POL_TurboUpdate">Run Turbo Update </string>
+      <string id="POL_TurboUpdate_Help">Configure Turbo Update Device Personalization on System Startup
+
+If you enable this policy setting, Turbo update will be executed. on System Startup.
+If you disable this policy setting, Turbo update will not be executed. on System Startup.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_vmOSOT">VMware OS Optimization Tool</string>
+      <string id="POL_vmOSOT_Help">Run VMware OS Optimization Tool 
+
+If you enable this policy setting, VMware OS Optimization Tool will be executed. with the default OS template.
+If you disable this policy setting, VMware OS Optimization Tool will not be executed.
+If you do not configure this policy setting, you will be prompted during the sealing process.
+
+Prerequisites: VMware OS Optimization Tool must be installed on the Base Image first
+
+Custom Search Folder: You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do not configured or disable the Custom search folder option, the standard BIS-F Folders would be used.
+
+Template Name: Enter the complete path to the the Template that would be used during optimization, e.g. C:\temp\mytemplate.xml, if nothing is specified the template for the running OS would be used.
+
+</string>
+      <string id="POL_XAImagePrepRemoval">XA 6.x only - Remove current XenApp server from the Farm and clear local database information</string>
+      <string id="POL_XAImagePrepRemoval_Help">XA 6.x only: During XenApp preparation for PVS you can remove the current server from the Farm and clear the local database information
+
+If you enable this policy setting, the current XenApp server will be removed from the Farm and the local database information will be cleared.
+If you disable this policy setting, the current XenApp server will not be removed from the Farm and the local database information will not be cleared.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_AppVPckRemoval">Remove App-V packages</string>
+      <string id="POL_AppVPckRemoval_Help">Delete AppV Pre-Cached packages on the Base Image
+
+If you enable this policy setting, App-V Pre-Cached packages will be deleted .
+If you disable this policy setting, App-V Pre-Cached packages will not be deleted.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_RESWASdisableBaseImage">Disable RES ONE Automation Agent</string>
+      <string id="POL_RESWASdisableBaseImage_Help">This policy setting allows you to disable the RES ONE Automation Agent on the Base Image only to prevent RES ONE license usage.
+
+If you enable this policy setting, RES ONE Automation Agent will be disabled.
+If you disable this policy setting, RES ONE Automation Agent will not be disabled.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_RESWASdisableSvc">Disable RES ONE Automation Agent Service</string>
+      <string id="POL_RESWASdisableSvc_Help">This policy setting allows you to disable the RES ONE Automation Agent Service during preparation of the execution of BIS-F.
+
+If you enable this policy setting, RES ONE Automation Agent Service will be disabled
+If you disable or do not configure this policy setting, RES ONE Automation Agent Service will not be disabled..</string>
+      <string id="POL_ZCM">Configure Novell ZCM Agent web based URL</string>
+      <string id="POL_ZCM_Help">Configure Novell ZCM Agent web based URL
+Enter the URL in the following format: 
+reg https://ZCM-Server.domain.net -k CTX-XA65 -u XAuser -p XAuserPassword
+
+If you enable this policy setting and the cloned device is starting, it will use the configured registration URL to get the configuration.
+If you disable or do not configure this policy setting, the client device does not get their ZCM configuration.
+</string>
+      <string id="GhostDeviceRemovalOption">Remove ghost devices</string>
+      <string id="GhostDeviceListAll">List all devices without removal</string>
+      <string id="GhostDeviceListOnly">List only ghost devices without removal</string>
+      <string id="POL_LogCfg">Configure Logging</string>
+      <string id="POL_LogCfg_Help">Log Share:
+Configure a central log share during Device Personalization on System Startup. Authenticated Users must have read/write access to this folder
+
+If you enable this policy setting, you must enter a valid log share location \\Server\Share.
+If you disable this policy setting, logs will be written to the Write Cache disk and you will not be prompted during the sealing process.
+If you do not configure this policy setting, you will be prompted during the sealing process.
+
+Log Retention (Default = 5):
+specify a value between 0 -20, means the number of log files being kept.
+
+0 = keep all log files</string>
+      <string id="POL_FldCfg">Configure Folders</string>
+      <string id="POL_FldCfg_Help">If Citrix PVS Target Device Driver is installed, some folders must be redirected to the WriteCacheDisk. You can specified those folders here:
+
+Event logs:
+If you enable this policy setting, you must enter a custom event viewer log folder name, e.g. "EventLogs"
+If you disable this policy setting or if you do not configure this policy setting, the BIS-F standard folder would be used.
+
+NOTE: Please specify the Name of the folder only, without any drive letter !!
+
+Spool:
+If you enable this policy setting, you must enter a custom Spool folder name, e.g. "Spool"
+If you disable this policy setting or if you do not configure this policy setting, the BIS-F standard folder would be used.
+
+NOTE: Please specify the Name of the folder only, without any drive letter !!</string>
+      <string id="POL_PVSCfg">Configure Citrix PVS Target Device</string>
+      <string id="POL_PVSCfg_Help">WriteCacheDisk drive letter
+
+If you enable this policy setting, you must select the drive letter for the PVS WriteCacheDisk
+If you disable or do not configure this policy setting and have PVS Target Device Driver installed, an error during BIS-F execution occurs.
+
+P2V Tool:
+You can choose between ImagingWizard and P2PVS (default = ImagingWizard)
+
+vDisk Format:
+Select the right vDisk Format, P2PVS support VHX and VHDX only, If you have selected ImagingWizard automatic VHDX will be chosen.(default = VHDX)
+
+P2V Custom UNC-Path:
+If you enable this policy, you must enter an valid UNC path. The user account, who start BIS-F for the preparation must have read/write access for this UNC-Path. The conversion process is starting with the P2V Tool you selected above.
+
+The vDisk would be created in the VHDX Format with the name %ComputerName%-DateTime.vhdx, for example VM-XA7MASTER01-020817-1045.vhdx
+
+Custom Arguments:
+If you enable this policy you, depends on the above configuration you can enter custom arguments, like C: only, example. if you choosing P2PVS the default arguments would be set to C: /Autofit /L, with the custom arguments you overwritten the arguments.
+Note: If you entered incorrect arguments, the conversion of the PVS vDisk might be failed !
+If you do not enable, the default arguments inside BIS-F will be used.</string>
+      <string id="ITM_B">B:</string>
+      <string id="ITM_D">D:</string>
+      <string id="ITM_E">E:</string>
+      <string id="ITM_F">F:</string>
+      <string id="ITM_G">G:</string>
+      <string id="ITM_H">H:</string>
+      <string id="ITM_I">I:</string>
+      <string id="ITM_J">J:</string>
+      <string id="ITM_K">K:</string>
+      <string id="ITM_L">L:</string>
+      <string id="ITM_M">M:</string>
+      <string id="ITM_N">N:</string>
+      <string id="ITM_O">O:</string>
+      <string id="ITM_P">P:</string>
+      <string id="ITM_Q">Q:</string>
+      <string id="ITM_R">R:</string>
+      <string id="ITM_S">S:</string>
+      <string id="ITM_T">T:</string>
+      <string id="ITM_U">U:</string>
+      <string id="ITM_V">V:</string>
+      <string id="ITM_W">W:</string>
+      <string id="ITM_X">X:</string>
+      <string id="ITM_Y">Y:</string>
+      <string id="ITM_Z">Z:</string>
+      <string id="ITM_450904EC_DB6A_4638_8B35_E60AC8004EC0">ImagingWizard</string>
+      <string id="ITM_59F24F14_D7D5_4228_9B4A_9C309CC65916">P2PVS</string>
+      <string id="ITM_ImgWzd">ImagingWizard</string>
+      <string id="ITM_P2PVS">P2PVS</string>
+      <string id="POL_PersCfg">Configure Personalization</string>
+      <string id="ITM_E5119B02_1193_446A_A77F_606196FEF75D">None</string>
+      <string id="ITM_B25B2F31_399B_47F7_8140_A5CB4C12ACF4">Private Mode</string>
+      <string id="ITM_07EC22F8_89D2_44B4_82E6_8D323FF25178">Everytime !!</string>
+      <string id="ITM_DM_None">Everytime !!</string>
+      <string id="ITM_DM_PM">Private Mode</string>
+      <string id="ITM_DM_ET">None</string>
+      <string id="POL_PersCfg_Help">Configure the Device Personalization
+
+
+Skip Personalization based on DiskMode
+If you enable this policy setting, you can select a DiskMode to skip the Device Personalization on computer startup.
+ &gt; None - never skip the Device Personalization 
+ &gt; ReadWrite - if the Image is in Private Mode (PVS or MCS) skip the Device Personalization 
+ &gt; All - ignore all DiskMode's and skip the Device Personalization
+
+If you disable or dor not configure this policy settings, the Device Personalization would not being skipped.
+</string>
+      <string id="POL_ExpCfg">Shared Configuration</string>
+      <string id="POL_ExpCfg_Help">This policy settings allows you to export the BISF CLI commands, that would be set from the complete BIS-F policy to an xml file. This can be used for computers that's running in Worker Groups (like Citrix AppLayering) or you have no access to modify the Active Directory Group Policies.
+
+If you enable this policy setting, you can enter an UNC-Path or local path, that can be accessed from the computer (if it's running in workgroup mode and you have entered an UNC-Path, please set NTFS Rights to Everyone Read to get the xml file without prompt)
+
+1. Running Powershell with administrative privileges
+2. cd &lt;BIS-F Installation folder&gt;\Framework
+3. .\PrepBISF_Start.ps1 -ExportSharedConfiguration
+4. the xml files would be created, in the path that you've entered in this policy
+5. Copy BISFSharedConfig.xml to the &lt;BIS-F Installation folder&gt;
+6. If BIS-F is running, it reads the XML BISFSharedConfig.xml and get the path to the shared configuration, import these settings into the local policy and load the values into BIS-F.
+
+If you disable do not configure this policy setting, the export can't be run.
+
+Note: mostly you need this one time, to create the xml files, after that you can edit it manually !! 
+You can also find the needed xml templates in the installation folder
+
+</string>
+      <string id="ITM_DM_1">All</string>
+      <string id="ITM_DM_2">Private Mode</string>
+      <string id="ITM_DM_3">Never</string>
+      <string id="POL_VDACfg">VDA Configuration</string>
+      <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
+
+If you enable this policy setting, you can configure several items
+If you disable or If you do not configure this policy setting, the vda configuration would not performed
+
+Delay Citrix Desktop Service:
+The Citrix Desktop Service controls the registration state through the Citrix Controller. In some circumstances, this service has successfull registered the VM and the user can logged on to this, through Receiver/StoreFront. In the backend some depend actions like Workspace Environment Agent, Group Policies, App-V Client and someone else are not completed with their own task. If you enable this policy the Citrix Destop Service would be started first, if the BIS-F personalization is finished.
+
+Note: If you has the Device personalization configured to skip it on all DiskModes or on private Mode only, the Citrix Desktop Service would also be started. </string>
+      <string id="ITM_5D01BF99_CC34_443E_A4A7_82489EE3159B">.VHD</string>
+      <string id="ITM_654E2264_F168_4BC8_A209_009DFADFF86F">.VHDX</string>
+      <string id="ITM_VDISK_VHDX1">VHDX</string>
+      <string id="ITM_VDISK_VHD">VHD</string>
+      <string id="ITM_VDISK_VHDX">VHDX</string>
+      <string id="POL_DotNET">.NET Optimization</string>
+      <string id="POL_DotNET_Help">Run .NET Optimization during sealing (preparation)
+
+If you enable this policy setting, .NET Optimization is running during sealing
+If you disable this policy setting, .NET Optimization is disabled during sealing
+If you do not configure this policy setting, .NET Optimization is running during sealing</string>
+    </stringTable>
+    <presentationTable>
+      <presentation id="POL_CTXOE">
+        <textBox refId="TXT_CTXOE_TemplatePath">
+          <label>(Optional) Template:</label>
+          <defaultValue></defaultValue>
+        </textBox>
+        <textBox refId="TXT_CTXOE_Groups">
+          <label>(Optional) List of enabled Groups:</label>
+          <defaultValue></defaultValue>
+        </textBox>
+        <checkBox refId="CB_CTXOE_Analyze">Mode: Analyze only</checkBox>
+        <checkBox refId="CHK_CTXOE_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_CTXOE_SF_CUS">
+          <label>Custom search folder</label>
+          <defaultValue>C:\Program Files (x86)\Citrix Optimizer</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_FSXRulesShare">
+        <textBox refId="TXT_RulesShare">
+          <label>FS Logix Rules Share</label>
+          <defaultValue>\\Server\Share</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_ZCM">
+        <textBox refId="TXT_ZCM_URL">
+          <label>ZCM Registration URL</label>
+          <defaultValue>reg https://ZCM-Server.domain.net -k CTX-XA65 -u XAuser -p XAuserPassword</defaultValue>
+        </textBox>
+        <text>
+        </text>
+        <text>
+        </text>
+        <text>
+        </text>
+      </presentation>
+      <presentation id="GhostDeviceClass">
+        <textBox refId="GhostDeviceClassBox">
+          <label>Classes:</label>
+          <defaultValue></defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="GhostDeviceFriendlyName">
+        <textBox refId="GhostDeviceFriendlyNameBox">
+          <label>Devices:</label>
+          <defaultValue></defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="GhostDeviceRemoval">
+        <dropdownList refId="GhostDeviceOption" noSort="true" defaultItem="0">Operation</dropdownList>
+      </presentation>
+      <presentation id="POL_SDelete">
+        <checkBox refId="CHK_SD_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_CLI_SD_SF_CUS">
+          <label>Custom search folder</label>
+          <defaultValue>C:\Windows\System32</defaultValue>
+        </textBox>
+        <text>
+        </text>
+      </presentation>
+      <presentation id="POL_IPv6">
+        <checkBox refId="CHK_V6_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_V6_SF_CUS">
+          <label>Custom search folder</label>
+          <defaultValue>C:\Windows\System32</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_DelProf">
+        <checkBox refId="CHK_DP_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_DP_SF_CUS">
+          <label>Custom search folder</label>
+          <defaultValue>C:\Windows\System32</defaultValue>
+        </textBox>
+        <checkBox refId="CHK_DP_Args">Enable custom arguments</checkBox>
+        <textBox refId="TXT_DP_ARGS_CUS">
+          <label>Custom Arguments</label>
+          <defaultValue>/u /r</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_vmOSOT">
+        <checkBox refId="CHK_OT_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_OT_SF_CUS">
+          <label>Custom search folder</label>
+          <defaultValue>C:\Program Files (x86)\vmOSOT</defaultValue>
+        </textBox>
+        <text>
+        </text>
+        <textBox refId="TXT_OT_Templ">
+          <label>Template Name</label>
+          <defaultValue></defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_CCleaner">
+        <checkBox refId="CHK_CC_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_CC_SF_CUS">
+          <label>Custom search folder</label>
+          <defaultValue>C:\Program Files (x86)\CCleaner</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_CMTrace">
+        <checkBox refId="CHK_CM_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_CM_SF_CUS">
+          <label>Custom search folder</label>
+          <defaultValue>C:\Windows\System32</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_LogCfg">
+        <checkBox refId="CHK_CLI_LogCfg">Enable Central Log Share</checkBox>
+        <textBox refId="TXT_301FB559_F663_4697_9602_6EDB78401441">
+          <label>Log Share</label>
+          <defaultValue>\\Server\Share</defaultValue>
+        </textBox>
+        <decimalTextBox refId="DXT_LogRetention" defaultValue="5">Log Retention</decimalTextBox>
+      </presentation>
+      <presentation id="POL_FldCfg">
+        <checkBox refId="CHK_EVTb">Enable custom event log folder name</checkBox>
+        <textBox refId="TXT_CLI_EvtLogsFolder">
+          <label>Event log folder name</label>
+          <defaultValue>EventLogs</defaultValue>
+        </textBox>
+        <checkBox refId="CHK_SPb">Enable Custom Spool folder name</checkBox>
+        <textBox refId="TXT_SpoolFolder">
+          <label>Spool folder name</label>
+          <defaultValue>Spool</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_PVSCfg">
+        <dropdownList refId="DST_WC_Driveletter" defaultItem="0">WriteCacheDisk drive letter</dropdownList>
+        <dropdownList refId="DST_P2PVS_Tool" defaultItem="0">P2V Tool</dropdownList>
+        <dropdownList refId="DST_VDISK_FORMAT" noSort="true" defaultItem="1">vDisk Format</dropdownList>
+        <checkBox refId="CHK_P2VHDX">Enable P2V Custom UNC-Path</checkBox>
+        <textBox refId="TXT_P2V_PT">
+          <label>P2V Custom UNC-Path</label>
+          <defaultValue>\\Server\Share</defaultValue>
+        </textBox>
+        <checkBox refId="CHK_P2V_CUSARGS">Enable custom arguments</checkBox>
+        <textBox refId="TXT_CUS_ARGS">
+          <label>Arguments</label>
+          <defaultValue>C:</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_PersCfg">
+        <dropdownList refId="DST_CLI_DM" defaultItem="0">Skip Personalization based on DiskMode</dropdownList>
+      </presentation>
+      <presentation id="POL_ExpCfg">
+        <text>
+        </text>
+        <textBox refId="TXT_EX_PT">
+          <label>Shared Configuration</label>
+          <defaultValue>\\Server\Share</defaultValue>
+        </textBox>
+        <text>
+        </text>
+      </presentation>
+      <presentation id="POL_VDACfg">
+        <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
+      </presentation>
+      <presentation id="POL_VieScan">
+        <checkBox refId="CHK_AV_VIE_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_AV_VIE_SF_CUS">
+          <label>Custom search folder</label>
+          <defaultValue>C:\Windows\System32</defaultValue>
+        </textBox>
+      </presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>
