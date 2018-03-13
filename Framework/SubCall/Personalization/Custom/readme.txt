@@ -1,1 +1,1 @@
-put your custom personalization scripts in this folder, this will be executed during computer startup (triggered from BIS-F scheduled task)
+put your custom scripts for the personalization here, running during domputer startup (triggered from BIS-F scheduled task)
