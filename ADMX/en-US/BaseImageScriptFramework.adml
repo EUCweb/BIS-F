@@ -496,6 +496,47 @@ Note: If you has the Device personalization configured to skip it on all DiskMod
 If you enable this policy setting, .NET Optimization is running during sealing
 If you disable this policy setting, .NET Optimization is disabled during sealing
 If you do not configure this policy setting, .NET Optimization is running during sealing</string>
+
+      <string id="POL_WUAgent">Install Windows Updates using WUAgent</string>
+      <string id="POL_WUSCCM">Install Windows Updates using SCCM</string>
+      <string id="POL_WUAgent_Help">Install Windows Update using the native Windows Update Agent
+
+If you enable this policy setting, Windows Update will be run and any detected updates will be applied.  You will need to set the "Windows Components/Windows Update/Specify intranet Microsoft update service location" group policy setting to enable this to operate with WSUS.
+If you disable this policy setting, Windows Update will not run.
+If you do not configure this policy setting, Windows Update will not run.</string>
+      <string id="POL_WUSCCM_Help">Install Windows Update using SCCM
+
+If you enable this policy setting, SCCM will run Windows Update and any detected updates will be applied. 
+If you disable this policy setting, SCCM will not run Windows Update.
+If you do not configure this policy setting, SCCM will not run Windows Update.</string>
+      <string id="POL_PAGEFILE">Configure Page File</string>
+      <string id="POL_PAGEFILE_Help">Configures the windows page file to be statically configured in both size and drive letter.</string>
+      <string id="PageFile_PVSWriteCacheDrive"> PVS write cache drive</string>
+      <string id="PageFile_B">B:</string>
+      <string id="PageFile_C">C:</string>
+      <string id="PageFile_D">D:</string>
+      <string id="PageFile_E">E:</string>
+      <string id="PageFile_F">F:</string>
+      <string id="PageFile_G">G:</string>
+      <string id="PageFile_H">H:</string>
+      <string id="PageFile_I">I:</string>
+      <string id="PageFile_J">J:</string>
+      <string id="PageFile_K">K:</string>
+      <string id="PageFile_L">L:</string>
+      <string id="PageFile_M">M:</string>
+      <string id="PageFile_N">N:</string>
+      <string id="PageFile_O">O:</string>
+      <string id="PageFile_P">P:</string>
+      <string id="PageFile_Q">Q:</string>
+      <string id="PageFile_R">R:</string>
+      <string id="PageFile_S">S:</string>
+      <string id="PageFile_T">T:</string>
+      <string id="PageFile_U">U:</string>
+      <string id="PageFile_V">V:</string>
+      <string id="PageFile_W">W:</string>
+      <string id="PageFile_X">X:</string>
+      <string id="PageFile_Y">Y:</string>
+      <string id="PageFile_Z">Z:</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -575,6 +616,13 @@ If you do not configure this policy setting, .NET Optimization is running during
           <defaultValue>/u /r</defaultValue>
         </textBox>
       </presentation>
+      <presentation id="POL_PAGEFILE">
+        <dropdownList refId="PageFile_DriveLetter_Options" defaultItem="0">Pagefile Drive Assignment</dropdownList>
+        <textBox refId="TXT_PAGEFILE_SIZE">
+          <label>Page file size (GB)</label>
+          <defaultValue>4</defaultValue>
+        </textBox>
+      </presentation>
       <presentation id="POL_vmOSOT">
         <checkBox refId="CHK_OT_SF">Enable custom search folder</checkBox>
         <textBox refId="TXT_OT_SF_CUS">
@@ -650,7 +698,7 @@ If you do not configure this policy setting, .NET Optimization is running during
         <text>
         </text>
       </presentation>
-      <presentation id="POL_VDACfg">
+	  <presentation id="POL_VDACfg">
         <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
       </presentation>
       <presentation id="POL_VieScan">

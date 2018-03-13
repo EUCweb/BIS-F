@@ -17,7 +17,7 @@
     <category name="CAT_3P" displayName="$(string.CAT_3P)">
       <parentCategory ref="CAT_BISF" />
     </category>
-    <category name="CAT_AV" displayName="$(string.CAT_AV)">
+	<category name="CAT_AV" displayName="$(string.CAT_AV)">
       <parentCategory ref="CAT_BISF" />
     </category>
     <category name="CAT_CTX" displayName="$(string.CAT_CTX)">
@@ -216,7 +216,7 @@
           </value>
         </item>
       </disabledList>
-      <elements>
+	  <elements>
         <boolean id="CHK_AV_VIE_SF" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AV_VIE_SF" />
         <text id="TXT_AV_VIE_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AV_VIE_SF_CUS" />
       </elements>
@@ -261,7 +261,7 @@
         <text id="TXT_CC_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CC_SF_CUS" />
       </elements>
     </policy>
-    <policy name="POL_CMTrace" class="Machine" displayName="$(string.POL_CMTrace)" explainText="$(string.POL_CMTrace_Help)" presentation="$(presentation.POL_CMTrace)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_CM">
+	<policy name="POL_CMTrace" class="Machine" displayName="$(string.POL_CMTrace)" explainText="$(string.POL_CMTrace_Help)" presentation="$(presentation.POL_CMTrace)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_CM">
       <parentCategory ref="CAT_3P" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -589,7 +589,7 @@
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_RESWASdisableSvc" class="Machine" displayName="$(string.POL_RESWASdisableSvc)" explainText="$(string.POL_RESWASdisableSvc_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA_SVC">
+	<policy name="POL_RESWASdisableSvc" class="Machine" displayName="$(string.POL_RESWASdisableSvc)" explainText="$(string.POL_RESWASdisableSvc_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA_SVC">
       <parentCategory ref="CAT_RES" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -831,7 +831,7 @@
         <text id="TXT_P2V_PT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_P2V_PT_CUS" />
         <boolean id="CHK_P2V_CUSARGS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_P2V_CUS_ARGS" />
         <text id="TXT_CUS_ARGS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_P2V_ARGS" />
-        <enum id="DST_VDISK_FORMAT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PT_FT">
+		<enum id="DST_VDISK_FORMAT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PT_FT">
           <item displayName="$(string.ITM_VDISK_VHD)">
             <value>
               <string>VHD</string>
@@ -921,7 +921,7 @@
           </value>
         </item>
       </disabledList>
-      <elements>
+	  <elements>
         <boolean id="CHK_CLI_CDS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CDS">
           <trueValue>
             <decimal value="1" />
@@ -932,7 +932,7 @@
         </boolean>
       </elements>
     </policy>
-    <policy name="POL_DotNET" class="Machine" displayName="$(string.POL_DotNET)" explainText="$(string.POL_DotNET_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DotNET">
+	<policy name="POL_DotNET" class="Machine" displayName="$(string.POL_DotNET)" explainText="$(string.POL_DotNET_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DotNET">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -950,5 +950,166 @@
         </item>
       </disabledList>
     </policy>
+    <policy name="POL_WUSCCM" class="Machine" displayName="$(string.POL_WUSCCM)" explainText="$(string.POL_WUSCCM_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WUSCCM">
+      <parentCategory ref="CAT_MS" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WUSCCM">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WUSCCM">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+    </policy>
+
+
+    <policy name="POL_PAGEFILE" class="Machine" displayName="$(string.POL_PAGEFILE)" explainText="$(string.POL_PAGEFILE_Help)"
+              presentation="$(presentation.POL_PAGEFILE)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_PAGEFILE">
+      <parentCategory ref="CAT_MS"/>
+      <supportedOn ref="windows:SUPPORTED_WindowsVista"/>
+      <elements>
+        <enum id="PageFile_DriveLetter_Options" valueName="LIC_BISF_CLI_PAGEFILE_DRIVE">
+          <item displayName="$(string.PageFile_PVSWriteCacheDrive)">
+            <value>
+              <string>PVSWriteCacheDrive</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_B)">
+            <value>
+              <string>B:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_C)">
+            <value>
+              <string>C:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_D)">
+            <value>
+              <string>D:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_E)">
+            <value>
+              <string>E:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_F)">
+            <value>
+              <string>F:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_G)">
+            <value>
+              <string>G:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_H)">
+            <value>
+              <string>H:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_I)">
+            <value>
+              <string>I:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_J)">
+            <value>
+              <string>J:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_K)">
+            <value>
+              <string>K:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_L)">
+            <value>
+              <string>L:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_M)">
+            <value>
+              <string>M:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_N)">
+            <value>
+              <string>N:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_O)">
+            <value>
+              <string>O:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_P)">
+            <value>
+              <string>P:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_Q)">
+            <value>
+              <string>Q:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_R)">
+            <value>
+              <string>R:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_S)">
+            <value>
+              <string>S:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_T)">
+            <value>
+              <string>T:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_U)">
+            <value>
+              <string>U:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_V)">
+            <value>
+              <string>V:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_W)">
+            <value>
+              <string>W:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_X)">
+            <value>
+              <string>X:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_Y)">
+            <value>
+              <string>Y:</string>
+            </value>
+          </item>
+          <item displayName="$(string.PageFile_Z)">
+            <value>
+              <string>Z:</string>
+            </value>
+          </item>
+        </enum>
+        <text id="TXT_PAGEFILE_SIZE" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PAGEFILE_SIZE" />
+      </elements>
+    </policy>
+    
   </policies>
 </policyDefinitions>
