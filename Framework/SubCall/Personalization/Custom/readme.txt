@@ -1,0 +1,1 @@
+put your custom scripts for the personalization here, running during domputer startup (triggered from BIS-F scheduled task)
