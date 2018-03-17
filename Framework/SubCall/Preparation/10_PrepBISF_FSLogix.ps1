@@ -3,7 +3,7 @@
   prepare FSLogix Apps for Image Management
 
 .DESCRIPTION
-  If the preperation ist starting, the script detects the installationn of FsLogix installation and ask to purge the Fslogix Rules on the Master Image 
+  If the preperation ist starting, the script detects the installationn of FsLogix installation and ask to purge the Fslogix Rules on the Master Image
 
 .PARAMETER <Parameter_Name>
     <Brief description of parameter input required. Repeat this attribute if required>
@@ -22,11 +22,13 @@
   Purpose/Change: 13.08.2015 MS: central rules share would be defined and stored in registry location to use it at computer startup
   Purpose/Change: 21.08.2015 MS: remove to set fsLogix service to manual, stopped service only.
   Purpose/Change: 30.09.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
-  Last Change:    06.03.2017 MS: Bugfix read Variable $varCLI = ...
-  
-  
+  Purpose/Change: 06.03.2017 MS: Bugfix read Variable $varCLI = ...
+  Purpose/Change: 15.02.2017 MS: Bugfix 237: When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
+
+
+
 .EXAMPLE
- 
+
 #>
 
 Begin {
@@ -44,7 +46,7 @@ Process {
     {
 		Write-BISFLog -Msg "Check Silentswitch..."
 	    $varCLIFS = $LIC_BISF_CLI_FS
-	    IF (($varCLIFS -eq "YES") -or ($varCLIFS -eq "NO")) 
+	    IF (($varCLIFS -eq "YES") -or ($varCLIFS -eq "NO"))
 	    {
 		    Write-BISFLog -Msg "Silentswitch would be set to $varCLIFS"
 	    } ELSE {
@@ -52,7 +54,7 @@ Process {
 		    $MPFS = Show-BISFMessageBox -Msg "Would you like to purge the FsLogix Rules folder ? Note: You must copied the $Product Rules via GPP or your prefered method to your cloned devices !" -Title "$Product" -YesNo -Question
     	    Write-BISFLog -Msg "$MPFS was selected [YES = purge FsLogix Rules] [NO = Skip rules deletion]"
 	    }
-        
+
 		if (($MPFS -eq "YES" ) -or ($varCLIFS -eq "YES"))
 	    {
 		    Write-BISFLog -Msg "delete $product Rules" -ShowConsole -Color DarkCyan -SubMsg
@@ -66,7 +68,7 @@ Process {
     {
         #set the fsLogix central rules share in the BIS-F registry location, to get on BIS-F personalisation on each device
         Write-BISFLog -Msg "Check Silentswitch..."
-	    $varCLIRS = $LIC_BISF_CLI_RS
+		$varCLIRS = $LIC_BISF_CLI_RSb
 	    IF ($varCLIRS -ne "")
 	    {
 		    Write-BISFLog -Msg "Silentswitch would be set to $varCLIRS"
@@ -77,12 +79,12 @@ Process {
             $fslogixRulesShare = $MPRS
         }
 
-        if ($fslogixRulesShare -ne "") 
+        if ($fslogixRulesShare -ne "")
 	    {
 		    Write-BISFLog -Msg "The fsLogix Central Rules Share would be set to $fslogixRulesShare" -ShowConsole -Color DarkCyan -SubMsg
             Write-BISFLog -Msg "set fsLogix Central Rules Share in the registry $hklm_software_LIC_CTX_BISF_SCRIPTS, Name LIC_BISF_FSXRulesShare, value $fslogixRulesShare"
             Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_FSXRulesShare" -value "$fslogixRulesShare" -Force
-		    
+
 	    } ELSE {
 		    Write-BISFLog -Msg "No fsLogix Central Rules Share defined"
 	    }
