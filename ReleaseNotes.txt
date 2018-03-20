@@ -1,4 +1,6 @@
-﻿13.03.2018 MS: migrate BIS-F to Github, new ID's for Issue
+---------------------------------
+Version 6.1.0 build 01.101 -- 20.03.2018 21:22:37 :
+13.03.2018 MS: migrate BIS-F to Github, new ID's for Issue
 25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
 15.02.2017 MS: Bugfix 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 11.02.2018 MS: Bugfix 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
@@ -320,7 +322,7 @@ Version 5.1.0:
 20.01.2016 MS: PrepareBaseImage.cmd: remove duplicated CLI command for -DisableIPv6 NO
 20.01.2016 JP/MS: Bug fix in Feature 99: Wrong Dword to completely disable IPv6 - 0x000000FF
 07.01.2016 MS: Feature 21; If no image management software would is detected; the service startup type would not change to manual
-07.01.2016 MS: Feature 20; Added VMware Horizon View detection, thx to Bertram W�hrmann
+07.01.2016 MS: Feature 20; Added VMware Horizon View detection, thx to Bertram W?hrmann
 07.01.2016 MS: Feature 105; Added Office 2016 x86 rearm support
 07.01.2016 MS: Changed ExecutionPolicy from unrestricted to bypass
 07.01.2016 MS: Change Request 79; Added Optimize-BISFWinSxs to cleanup and reduce WinSxs Folder (Win8, Win2012 R2 only), thx to Vincent Szabang

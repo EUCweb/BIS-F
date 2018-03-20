@@ -3,7 +3,7 @@
 #
 # Generiert von: Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank
 #
-# Generiert am: 26.11.2017
+# Generiert am: 20.03.2018
 #
 
 @{
@@ -23,7 +23,7 @@ GUID = '632e959f-fff8-40ee-96f4-d8fb3f122a9f'
 # Autor dieses Moduls
 Author = 'Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank'
 
-# Company or vendor of this module
+# Unternehmen oder Hersteller dieses Moduls
 CompanyName = 'Login Consultants'
 
 # Urheberrechtserklärung für dieses Modul
