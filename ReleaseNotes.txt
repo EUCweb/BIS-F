@@ -1,4 +1,5 @@
-﻿25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
+﻿21.03.2018 MS: Bugfix 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
+25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
 15.02.2017 MS: Bugfix 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 11.02.2018 MS: Bugfix 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
 21.09.2017 TT: Added Powershell Web Server Log Viewer
