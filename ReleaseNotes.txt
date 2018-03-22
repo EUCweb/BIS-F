@@ -1,5 +1,3 @@
----------------------------------
-Version  build 03.107 -- 22.03.2018 05:56:52 :
 22.03.2018 MS: Feature 15: support for Office 365 ClicktoRun
 21.03.2018 MS: Bugfix 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
 25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
