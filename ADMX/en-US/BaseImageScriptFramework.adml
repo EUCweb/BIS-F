@@ -496,7 +496,6 @@ Note: If you has the Device personalization configured to skip it on all DiskMod
 If you enable this policy setting, .NET Optimization is running during sealing
 If you disable this policy setting, .NET Optimization is disabled during sealing
 If you do not configure this policy setting, .NET Optimization is running during sealing</string>
-
       <string id="POL_WUAgent">Install Windows Updates using WUAgent</string>
       <string id="POL_WUSCCM">Install Windows Updates using SCCM</string>
       <string id="POL_WUAgent_Help">Install Windows Update using the native Windows Update Agent
@@ -698,7 +697,7 @@ If you do not configure this policy setting, SCCM will not run Windows Update.</
         <text>
         </text>
       </presentation>
-	  <presentation id="POL_VDACfg">
+      <presentation id="POL_VDACfg">
         <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
       </presentation>
       <presentation id="POL_VieScan">
