@@ -483,6 +483,10 @@ If you disable or If you do not configure this policy setting, the vda configura
 Delay Citrix Desktop Service:
 The Citrix Desktop Service controls the registration state through the Citrix Controller. In some circumstances, this service has successfull registered the VM and the user can logged on to this, through Receiver/StoreFront. In the backend some depend actions like Workspace Environment Agent, Group Policies, App-V Client and someone else are not completed with their own task. If you enable this policy the Citrix Destop Service would be started first, if the BIS-F personalization is finished.
 
+Additional delay (default 0)
+You can enter additional time in seconds, to start the Citrix Desktop Service after this delay. This time you entered here will be count in addition after the BIS-F personalization is finished. 
+max seconds: 1800
+
 Note: If you has the Device personalization configured to skip it on all DiskModes or on private Mode only, the Citrix Desktop Service would also be started. </string>
       <string id="ITM_5D01BF99_CC34_443E_A4A7_82489EE3159B">.VHD</string>
       <string id="ITM_654E2264_F168_4BC8_A209_009DFADFF86F">.VHDX</string>
@@ -711,6 +715,7 @@ NOTE: If you configre the MaxExecution time to a low value, and the timout is re
       </presentation>
       <presentation id="POL_VDACfg">
         <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
+        <decimalTextBox refId="DXT_CLI_CDSdelay" defaultValue="0" spinStep="5">Additional delay (seconds)</decimalTextBox>
       </presentation>
       <presentation id="POL_VieScan">
         <checkBox refId="CHK_AV_VIE_SF">Enable custom search folder</checkBox>

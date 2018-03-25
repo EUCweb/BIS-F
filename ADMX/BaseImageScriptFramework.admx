@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.1" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.88CA45A2_D786_435A_9F3C_6B97023BA843" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.6F68EA24_F546_4643_ACD6_896DDC63D04E" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -927,6 +927,7 @@
             <delete />
           </falseValue>
         </boolean>
+        <decimal id="DXT_CLI_CDSdelay" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CDSdelay" maxValue="1800" />
       </elements>
     </policy>
     <policy name="POL_DotNET" class="Machine" displayName="$(string.POL_DotNET)" explainText="$(string.POL_DotNET_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DotNET">
