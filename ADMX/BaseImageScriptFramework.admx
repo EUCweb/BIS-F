@@ -1,10 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--  (c) 2017 Base Script Image Framework  -->
-<policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   revision="1.1" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+<policyDefinitions revision="1.1" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="bisf" namespace="LoginConsultant.Policies.BISF" />
-    <using namespace="Microsoft.Policies.Windows" prefix="windows"/>
+    <target prefix="fullarmor" namespace="FullArmor.Policies.88CA45A2_D786_435A_9F3C_6B97023BA843" />
+    <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
   <supportedOn>
@@ -17,7 +14,7 @@
     <category name="CAT_3P" displayName="$(string.CAT_3P)">
       <parentCategory ref="CAT_BISF" />
     </category>
-	<category name="CAT_AV" displayName="$(string.CAT_AV)">
+    <category name="CAT_AV" displayName="$(string.CAT_AV)">
       <parentCategory ref="CAT_BISF" />
     </category>
     <category name="CAT_CTX" displayName="$(string.CAT_CTX)">
@@ -216,7 +213,7 @@
           </value>
         </item>
       </disabledList>
-	  <elements>
+      <elements>
         <boolean id="CHK_AV_VIE_SF" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AV_VIE_SF" />
         <text id="TXT_AV_VIE_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AV_VIE_SF_CUS" />
       </elements>
@@ -261,7 +258,7 @@
         <text id="TXT_CC_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CC_SF_CUS" />
       </elements>
     </policy>
-	<policy name="POL_CMTrace" class="Machine" displayName="$(string.POL_CMTrace)" explainText="$(string.POL_CMTrace_Help)" presentation="$(presentation.POL_CMTrace)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_CM">
+    <policy name="POL_CMTrace" class="Machine" displayName="$(string.POL_CMTrace)" explainText="$(string.POL_CMTrace_Help)" presentation="$(presentation.POL_CMTrace)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_CM">
       <parentCategory ref="CAT_3P" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -589,7 +586,7 @@
         </item>
       </disabledList>
     </policy>
-	<policy name="POL_RESWASdisableSvc" class="Machine" displayName="$(string.POL_RESWASdisableSvc)" explainText="$(string.POL_RESWASdisableSvc_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA_SVC">
+    <policy name="POL_RESWASdisableSvc" class="Machine" displayName="$(string.POL_RESWASdisableSvc)" explainText="$(string.POL_RESWASdisableSvc_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA_SVC">
       <parentCategory ref="CAT_RES" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -831,7 +828,7 @@
         <text id="TXT_P2V_PT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_P2V_PT_CUS" />
         <boolean id="CHK_P2V_CUSARGS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_P2V_CUS_ARGS" />
         <text id="TXT_CUS_ARGS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_P2V_ARGS" />
-		<enum id="DST_VDISK_FORMAT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PT_FT">
+        <enum id="DST_VDISK_FORMAT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PT_FT">
           <item displayName="$(string.ITM_VDISK_VHD)">
             <value>
               <string>VHD</string>
@@ -921,7 +918,7 @@
           </value>
         </item>
       </disabledList>
-	  <elements>
+      <elements>
         <boolean id="CHK_CLI_CDS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CDS">
           <trueValue>
             <decimal value="1" />
@@ -932,7 +929,7 @@
         </boolean>
       </elements>
     </policy>
-	<policy name="POL_DotNET" class="Machine" displayName="$(string.POL_DotNET)" explainText="$(string.POL_DotNET_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DotNET">
+    <policy name="POL_DotNET" class="Machine" displayName="$(string.POL_DotNET)" explainText="$(string.POL_DotNET_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DotNET">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -968,12 +965,9 @@
         </item>
       </disabledList>
     </policy>
-
-
-    <policy name="POL_PAGEFILE" class="Machine" displayName="$(string.POL_PAGEFILE)" explainText="$(string.POL_PAGEFILE_Help)"
-              presentation="$(presentation.POL_PAGEFILE)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_PAGEFILE">
-      <parentCategory ref="CAT_MS"/>
-      <supportedOn ref="windows:SUPPORTED_WindowsVista"/>
+    <policy name="POL_PAGEFILE" class="Machine" displayName="$(string.POL_PAGEFILE)" explainText="$(string.POL_PAGEFILE_Help)" presentation="$(presentation.POL_PAGEFILE)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_PAGEFILE">
+      <parentCategory ref="CAT_MS" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
         <enum id="PageFile_DriveLetter_Options" valueName="LIC_BISF_CLI_PAGEFILE_DRIVE">
           <item displayName="$(string.PageFile_PVSWriteCacheDrive)">
@@ -1110,6 +1104,26 @@
         <text id="TXT_PAGEFILE_SIZE" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PAGEFILE_SIZE" />
       </elements>
     </policy>
-    
+    <policy name="POL_METCfg" class="Machine" displayName="$(string.POL_METCfg)" explainText="$(string.POL_METCfg_Help)" presentation="$(presentation.POL_METCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_METCfg">
+      <parentCategory ref="CAT_Global" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_METCfg">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_METCfg">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+      <elements>
+        <decimal id="DXT_MET" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MET" minValue="30" maxValue="120" />
+      </elements>
+    </policy>
   </policies>
 </policyDefinitions>
