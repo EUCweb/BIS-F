@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.1" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.6F68EA24_F546_4643_ACD6_896DDC63D04E" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.D60B3A2E_AADE_4913_AA7A_675BD38BE109" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1124,6 +1124,29 @@
       </disabledList>
       <elements>
         <decimal id="DXT_MET" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MET" minValue="30" maxValue="120" />
+      </elements>
+    </policy>
+    <policy name="POL_WEMCfg" class="Machine" displayName="$(string.POL_WEMCfg)" explainText="$(string.POL_WEMCfg_Help)" presentation="$(presentation.POL_WEMCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WEMCfg">
+      <parentCategory ref="CAT_CTX" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMCfg">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMCfg">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+      <elements>
+        <boolean id="CHK_CLI_WEMCache" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMCache" />
+        <boolean id="CHK_CLI_WEMb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMb" />
+        <text id="TXT_CLI_WEMFolder" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMFolder" maxLength="20" />
       </elements>
     </policy>
   </policies>
