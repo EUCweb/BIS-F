@@ -474,7 +474,7 @@ You can also find the needed xml templates in the installation folder
       <string id="ITM_DM_1">All</string>
       <string id="ITM_DM_2">Private Mode</string>
       <string id="ITM_DM_3">Never</string>
-      <string id="POL_VDACfg">VDA Configuration</string>
+      <string id="POL_VDACfg">Configure Citrix Virtual Delivery Agent (VDA)</string>
       <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
 
 If you enable this policy setting, you can configure several items
@@ -487,7 +487,7 @@ Additional delay (default 0)
 You can enter additional time in seconds, to start the Citrix Desktop Service after this delay. This time you entered here will be count in addition after the BIS-F personalization is finished. 
 max seconds: 1800
 
-Note: If you has the Device personalization configured to skip it on all DiskModes or on private Mode only, the Citrix Desktop Service would also be started. </string>
+Note: If you has the Device personalization configured to skip it on all DiskModes or on private mode only, the Citrix Desktop Service would also be started. </string>
       <string id="ITM_5D01BF99_CC34_443E_A4A7_82489EE3159B">.VHD</string>
       <string id="ITM_654E2264_F168_4BC8_A209_009DFADFF86F">.VHDX</string>
       <string id="ITM_VDISK_VHDX1">VHDX</string>
