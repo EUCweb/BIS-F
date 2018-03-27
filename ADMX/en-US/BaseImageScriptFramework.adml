@@ -555,13 +555,13 @@ If you enable this policy setting, you can configure the WEM Agent settings
 If you disable or do not configure this policy setting, the WEM Agent settings will not changed.
 
 reconfigure WEM Agent Cache to the PVS WriteCacheDrive:
-If you enable this Item, the WEM Agent Cache is regonfigured to the WriteCacheDrive (PVS Target Device driver must installed on the Base Image, to take affect during sealing) 
+If you enable this Item, the WEM Agent Cache is reconfigured to the WriteCacheDrive (PVS Target Device driver must installed on the Base Image, to take affect during sealing) 
 
 
-Enable custom WEMCache folder name (take affect if the PVS Target Device Driver is installed)
+Enable custom WEMCache folder name (take affect if the PVS Target Device Driver is installed and the redirection is enabled)
 to specify a custom WEM Agent Cache folder name, enable this settings
 
-WEM Agent Cache folder name  (take affect if the PVS Target Device Driver is installed)
+WEM Agent Cache folder name  (take affect if the PVS Target Device Driver is installed and the redirection is enabled)
 Enter the name of the WEM Agent Cache folder, e.g. WEMCache
 If the folder doesn't exists, it will be created automatically
 
