@@ -1,4 +1,7 @@
-﻿13.03.2018 MS: migrate BIS-F to Github, new ID's for Issue
+﻿29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
+---------------------------------
+Version 6.1.0 build 01.101 -- 20.03.2018 21:22:37 :
+13.03.2018 MS: migrate BIS-F to Github, new ID's for Issue
 25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
 15.02.2017 MS: Bugfix 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 11.02.2018 MS: Bugfix 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
@@ -24,8 +27,8 @@ Version 6.1.0 build 01.100 -- 26.11.2017 22:34:40 :
 01.11.2017 MS: Feature Personalization - get Office activation state and License state back to the BIS-F log
 01.11.2017 MS: Added check if Defrag Service is running, thx to Lejkin Dmitrij
 29.10.2017 MS: Bugfix: IF $DiskNameExtension -eq "noVirtualDisk" and custom UNC-Path is enabled, runnig OfflineDefrag on custom UNC-Path
-29.10.2017 MS: Replaced DiskMode MCS with VDA value 
-29.10.2017 MS: Bugfix AppLayering, Outside ELM no UniService must be running 
+29.10.2017 MS: Replaced DiskMode MCS with VDA value
+29.10.2017 MS: Bugfix AppLayering, Outside ELM no UniService must be running
 29.10.2017 MS: Bugfix: Custom UNC-Path get the wrong value back and does not perform a defrag on the vhd(x) and set the right value now $Global:TestDiskMode
 ---------------------------------
 Version 6.1.0 build 02.103 -- 19.10.2017 12:13:13 :
@@ -37,11 +40,11 @@ Version 6.1.0 build 02.102 -- 19.10.2017 09:03:00 :
 17.10.2017 MS: Bugfix Running Office ream first and second OS rerarm, thx to Bernd Baedermann
 17.10.2017 MS: Feature: ADMX change RES to ivanti Automation, thx to Chris Twiest
 17.10.2017 MS: Feature: ADM extension PVS Target Device: select vDisk Type VHDX/VHD that can be using for P2PVS only, thx to Christian Schuessler
-16.10.2017 MS: Bugfix Errorhandling - script will stop now after -Type E for Write-BISFLog 
+16.10.2017 MS: Bugfix Errorhandling - script will stop now after -Type E for Write-BISFLog
 16.10.2017 MS: Bugfix Applayering, check if the Layer finalize is allowed before continue, thx to Brandon Mitchell
 16.10.2017 MS: Bugfix OS rearm never run, path to slmgr.vbs must be entered before, thx to Bernd Baedermann
 16.10.2017 MS: Bugfix detecting wrong POSH Version if running BIS-F remotly, using $PSVersionTable.PSVersion.Major, thx to Fabian Danner
-15.10.2017 MS: Feature - AV-SEP.ps1: VIETool - using custom searchfolder from ADMX if enabled		
+15.10.2017 MS: Feature - AV-SEP.ps1: VIETool - using custom searchfolder from ADMX if enabled
 03.10.2017 MS: Bugfix 214: SCOM Preparation - Test path if $OpsStateDirOrigin before delete, instead of complete C: content if if $OpsStateDirOrigin is not available
 03.10.2017 MS: Bugfix 215: Personalization - writing wrong PersState to registry, preparation does not run in that case, thx to Ewald Bracko
 ---------------------------------
@@ -55,7 +58,7 @@ Version 6.1.0 build 02.100 -- 22.09.2017 10:14:04 :
 21.09.2017 MS: Feature: CMTrace - using custom searchfolder from ADMX if enabled
 14.09.2017 MS: bugfix 212 - if personlity.ini not exist, run Set-PVSTool otherwise check vDiskMode
 14.09.2017 MS: after WriteCacheDisk would formatted during personlization, wait after reboot
-12.09.2017 MS: Invoke-CDS Changing to $servicename = "BrokerAgent" to control the delay of the Service 
+12.09.2017 MS: Invoke-CDS Changing to $servicename = "BrokerAgent" to control the delay of the Service
 ---------------------------------
 Version 6.1.0 build 03.106 -- 12.09.2017 16:39:00 :
 12.09.2017 MS: using progressbar during wait for the personlization is finished
@@ -113,18 +116,18 @@ Version 6.1.0 build 04.113 -- 18.08.2017 16:38:46 :
 ---------------------------------
 Version 6.1.0 build 04.112 -- 16.08.2017 13:47:45 :
 Last Change: 16.08.2017 MS: Skip Device Personalization, based on Diskmode selected in ADMX
-Last Change: 15.08.2017 MS: Feature - DiskMode: extend Diskmode with AppLayering, ReadOnlyAppLayering, ReadWriteAppLayering, etc. 
+Last Change: 15.08.2017 MS: Feature - DiskMode: extend Diskmode with AppLayering, ReadOnlyAppLayering, ReadWriteAppLayering, etc.
 Last Change: 15.08.2017 MS: Bugfix - Personalization: If Citrix AppLayering is installed, skip reboot
 Last Change: 15.08.2017 MS: move all BIS-F logs to the BISF logfolder, local and UNC-Path, previous only personalization logs would be moved to the UNC-Path
 Last Change: 06.08.2017 MS: from every P2V convertion, the logfile would be included into the BIS-F log, instead of error only
-Last Change: 06.08.2017 MS: Bugfix - ADMX: in some textbox fields, they starting with empty spaces 
+Last Change: 06.08.2017 MS: Bugfix - ADMX: in some textbox fields, they starting with empty spaces
 Last Change: 06.08.2017 MS: Bugfix - if Custom UNC-Path in ADMX is enabled, during "Personalization" the wrong $returnvalue like MCSPrivate is given back, instead of "UNC-Path"
 ---------------------------------
 Version 6.1.0 build 04.111 -- 04.08.2017 21:23:17 :
 04.08.2017 MS: Feature Request 150 : - Function Get-BISFDiskMode: If Custom UNC-Path in ADMX is enabled, get back 'UNC-Path' as $returnvalue
 03.08.2017 MS: Change BIS-F Icon on Admin Desktop, thx to Marco Zimmermann
 03.08.2017 MS: Feature - P2V : Get-BISFBootMode get back UEFI or Legacy to using different command line switches for ImagingWizard or P2PVS
-03.08.2017 MS: Feature - P2V : Automatic fallback to ImagingWizard with UEFI BootMode, if P2PVS in ADMX is selected 
+03.08.2017 MS: Feature - P2V : Automatic fallback to ImagingWizard with UEFI BootMode, if P2PVS in ADMX is selected
 02.08.2017 MS: Feature - System Startup : In AppLayering OS-Layer only, do not Resync Time with Domain and do not Reapply Computer GPO, Computer is mostly not domain joined
 02.08.2017 MS: Feature - System Startup : With DiskMode AppLayering in OS-Layer the WSUS Update Service would be start
 02.08.2017 MS: Feature Request 150 : IF ADMX for custom VHDX UNC-Path is enabled, Defrag can't performed
@@ -134,11 +137,11 @@ Version 6.1.0 build 04.111 -- 04.08.2017 21:23:17 :
 02.08.2017 MS: Feature Request 193 : ADMX - Eventlog and Log Configuration, change POSH Code to use new reg values
 02.08.2017 MS: Feature Request 196 : ADMX - delprof2 edit custom arguments
 02.08.2017 MS: Feature : change ADMX to new structure, each vendor has his own folder
-02.08.2017 MS: Bugfix - Windows Defender Script: to much " at the end of Line 44, breaks defender script to fail 
+02.08.2017 MS: Bugfix - Windows Defender Script: to much " at the end of Line 44, breaks defender script to fail
 ---------------------------------
 Version 6.1.0 build 04.110 -- 01.08.2017 19:13:38 :
 01.08.2017 MS: Feature Request 197 : add Progressbar for .NET Optimization
-01.08.2017 MS: Feature Request 159 : ADMX - specifiy VMware OS Optimization Template 
+01.08.2017 MS: Feature Request 159 : ADMX - specifiy VMware OS Optimization Template
 01.08.2017 MS: Feature Request 196 : ADMX - specifiy custom searchfolder for Citrix System Optimizer (CTXOE)
 01.08.2017 MS: Feature Request 196 : ADMX - specifiy custom searchfolder for each 3rd Party Tool
 01.08.2017 MS: Feature Request 193 : ADMX - specifiy custom eventlog and spool foldername
@@ -148,7 +151,7 @@ Version 6.1.0 build 04.109 -- 01.08.2017 05:38:40 :
 01.08.2017 MS: Bugfix Test-AppLayeringSoftware, to much more bracket.. complete execution of BISF failed !
 ---------------------------------
 Version 6.1.0 build 04.108 -- 31.07.2017 20:10:25 :
-31.07.2017 MS: Bugfix: if Citirx PVS Target Device Driver and Citrix AppLayering is installed, PostCommand would not executed 
+31.07.2017 MS: Bugfix: if Citirx PVS Target Device Driver and Citrix AppLayering is installed, PostCommand would not executed
 31.07.2017 MS: Bugfix: If Citrix AppLayering is installed, in the Platform Layer the wrong Driveletter would give it back.
 31.07.2017 MS: Bugfix: 10_PrepBISF_AV-SEP.ps1 - typo in search folders for the SEP vietool.exe
 31.07.2017 MS: Show ConsoleMessage during prepare Citrix AppLayering if installed
@@ -204,10 +207,10 @@ Version 6.0.0:
 28.03.2017 MS: Final Test passed with Server 2016 / XA 7.13 and Server 2008 R2 / XA 6.5
 27.03.2017 MS: List of services not disabled, must be under extra control from the administrator $ServicesList = @("AJRouter","ALG","BthHFSrv","Eaphost","DiagTrack","PeerDistSvc","PeerDistSvc","EFS","msiscsi","WSearch","ALG","BDESVC","fhsvc","lfsvc","MSiSCSI","smphost","SharedAccess","wlidsvc","wbengine","bthserv","Browser","DeviceAssociationService","DsmSvc","DPS","WdiServiceHost","WdiSystemHost","QWAVE","SensorDataService","RetailDemo","PcaSvc","TrkWks","WPCSvc","Fax","FDResPub","svsvc","HomeGroupListener","ShellHWDetection","SensorService","HomeGroupProvider","TabletInputService","WiaRpc","CscService","SstpSvc","wscsvc","icssvc","stisvc","SensrSvc","XblAuthManager","XblGameSave","XboxNetApiSvc","WlanSvc","ShellHWDetection","SNMPTRAP","SSDPSRV","SysMain","TapiSrv","upnphost","SDRSVC","WcsPlugInService","wcncsvc","WinDefend","WerSvc","WMPNetworkSvc","Wlansvc","WwanSvc")
 23.03.2017 MS: BugFix: get the right status of Pending Reboot with the configured ADMX
-22.03.2017 MS: for P2PVS reconfigure Microsoft Software Shadow Copy Provider Service and VSS Service, needed them for P2PVS 
+22.03.2017 MS: for P2PVS reconfigure Microsoft Software Shadow Copy Provider Service and VSS Service, needed them for P2PVS
 22.03.2017 MS: Bugfix to read the right State from personality.ini if used VDA with PVS
 21.03.2017 MS: Feature 146: add progressbar to defrag
-20.03.2017 MS: do not disable defragsvc, VSS, swprv services 
+20.03.2017 MS: do not disable defragsvc, VSS, swprv services
 17.03.2017 MS: Bugfix: Start-BISFProcWithProgBar: remove -Wait from Start-Process
 17.03.2017 MS: Bugfix: Start-BISFProcWithProgBar: using $ArgList instead og $Args at the Write-BISFLog commmand here
 16.03.2017 FF: BugFix 164 for Image Prep (disable useless Services and Scheduled Tasks)
@@ -224,7 +227,7 @@ Version 6.0.0:
 12.03.2017 MS: Bug fix 112; Kaspersky AntiVirus - wrong path to get from executable
 12.03.2017 MS: ADMX: Configure Novell ZCM Agent webbases registration URL
 12.03.2017 MS: Bug fix in ADMX - configure PVS WriteCacheDisk driveletter
-12.03.2017 MS: Remove System Environment Variable PVSWriteCacheDisk, configured with ADMX and use new registry location to save and use informations 
+12.03.2017 MS: Remove System Environment Variable PVSWriteCacheDisk, configured with ADMX and use new registry location to save and use informations
 09.03.2017 MS: Change defrag arguments to support Windows 10 and Server 2016
 09.03.2017 MS: Syntax error in 97_PrepBISF_PRE_BaseImage.ps1
 06.03.2017 MS: Get file version of Service ImagePath
@@ -239,7 +242,7 @@ Version 6.0.0:
 20.02.2017 MS: Bug fix; Get-BISFMacaddress - Fixed empty space given back from $mac, thx to Valentino Pemoni
 20.02.2017 MS: Removed WEMBrokerName configuration with BIS-F, must be configured with WEM ADMX or AMD from Citrix, not here !!
 02.02.2017 MS: Removed CLI parameters, this can be configured with the ADMX File. Exclude -DebugMode and -Verbose CLI Switches are available only
-01.02.2017 MS: Bug fix wrong syntax for RES ONE Automation Console 
+01.02.2017 MS: Bug fix wrong syntax for RES ONE Automation Console
 31.01.2017 MS: RES Workspace Manager; Changde Remove-Item -Path "$InstallDir_REG\Data\DBCache\Resources\custom_resources\*" -recurse
 31.01.2017 MS: RES ONE Automation Console; Added stop service command
 30.01.2017 MS: RES Workspace Manager; Added IF (Test-Path "$HKLM_WIN_CVN\WUID") {Remove-Item -Path "$HKLM_WIN_CVN\WUID"}
@@ -257,13 +260,13 @@ Version 6.0.0:
 10.01.2017 MS: Feature Request 121; Added CLI command 'AppVPckRemoval YES | NO 'or message box to delete PreCached App-V Packages
 10.01.2017 MS: Bug fix 134; PrepareWriteCacheDisk: Add space on either side of the Driveletter variable $searvol, thx to Jeremy Saunders
 10.01.2017 MS: Bug fix 134; PrepareWriteCacheDisk: MBR disk with 8 characters to get the right uniqueID from Diskpart only, PVS does not support GPT disk, see https://support.citrix.com/article/CTX139478 thx to Jeremy Saunders
-10.01.2017 MS: Review 140; Added CLI command 'XAImagePrepRemoval YES | NO' or MessageBox during Prepare XenApp for Provisioning/Image Management you can choose RemoveCurrentServer and ClearLocalDatabaseInformation, this would be set with this Parameter or prompted to administrator 
+10.01.2017 MS: Review 140; Added CLI command 'XAImagePrepRemoval YES | NO' or MessageBox during Prepare XenApp for Provisioning/Image Management you can choose RemoveCurrentServer and ClearLocalDatabaseInformation, this would be set with this Parameter or prompted to administrator
 10.01.2017 JP/MS: Feature 139; Added McAfee 5.X Agent Support
 09.01.2017 MS: Feature 137; Added Sophos preparation and personalization for Image Management, thx to Marco Zimmermann, Tim Franken and Mark Bos
 09.01.2017 MS: Feature 137; Added UberAgent preparation, thx to Marco Zimmermann
 09.01.2017 MS: Review 126; MCS only: IF Diskmode is set to "MCSPrivate" no personalization is running
 09.01.2017 MS: Bug fix 135; IF PVS Target Device Driver is installed, spool and EventLogs like Application, System, Security and XA LicenseFile would be redirected to WriteCacheDisk, otherwise leave it the original path
-08.12.2016 MS: Test-PVS Driveletter running on preparation state only 
+08.12.2016 MS: Test-PVS Driveletter running on preparation state only
 07.12.2016 MS: Migrated BISF Registry Items to a new location
 07.12.2016 MS: Added Office 2016 KMS support
 06.12.2016 MS: Feature 129: Added Citrix Workspace Environment Manager Agent (WEM) support
@@ -274,22 +277,22 @@ Version 6.0.0:
 11.11.2016 MS: Create-BISFTask running in its own function
 10.11.2016 MS: Post-Sysprep: Added check for Windows 10 for running after sysprep actions
 10.11.2016 MS: 3rd party tools like sdelete, ccleaner, nvpsbind, vietool would not longer be distributed by BIS-F, customer must have them in their environment installed
-10.11.2016 MS: Added Pre-Commands for Windows Server 2016 and Windows 10 
+10.11.2016 MS: Added Pre-Commands for Windows Server 2016 and Windows 10
 10.11.2016 MS: Set-QMID would never be processed, wrong syntax in IF (($returnTestXDSoftware -eq "true") -or ($returnTestPVSSoftware -eq "true"))
 10.11.2016 MS: Fixed typo in Line 76, thx to Mikhail Zuskov -> Write-BISFLog -Msg "Error changing access for NetworkService on the folder `"$LIC_BISF_CtxCache`". The output of the action is: $result" -Type W -SubMsg
 09.11.2016 MS: Added preparation for Altiris Inventory Agent
 29.10.2016 MS: After successful sysprep, computer shutdown would be performed only, if not supressed by CLI command
 28.10.2016 MS: If NoVirtualDisk is detected, the Drive for Defrag if used would be set to SystemDrive
 28.10.2016 MS: Bug fix Sysprep is not running in earlier BIS-F Version. Adding error handling, checking setuperr.log for errors and from postCommands
-28.10.2016 MS: Enhanced the defrag to run on NoVirtualDisk, previous Version PVS BaseDisk only 
+28.10.2016 MS: Enhanced the defrag to run on NoVirtualDisk, previous Version PVS BaseDisk only
 04.10.2016 MS: Global Re-Design of the folder structure, removed Custom folder and put them in the Personalization and Preparation folder, custom scripts are now placed in this folder only for future scripts only, they don't touch during updates of BIS-F
-17.06.2016 BR: RDS TimeBob Added Filter for Operating System type, running on member server, not specified on W0212 only 
+17.06.2016 BR: RDS TimeBob Added Filter for Operating System type, running on member server, not specified on W0212 only
 25.04.2016 BR: Updated SEP preparation Script
 24.03.2016 MS: Modiy BIS-F scheduled task if it already exist, thx to Valentino Pemoni
 23.03.2016 MS: Kaspersky AntiVirus Fix: Added -Recurse to search for files
-23.03.2016 MS: Extended CLI command, you can now use -LogShare NO if you prefer not to use a central LogShare 
+23.03.2016 MS: Extended CLI command, you can now use -LogShare NO if you prefer not to use a central LogShare
 22.03.2016 MS: Changed SDelete to run on the WriteCacheDisk on PVS Target Devices only
-22.03.2016 MS: Added AppSense Support 
+22.03.2016 MS: Added AppSense Support
 17.03.2016 MS: Added Delprof support
 17.03.2016 MS: Added turbo.net support
 15.03.2016 BR: Added function Invoke_BISFLogRotate to Cleanup Logfiles and keep only a configured value of files
@@ -325,10 +328,10 @@ Version 5.1.0:
 07.01.2016 MS: Changed ExecutionPolicy from unrestricted to bypass
 07.01.2016 MS: Change Request 79; Added Optimize-BISFWinSxs to cleanup and reduce WinSxs Folder (Win8, Win2012 R2 only), thx to Vincent Szabang
 17.12.2015 MS: Bug fix; Misspelled CLI switch change from delAllUsersStartmenue to delAllUsersStartmenu
-17.12.2015 MS: Bug fix; BISF.psm1; $ImageSW would be set to false, wrong order 
+17.12.2015 MS: Bug fix; BISF.psm1; $ImageSW would be set to false, wrong order
 16.12.2015 MS: Bug fix; BISF.psm1; Fixed code error 1133 Write-Progress "Done" "Done" -completed
 16.12.2015 MS: Feature 100; Disabled Data Execution Prevention (DEP), disable Startup Repair option, Disabled New Network dialog, Set Power Saving Scheme to High Performance,  thx to Thomas Krampe
-16.12.2015 MS: Feature 100; Disabled uncessary Windows services, thx to Thomas Krampe 
+16.12.2015 MS: Feature 100; Disabled uncessary Windows services, thx to Thomas Krampe
 16.12.2015 MS. Feature 100; Disabled useless scheduled tasks, thx to Thomas Krampe
 16.12.2015 MS. Feature 100; Added disk cleanup execution for Win8, thx to Thomas Krampe
 16.12 2015 MS: Feature 97; Added support to hide PVS status tray icon, http://forums.citrix.com/thread.jspa?threadID=273278, thx to Ingmar Verheij - http://www.ingmarverheij.com
@@ -346,7 +349,7 @@ Version 5.1.0:
 25.11.2015 MS: Stop DHCP client Service, see https://www.citrix.com/blogs/2015/09/29/pvs-target-devices-the-blue-screen-of-death-rest-easy-we-can-fix-that/
 04.11.2015 MS: Added silent option 'delAllUsersStartmenue' to delete all Objects in C:\ProgramData\Microsoft\Windows\Start Menu\*
 03.11.2015 MS: XenApp 6.x only: Personalization on each device -> Configure Citrix LicenseFile Cache Location and set NTFS Permissions for NetworkService with full access
-03.11.2015 MS: Removed function NimbleFastReclaim, would be replaced with Write-ZeroesToFreeSpace, see Bug 62 
+03.11.2015 MS: Removed function NimbleFastReclaim, would be replaced with Write-ZeroesToFreeSpace, see Bug 62
 26.10.2015 BR: Added delay between time sync and GPO execution to successfully apply the GPO after DST
 26.10.2015 BR: 10_PrepBISF_IME.ps1; Added new script to delete Office 2010 IME Keyboards from Autorun
 06.10.2015 MS: 10_PersBISF_Services.ps1; Rewritten script with standard .SYNOPSIS
@@ -374,7 +377,7 @@ Version 5.1.0:
 10.10.2015 MS: 10_PrepBISF_SEP.ps1; Rewritten script with standard .SYNOPSIS, central BISF function couldn't used for services, SEP Service must being stopped with smc.exe
 10.10.2015 MS: 10_PrepBISF_SCOM.ps1; Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 01.10.2015 MS: 90_PreBISF_CTX.ps1; Changed line 103 to create Cache Directory to store the CTX License File: New-Item -path "$LIC_BISF_CtxCache" -ItemType Directory -Force
-01.10.2015 MS: 90_PreBISF_CTX.ps1; Changed line 236 to Set-ItemProperty -Path HKLM:Software\Microsoft\MSMQ\Parameters\MachineCache -Name "QMId" -Value ([byte[]]$new_QMID) -Force 
+01.10.2015 MS: 90_PreBISF_CTX.ps1; Changed line 236 to Set-ItemProperty -Path HKLM:Software\Microsoft\MSMQ\Parameters\MachineCache -Name "QMId" -Value ([byte[]]$new_QMID) -Force
 30.09.2015 MS: 10_PrepBISF_SCCM.ps1; Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 30.09.2015 MS: 10_PrepBISF_FSLogix.ps1; Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 30.09.2015 MS: 10_PrepBISF_FrontRange.ps1; Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
@@ -393,21 +396,21 @@ Version 5.1.0:
 31.08.2015 MS: Bug fix 89; SEP Preparation: Symantec fixes the registry location for the SEP-Client to WOW6432Node, fix in line 48-50 and function DeleteSEPData
 31.08.2015 MS: Bug fix 89; SEP Personalization: Fixed the registry location for the SEP-Client to WoW6432Node, Fix in line 31-32 and function SetHostID
 21.08.2015 MS: Change Request 77; Removed prefix XX,XA,XD from all files and scripts
-21.08.2015 MS: Bug fix 76; FSLogix: Do not check PVS or MCS DiskMode, Service is already running or would be start if stopped 
-21.08.2015 MS: Bug fix 76; FSLogix: remove to set FSLogix service to manual, stopped service only. 
+21.08.2015 MS: Bug fix 76; FSLogix: Do not check PVS or MCS DiskMode, Service is already running or would be start if stopped
+21.08.2015 MS: Bug fix 76; FSLogix: remove to set FSLogix service to manual, stopped service only.
 ---------------------------------
 Version 5.0.2:
 17.08.2015 MS: Bug fix 70; The FSLogix rules are copied from the central share but not applied, in the FSLogix personalization script, the copy must be performed after starting the FSLogix service, to resolve this issue
 13.08.2015 MS: FSLogix copy rules and assigment files from central share, use CLI command FSXRulesShare or waiting for the Gui prompt during preperation phase, the rules and assignment files would be copied on computerstartup
 13.08.2015 MS: Added function Show-CustomInputBox to show a messagebox to enter a value (needed for FSLogix central rules share)
-13.08.2015 MS: Bug fix 65; If Office not installed and CLI switch would be set to ream office, an error occurs. Check if Office is installed, before starting rearm process 
+13.08.2015 MS: Bug fix 65; If Office not installed and CLI switch would be set to ream office, an error occurs. Check if Office is installed, before starting rearm process
 13.08.2015 MS: Bug fix; Support for PVS 7.7: $P2PVS_LOGFile_search="Conversion was successful" must be changed to $P2PVS_LOGFile_search="successful" to get ready for PVS7.7 and earlier
 12.08.2015 MB: Added new Script 00_XX_PrepBISF_SecureBISFFolder.ps1 to remove useraccess to the BIS-F installation Folder
 12.08.2015 MS: Fixed P2PVS/XenConvert define LogfilePath, before P2PVS/XenConvert would be started, existing log file would be deleted
 12.08.2015 MS: BIS-F Logviewer; Search on specified path and their subfolders only, for a better performance
 11.08.2015 MS: Fixed code for .NET compilation jobs
-11.08.2015 BR: Feature 63; On Base Image only, the WSUS Service would be started, on shared image devices the service would be stopped and disabled. 
-10.08.2015 MS: Bug fix 52; Changed code for P2PVS or XenConvert Logfile detection, looking in all paths and deleted older files 
+11.08.2015 BR: Feature 63; On Base Image only, the WSUS Service would be started, on shared image devices the service would be stopped and disabled.
+10.08.2015 MS: Bug fix 52; Changed code for P2PVS or XenConvert Logfile detection, looking in all paths and deleted older files
 10.08.2015 MS: Bug fix 62; Added new function Write-ZeroesToFreeSpace instead of NimbleFastReclaim -> buggy on W2012R2
 10.08.2015 MS: Bug fix 50; Added existing funtion $Global:returnTestPVSDriveLetter=Test-PVSDriveLetter -Verbose:$VerbosePreference
 10.08.2015 MS: Bug fix 61; TrendMicro preparation; Kill Tasks of each TM Process before stops the services, define array for TM services for better scripthandling
@@ -419,7 +422,7 @@ Version 5.0.2:
 08.06.2015 MS: Bug fix; Different path for OSSPREAM.exe not valid for Office2013, for office2010 only
 03.06.2015 MS: Feature 44; Added CLI Option "FSXdelRules" to purge the FSLogix Rules from CLI
 03.06.2015 MS: Feature 44; Add FSLogix detection to ask for deleting of the Rules, The FSLogix Service would only be starting if the cloned device is in shared mode or not equal the Base Image computer
-02.06.2015 MS: Running from SCCM or MDT ->  Changing to $logpath only (prev. $LogFilePath = "$logPath\$LogFolderName"), only files directly in the folder are preserved, not subfolders 
+02.06.2015 MS: Running from SCCM or MDT ->  Changing to $logpath only (prev. $LogFilePath = "$logPath\$LogFolderName"), only files directly in the folder are preserved, not subfolders
 28.05.2015 MS: Renamed Scripts from ...vDisk.ps1 to ...BaseImage.ps1
 28.05.2015 MS: Bug fix 48; Novell ZCM: Duplicated GUID after ZCM Agent update, designed new script for ZCM Agent preparation
 20.05.2015 MS: Feature 45; W2012 R2 only; Fixed the no Remote Desktop Licence Server issue available on RD Session Host server 2012
@@ -440,10 +443,10 @@ Version 5.0.0:
 15.04.2015 MS: Copy CMTrace only, if trace32 or CMTrace not exist on the system. register extension *.bis with the available Viewer on the system (trace32 or CMTrace)
 14.04.2015 MS: Detect if running from SCCM/MDT task sequence, if so it sets the log file location to the task sequence LogPath
 14.04.2015 MS: Defrag is no longer running on the hard disk, now it's running on the vDisk in POST script
-14.04.2015 MS: Added CLI Option to perform or suppress a system shutdown after successfully build the Base Image 
+14.04.2015 MS: Added CLI Option to perform or suppress a system shutdown after successfully build the Base Image
 14.04.2015 MS: SCCM/MDT Task sequence detection to suppress a shutdown of the Base Image after successful build
 14.04.2015 MS: CCleaner; New version of WinApp2.ini v5.04.150325 and CCleaner 5.4.0
-12.03.2015 MS: Symantec Prep Script; Fixed syntax error on line 108 
+12.03.2015 MS: Symantec Prep Script; Fixed syntax error on line 108
 06.03.2015 MS: Get Powershell minimum Major version from Powershell Data File instead of global variable
 06.03.2015 MS: Added deletion of CCM Package Cache
 19.02.2015 MS: McAfee Antivirus; Fixed syntax error and show progress bar on full scan
@@ -454,7 +457,7 @@ Version 5.0.0:
 18.02.2015 JP/MS: Recreate Application Streaming offline database
 18.02.2015 JP/MS: Remove Citrix Streaming Cache (RadeCache)
 18.02.2015 JP/MS: Detect Citrix User Profile Manager cache path and delete existing cache
-18.02.2015 JP/MS: Remove Citrix EdgeSight Client Data 
+18.02.2015 JP/MS: Remove Citrix EdgeSight Client Data
 17.02.2015 MS: Added custom script for Microsoft AppV Client
 17.02.2015 MS: Added custom script for Frontrange DSM (NetInstall)
 13.02.2015 MS: Added convert-settings to migrate PVS to BISF
@@ -491,13 +494,13 @@ Version 4.5.1:
 16.09.2014 MS: Run PvDcheck directly after PVD Inventory Update and not after PVS vDisk Build
 15.09.2014 MS: Added CLI switch -verbose -> $LIC_PVS_CLI_VB to show supressed messages in console
 15.09.2014 MS: P2PVS.log or XenConvert.log would be checked if PVS Target Device is installed and the Device boot up from hard disk only
-15.09.2014 MS: Added CLI Switch -P2PVS to use P2PVS instead of XenConvert if installed 
+15.09.2014 MS: Added CLI Switch -P2PVS to use P2PVS instead of XenConvert if installed
 15.09.2014 MS: Removed XenConvert from Tools folder... to longer use you must install XenConvert on your base image in "C:\Program Files\Citrix\XenConvert"
 ---------------------------------
 Version 4.5.0:
 20.08.2014 MS: 98_XX_PrpPVS_BUILD_vDisk.ps1; Added and use XenConvert to reduce vDisk storage, older technology but do not capture free space of the Base-Image. If XenConvert not exist, P2PVS that comes with PVS71 would be used
 19.08.2014 MS: 10_XX_PersPVS_WriteCacheDisk.ps1; Prevent reboot loop, check log file folder it can be created and reboot
-15.08.2014 MS: Final changes before web release 
+15.08.2014 MS: Final changes before web release
 14.08.2014 MS: New version ready for Citrix XenDesktop 7.5, PVS, MCS and other Image Management Software
 ---------------------------------
 Version 4.2.2:
@@ -508,13 +511,13 @@ Version 4.2.2:
 11.08.2014 MS: Revisited all scrips to replace Write-Host for Write-Log
 11.08.2014 MS: 10_XA_Main_PrepPVS.ps1 and 20_XA_Main_PersPVS.ps1; Changed logging for Preparation and Personalization to a single file, previously set to one log file per script
 11.08.2014 MS: Added Script for default Logviewer 10_XX_PrepPVS_SMSTrace.ps1 as external log file viewer
-11.08.2014 MS: Bug fix; if you added a new XenApp server, the WriteCacheDisk would not be automatically formatted 
+11.08.2014 MS: Bug fix; if you added a new XenApp server, the WriteCacheDisk would not be automatically formatted
 11.08.2014 MS: Removed $returnCheckPVSDriveLetter
 12.08.2014 MS: 10_XA_Main_PrepPVS.ps1 / 20_XA_Main_PersPVS.ps1; Changed log filename from .log to .bis (BIS = BaseImageScripts)
 13.08.2014 MS: All scripts; Removed $logfile = Set-logFile, it would be used in the 10_XX_LIB_Config.ps1 Script only
 ---------------------------------
 Version 4.2.1:
-11.06.2014 MS: PrepareXAforPVS.cmd; Changed ExecutionPolicy from unrestricted to RemoteSigned, thx to Frank Fette 
+11.06.2014 MS: PrepareXAforPVS.cmd; Changed ExecutionPolicy from unrestricted to RemoteSigned, thx to Frank Fette
 11.06.2014 MS: 10_XX_PrepPVS_EPC.ps1; Fixed syntax error to start silent pattern update and full scan, fixed read variable LIC_PVS_CLI_AV
 11.06.2014 MS: 96_XX_PrepPVS_REARM.ps1; Fixed read variable LIC_PVS_CLI_AV and LIC_PVS_CLI_OF
 05.06.2014 BR: 10_XX_PersPVS_WriteCacheDisk.ps1; Added WriteCache Option Check for PVS Device RAM with Overflow to Device HardDisk
@@ -546,7 +549,7 @@ Version 3.4:
 02.05.2014 MS: 10_XX_PrepPVS_CCM.ps1; BUG code-error certstore SMS not deleted > & Invoke-Expression 'certutil -delstore SMS "SMS"'
 03.04.2014 MS: 90_XA_PersPVS_XenApp.ps1; Added check for redirected MDB-Files for LHC and RadeOffline and Start IMAService
 03.04.2014 MS: 90_XA_PrepPVS_XenApp.ps1; Redirect LHC
-03.04.2014 MS: 10_XX_LIB_Config.ps1; Fixed wrong Log-Location 
+03.04.2014 MS: 10_XX_LIB_Config.ps1; Fixed wrong Log-Location
 02.04.2014 MS: 90_XA_PrepPVS_XenApp.ps1; Redirect Citrix Cache to persistent drive
 02.04.2014 MS: 98_XX_PrpPVS_BUILD_vDisk.ps1; Run TargetOSOptimizer.exe if booted from hard disk only
 02.04.2014 MS: 97_XX_PrepPVS_PRE-vDisk.ps1; [array]$PreMSG  = "N"   #<<-- display a message box to perform these step, set Y = YES or N = NO
@@ -561,7 +564,7 @@ Version 3.4:
 01.04.2014 MS: 10_XX_PrepPVS_SEP.ps1; Show Console Message
 ---------------------------------
 Version 3.3:
-26.03.2014 MS: 10_XX_PrepPVS_CCM.ps1; Created new script to prepare SCCM client compatible with SCCM 2007 to 2012 R2 
+26.03.2014 MS: 10_XX_PrepPVS_CCM.ps1; Created new script to prepare SCCM client compatible with SCCM 2007 to 2012 R2
 26.03.2014 MS: 10_XX_PersPVS_CCM.ps1; Created new script to personalize SCCM client compatible with SCCM 2007 to 2012 R2
 ---------------------------------
 Version 3.2:
@@ -569,7 +572,7 @@ Version 3.2:
 ---------------------------------
 Version 3.1:
 21.03.2014: MS/BR: Reviewed all scripts; New central Functions, tested whole environment
-21.03.2014: MS: 10_XX_PrpPVS_WriteCacheDisk.ps1; Added CDrom function 
+21.03.2014: MS: 10_XX_PrpPVS_WriteCacheDisk.ps1; Added CDrom function
 21.03.2014: MS: 10_XX_PersPVS_WriteCacheDisk.ps1; Added CDrom function
 ---------------------------------
 Version 3.0:
@@ -585,7 +588,7 @@ Version 2.7:
 14.02.2014 BR: 10_XX_PrepPVS_SEP.ps1; Changed Function StartService
 ---------------------------------
 Version 2.6:
-27.01.2014 MS: 10_XX_PersPVS_SEP.ps1; MS: $HostID_Prfx = "00000000000000000000" 
+27.01.2014 MS: 10_XX_PersPVS_SEP.ps1; MS: $HostID_Prfx = "00000000000000000000"
 27.01.2014 MS: 10_XX_PersPVS_SEP.ps1; Set-Location $SEP_path
 27.01.2014 MS: 10_XX_PrepPVS_SEP.ps1; Set-Location $SEP_path
 ---------------------------------
@@ -638,7 +641,7 @@ Version 1.4:
 Version 1.3:
 28.02.2013 MS: 10_XX_GenPVS_WriteCacheDisk; Read UniqueID from Registry and use it in diskpart
 28.02.2013 MS: 10_XX_PrpPVS_WriteCacheDisk; Read UniqueID from PVSWriteCacheDisk and write it to registry
-28.02.2013 MS: 99_XX_PrpPVS_POST_vDisk; Check vDisk conversation successful, then shutdown 
+28.02.2013 MS: 99_XX_PrpPVS_POST_vDisk; Check vDisk conversation successful, then shutdown
 28.02.2013 MS: 98_XX_PrpPVS_BUILD_vDisk1; Delete P2PVS log file > Remove-Item $P2PVS_LOGFile -recurse -ErrorAction SilentlyContinue
 ---------------------------------
 Version 1.2:
@@ -653,9 +656,9 @@ Version 1.0:
 
 __________________________________________________________________________
 MS = Matthias Schlimm
-BR = Benjamin Ruoff 
-MB = Mike Bijl 
+BR = Benjamin Ruoff
+MB = Mike Bijl
 JP = Jonathan Pitre
 FF = Florian Frank
-TT = Trentent Tye 
+TT = Trentent Tye
 JS = Jeremy Saunders
