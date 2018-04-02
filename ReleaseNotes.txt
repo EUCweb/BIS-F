@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-﻿30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
+﻿﻿30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
 29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
-=======
->>>>>>> master
 ---------------------------------
 Version 6.1.0 build 01.101 -- 20.03.2018 21:22:37 :
 13.03.2018 MS: migrate BIS-F to Github, new ID's for Issue
