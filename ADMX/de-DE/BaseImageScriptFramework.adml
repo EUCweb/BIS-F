@@ -376,7 +376,7 @@ specify a value between 0 -20, means the number of log files being kept.
       <string id="POL_FldCfg_Help">If Citrix PVS Target Device Driver is installed, some folders must be redirected to the WriteCacheDisk. You can specified those folders here:
 
 Event logs:
-If you enable this policy setting, you must enter a custom event viewer log folder name, e.g. "EventLogs"
+If you enable this policy setting, you must enter a custom event log folder name, e.g. "EventLogs"
 If you disable this policy setting or if you do not configure this policy setting, the BIS-F standard folder would be used.
 
 NOTE: Please specify the Name of the folder only, without any drive letter !!
@@ -474,7 +474,7 @@ You can also find the needed xml templates in the installation folder
       <string id="ITM_DM_1">All</string>
       <string id="ITM_DM_2">Private Mode</string>
       <string id="ITM_DM_3">Never</string>
-      <string id="POL_VDACfg">VDA Configuration</string>
+      <string id="POL_VDACfg">Configure Citrix Virtual Delivery Agent (VDA)</string>
       <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
 
 If you enable this policy setting, you can configure several items
@@ -487,7 +487,7 @@ Additional delay (default 0)
 You can enter additional time in seconds, to start the Citrix Desktop Service after this delay. This time you entered here will be count in addition after the BIS-F personalization is finished. 
 max seconds: 1800
 
-Note: If you has the Device personalization configured to skip it on all DiskModes or on private Mode only, the Citrix Desktop Service would also be started. </string>
+Note: If you has the Device personalization configured to skip it on all DiskModes or on private mode only, the Citrix Desktop Service would also be started. </string>
       <string id="ITM_5D01BF99_CC34_443E_A4A7_82489EE3159B">.VHD</string>
       <string id="ITM_654E2264_F168_4BC8_A209_009DFADFF86F">.VHDX</string>
       <string id="ITM_VDISK_VHDX1">VHDX</string>
@@ -547,6 +547,27 @@ If you disable this policy setting, the MaxExecution timeout is set to unlimited
 If you do not configure this policy setting, the MaxExecution timeout is set to 60
 
 NOTE: If you configre the MaxExecution time to a low value, and the timout is reached during P2PVS / ImaginWizrad is executed, the build process will be failed.</string>
+      <string id="POL_WEMCfg">Configure Citrix Workspace Environment Agent (WEM)</string>
+      <string id="POL_WEMCfg_Help"> This policy settings allows you to manage the Citrix Workspace Environment Agent Settings (WEM)
+
+
+If you enable this policy setting, you can configure the WEM Agent settings
+If you disable or do not configure this policy setting, the WEM Agent settings will not changed.
+
+reconfigure WEM Agent Cache to the PVS WriteCacheDrive:
+If you enable this Item, the WEM Agent Cache is reconfigured to the WriteCacheDrive (PVS Target Device driver must installed on the Base Image, to take affect during sealing) 
+
+
+Enable custom WEMCache folder name (take affect if the PVS Target Device Driver is installed and the redirection is enabled)
+to specify a custom WEM Agent Cache folder name, enable this settings
+
+WEM Agent Cache folder name  (take affect if the PVS Target Device Driver is installed and the redirection is enabled)
+Enter the name of the WEM Agent Cache folder, e.g. WEMCache
+If the folder doesn't exists, it will be created automatically
+
+NOTE: Please specify the Name of the folder only, without any drive letter !!
+
+</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -726,6 +747,14 @@ NOTE: If you configre the MaxExecution time to a low value, and the timout is re
       </presentation>
       <presentation id="POL_METCfg">
         <decimalTextBox refId="DXT_MET" defaultValue="60">MaxExecution timeout in minutes (default: 60)</decimalTextBox>
+      </presentation>
+      <presentation id="POL_WEMCfg">
+        <checkBox refId="CHK_CLI_WEMCache">reconfigure WEM Agent Cache to the PVS WriteCacheDrive</checkBox>
+        <checkBox refId="CHK_CLI_WEMb">Enable custom WEM Agent Cache folder name</checkBox>
+        <textBox refId="TXT_CLI_WEMFolder">
+          <label>WEM Agent Cache folder name</label>
+          <defaultValue>WEMCache</defaultValue>
+        </textBox>
       </presentation>
     </presentationTable>
   </resources>
