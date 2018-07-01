@@ -1,4 +1,5 @@
-﻿28.05.2018 MS: Bugfix 41: Set SplunkForwarder to StartType Automatic
+﻿01.07.2018 MS: Bugfix 48: Using RunMode to detect the right AppLayer, persistent between AppLayering updates
+28.05.2018 MS: Bugfix 41: Set SplunkForwarder to StartType Automatic
 27.05.2018 MS: Hotfix 40: new Script to get pending reboot state
 30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
 29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
