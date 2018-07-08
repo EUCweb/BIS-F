@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.1" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.63577511_4AEA_4791_97CD_AAE19888CDA9" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.CD2BDAF2_0861_433B_910C_6CC86388D134" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1147,6 +1147,31 @@
         <boolean id="CHK_CLI_WEMCache" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMCache" />
         <boolean id="CHK_CLI_WEMb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMb" />
         <text id="TXT_CLI_WEMFolder" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMFolder" maxLength="20" />
+      </elements>
+    </policy>
+    <policy name="POL_AppLayCfg" class="Machine" displayName="$(string.POL_AppLayCfg)" explainText="$(string.POL_AppLayCfg_Help)" presentation="$(presentation.POL_AppLayCfg)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
+      <parentCategory ref="CAT_CTX" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+      <elements>
+        <text id="TXT_AppLayOSCfg" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayOSCfg" />
+        <text id="TXT_AppLayAppPltCfg" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayAppPltCfg" />
+        <boolean id="CHK_AppLayPltCfgb" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayPltCfgb" />
+        <text id="TXT_AppLayPltCfg" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayPltCfg" />
+        <text id="TXT_AppLayNoELM" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayNoELM" />
       </elements>
     </policy>
   </policies>

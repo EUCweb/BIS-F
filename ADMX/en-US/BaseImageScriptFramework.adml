@@ -568,6 +568,27 @@ If the folder doesn't exists, it will be created automatically
 NOTE: Please specify the Name of the folder only, without any drive letter !!
 
 </string>
+      <string id="POL_AppLayCfg">Configure Citrix App Layering</string>
+      <string id="POL_AppLayCfg_Help">This policy settings allows you to manage Citrix App Layering and inject different BIS-F shared configurations based on Layers
+
+If you enable this policy setting, you must enter a valid BIS-F shared configuration file for each Layer
+
+OS Layer config file: 
+The file you're entered here is  applied if the OS Layer is detected.
+
+App-/Platform Layer config file:
+The file you're entered here is  applied if the App-/Platform Layer is detected.
+
+Outside ELM config file:
+The file you're entered here is applied if you seal the Image outside ELM (reference to https://support.citrix.com/article/CTX226062) with PVS.
+
+Enable domain joined Platform Layer:
+If your Platform Layer is domain joined you can enable this setting and enter a valid Platform Lyer config file, this will be applied if the Platform Layer is detected.
+
+
+If you disable this policy setting or do not configure this policy setting, no different BIS-F shared configurations can be used.
+
+Note: Enter the name of the configurations file only, the path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -754,6 +775,27 @@ NOTE: Please specify the Name of the folder only, without any drive letter !!
         <textBox refId="TXT_CLI_WEMFolder">
           <label>WEM Agent Cache folder name</label>
           <defaultValue>WEMCache</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_AppLayCfg">
+        <textBox refId="TXT_AppLayOSCfg">
+          <label>OS Layer config file</label>
+          <defaultValue>BISF_AppLay_OS_config.xml</defaultValue>
+        </textBox>
+        <textBox refId="TXT_AppLayAppPltCfg">
+          <label>App-/Platform Layer config file</label>
+          <defaultValue>BISF_AppLay_AppPlt_config.xml</defaultValue>
+        </textBox>
+        <textBox refId="TXT_AppLayNoELM">
+          <label>Outside ELM config file</label>
+          <defaultValue>BISF_AppLay_NoELM_config.xml</defaultValue>
+        </textBox>
+        <checkBox refId="CHK_AppLayPltCfgb">Enable domain joined Platform Layer</checkBox>
+        <text>
+        </text>
+        <textBox refId="TXT_AppLayPltCfg">
+          <label>Domain joined Platform Layer config file</label>
+          <defaultValue>BISF_AppLay_Plt_config.xml</defaultValue>
         </textBox>
       </presentation>
     </presentationTable>
