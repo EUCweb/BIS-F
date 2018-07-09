@@ -1,9 +1,10 @@
-﻿01.07.2018 MS: Bugfix 44- Pickup the right Citrix Optimizer Default Template, like Citrix_Windows10_1803.xml, also prepared for Server 2019 Template, like Citrix_WindowsServer2019_1803.xml
-01.07.2018 MS: Hotfix 49: After SEP is started with smc.exe, sometimes the service will not be started. Controlled and logged now with Test-BISFServiceState in Line 58
-01.07.2018 MS: Hotfix 49: running Test-BISFServiceState after changing Service to get the right Status back
+﻿02.07.2018 MS: Bugfix 50: set Global Variable after Registry is set (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
+01.07.2018 MS: Bugfix 44: Pickup the right Citrix Optimizer Default Template, like Citrix_Windows10_1803.xml, also prepared for Server 2019 Template, like Citrix_WindowsServer2019_1803.xml
+01.07.2018 MS: Bugfix 49: After SEP is started with smc.exe, sometimes the service will not be started. Controlled and logged now with Test-BISFServiceState in Line 58
+01.07.2018 MS: Bugfix 49: running Test-BISFServiceState after changing Service to get the right Status back
 01.07.2018 MS: Bugfix 48: Using RunMode to detect the right AppLayer, persistent between AppLayering updates
 28.05.2018 MS: Bugfix 41: Set SplunkForwarder to StartType Automatic
-27.05.2018 MS: Hotfix 40: new Script to get pending reboot state
+27.05.2018 MS: Bugfix 40: new Script to get pending reboot state
 30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
 29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
 ---------------------------------
