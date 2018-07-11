@@ -1,4 +1,5 @@
-﻿09.07.2018 MS: Bugfix 48: AppLayering RunMode + Get-DiskMode from PVS / MCS Deployment needed, to get the right layer
+﻿12.07.2018 MS: Bugfix 40: PendingReboot - give a empty value back  
+09.07.2018 MS: Bugfix 48: AppLayering RunMode + Get-DiskMode from PVS / MCS Deployment needed, to get the right layer
 02.07.2018 MS: Bugfix 50: set Global Variable after Registry is set (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
 01.07.2018 MS: Bugfix 44: Pickup the right Citrix Optimizer Default Template, like Citrix_Windows10_1803.xml, also prepared for Server 2019 Template, like Citrix_WindowsServer2019_1803.xml
 01.07.2018 MS: Bugfix 49: After SEP is started with smc.exe, sometimes the service will not be started. Controlled and logged now with Test-BISFServiceState in Line 58
