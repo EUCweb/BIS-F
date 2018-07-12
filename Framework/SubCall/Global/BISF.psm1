@@ -2044,7 +2044,7 @@ function Get-MacAddress
 	return $mac
 }
 
-function Test-AppLayeringSoftware{
+function Test-AppLayeringSoftware {
 	<#
     .SYNOPSIS
         check if the Citrix AppLayering Service installed
@@ -2071,16 +2071,17 @@ function Test-AppLayeringSoftware{
 		Last Change: 30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
 		Last Change: 01.07.2018 MS: Bugfix 48: Using RunMode to detect the right AppLayer, persistent between AppLayering updates
 		Last Change: 09.07.2018 MS: Bugfix 48 - Part II: get DiskMode, to handle App Layering different
+	    Last Change: 09.07.2018 MS: Bugfix 48 - Part III: using DiskMode in RunMode 4 to diff between App- or Platform Layer
 	.Link
 #>
-    Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
 	#default values
-	$Global:CTXAppLayeringSW=$false              # AppLayering is installed
-	$Global:CTXAppLayeringOSLayer=$false       # OS Layer detected
-	$Global:CTXAppLayeringPFLayer=$false       # Platform Layer detected
-	$GLobal:CTXAppLayerName=$Null
+	$Global:CTXAppLayeringSW = $false              # AppLayering is installed
+	$Global:CTXAppLayeringOSLayer = $false       # OS Layer detected
+	$Global:CTXAppLayeringPFLayer = $false       # Platform Layer detected
+	$GLobal:CTXAppLayerName = $Null
 	$svc = Test-BISFService -ServiceName "UniService" -ProductName "Citrix AppLayering"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {IF ($svc -eq $true) { $Global:ImageSW=$true } }
+	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	IF ($svc -eq $true) {
 		$Global:CTXAppLayeringSW = $true
 		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
@@ -2094,24 +2095,24 @@ function Test-AppLayeringSoftware{
 		}
 		Switch ($CTXAppLayeringRunMode) {
 			1 {
-				Write-BISFLog -Msg "Citrix AppLayering - VM is not running inside ELM" -ShowConsole -SubMsg -Color DarkCyan
-				$GLobal:CTXAppLayerName="No-ELM"
+				$GLobal:CTXAppLayerName = "No-ELM"
 			}
 
 			3 {
-				Write-BISFLog -Msg "Citrix AppLayering - OS Layer detected" -ShowConsole -SubMsg -Color DarkCyan;
 				$Global:CTXAppLayeringOSLayer = $true
-				$GLobal:CTXAppLayerName="OS-Layer"
+				$GLobal:CTXAppLayerName = "OS-Layer"
 			}
 
 			4 {
-				Write-BISFLog -Msg "Citrix AppLayering - New Platform/Application Layer detected" -ShowConsole -SubMsg -Color DarkCyan
 				$Global:CTXAppLayeringPFLayer = $true
-				$GLobal:CTXAppLayerName = "Platform/Application Layer"
+				$Global:CTXAppLayerName = "Platform/Application Layer"
+				IF ($DiskMode -eq "VDAPrivateAppLayering") {$Global:CTXAppLayeringPFLayer = $true; $Global:CTXAppLayerName = "Platform-Layer"}
+				IF ($DiskMode -eq "UnmanagedAppLayering") {$Global:CTXAppLayeringAppLayer = $true; $Global:CTXAppLayerName = "Application-Layer"}
+
 			}
 			Default {Write-BISFLog -Msg "Not defined - AppLayering RunMode is set to $CTXAppLayeringRunMode" -ShowConsole -Type W}
 		}
-
+		Write-BISFLog -Msg "Citrix AppLayering - $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
 
 		<#
 		$Global:AppLayMachineState = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\UniService).MachineState
