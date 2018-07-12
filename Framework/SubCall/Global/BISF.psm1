@@ -1394,6 +1394,7 @@ function Invoke-Service
 		Last Change: 24.08.2017 MS: add IF ($CheckDiskMode -eq $null) {Write-BISFLog -Msg "DiskMode must not checked"} ELSE {Write-BISFLog -Msg "DiskMode $CheckDiskMode would be checked successfully"}s
 		Last Change: 11.09.2017 FF: add missing function name
 		Last Change: 29.10.2017 MS: test DiskMode match VDA instead of MCS
+		Last Change: 01.07.2018 MS: Hotfix 49: running Test-BISFServiceState after changing Service to get the right Status back
 	.Link
 #>
 
@@ -1442,6 +1443,7 @@ function Invoke-Service
 	        } ELSE {
 				write-BISFlog -Msg "Service $ServiceName is already stopped !"
 			}
+			Test-BISFServiceState -ServiceName $ServiceName -Status "Stopped"
 		}
 
 		IF ($StartType)
@@ -1469,6 +1471,7 @@ function Invoke-Service
 	        	} ELSE {
 					write-BISFlog -Msg "Service $ServiceName is already running !"
 				}
+				Test-BISFServiceState -ServiceName $ServiceName -Status "Running"
 			}
 		}
 
@@ -1854,7 +1857,7 @@ function Invoke-LogShare {
 		Last Change: 23.03.2016 MS: extend CLI command, you can use -LogShare NO for not beeing used the Central LogShare
 		Last Change: 06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		Last Change: 18.08.2017 FF: Fix for Bug 200: Popup shouldn't show up if Central Logshare is enabled OR disabled
-		Last Change: 02.07.2018 MS: Bufix 50 - set Global Variable after Registry is set (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
+		Last Change: 02.07.2018 MS: Bugfix 50 - set Global Variable after Registry is set (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
 		.Link
 #>
 	Write-BISFFunctionName2Log  -FunctionName ($MyInvocation.MyCommand | % {$_.Name}) #must be added at the begin to each function
@@ -2067,6 +2070,7 @@ function Test-AppLayeringSoftware{
 		Last Change: 25.02.2018 MS: Bugfix 241: AppLayering does not detect the right layer
 		Last Change: 30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
 		Last Change: 01.07.2018 MS: Bugfix 48: Using RunMode to detect the right AppLayer, persistent between AppLayering updates
+		Last Change: 09.07.2018 MS: Bugfix 48 - Part II: get DiskMode, to handle App Layering different
 	.Link
 #>
     Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
@@ -2080,7 +2084,14 @@ function Test-AppLayeringSoftware{
 	IF ($svc -eq $true) {
 		$Global:CTXAppLayeringSW = $true
 		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
+		$DiskMode = Get-BISFDiskMode
+		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
+		IF ($DiskMode -eq "ReadWriteAppLayering") {
 
+			$CTXAppLayeringRunModeNew = 1
+			Write-BISFLog "The origin App Layering RunMode ist set to $CTXAppLayeringRunMode , based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
+			$CTXAppLayeringRunMode = $CTXAppLayeringRunModeNew
+		}
 		Switch ($CTXAppLayeringRunMode) {
 			1 {
 				Write-BISFLog -Msg "Citrix AppLayering - VM is not running inside ELM" -ShowConsole -SubMsg -Color DarkCyan
@@ -2362,7 +2373,7 @@ function Move-EvtLogs
 			$x = $_.Exception.Message
 			Write-BISFLog -Msg “Error:`t`t $x" -Type W
 
-			Exit
+			#Exit
 		 }
 		 Catch {
 			$Error[0].Exception.GetType().fullname
@@ -2960,4 +2971,48 @@ PARAM(
     Write-BISFLog -Msg "UniqueID Disk of Drive $Driveletter is $DiskID"
 	$Global:DiskID = $DiskID
 	$Global:VolNbr = $getvolNbr
+}
+
+function Test-ServiceState {
+	<#
+    .SYNOPSIS
+        check the State of the Service
+	.Description
+      	After changing a Service from automatic to manual for example, it's necasaary to test of the service has the right state before continue
+		use get-help <functionname> -full to see full help
+    .EXAMPLE
+		The Windows Update Service will be checked if the stopped
+		 Test-BISFServiceState -ServiceName wuauserv -Status stopped
+    .Inputs
+    .Outputs
+    .NOTES
+		Author: Matthias Schlimm,
+      	Company: EUCweb.com
+
+		History
+      	Last Change: 01.07.2018 MS: Hotfix 49 - function created
+		Last Change
+	.Link
+#>
+
+	param (
+		# Specifies the ServiceName
+		[parameter(Mandatory = $true)]
+		[ValidateNotNullOrEmpty()]$ServiceName,
+
+		# Specifies the Starttype: Disabled, Manual, Automatic
+		[parameter(Mandatory = $false)]
+		[ValidateSet("Running","Stopped")]
+		[ValidateNotNullOrEmpty()]$Status
+
+	)
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+	$svc = Get-Service $Servicename
+
+	IF ($Status -eq $svc.Status )
+	{
+		Write-BISFlog -Msg "The Service $($svc.DisplayName) is successfully in $($svc.Status) state"
+	}	else {
+		Write-BISFlog -Msg "The Service $($svc.DisplayName) is NOT successfully in $($svc.Status) state" -Type W -SubMsg
+	}
 }
