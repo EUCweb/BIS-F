@@ -2069,7 +2069,7 @@ function Test-AppLayeringSoftware {
 		Last Change: 01.07.2018 MS: Bugfix 48: Using RunMode to detect the right AppLayer, persistent between AppLayering updates
 		Last Change: 09.07.2018 MS: Bugfix 48 - Part II: get DiskMode, to handle App Layering different
 		Last Change: 09.07.2018 MS: Bugfix 48 - Part III: using DiskMode in RunMode 4 to diff between App- or Platform Layer
-		Last Change: 20.10.2018 MS: Bugfix 62 - Layer Finalzed is blocked with MCS - Booting Layered Image
+		Last Change: 
 	.Link
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
@@ -2085,7 +2085,7 @@ function Test-AppLayeringSoftware {
 		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
 		$DiskMode = Get-BISFDiskMode
 		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
-		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svc.Status -ne 'Running')) {
+		IF ($DiskMode -eq "ReadWriteAppLayering") {
 
 			$CTXAppLayeringRunModeNew = 1
 			Write-BISFLog "The origin App Layering RunMode ist set to $CTXAppLayeringRunMode , based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
