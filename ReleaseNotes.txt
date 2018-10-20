@@ -1,4 +1,5 @@
-﻿19.10.2018 MS: Bugfix 72: MCS Deployment: SCOM Agent - creates OpsStateDir in C: drive
+﻿19.10.2018 MS: Bugfix 71: not to process ANY scheduled task disable actions
+19.10.2018 MS: Bugfix 72: MCS Deployment: SCOM Agent - creates OpsStateDir in C: drive
 19.10.2018 MS: Bugfix 58: Mc Afee - remove hardcoded maconfig.exe path
 12.07.2018 MS: Bugfix 40: PendingReboot - give a empty value back  
 09.07.2018 MS: Bugfix 48: AppLayering RunMode + Get-DiskMode from PVS / MCS Deployment needed, to get the right layer
