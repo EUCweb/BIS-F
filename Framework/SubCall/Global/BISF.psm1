@@ -1308,6 +1308,7 @@ function Test-Service {
       	Last Change: 02.09.2015 MS: function created
 		Last Change: 06.03.2017 MS: get FileVersion from ImagePath
 		Last Change: 28.02.2018 MS: Bugfix get Fileversion from Imagepath, without arguments of the service
+		Last Change: 20.10.2018 MS: Bugfix 74: The Version from the Service could not extracted
 	.Link
 #>
 
@@ -1326,14 +1327,10 @@ function Test-Service {
  		write-BISFlog -Msg "Service $($ServiceName) exists"
 		IF ($ProductName) {
 			$SVCFileVersion = $null
-			<# 28.02.2018 MS: old style to get the Imagepath
-			$SVCImagePath = (gwmi win32_service|?{$_.name -eq $($ServiceName)}).pathname
-			$SVCImagePath = $SVCImagePath -replace '"', ""
-			#>
-			# 28.02.2018 MS: new style to get the imagepath without arguments
 			$service = gwmi -class Win32_Service | ? {$_.Name -eq $($ServiceName)}
 			$SVCImagePath = ($service | Select -Expand PathName) -split "-|/"
-            $SVCImagePath= $SVCImagePath[0]
+			$SVCImagePath= $SVCImagePath[0]
+			$SVCImagePath = $SVCImagePath -replace ('"','')
 			$Global:glbSVCImagePath = "$SVCImagePath"
 			$SVCFileVersion = (Get-Item $($SVCImagePath) -ErrorAction SilentlyContinue).versioninfo.fileversion
             IF (!($SVCFileVersion -eq $null))

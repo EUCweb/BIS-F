@@ -1,4 +1,5 @@
-﻿20.10.2018 MS: Bugfix 66: vietool.exe - custom searchpath not working correctly
+﻿20.10.2018 MS: Bugfix 74: The Version from the Service could not extracted
+20.10.2018 MS: Bugfix 66: vietool.exe - custom searchpath not working correctly
 20.10.2018 MS: Bugfix 62: Layer Finalzed is blocked with MCS - Booting Layered Image
 20.10.2018 MS: Bugfix 55: Windows Defender -ArgumentList failing
 20.10.2018 MS: Feature 63: Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
