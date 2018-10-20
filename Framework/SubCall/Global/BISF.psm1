@@ -2069,7 +2069,7 @@ function Test-AppLayeringSoftware {
 		Last Change: 01.07.2018 MS: Bugfix 48: Using RunMode to detect the right AppLayer, persistent between AppLayering updates
 		Last Change: 09.07.2018 MS: Bugfix 48 - Part II: get DiskMode, to handle App Layering different
 		Last Change: 09.07.2018 MS: Bugfix 48 - Part III: using DiskMode in RunMode 4 to diff between App- or Platform Layer
-		Last Change: 
+		Last Change: 21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalzed is blocked with MCS - Booting Layered Image
 	.Link
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
@@ -2079,13 +2079,15 @@ function Test-AppLayeringSoftware {
 	$Global:CTXAppLayeringPFLayer = $false       # Platform Layer detected
 	$GLobal:CTXAppLayerName = $Null
 	$svc = Test-BISFService -ServiceName "UniService" -ProductName "Citrix AppLayering"
+	$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
 	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	IF ($svc -eq $true) {
 		$Global:CTXAppLayeringSW = $true
 		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
 		$DiskMode = Get-BISFDiskMode
 		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
-		IF ($DiskMode -eq "ReadWriteAppLayering") {
+		
+		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {
 
 			$CTXAppLayeringRunModeNew = 1
 			Write-BISFLog "The origin App Layering RunMode ist set to $CTXAppLayeringRunMode , based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
@@ -2990,7 +2992,7 @@ function Test-ServiceState {
 
 		History
       	Last Change: 01.07.2018 MS: Hotfix 49 - function created
-		Last Change
+		Last Change: 21.10.2018 MS: add return $($svc.Status)
 	.Link
 #>
 
@@ -3012,6 +3014,7 @@ function Test-ServiceState {
 	{
 		Write-BISFlog -Msg "The Service $($svc.DisplayName) is successfully in $($svc.Status) state"
 	}	else {
-		Write-BISFlog -Msg "The Service $($svc.DisplayName) is NOT successfully in $($svc.Status) state" -Type W -SubMsg
+		Write-BISFlog -Msg "The Service $($svc.DisplayName) is NOT successfully in $Status state" -Type W -SubMsg
 	}
+	return $svc.Status
 }
