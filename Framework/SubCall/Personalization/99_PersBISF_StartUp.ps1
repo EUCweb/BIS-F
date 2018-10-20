@@ -18,6 +18,7 @@
 		Last Change: 01.08.2017 MS: change sdeletePath, it can be set to a custom value
 		Last Change: 02.08.2017 MS: With DiskMode AppLayering in OS-Layer the WSUS Update Service would be start
 		Last Change: 29.10.2017 MS: replace VDA instead of MCS in the DiskMode Test
+		Last Change: 20.10.2018 MS: Bugfix 73: MCS Image in Private Mode does not start the Windows Update Service
 	.Link
 #>
 
@@ -73,7 +74,10 @@ Process {
 			start-sdelete
 		}
 		Unmanaged {}
-		VDAPrivate {}
+		VDAPrivate {
+			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
+			start-WUAserv
+		}
 		VDAShared {}
 		ReadWriteAppLayering {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
