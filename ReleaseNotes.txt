@@ -1,8 +1,9 @@
-﻿21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalzed is blocked with MCS - Booting Layered Image
+﻿21.10.2028 MS: Bufix 47: MSMQ windows services will fail to start in App Layering
+21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalzed is blocked with MCS - Booting Layered Image
 20.10.2018 MS: Bugfix 74: The Version from the Service could not extracted
 20.10.2018 MS: Bugfix 66: vietool.exe - custom searchpath not working correctly
 20.10.2018 MS: Bugfix 55: Windows Defender -ArgumentList failing
-20.10.2018 MS: Feature 63: Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
+20.10.2018 MS: Hotfix 63: Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
 20.10.2018 MS: Bugfix 56: Office C2R or other AppX issue after BIS-F seal
 20.10.2018 MS: Bugfix 73: MCS Image in Private Mode does not start the Windows Update Service
 19.10.2018 MS: Bugfix 71: not to process ANY scheduled task disable actions
