@@ -2079,14 +2079,13 @@ function Test-AppLayeringSoftware {
 	$Global:CTXAppLayeringPFLayer = $false       # Platform Layer detected
 	$GLobal:CTXAppLayerName = $Null
 	$svc = Test-BISFService -ServiceName "UniService" -ProductName "Citrix AppLayering"
-	$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
 	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	IF ($svc -eq $true) {
 		$Global:CTXAppLayeringSW = $true
 		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
 		$DiskMode = Get-BISFDiskMode
 		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
-		
+		$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
 		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {
 
 			$CTXAppLayeringRunModeNew = 1
