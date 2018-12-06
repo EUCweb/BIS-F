@@ -6,7 +6,7 @@ REM *                                           *
 REM *                                           *
 REM *        Created : 27.02.2013               *
 REM *        Author: Matthias Schlimm           *
-REM *        Login Consultants GmbH             *
+REM *        EUCweb.com                         *
 REM *********************************************
 REM Comments:
 REM Prepare your Base Image for Microsoft, VMware and Citrix Environments
@@ -25,12 +25,12 @@ if %errorLevel% == 0 (
 	REM Note: For silent automation please use the additional ADMX template in the BIS-F installation folder and copy them to your PolicyDefintions folder
 ) else (
         color 4F
-		echo Failure: Current permissions inadequate. 
+		echo Failure: Current permissions inadequate.
 		echo Close this window and run with aministrative permissions again !!
 		pause >nul
     )
 
-  PopD   
+  PopD
 
 REM Historie:
 REM Created      27.02.2013 MS: Script created
