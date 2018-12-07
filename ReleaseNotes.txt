@@ -1,4 +1,5 @@
-﻿21.10.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution
+﻿07.12.2018 MS: Bugfix 79: BIS-F Installer can be used on x86 systems
+21.10.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution
 21.10.2028 MS: Bugfix 18: XA/ XD 7.x Cache folder will be created
 21.10.2028 MS: Bugfix 47: MSMQ windows services will fail to start in App Layering
 21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalzed is blocked with MCS - Booting Layered Image
@@ -11,7 +12,7 @@
 19.10.2018 MS: Bugfix 71: not to process ANY scheduled task disable actions
 19.10.2018 MS: Bugfix 72: MCS Deployment: SCOM Agent - creates OpsStateDir in C: drive
 19.10.2018 MS: Bugfix 58: Mc Afee - remove hardcoded maconfig.exe path
-12.07.2018 MS: Bugfix 40: PendingReboot - give a empty value back  
+12.07.2018 MS: Bugfix 40: PendingReboot - give a empty value back
 09.07.2018 MS: Bugfix 48: AppLayering RunMode + Get-DiskMode from PVS / MCS Deployment needed, to get the right layer
 02.07.2018 MS: Bugfix 50: set Global Variable after Registry is set (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
 01.07.2018 MS: Bugfix 44: Pickup the right Citrix Optimizer Default Template, like Citrix_Windows10_1803.xml, also prepared for Server 2019 Template, like Citrix_WindowsServer2019_1803.xml
