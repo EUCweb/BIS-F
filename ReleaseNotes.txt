@@ -1,4 +1,7 @@
 ---------------------------------
+Version 6.1.0 build 01.103 -- 17.12.2018 16:09:57 :
+17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
+---------------------------------
 Version 6.1.0 build 01.102 -- 10.12.2018 15:47:08 :
 07.12.2018 MS: Bugfix 79: BIS-F Installer can be used on x86 systems
 21.10.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution
