@@ -948,6 +948,7 @@
         </item>
       </disabledList>
     </policy>
+<<<<<<< HEAD
     <policy name="POL_WUSCCM" class="Machine" displayName="$(string.POL_WUSCCM)" explainText="$(string.POL_WUSCCM_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WUSCCM">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
@@ -1174,5 +1175,7 @@
         <text id="TXT_AppLayNoELM" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayNoELM" />
       </elements>
     </policy>
+=======
+>>>>>>> master
   </policies>
 </policyDefinitions>

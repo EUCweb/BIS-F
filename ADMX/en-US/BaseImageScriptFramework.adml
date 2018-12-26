@@ -499,6 +499,7 @@ Note: If you has the Device personalization configured to skip it on all DiskMod
 If you enable this policy setting, .NET Optimization is running during sealing
 If you disable this policy setting, .NET Optimization is disabled during sealing
 If you do not configure this policy setting, .NET Optimization is running during sealing</string>
+<<<<<<< HEAD
       <string id="POL_WUAgent">Install Windows Updates using WUAgent</string>
       <string id="POL_WUSCCM">Install Windows Updates using SCCM</string>
       <string id="POL_WUAgent_Help">Install Windows Update using the native Windows Update Agent
@@ -589,6 +590,8 @@ If your Platform Layer is domain joined you can enable this setting and enter a 
 If you disable this policy setting or do not configure this policy setting, no different BIS-F shared configurations can be used.
 
 Note: Enter the name of the configurations file only, the path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
+=======
+>>>>>>> master
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -670,13 +673,6 @@ Note: Enter the name of the configurations file only, the path is defined in the
         <textBox refId="TXT_DP_ARGS_CUS">
           <label>Custom Arguments</label>
           <defaultValue>/u /r</defaultValue>
-        </textBox>
-      </presentation>
-      <presentation id="POL_PAGEFILE">
-        <dropdownList refId="PageFile_DriveLetter_Options" defaultItem="0">Pagefile Drive Assignment</dropdownList>
-        <textBox refId="TXT_PAGEFILE_SIZE">
-          <label>Page file size (GB)</label>
-          <defaultValue>4</defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_vmOSOT">

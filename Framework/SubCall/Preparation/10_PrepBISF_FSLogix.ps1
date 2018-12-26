@@ -25,8 +25,13 @@
   Purpose/Change: 06.03.2017 MS: Bugfix read Variable $varCLI = ...
   Purpose/Change: 15.02.2017 MS: Bugfix 237: When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 
+<<<<<<< HEAD
 
 
+=======
+  
+  
+>>>>>>> master
 .EXAMPLE
 
 #>
@@ -68,11 +73,15 @@ Process {
     {
         #set the fsLogix central rules share in the BIS-F registry location, to get on BIS-F personalisation on each device
         Write-BISFLog -Msg "Check Silentswitch..."
+<<<<<<< HEAD
 		$varCLIRS = $LIC_BISF_CLI_RSb
+=======
+	    $varCLIRS = $LIC_BISF_CLI_RSb
+>>>>>>> master
 	    IF ($varCLIRS -ne "")
 	    {
 		    Write-BISFLog -Msg "Silentswitch would be set to $varCLIRS"
-            $fslogixRulesShare = $varCLIRS
+            $fslogixRulesShare = $LIC_BISF_CLI_RS
 	    } ELSE {
        	    Write-BISFLog -Msg "Silentswitch not defined, show Inputprompt to define UNC-Path, where the fslogix Rules (frx) and Assignments (fxa) would be stored"
             $MPRS = Show-BISFCustomInputBox -title "Fslogix Central Rules Share" -message "Please enter a central rules share, where do you stored the fsLogix Rules (frx) and Assignment (fxa) files. Enter a valid UNC-Path, that be accessible at computer startup with system account" ""
