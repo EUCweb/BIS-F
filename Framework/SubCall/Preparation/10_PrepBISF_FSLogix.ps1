@@ -26,12 +26,17 @@
   Purpose/Change: 15.02.2017 MS: Bugfix 237: When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   
   
 =======
 
 
 >>>>>>> 8ae2c5de8fb84175340786e0e82d86b235f76de9
+=======
+
+
+>>>>>>> f40d4b22205545306e105a7d4db729fc5e8f8fb3
 .EXAMPLE
 
 #>
@@ -74,10 +79,14 @@ Process {
         #set the fsLogix central rules share in the BIS-F registry location, to get on BIS-F personalisation on each device
         Write-BISFLog -Msg "Check Silentswitch..."
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    $varCLIRS = $LIC_BISF_CLI_RSb
 =======
 		$varCLIRS = $LIC_BISF_CLI_RSb
 >>>>>>> 8ae2c5de8fb84175340786e0e82d86b235f76de9
+=======
+	    $varCLIRS = $LIC_BISF_CLI_RSb
+>>>>>>> f40d4b22205545306e105a7d4db729fc5e8f8fb3
 	    IF ($varCLIRS -ne "")
 	    {
 		    Write-BISFLog -Msg "Silentswitch would be set to $varCLIRS"

@@ -949,7 +949,10 @@
       </disabledList>
     </policy>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> f40d4b22205545306e105a7d4db729fc5e8f8fb3
     <policy name="POL_WUSCCM" class="Machine" displayName="$(string.POL_WUSCCM)" explainText="$(string.POL_WUSCCM_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WUSCCM">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
@@ -1176,6 +1179,9 @@
         <text id="TXT_AppLayNoELM" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayNoELM" />
       </elements>
     </policy>
+<<<<<<< HEAD
 >>>>>>> 8ae2c5de8fb84175340786e0e82d86b235f76de9
+=======
+>>>>>>> f40d4b22205545306e105a7d4db729fc5e8f8fb3
   </policies>
 </policyDefinitions>
