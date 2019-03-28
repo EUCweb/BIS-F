@@ -1,3 +1,4 @@
+28.03.2019 MS: FRQ 83 - McAfee Move integration
 01.07.2018 MS: Feature 11: If WEM Agent Policy is disabled or PVS redirection not enabled, configure WEM Cache back to origin path
 30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
 29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
