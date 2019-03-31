@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <policyDefinitionResources revision="1.0" schemaVersion="1.0">
   <displayName>
   </displayName>
@@ -32,7 +31,7 @@ If you do not configure this policy setting, you'll be prompted during the seali
 
 Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\Citrix Optimizer </string>
       <string id="POL_SDelete">Run SDelete</string>
-      <string id="POL_SDelete_Help">Run SDelete on PVS WriteCacheDisk if vDisk is in shared mode only 
+      <string id="POL_SDelete_Help">Run SDelete on PVS WriteCacheDisk if vDisk is in shared mode only
 
 If you enable this policy setting, SDelete will be executed. for the PVS WriteCache disk in shared mode.
 If you disable this policy setting, SDelete will not be executed.
@@ -92,7 +91,7 @@ List all devices without removal:
 This option will output all devices detected into the log without removing any devices.
 List only ghost devices without removal:
 This option will output ghost devices detected into the log without removing any devices.
-	  
+
 If you enable this policy setting you must select a mode of operation.
 If you disable or do not configure this policy setting then Ghost Device Removal will not be executed.
 </string>
@@ -231,27 +230,27 @@ If you do not configure this policy setting, you'll be prompted during the seali
 </string>
       <string id="POL_Shutdown">Shutdown Base Image after sealing</string>
       <string id="POL_Shutdown_Help">Shutdown Base Image after successfully sealing. When running from an MDT or SCCM Task Sequence the Base Image will not shutdown.
- 
+
 If you enable this policy setting, the Base Image will be shutdown after the sealing process.
 If you disable this policy setting, the Base Image will not be shutdown after the sealing process.
 If you do not configure this policy setting, the Base Image will be shutdown after the sealing process.
 </string>
       <string id="POL_PndReboot">Suppress Pending Reboot</string>
       <string id="POL_PndReboot_Help">Suppress Pending Reboot
- 
+
 If you enable this policy setting, pending reboot will be suppressed.
 If you disable this policy setting, pending reboot will not be suppressed.
 If you do not configure this policy setting and a pending reboot exist, the scripts will stop working!</string>
       <string id="POL_CfgVerySilent">Configure VerySilent</string>
       <string id="POL_CfgVerySilent_Help">Configure VerySilent to suppress any BIS-F message boxes
- 
+
 If you enable this policy setting, BIS-F message boxes will be suppressed.
 If you disable this policy setting, BIS-F message boxes will not be suppressed.
 If you do not configure this policy setting, BIS-F message boxes will not be suppressed.
 </string>
       <string id="POL_FSXdelRules">Delete rules on Base Image</string>
       <string id="POL_FSXdelRules_Help">Delete FSLogix rules
- 
+
 If you enable this policy setting, FSLogix rules will be deleted.
 If you disable this policy setting, FSLogix rules will not be deleted.
 If you do not configure this policy setting, you'll be prompted during the sealing process.
@@ -265,7 +264,7 @@ If you disable this policy setting, a center share location will not be used.
 If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
       <string id="POL_delAllUsersStartMenu">Delete AllUsersStartMenu content</string>
       <string id="POL_delAllUsersStartMenu_Help">Delete AllUsersStartMenu content
- 
+
 If you enable this policy setting, AllUsersStartMenu content will be deleted.
 If you disable this policy setting, AllUsersStartMenu content will not be deleted.
 If you do not configure this policy setting, you will be prompted during the sealing process.</string>
@@ -314,7 +313,7 @@ If you enable this policy setting, Turbo update will be executed. on System Star
 If you disable this policy setting, Turbo update will not be executed. on System Startup.
 If you do not configure this policy setting, you will be prompted during the sealing process.</string>
       <string id="POL_vmOSOT">VMware OS Optimization Tool</string>
-      <string id="POL_vmOSOT_Help">Run VMware OS Optimization Tool 
+      <string id="POL_vmOSOT_Help">Run VMware OS Optimization Tool
 
 If you enable this policy setting, VMware OS Optimization Tool will be executed. with the default OS template.
 If you disable this policy setting, VMware OS Optimization Tool will not be executed.
@@ -352,7 +351,7 @@ If you enable this policy setting, RES ONE Automation Agent Service will be disa
 If you disable or do not configure this policy setting, RES ONE Automation Agent Service will not be disabled..</string>
       <string id="POL_ZCM">Configure Novell ZCM Agent web based URL</string>
       <string id="POL_ZCM_Help">Configure Novell ZCM Agent web based URL
-Enter the URL in the following format: 
+Enter the URL in the following format:
 reg https://ZCM-Server.domain.net -k CTX-XA65 -u XAuser -p XAuserPassword
 
 If you enable this policy setting and the cloned device is starting, it will use the configured registration URL to get the configuration.
@@ -377,7 +376,7 @@ specify a value between 0 -20, means the number of log files being kept.
       <string id="POL_FldCfg_Help">If Citrix PVS Target Device Driver is installed, some folders must be redirected to the WriteCacheDisk. You can specified those folders here:
 
 Event logs:
-If you enable this policy setting, you must enter a custom event viewer log folder name, e.g. "EventLogs"
+If you enable this policy setting, you must enter a custom event log folder name, e.g. "EventLogs"
 If you disable this policy setting or if you do not configure this policy setting, the BIS-F standard folder would be used.
 
 NOTE: Please specify the Name of the folder only, without any drive letter !!
@@ -448,8 +447,8 @@ If you do not enable, the default arguments inside BIS-F will be used.</string>
 
 Skip Personalization based on DiskMode
 If you enable this policy setting, you can select a DiskMode to skip the Device Personalization on computer startup.
- &gt; None - never skip the Device Personalization 
- &gt; ReadWrite - if the Image is in Private Mode (PVS or MCS) skip the Device Personalization 
+ &gt; None - never skip the Device Personalization
+ &gt; ReadWrite - if the Image is in Private Mode (PVS or MCS) skip the Device Personalization
  &gt; All - ignore all DiskMode's and skip the Device Personalization
 
 If you disable or dor not configure this policy settings, the Device Personalization would not being skipped.
@@ -468,14 +467,14 @@ If you enable this policy setting, you can enter an UNC-Path or local path, that
 
 If you disable do not configure this policy setting, the export can't be run.
 
-Note: mostly you need this one time, to create the xml files, after that you can edit it manually !! 
+Note: mostly you need this one time, to create the xml files, after that you can edit it manually !!
 You can also find the needed xml templates in the installation folder
 
 </string>
       <string id="ITM_DM_1">All</string>
       <string id="ITM_DM_2">Private Mode</string>
       <string id="ITM_DM_3">Never</string>
-      <string id="POL_VDACfg">VDA Configuration</string>
+      <string id="POL_VDACfg">Configure Citrix Virtual Delivery Agent (VDA)</string>
       <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
 
 If you enable this policy setting, you can configure several items
@@ -484,7 +483,11 @@ If you disable or If you do not configure this policy setting, the vda configura
 Delay Citrix Desktop Service:
 The Citrix Desktop Service controls the registration state through the Citrix Controller. In some circumstances, this service has successfull registered the VM and the user can logged on to this, through Receiver/StoreFront. In the backend some depend actions like Workspace Environment Agent, Group Policies, App-V Client and someone else are not completed with their own task. If you enable this policy the Citrix Destop Service would be started first, if the BIS-F personalization is finished.
 
-Note: If you has the Device personalization configured to skip it on all DiskModes or on private Mode only, the Citrix Desktop Service would also be started. </string>
+Additional delay (default 0)
+You can enter additional time in seconds, to start the Citrix Desktop Service after this delay. This time you entered here will be count in addition after the BIS-F personalization is finished.
+max seconds: 1800
+
+Note: If you has the Device personalization configured to skip it on all DiskModes or on private mode only, the Citrix Desktop Service would also be started. </string>
       <string id="ITM_5D01BF99_CC34_443E_A4A7_82489EE3159B">.VHD</string>
       <string id="ITM_654E2264_F168_4BC8_A209_009DFADFF86F">.VHDX</string>
       <string id="ITM_VDISK_VHDX1">VHDX</string>
@@ -496,16 +499,117 @@ Note: If you has the Device personalization configured to skip it on all DiskMod
 If you enable this policy setting, .NET Optimization is running during sealing
 If you disable this policy setting, .NET Optimization is disabled during sealing
 If you do not configure this policy setting, .NET Optimization is running during sealing</string>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> f40d4b22205545306e105a7d4db729fc5e8f8fb3
+      <string id="POL_WUAgent">Install Windows Updates using WUAgent</string>
+      <string id="POL_WUSCCM">Install Windows Updates using SCCM</string>
+      <string id="POL_WUAgent_Help">Install Windows Update using the native Windows Update Agent
+
+If you enable this policy setting, Windows Update will be run and any detected updates will be applied.  You will need to set the "Windows Components/Windows Update/Specify intranet Microsoft update service location" group policy setting to enable this to operate with WSUS.
+If you disable this policy setting, Windows Update will not run.
+If you do not configure this policy setting, Windows Update will not run.</string>
+      <string id="POL_WUSCCM_Help">Install Windows Update using SCCM
+
+If you enable this policy setting, SCCM will run Windows Update and any detected updates will be applied.
+If you disable this policy setting, SCCM will not run Windows Update.
+If you do not configure this policy setting, SCCM will not run Windows Update.</string>
+      <string id="POL_PAGEFILE">Configure Page File</string>
+      <string id="POL_PAGEFILE_Help">Configures the windows page file to be statically configured in both size and drive letter.</string>
+      <string id="PageFile_PVSWriteCacheDrive"> PVS write cache drive</string>
+      <string id="PageFile_B">B:</string>
+      <string id="PageFile_C">C:</string>
+      <string id="PageFile_D">D:</string>
+      <string id="PageFile_E">E:</string>
+      <string id="PageFile_F">F:</string>
+      <string id="PageFile_G">G:</string>
+      <string id="PageFile_H">H:</string>
+      <string id="PageFile_I">I:</string>
+      <string id="PageFile_J">J:</string>
+      <string id="PageFile_K">K:</string>
+      <string id="PageFile_L">L:</string>
+      <string id="PageFile_M">M:</string>
+      <string id="PageFile_N">N:</string>
+      <string id="PageFile_O">O:</string>
+      <string id="PageFile_P">P:</string>
+      <string id="PageFile_Q">Q:</string>
+      <string id="PageFile_R">R:</string>
+      <string id="PageFile_S">S:</string>
+      <string id="PageFile_T">T:</string>
+      <string id="PageFile_U">U:</string>
+      <string id="PageFile_V">V:</string>
+      <string id="PageFile_W">W:</string>
+      <string id="PageFile_X">X:</string>
+      <string id="PageFile_Y">Y:</string>
+      <string id="PageFile_Z">Z:</string>
+      <string id="POL_METCfg">Configure MaxExecution timeout</string>
+      <string id="POL_METCfg_Help">This policy settings allows you to manage the MaxExecution timeout. During sealing, some processes (like AV-FullScan, .NET optimization, P2PVS, ImagingWizard, etc) will be triggered, if the MaxExecutionTime is reached, the process will ended.
+
+If you enable this policy setting, you can configure the MaxExecution timout from 30-120 minutes, default (60)
+If you disable this policy setting, the MaxExecution timeout is set to unlimited
+If you do not configure this policy setting, the MaxExecution timeout is set to 60
+
+NOTE: If you configre the MaxExecution time to a low value, and the timout is reached during P2PVS / ImaginWizrad is executed, the build process will be failed.</string>
+      <string id="POL_WEMCfg">Configure Citrix Workspace Environment Agent (WEM)</string>
+      <string id="POL_WEMCfg_Help"> This policy settings allows you to manage the Citrix Workspace Environment Agent Settings (WEM)
+
+
+If you enable this policy setting, you can configure the WEM Agent settings
+If you disable or do not configure this policy setting, the WEM Agent settings will not changed.
+
+reconfigure WEM Agent Cache to the PVS WriteCacheDrive:
+If you enable this Item, the WEM Agent Cache is reconfigured to the WriteCacheDrive (PVS Target Device driver must installed on the Base Image, to take affect during sealing)
+
+
+Enable custom WEMCache folder name (take affect if the PVS Target Device Driver is installed and the redirection is enabled)
+to specify a custom WEM Agent Cache folder name, enable this settings
+
+WEM Agent Cache folder name  (take affect if the PVS Target Device Driver is installed and the redirection is enabled)
+Enter the name of the WEM Agent Cache folder, e.g. WEMCache
+If the folder doesn't exists, it will be created automatically
+
+NOTE: Please specify the Name of the folder only, without any drive letter !!
+
+</string>
+      <string id="POL_AppLayCfg">Configure Citrix App Layering</string>
+      <string id="POL_AppLayCfg_Help">This policy settings allows you to manage Citrix App Layering and inject different BIS-F shared configurations based on Layers
+
+If you enable this policy setting, you must enter a valid BIS-F shared configuration file for each Layer
+
+OS Layer config file:
+The file you're entered here is  applied if the OS Layer is detected.
+
+App-/Platform Layer config file:
+The file you're entered here is  applied if the App-/Platform Layer is detected.
+
+Outside ELM config file:
+The file you're entered here is applied if you seal the Image outside ELM (reference to https://support.citrix.com/article/CTX226062) with PVS.
+
+Enable domain joined Platform Layer:
+If your Platform Layer is domain joined you can enable this setting and enter a valid Platform Lyer config file, this will be applied if the Platform Layer is detected.
+
+
+If you disable this policy setting or do not configure this policy setting, no different BIS-F shared configurations can be used.
+
+Note: Enter the name of the configurations file only, the path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
+<<<<<<< HEAD
+>>>>>>> 8ae2c5de8fb84175340786e0e82d86b235f76de9
+=======
+>>>>>>> f40d4b22205545306e105a7d4db729fc5e8f8fb3
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
         <textBox refId="TXT_CTXOE_TemplatePath">
           <label>(Optional) Template:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
         <textBox refId="TXT_CTXOE_Groups">
           <label>(Optional) List of enabled Groups:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
         <checkBox refId="CB_CTXOE_Analyze">Mode: Analyze only</checkBox>
         <checkBox refId="CHK_CTXOE_SF">Enable custom search folder</checkBox>
@@ -535,13 +639,15 @@ If you do not configure this policy setting, .NET Optimization is running during
       <presentation id="GhostDeviceClass">
         <textBox refId="GhostDeviceClassBox">
           <label>Classes:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="GhostDeviceFriendlyName">
         <textBox refId="GhostDeviceFriendlyNameBox">
           <label>Devices:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="GhostDeviceRemoval">
@@ -585,7 +691,8 @@ If you do not configure this policy setting, .NET Optimization is running during
         </text>
         <textBox refId="TXT_OT_Templ">
           <label>Template Name</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_CCleaner">
@@ -652,12 +759,45 @@ If you do not configure this policy setting, .NET Optimization is running during
       </presentation>
       <presentation id="POL_VDACfg">
         <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
+        <decimalTextBox refId="DXT_CLI_CDSdelay" defaultValue="0" spinStep="5">Additional delay (seconds)</decimalTextBox>
       </presentation>
       <presentation id="POL_VieScan">
         <checkBox refId="CHK_AV_VIE_SF">Enable custom search folder</checkBox>
         <textBox refId="TXT_AV_VIE_SF_CUS">
           <label>Custom search folder</label>
           <defaultValue>C:\Windows\System32</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_METCfg">
+        <decimalTextBox refId="DXT_MET" defaultValue="60">MaxExecution timeout in minutes (default: 60)</decimalTextBox>
+      </presentation>
+      <presentation id="POL_WEMCfg">
+        <checkBox refId="CHK_CLI_WEMCache">reconfigure WEM Agent Cache to the PVS WriteCacheDrive</checkBox>
+        <checkBox refId="CHK_CLI_WEMb">Enable custom WEM Agent Cache folder name</checkBox>
+        <textBox refId="TXT_CLI_WEMFolder">
+          <label>WEM Agent Cache folder name</label>
+          <defaultValue>WEMCache</defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_AppLayCfg">
+        <textBox refId="TXT_AppLayOSCfg">
+          <label>OS Layer config file</label>
+          <defaultValue>BISF_AppLay_OS_config.xml</defaultValue>
+        </textBox>
+        <textBox refId="TXT_AppLayAppPltCfg">
+          <label>App-/Platform Layer config file</label>
+          <defaultValue>BISF_AppLay_AppPlt_config.xml</defaultValue>
+        </textBox>
+        <textBox refId="TXT_AppLayNoELM">
+          <label>Outside ELM config file</label>
+          <defaultValue>BISF_AppLay_NoELM_config.xml</defaultValue>
+        </textBox>
+        <checkBox refId="CHK_AppLayPltCfgb">Enable domain joined Platform Layer</checkBox>
+        <text>
+        </text>
+        <textBox refId="TXT_AppLayPltCfg">
+          <label>Domain joined Platform Layer config file</label>
+          <defaultValue>BISF_AppLay_Plt_config.xml</defaultValue>
         </textBox>
       </presentation>
     </presentationTable>

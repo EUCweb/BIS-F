@@ -1,3 +1,27 @@
+28.03.2019 MS: FRQ 83 - McAfee Move integration
+01.07.2018 MS: Feature 11: If WEM Agent Policy is disabled or PVS redirection not enabled, configure WEM Cache back to origin path
+30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
+29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
+25.03.2018 MS: Feature 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
+25.03.2018 MS: Feature 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
+22.03.2018 MS: Feature 15: support for Office 365 ClicktoRun
+21.03.2018 MS: Bugfix 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
+25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
+15.02.2017 MS: Bugfix 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
+11.02.2018 MS: Bugfix 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
+21.09.2017 TT: Added Powershell Web Server Log Viewer
+18.09.2017 TT: Added updating Symantec Endpoint Protection AV virus definitions to PREP
+18.09.2017 TT: Added the removal of ACL's for BUILTIN\USERS to C:\
+18.09.2017 TT: Added the ability to run Windows Update via WUAgent or SCCM and enable that option via GPO
+14.09.2017 JP: Fixed typos in the ADMX/AMDL file, moved settings back to the MS Cat, reordered the Cat alphanumerically
+11.09.2017 TT: Added a scheduled task that is added when installed to allow reboot to complete
+08.09.2017 TT: Removed the disabling of Receive Side Scaling
+07.09.2017 TT: Added the ability of BISF to reboot and start over until completed
+05.09.2017 TT: Updated Write-BISFProgressBar to include the options MaximumExecutionMinutes and TerminateRunawayProcess
+04.09.2017 MS: Bugfix - Eventlogs would be moved for both States (Prep and Pers) now, after changing it in V6.1.0 build 03.101
+---------------------------------
+Version 6.1.0 build 01.103 -- 17.12.2018 16:09:57 :
+17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
 ---------------------------------
 Version 6.1.0 build 01.102 -- 10.12.2018 15:47:08 :
 07.12.2018 MS: Bugfix 79: BIS-F Installer can be used on x86 systems
@@ -31,6 +55,31 @@ Version 6.1.0 build 01.101 -- 20.03.2018 21:22:37 :
 25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
 15.02.2017 MS: Bugfix 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 11.02.2018 MS: Bugfix 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
+<<<<<<< HEAD
+=======
+﻿01.07.2018 MS: Feature 11: If WEM Agent Policy is disabled or PVS redirection not enabled, configure WEM Cache back to origin path
+30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
+29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
+25.03.2018 MS: Feature 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
+25.03.2018 MS: Feature 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
+22.03.2018 MS: Feature 15: support for Office 365 ClicktoRun
+21.03.2018 MS: Bugfix 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
+25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
+15.02.2017 MS: Bugfix 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
+11.02.2018 MS: Bugfix 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
+21.09.2017 TT: Added Powershell Web Server Log Viewer
+18.09.2017 TT: Added updating Symantec Endpoint Protection AV virus definitions to PREP
+18.09.2017 TT: Added the removal of ACL's for BUILTIN\USERS to C:\
+18.09.2017 TT: Added the ability to run Windows Update via WUAgent or SCCM and enable that option via GPO
+14.09.2017 JP: Fixed typos in the ADMX/AMDL file, moved settings back to the MS Cat, reordered the Cat alphanumerically
+11.09.2017 TT: Added a scheduled task that is added when installed to allow reboot to complete
+08.09.2017 TT: Removed the disabling of Receive Side Scaling
+07.09.2017 TT: Added the ability of BISF to reboot and start over until completed
+05.09.2017 TT: Updated Write-BISFProgressBar to include the options MaximumExecutionMinutes and TerminateRunawayProcess
+04.09.2017 MS: Bugfix - Eventlogs would be moved for both States (Prep and Pers) now, after changing it in V6.1.0 build 03.101
+>>>>>>> 8ae2c5de8fb84175340786e0e82d86b235f76de9
+=======
+>>>>>>> f40d4b22205545306e105a7d4db729fc5e8f8fb3
 ---------------------------------
 Version 6.1.0 build 01.100 -- 26.11.2017 22:34:40 :
 26.11.2017 MS: ADMX: change Category Ivanti Automation to Ivanti
