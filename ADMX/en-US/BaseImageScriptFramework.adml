@@ -6,21 +6,19 @@
 @Login Consultants 2017</description>
   <resources>
     <stringTable>
-      <string id="CAT_BISF">Base Image Script Framework (BIS-F)</string>
-      <string id="CAT_SilentConfig">Silent Configuration</string>
-      <string id="CAT_Global">Global</string>
       <string id="CAT_3P">3rd Party Tools</string>
-      <string id="CAT_MS">Microsoft</string>
+      <string id="CAT_AV">Anti-Virus</string>
+      <string id="CAT_BISF">Base Image Script Framework (BIS-F)</string>
       <string id="CAT_CTX">Citrix</string>
+      <string id="CAT_Global">Global</string>
+      <string id="CAT_MS">Microsoft</string>
       <string id="CAT_Misc">Miscellaneous</string>
       <string id="CAT_NV">Novell</string>
-      <string id="CAT_AV">Anti-Virus</string>
-      <string id="CAT_FSX">FSLogix</string>
-      <string id="CAT_TBN">Turbo.net</string>
       <string id="CAT_RES">Ivanti</string>
-      <string id="SUPPORTED_WindowsVista">At least Microsoft Windows Vista</string>
-      <string id="POL_CTXOE">Configure Citrix Optimizer</string>
+      <string id="CAT_SilentConfig">Silent Configuration</string>
+      <string id="CAT_TBN">Turbo.net</string>
       <string id="LIST_CTXOE_Groups">Enter the Groups that should be executed:</string>
+      <string id="POL_CTXOE">Configure Citrix Optimizer</string>
       <string id="POL_CTXOE_Help">Run Citrix Optimizer
 
 If you enable this policy setting, Citrix Optimizer (CtxOptimizerEngine.ps1) will be executed. Optional you can define the name of a template that should be used during execution. If there is no template specified, BIS-F will search for an OS-specific default template. If there is no appropriate template available, the execution of Citrix Optimizer will be skipped.
@@ -77,8 +75,8 @@ If you do not configure this policy setting, you will be prompted during the sea
 If you enable this policy setting, an Antivirus full scan will be executed.
 If you disable this policy setting, an AntiVirus full scan will not be executed.
 If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
-      <string id="GhostDeviceRemoval">Ghost Devices: Operation mode</string>
-      <string id="GhostDeviceRemoval_Help">Defines how the ghost device feature will operate.
+      <string id="POL_GhostDeviceRemoval">Ghost Devices: Operation mode</string>
+      <string id="POL_GhostDeviceRemoval_Help">Defines how the ghost device feature will operate.
 
 This policy has three operation modes:
 
@@ -96,8 +94,8 @@ This option will output ghost devices detected into the log without removing any
 If you enable this policy setting you must select a mode of operation.
 If you disable or do not configure this policy setting then Ghost Device Removal will not be executed.
 </string>
-      <string id="GhostDeviceClass">Ghost Devices: Classes to exclude from removal</string>
-      <string id="GhostDeviceClass_Help">Specifies the classes to be excluded from being removed by the ghost device removal tool.
+      <string id="POL_GhostDeviceClass">Ghost Devices: Classes to exclude from removal</string>
+      <string id="POL_GhostDeviceClass_Help">Specifies the classes to be excluded from being removed by the ghost device removal tool.
 
 To use this policy setting, click Enabled and enter the classes you want exlcuded, separated by a semicolon ";". For example: LegacyDriver;Net;SCSIAdapter.
 
@@ -170,8 +168,8 @@ Important: Text is case sensitive.
 This policy requires the Ghost device removal policy to be enabled in order to function.
 
 If you disable this policy setting, or if you do not configure this policy setting, then the Ghost device removal will not filter by classes.</string>
-      <string id="GhostDeviceFriendlyName">Ghost Devices: Friendly named devices to exclude from removal</string>
-      <string id="GhostDeviceFriendlyName_Help">This policy allows you to specify devices by their friendly name to be excluded from being removed by the ghost device removal tool.
+      <string id="POL_GhostDeviceFriendlyName">Ghost Devices: Friendly named devices to exclude from removal</string>
+      <string id="POL_GhostDeviceFriendlyName_Help">This policy allows you to specify devices by their friendly name to be excluded from being removed by the ghost device removal tool.
 
 To use this policy setting, click Enabled and enter the friendly name of the devices you want exlcuded, separated by a semicolon ";". For example: Citrix;Intel(R) HD Graphics 5500;Generic USB Hub.
 
@@ -249,7 +247,7 @@ If you enable this policy setting, BIS-F message boxes will be suppressed.
 If you disable this policy setting, BIS-F message boxes will not be suppressed.
 If you do not configure this policy setting, BIS-F message boxes will not be suppressed.
 </string>
-      <string id="POL_FSXdelRules">Delete rules on Base Image</string>
+      <string id="POL_FSXdelRules">Delete FSLogix rules</string>
       <string id="POL_FSXdelRules_Help">Delete FSLogix rules
  
 If you enable this policy setting, FSLogix rules will be deleted.
@@ -333,11 +331,11 @@ Template Name: Enter the complete path to the the Template that would be used du
 If you enable this policy setting, the current XenApp server will be removed from the Farm and the local database information will be cleared.
 If you disable this policy setting, the current XenApp server will not be removed from the Farm and the local database information will not be cleared.
 If you do not configure this policy setting, you will be prompted during the sealing process.</string>
-      <string id="POL_AppVPckRemoval">Remove App-V packages</string>
-      <string id="POL_AppVPckRemoval_Help">Delete AppV Pre-Cached packages on the Base Image
+      <string id="POL_AppVPckRemoval">Remove App-V cached packages</string>
+      <string id="POL_AppVPckRemoval_Help">Remove App-V Pre-Cached packages on the Base Image
 
-If you enable this policy setting, App-V Pre-Cached packages will be deleted .
-If you disable this policy setting, App-V Pre-Cached packages will not be deleted.
+If you enable this policy setting, App-V Pre-Cached packages will be removed.
+If you disable this policy setting, App-V Pre-Cached packages will not be removed.
 If you do not configure this policy setting, you will be prompted during the sealing process.</string>
       <string id="POL_RESWASdisableBaseImage">Disable RES ONE Automation Agent</string>
       <string id="POL_RESWASdisableBaseImage_Help">This policy setting allows you to disable the RES ONE Automation Agent on the Base Image only to prevent RES ONE license usage.
@@ -353,14 +351,14 @@ If you disable or do not configure this policy setting, RES ONE Automation Agent
       <string id="POL_ZCM">Configure Novell ZCM Agent web based URL</string>
       <string id="POL_ZCM_Help">Configure Novell ZCM Agent web based URL
 Enter the URL in the following format: 
-reg https://ZCM-Server.domain.net -k CTX-XA65 -u XAuser -p XAuserPassword
+reg https://ZCM-Server.domain.com -k CTX-XA65 -u XAuser -p XAuserPassword
 
 If you enable this policy setting and the cloned device is starting, it will use the configured registration URL to get the configuration.
 If you disable or do not configure this policy setting, the client device does not get their ZCM configuration.
 </string>
-      <string id="GhostDeviceRemovalOption">Remove ghost devices</string>
-      <string id="GhostDeviceListAll">List all devices without removal</string>
-      <string id="GhostDeviceListOnly">List only ghost devices without removal</string>
+      <string id="ITM_GhostDeviceRemovalOption">Remove ghost devices</string>
+      <string id="ITM_GhostDeviceListAll">List all devices without removal</string>
+      <string id="ITM_GhostDeviceListOnly">List only ghost devices without removal</string>
       <string id="POL_LogCfg">Configure Logging</string>
       <string id="POL_LogCfg_Help">Log Share:
 Configure a central log share during Device Personalization on System Startup. Authenticated Users must have read/write access to this folder
@@ -432,19 +430,10 @@ If you do not enable, the default arguments inside BIS-F will be used.</string>
       <string id="ITM_X">X:</string>
       <string id="ITM_Y">Y:</string>
       <string id="ITM_Z">Z:</string>
-      <string id="ITM_450904EC_DB6A_4638_8B35_E60AC8004EC0">ImagingWizard</string>
-      <string id="ITM_59F24F14_D7D5_4228_9B4A_9C309CC65916">P2PVS</string>
       <string id="ITM_ImgWzd">ImagingWizard</string>
       <string id="ITM_P2PVS">P2PVS</string>
       <string id="POL_PersCfg">Configure Personalization</string>
-      <string id="ITM_E5119B02_1193_446A_A77F_606196FEF75D">None</string>
-      <string id="ITM_B25B2F31_399B_47F7_8140_A5CB4C12ACF4">Private Mode</string>
-      <string id="ITM_07EC22F8_89D2_44B4_82E6_8D323FF25178">Everytime !!</string>
-      <string id="ITM_DM_None">Everytime !!</string>
-      <string id="ITM_DM_PM">Private Mode</string>
-      <string id="ITM_DM_ET">None</string>
       <string id="POL_PersCfg_Help">Configure the Device Personalization
-
 
 Skip Personalization based on DiskMode
 If you enable this policy setting, you can select a DiskMode to skip the Device Personalization on computer startup.
@@ -472,9 +461,9 @@ Note: mostly you need this one time, to create the xml files, after that you can
 You can also find the needed xml templates in the installation folder
 
 </string>
-      <string id="ITM_DM_1">All</string>
-      <string id="ITM_DM_2">Private Mode</string>
-      <string id="ITM_DM_3">Never</string>
+      <string id="ITM_DM_All">All</string>
+      <string id="ITM_DM_PrivateMode">Private Mode</string>
+      <string id="ITM_DM_Never">Never</string>
       <string id="POL_VDACfg">VDA Configuration</string>
       <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
 
@@ -484,13 +473,10 @@ If you disable or If you do not configure this policy setting, the vda configura
 Delay Citrix Desktop Service:
 The Citrix Desktop Service controls the registration state through the Citrix Controller. In some circumstances, this service has successfull registered the VM and the user can logged on to this, through Receiver/StoreFront. In the backend some depend actions like Workspace Environment Agent, Group Policies, App-V Client and someone else are not completed with their own task. If you enable this policy the Citrix Destop Service would be started first, if the BIS-F personalization is finished.
 
-Note: If you has the Device personalization configured to skip it on all DiskModes or on private Mode only, the Citrix Desktop Service would also be started. </string>
-      <string id="ITM_5D01BF99_CC34_443E_A4A7_82489EE3159B">.VHD</string>
-      <string id="ITM_654E2264_F168_4BC8_A209_009DFADFF86F">.VHDX</string>
-      <string id="ITM_VDISK_VHDX1">VHDX</string>
+Note: If you have the device personalization configured to skip it on all disk modes or on Private Mode only, the Citrix Desktop Service would also be started. </string>
       <string id="ITM_VDISK_VHD">VHD</string>
       <string id="ITM_VDISK_VHDX">VHDX</string>
-      <string id="POL_DotNET">.NET Optimization</string>
+      <string id="POL_DotNET">Run .NET Optimization</string>
       <string id="POL_DotNET_Help">Run .NET Optimization during sealing (preparation)
 
 If you enable this policy setting, .NET Optimization is running during sealing
@@ -507,7 +493,7 @@ If you do not configure this policy setting, .NET Optimization is running during
           <label>(Optional) List of enabled Groups:</label>
           <defaultValue></defaultValue>
         </textBox>
-        <checkBox refId="CB_CTXOE_Analyze">Mode: Analyze only</checkBox>
+        <checkBox refId="CHK_CTXOE_Analyze">Mode: Analyze only</checkBox>
         <checkBox refId="CHK_CTXOE_SF">Enable custom search folder</checkBox>
         <textBox refId="TXT_CTXOE_SF_CUS">
           <label>Custom search folder</label>
@@ -516,14 +502,14 @@ If you do not configure this policy setting, .NET Optimization is running during
       </presentation>
       <presentation id="POL_FSXRulesShare">
         <textBox refId="TXT_RulesShare">
-          <label>FS Logix Rules Share</label>
+          <label>FSLogix Rules Share UNC Path</label>
           <defaultValue>\\Server\Share</defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_ZCM">
         <textBox refId="TXT_ZCM_URL">
           <label>ZCM Registration URL</label>
-          <defaultValue>reg https://ZCM-Server.domain.net -k CTX-XA65 -u XAuser -p XAuserPassword</defaultValue>
+          <defaultValue>reg https://ZCM-Server.domain.com -k CTX-XA65 -u XAuser -p XAuserPassword</defaultValue>
         </textBox>
         <text>
         </text>
@@ -532,20 +518,20 @@ If you do not configure this policy setting, .NET Optimization is running during
         <text>
         </text>
       </presentation>
-      <presentation id="GhostDeviceClass">
-        <textBox refId="GhostDeviceClassBox">
+      <presentation id="POL_GhostDeviceClass">
+        <textBox refId="TXT_GhostDeviceClassBox">
           <label>Classes:</label>
           <defaultValue></defaultValue>
         </textBox>
       </presentation>
-      <presentation id="GhostDeviceFriendlyName">
-        <textBox refId="GhostDeviceFriendlyNameBox">
+      <presentation id="POL_GhostDeviceFriendlyName">
+        <textBox refId="TXT_GhostDeviceFriendlyNameBox">
           <label>Devices:</label>
           <defaultValue></defaultValue>
         </textBox>
       </presentation>
-      <presentation id="GhostDeviceRemoval">
-        <dropdownList refId="GhostDeviceOption" noSort="true" defaultItem="0">Operation</dropdownList>
+      <presentation id="POL_GhostDeviceRemoval">
+        <dropdownList refId="DST_GhostDeviceOption" noSort="true" defaultItem="0">Operation</dropdownList>
       </presentation>
       <presentation id="POL_SDelete">
         <checkBox refId="CHK_SD_SF">Enable custom search folder</checkBox>
@@ -592,7 +578,7 @@ If you do not configure this policy setting, .NET Optimization is running during
         <checkBox refId="CHK_CC_SF">Enable custom search folder</checkBox>
         <textBox refId="TXT_CC_SF_CUS">
           <label>Custom search folder</label>
-          <defaultValue>C:\Program Files (x86)\CCleaner</defaultValue>
+          <defaultValue>C:\Program Files\CCleaner</defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_CMTrace">
@@ -604,7 +590,7 @@ If you do not configure this policy setting, .NET Optimization is running during
       </presentation>
       <presentation id="POL_LogCfg">
         <checkBox refId="CHK_CLI_LogCfg">Enable Central Log Share</checkBox>
-        <textBox refId="TXT_301FB559_F663_4697_9602_6EDB78401441">
+        <textBox refId="TXT_LogCfg">
           <label>Log Share</label>
           <defaultValue>\\Server\Share</defaultValue>
         </textBox>

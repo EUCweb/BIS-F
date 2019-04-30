@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--  (c) 2017 Base Script Image Framework  -->
-<policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   revision="1.1" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+<!--  (c) 2019 Base Script Image Framework  -->
+<policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
   <policyNamespaces>
     <target prefix="bisf" namespace="LoginConsultant.Policies.BISF" />
     <using namespace="Microsoft.Policies.Windows" prefix="windows"/>
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
-  <supportedOn>
-    <definitions>
-      <definition name="SUPPORTED_WindowsVista" displayName="$(string.SUPPORTED_WindowsVista)" />
-    </definitions>
-  </supportedOn>
   <categories>
     <category name="CAT_BISF" displayName="$(string.CAT_BISF)" />
     <category name="CAT_3P" displayName="$(string.CAT_3P)">
@@ -21,9 +15,6 @@
       <parentCategory ref="CAT_BISF" />
     </category>
     <category name="CAT_CTX" displayName="$(string.CAT_CTX)">
-      <parentCategory ref="CAT_BISF" />
-    </category>
-    <category name="CAT_FSX" displayName="$(string.CAT_FSX)">
       <parentCategory ref="CAT_BISF" />
     </category>
     <category name="CAT_Global" displayName="$(string.CAT_Global)">
@@ -42,6 +33,7 @@
       <parentCategory ref="CAT_BISF" />
     </category>
   </categories>
+
   <policies>
     <policy name="POL_CTXOE" class="Machine" displayName="$(string.POL_CTXOE)" explainText="$(string.POL_CTXOE_Help)" presentation="$(presentation.POL_CTXOE)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_CTXOE">
       <parentCategory ref="CAT_CTX" />
@@ -63,7 +55,7 @@
       <elements>
         <text id="TXT_CTXOE_Groups" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_GROUPS" />
         <text id="TXT_CTXOE_TemplatePath" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_TP" />
-        <boolean id="CB_CTXOE_Analyze" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_Analyze" />
+        <boolean id="CHK_CTXOE_Analyze" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_Analyze" />
         <boolean id="CHK_CTXOE_SF" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF" />
         <text id="TXT_CTXOE_SF_CUS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF_CUS" />
       </elements>
@@ -162,22 +154,22 @@
         </item>
       </disabledList>
     </policy>
-    <policy name="GhostDeviceRemoval" class="Machine" displayName="$(string.GhostDeviceRemoval)" explainText="$(string.GhostDeviceRemoval_Help)" presentation="$(presentation.GhostDeviceRemoval)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_GD">
+    <policy name="POL_GhostDeviceRemoval" class="Machine" displayName="$(string.POL_GhostDeviceRemoval)" explainText="$(string.POL_GhostDeviceRemoval_Help)" presentation="$(presentation.POL_GhostDeviceRemoval)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_GD">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
-        <enum id="GhostDeviceOption" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD" required="true">
-          <item displayName="$(string.GhostDeviceRemovalOption)">
+        <enum id="DST_GhostDeviceOption" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD" required="true">
+          <item displayName="$(string.ITM_GhostDeviceRemovalOption)">
             <value>
               <string>Remove</string>
             </value>
           </item>
-          <item displayName="$(string.GhostDeviceListAll)">
+          <item displayName="$(string.ITM_GhostDeviceListAll)">
             <value>
               <string>ListAllDevices</string>
             </value>
           </item>
-          <item displayName="$(string.GhostDeviceListOnly)">
+          <item displayName="$(string.ITM_GhostDeviceListOnly)">
             <value>
               <string>ListOnlyGhostDevices</string>
             </value>
@@ -185,18 +177,18 @@
         </enum>
       </elements>
     </policy>
-    <policy name="GhostDeviceClass" class="Machine" displayName="$(string.GhostDeviceClass)" explainText="$(string.GhostDeviceClass_Help)" presentation="$(presentation.GhostDeviceClass)" key="SOFTWARE\Policies\Login Consultants\BISF">
+    <policy name="POL_GhostDeviceClass" class="Machine" displayName="$(string.POL_GhostDeviceClass)" explainText="$(string.POL_GhostDeviceClass_Help)" presentation="$(presentation.POL_GhostDeviceClass)" key="SOFTWARE\Policies\Login Consultants\BISF">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
-        <text id="GhostDeviceClassBox" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD_ExCL" />
+        <text id="TXT_GhostDeviceClassBox" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD_ExCL" />
       </elements>
     </policy>
-    <policy name="GhostDeviceFriendlyName" class="Machine" displayName="$(string.GhostDeviceFriendlyName)" explainText="$(string.GhostDeviceFriendlyName_Help)" presentation="$(presentation.GhostDeviceFriendlyName)" key="SOFTWARE\Policies\Login Consultants\BISF">
+    <policy name="POL_GhostDeviceFriendlyName" class="Machine" displayName="$(string.POL_GhostDeviceFriendlyName)" explainText="$(string.POL_GhostDeviceFriendlyName_Help)" presentation="$(presentation.POL_GhostDeviceFriendlyName)" key="SOFTWARE\Policies\Login Consultants\BISF">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
-        <text id="GhostDeviceFriendlyNameBox" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD_ExFN" />
+        <text id="TXT_GhostDeviceFriendlyNameBox" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD_ExFN" />
       </elements>
     </policy>
     <policy name="POL_VieScan" class="Machine" displayName="$(string.POL_VieScan)" explainText="$(string.POL_VieScan_Help)" presentation="$(presentation.POL_VieScan)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AV_VIE">
@@ -356,7 +348,7 @@
       </disabledList>
     </policy>
     <policy name="POL_FSXdelRules" class="Machine" displayName="$(string.POL_FSXdelRules)" explainText="$(string.POL_FSXdelRules_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_FS">
-      <parentCategory ref="CAT_FSX" />
+      <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
         <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_FS">
@@ -374,7 +366,7 @@
       </disabledList>
     </policy>
     <policy name="POL_FSXRulesShare" class="Machine" displayName="$(string.POL_FSXRulesShare)" explainText="$(string.POL_FSXRulesShare_Help)" presentation="$(presentation.POL_FSXRulesShare)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RSb">
-      <parentCategory ref="CAT_FSX" />
+      <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
         <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RSb">
@@ -647,7 +639,7 @@
       </disabledList>
       <elements>
         <boolean id="CHK_CLI_LogCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LSb" />
-        <text id="TXT_301FB559_F663_4697_9602_6EDB78401441" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LS" />
+        <text id="TXT_LogCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LS" />
         <decimal id="DXT_LogRetention" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LF_RT" maxValue="20" />
       </elements>
     </policy>
@@ -864,17 +856,17 @@
       </disabledList>
       <elements>
         <enum id="DST_CLI_DM" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DM">
-          <item displayName="$(string.ITM_DM_1)">
+          <item displayName="$(string.ITM_DM_All)">
             <value>
               <string>All</string>
             </value>
           </item>
-          <item displayName="$(string.ITM_DM_2)">
+          <item displayName="$(string.ITM_DM_PrivateMode)">
             <value>
               <string>ReadWrite</string>
             </value>
           </item>
-          <item displayName="$(string.ITM_DM_3)">
+          <item displayName="$(string.ITM_DM_Never)">
             <value>
               <string>Never</string>
             </value>
