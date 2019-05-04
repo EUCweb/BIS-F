@@ -1,3 +1,4 @@
+04.05.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
 11.04.2019 MS: HF 87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
 28.03.2019 MS: FRQ 86 - Office 2019 support
 28.03.2019 MS: FRQ 83 - McAfee Move integration
