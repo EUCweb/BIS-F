@@ -1,7 +1,8 @@
-04.05.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
+07.05.2019 JP: FRQ 91: Moved FSLogix settings to Microsoft ADMX category
+07.05.2019 JP: Updated Group Policy templates, fixed typos and errors, removed the german one since it's in english anyway
 11.04.2019 MS: HF 87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
-28.03.2019 MS: FRQ 86 - Office 2019 support
-28.03.2019 MS: FRQ 83 - McAfee Move integration
+28.03.2019 MS: FRQ 86: Office 2019 Support
+28.03.2019 MS: FRQ 83: McAfee Move integration
 01.07.2018 MS: Feature 11: If WEM Agent Policy is disabled or PVS redirection not enabled, configure WEM Cache back to origin path
 30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
 29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
