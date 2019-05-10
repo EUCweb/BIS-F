@@ -1,3 +1,4 @@
+10.05.2019 MK: FRQ 89: Cylance PROTECT generalization 
 07.05.2019 JP: FRQ 91: Moved FSLogix settings to Microsoft ADMX category
 07.05.2019 JP: Updated Group Policy templates, fixed typos and errors, removed the german one since it's in english anyway
 11.04.2019 MS: HF 87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
@@ -741,3 +742,4 @@ JP = Jonathan Pitre
 FF = Florian Frank
 TT = Trentent Tye
 JS = Jeremy Saunders
+MK = Mathias Kowalkowski

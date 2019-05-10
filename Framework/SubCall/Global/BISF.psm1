@@ -33,6 +33,7 @@
 		Last Change: 12.03.2017 MS: add $Global:Wait1= "10"  #global time in seconds
 		Last Change: 05.09.2017 TT: added "MaximumExecutionTime" to Show-ProgressBar
 		Last Change: 11.09.2017 MS: add $TaskStates to control the Preparation is running after Personlization first
+	        Last Change: 14.09.2017 TT: Added "Get-FileVersion" function
 	.Link
 #>
 
@@ -78,6 +79,17 @@
         return $result
     }
 
+	function Get-FileVersion ($PathToFile) {
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+		$File = (Get-Item $PathToFile).VersionInfo
+		$Version = New-Object System.Version -ArgumentList @(
+			$File.FileMajorPart
+			$File.FileMinorPart
+			$File.FileBuildPart
+			$File.FilePrivatePart
+			)
+		Write-Output $Version
+	}
 
     function New-GlobalVariable {
             param (
@@ -650,6 +662,7 @@ function Show-ProgressBar{
 		Last Change: 22.06.2017 FF: add ProgressID to this function to use it instead of ProgressName only
 	    Last Change: 31.08.2017 MS: POSH Progressbar, sleep time during preparation only
 		Last Change: 05.09.2017 TT: Added Maximum Execution Minutes and Terminate Runaway Process parameters
+		Last Change: 25.03.2018 MS: Feature 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
 	.Link
 #>
     PARAM(
@@ -663,10 +676,15 @@ function Show-ProgressBar{
     $a=0
 	if ($MaximumExecutionMinutes) {
 		$MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
+		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
 	} ELSE {
-        $MaximumExecutionMinutes = 60
-        $MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
-    }
+		IF ($LIC_BISF_CLI_METCfg -eq "YES") {$MaximumExecutionMinutes = $LIC_BISF_CLI_MET}
+		IF ($LIC_BISF_CLI_METCfg -eq "NO") {$MaximumExecutionMinutes = 1440}
+		IF ($LIC_BISF_CLI_METCfg -eq "") {$MaximumExecutionMinutes = 60}
+		$MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
+		Write-BISFLog "Maximum execution time used the GPO value with $MaximumExecutionMinutes minutes"
+	}
+
 	Start-Sleep 5
     for ($a=0; $a -lt 100; $a++) {
 		IF ($a -eq "99") {$a=0}
@@ -692,8 +710,8 @@ function Show-ProgressBar{
 
 	   	if($ProcessActive -eq $null) {
            	$a=100
-           	Write-Progress -Activity "Finish...wait for next operation in 5 seconds" -PercentComplete $a -Status "Finish."
-           	IF ($State -eq "Preparation") {Start-Sleep 5}
+           	Write-Progress -Activity "Finish...wait for next operation in 3 seconds" -PercentComplete $a -Status "Finish."
+           	IF ($State -eq "Preparation") {Start-Sleep 3}
             Write-Progress "Done" "Done" -completed
             break
        	} else {
@@ -885,6 +903,387 @@ Function Get-TaskSequence() {
     Return $true
   }
 
+}
+
+
+    <#
+    For Powershell 3.0 compatibility.  Custom ScheduledTask functions...
+    goal -> Recreate "Get-ScheduledTask for Powershell 3.0.
+    cmdlet should retrieve a task with enough properties so the other recreated functions:
+    "Stop-ScheduledTask", "Disable-ScheduledTask" and "Enable-ScheduledTask" can operate.  The goal of this is that these functions should be
+    able to be completely removed when 2008R2 goes away so we can use the native calls with PS4+.  These are bare minimum implementations
+    accepting only a single parameter "taskname"
+    #>
+
+function Get-ScheduledTask {
+		<#
+    .SYNOPSIS
+        Gets the task definition object of a scheduled task that is registered on the local computer.
+	.Description
+      	The Get-ScheduledTask cmdlet gets the task definition object of a scheduled task that is registered on a computer.
+	.PARAMETER
+		Specifies a name of a scheduled task.
+	.EXAMPLE
+		Get-ScheduledTask -TaskName "SystemScan"
+    .Inputs
+    .Outputs
+    .NOTES
+		Author: Trentent Tye
+      	Company: TheoryPC
+
+		History
+      	Last Change: dd.mm.yyyy TT: function created
+		Last Change: 09.11.2017 TT: add .SYNOPSIS to this function
+
+	.Link
+#>
+	[CmdletBinding()]
+	param(
+	[parameter(Position=0)] [String[]] $TaskName="*"
+	)
+
+	process {
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+		# Try to create the TaskService object on the local computer; throw an error on failure
+		try {
+			$TaskService = new-object -comobject "Schedule.Service"
+		}
+		catch [System.Management.Automation.PSArgumentException] {
+			throw $_
+		}
+		try {
+			$TaskService.Connect()
+		}
+		catch [System.Management.Automation.MethodInvocationException] {
+			write-warning "$_"
+			return
+		}
+		function get-task($taskFolder) {
+			$tasks = $taskFolder.GetTasks($Hidden.IsPresent -as [Int])
+			$tasks | foreach-object { $_ }
+			try {
+				$taskFolders = $taskFolder.GetFolders(0)
+				$taskFolders | foreach-object { get-task $_ $TRUE }
+			}
+			catch [System.Management.Automation.MethodInvocationException] {
+			}
+		}
+		$rootFolder = $TaskService.GetFolder("\")
+		$taskList = get-task $rootFolder
+		foreach ($task in $taskList) {
+			if ($task.name -eq $TaskName) {
+				return $task
+			}
+		}
+	}
+}
+
+function Stop-ScheduledTask {
+<#
+    .SYNOPSIS
+       Stops all running instances of a task.
+	.Description
+      	The Stop-ScheduledTask cmdlet immediately stops all running instances of a registered background task.
+	.PARAMETER
+		Specifies a name of a scheduled task.
+	.EXAMPLE
+		Get-ScheduledTask -TaskName "SystemScan" | Stop-ScheduledTask
+	.EXAMPLE
+		Stop-ScheduledTask -TaskName "SystemScan"
+    .Inputs
+    .Outputs
+    .NOTES
+		Author: Trentent Tye
+      	Company: TheoryPC
+
+		History
+      	Last Change: dd.mm.yyyy TT: function created
+		Last Change: 09.11.2017 TT: add .SYNOPSIS to this function
+
+	.Link
+#>
+	[CmdletBinding()]
+	param(
+		[parameter(ValueFromPipeline=$True)] $TaskName
+	)
+
+	process {
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+		#check to see if this is a COMObject (someone is passing a scheduled task into this function) and pull the name from it.
+		if ($TaskName.GetType().Name -eq "__ComObject") { $TaskName = $TaskName.name}
+		# Try to create the TaskService object on the local computer; throw an error on failure
+		try {
+			$TaskService = new-object -comobject "Schedule.Service"
+		}
+		catch [System.Management.Automation.PSArgumentException] {
+			throw $_
+		}
+		try {
+			$TaskService.Connect()
+		}
+		catch [System.Management.Automation.MethodInvocationException] {
+			write-warning "$_"
+			return
+		}
+		function get-task($taskFolder) {
+			$tasks = $taskFolder.GetTasks($Hidden.IsPresent -as [Int])
+			$tasks | foreach-object { $_ }
+			try {
+				$taskFolders = $taskFolder.GetFolders(0)
+				$taskFolders | foreach-object { get-task $_ $TRUE }
+			}
+			catch [System.Management.Automation.MethodInvocationException] {
+			}
+		}
+		$rootFolder = $TaskService.GetFolder("\")
+		$taskList = get-task $rootFolder
+		foreach ($task in $taskList) {
+			if ($task.name -eq $TaskName) {
+				$task.stop(0)
+				return $task
+			}
+		}
+	}
+}
+
+function Disable-ScheduledTask {
+<#
+    .SYNOPSIS
+       Disables a scheduled task.
+	.Description
+      	The Disable-ScheduledTask cmdlet disables a scheduled task.
+	.PARAMETER
+		Specifies a name of a scheduled task.
+	.EXAMPLE
+		Get-ScheduledTask -TaskName "SystemScan" | Disable-ScheduledTask
+	.EXAMPLE
+		Disable-ScheduledTask -TaskName "SystemScan"
+    .Inputs
+    .Outputs
+    .NOTES
+		Author: Trentent Tye
+      	Company: TheoryPC
+
+		History
+      	Last Change: dd.mm.yyyy TT: function created
+		Last Change: 09.11.2017 TT: add .SYNOPSIS to this function
+
+	.Link
+#>
+	[CmdletBinding()]
+	param(
+		[parameter(ValueFromPipeline=$True)] $TaskName
+	)
+
+	process {
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+		#check to see if this is a COMObject (someone is passing a scheduled task into this function) and pull the name from it.
+		if ($TaskName -ne $null) { if ($TaskName.GetType().Name -eq "__ComObject") { $TaskName = $TaskName.name} }
+		# Try to create the TaskService object on the local computer; throw an error on failure
+		try {
+			$TaskService = new-object -comobject "Schedule.Service"
+		}
+		catch [System.Management.Automation.PSArgumentException] {
+			throw $_
+		}
+		try {
+			$TaskService.Connect()
+		}
+		catch [System.Management.Automation.MethodInvocationException] {
+			write-warning "$_"
+			return
+		}
+		function get-task($taskFolder) {
+			$tasks = $taskFolder.GetTasks($Hidden.IsPresent -as [Int])
+			$tasks | foreach-object { $_ }
+			try {
+				$taskFolders = $taskFolder.GetFolders(0)
+				$taskFolders | foreach-object { get-task $_ $TRUE }
+			}
+			catch [System.Management.Automation.MethodInvocationException] {
+			}
+		}
+        $rootFolder = $TaskService.GetFolder("\")
+        $taskList = get-task $rootFolder
+        foreach ($task in $taskList) {
+            if ($task.name -eq $TaskName) {
+                if ($task.Enabled -eq $true) { $task.Enabled = $false }
+            }
+        }
+    }
+}
+
+function Enable-ScheduledTask {
+<#
+    .SYNOPSIS
+       Enables a scheduled task.
+	.Description
+      	The Enable-ScheduledTask cmdlet enables a disabled scheduled task.
+	.PARAMETER
+		Specifies a name of a scheduled task.
+	.EXAMPLE
+		Get-ScheduledTask -TaskName "SystemScan" | Enable-ScheduledTask
+	.EXAMPLE
+		Enable-ScheduledTask -TaskName "SystemScan"
+    .Inputs
+    .Outputs
+    .NOTES
+		Author: Trentent Tye
+      	Company: TheoryPC
+
+		History
+      	Last Change: dd.mm.yyyy TT: function created
+		Last Change: 09.11.2017 TT: add .SYNOPSIS to this function
+
+	.Link
+#>
+	[CmdletBinding()]
+	param(
+		[parameter(ValueFromPipeline=$True)] $TaskName
+	)
+
+	process {
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+		#check to see if this is a COMObject (someone is passing a scheduled task into this function) and pull the name from it.
+		if ($TaskName -ne $null) { if ($TaskName.GetType().Name -eq "__ComObject") { $TaskName = $TaskName.name} }
+		# Try to create the TaskService object on the local computer; throw an error on failure
+		try {
+			$TaskService = new-object -comobject "Schedule.Service"
+		}
+		catch [System.Management.Automation.PSArgumentException] {
+			throw $_
+		}
+		try {
+			$TaskService.Connect()
+		}
+		catch [System.Management.Automation.MethodInvocationException] {
+			write-warning "$_"
+			return
+		}
+		function get-task($taskFolder) {
+			$tasks = $taskFolder.GetTasks($Hidden.IsPresent -as [Int])
+			$tasks | foreach-object { $_ }
+			try {
+				$taskFolders = $taskFolder.GetFolders(0)
+				$taskFolders | foreach-object { get-task $_ $TRUE }
+			}
+			catch [System.Management.Automation.MethodInvocationException] {
+			}
+		}
+        $rootFolder = $TaskService.GetFolder("\")
+        $taskList = get-task $rootFolder
+        foreach ($task in $taskList) {
+            if ($task.name -eq $TaskName) {
+                if ($task.Enabled -eq $false) { $task.Enabled = $true }
+            }
+        }
+    }
+}
+
+function Get-PreparationState {
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+    #Get Preparation State
+    $BISFRegistry = Get-BISFRegistryValues -key "HKLM:\SOFTWARE\Login Consultants\BISF"
+    Foreach ($regvalue in $BISFRegistry) {
+		if ($($regvalue.value) -eq "LIC_BISF_PrepState") {
+            return $regvalue.data
+        }
+	}
+}
+
+function Set-PreparationState {
+<#
+    .SYNOPSIS
+        Sets the current state of preparation
+	.Description
+		Sets the current state of preparation to either InProgress, RebootRequired or Completed.
+		When preparation is run, the initial state is set to InProgress.  If a task or process
+		requires a reboot *which can be deferred*, the script must use this function to set the 
+		state to RebootRequired.
+		RebootRequired is a value that is checked at the end of the preparation process.  If it's
+		found then a reboot is executed.  It is up to your script to ensure that whatever
+		caused the reboot has been satisfied so that it does not set "RebootRequired" in a infinite loop.
+		Diagram:
+			
+                 ----------------------
+        |----->  |BISF-Prep is started|
+        |        ----------------------
+        |                   |
+        |                   V
+        |         --------------------------------------
+        |         |LIC_BISF_PrepState value set to     |
+        |         |"InProgress" and BISF Prep Scheduled| (Occurs in PrepBISF_Start.ps1)
+        |         |Task is "Enabled"                   |                                                    
+        |         --------------------------------------                                                    
+        |                   |                                                                                
+        |          _________V___________                                                                
+        |         /Does a script within \                                                                    
+        |        / Prep phase require a  \_____ No------------------------------------------------------|
+        |        \        reboot?        /                                                              |
+        |         -----------------------                                                               |
+        |                   |                                                                           |
+        |                  Yes                                                                          |
+        |                   |                                                                           |
+        |          _________V_________                 --------------------------------                 |
+        |         /Can it be deferred?\_____ Yes-----> |Script sets LIC_BISF_PrepState|                 |
+        |          -------------------                 |value to "RebootRequired"     |                 |
+        |                   |                          --------------------------------                 |
+        |                   No                                           |                              |
+        |                   |                                            |                              |
+        |                   V                                            |                              |
+        |         ----------------------                    ____________/\____________                  V    
+        |         |       Reboot       |<--RebootRequired--< LIC_BISF_PrepState Check >(Occurs in 99_PrepBISF_POST_BaseImage.ps1)
+        |         ----------------------                     -----------\/-------------
+        |                   |                                            |
+        |                   V                                            V
+        |         /-------------------------/                        InProgress
+        |        /On reboot, BISF Prep     /                             |
+        |       / Scheduled Task executes /                              V
+        |      /-------------------------/                ----------------------------------------
+        |                   |                             | "Disable" BISF Prep scheduled task   |(Occurs in 99_PrepBISF_POST_BaseImage.ps1)
+        --------------------                              | set LIC_BISF_PrepState to Completed  |
+                                                          ----------------------------------------   
+                                                                        |
+                                                                        V
+                                                                     Shutdown  
+
+
+
+	.EXAMPLE
+		Set-BISFPreparationState -RebootRequired
+    .Inputs
+    .Outputs
+    .NOTES
+		Author: Trentent Tye
+      	Company: TheoryPC
+
+		History
+      	Last Change: 08.09.2017 TT: Function created
+		Last Change: 11.09.2017 TT: Redesigned with flag to check for deferred reboot
+		Last Change:
+	.Link
+#>
+Param(
+		[Parameter(Mandatory=$False)][Switch]$InProgress,
+		[Parameter(Mandatory=$False)][Switch]$RebootRequired,
+        [Parameter(Mandatory=$False)][Switch]$Completed
+	)
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+
+    if ($InProgress) {
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Login Consultants\BISF" -Name "LIC_BISF_PrepState" -Value "InProgress" -Force
+        Write-BISFLog "LIC_BISF_PrepState set to InProgress"
+    }
+    if ($RebootRequired) {
+        Get-BISFScheduledTask -TaskName "BISF Preparation Startup" | Enable-BISFScheduledTask
+		Set-ItemProperty -Path "HKLM:\SOFTWARE\Login Consultants\BISF" -Name "LIC_BISF_PrepState" -Value "RebootRequired" -Force
+        Write-BISFLog "LIC_BISF_PrepState set to RebootRequired"
+    }
+    if ($Completed) {
+		Get-BISFScheduledTask -TaskName "BISF Preparation Startup" | Disable-BISFScheduledTask
+        Set-ItemProperty -Path "HKLM:\SOFTWARE\Login Consultants\BISF" -Name "LIC_BISF_PrepState" -Value "Completed" -Force
+        Write-BISFLog "LIC_BISF_PrepState set to Completed"
+    }
 }
 
 function Get-vDiskDrive
@@ -2731,6 +3130,7 @@ function Start-CDS
 		History
       	Last Change: 10.09.2017 MS: function created
 		Last Change: 12.09.2017 MS: Changing to $servicename = "BrokerAgent"
+		Last Change: 25.03.2018 MS: Feature 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
 	.Link
 	  #
 #>
@@ -2739,9 +3139,12 @@ function Start-CDS
 	IF ($returnTestXDSoftware -eq "true")   # Citrix VDA only
 	{
 		$servicename = "BrokerAgent"
-		IF ($LIC_BISF_CLI_CDS -eq "1")
-		{
+		IF ($LIC_BISF_CLI_CDS -eq "1") {
 			Write-BISFLog -Msg "The $servicename would configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
+
+			IF ($LIC_BISF_CLI_CDSdelay = "") {$LIC_BISF_CLI_CDSdelay = 0 }
+			Write-BISFLog -Msg "Additional Citrix Desktop Service delay is set to $LIC_BISF_CLI_CDSdelay seconds"
+			Start-Sleep -Seconds $LIC_BISF_CLI_CDSdelay
 			Invoke-BISFService -ServiceName "$servicename" -Action Start -StartType Automatic
 		} ELSE {
 			Write-BISFLog -Msg "The $servicename would not configured through ADMX.. normal operation state"
@@ -2973,6 +3376,50 @@ PARAM(
 	$Global:VolNbr = $getvolNbr
 }
 
+Function Get-Hypervisor {
+<#
+    .SYNOPSIS
+        Get the installed Hypervisor like XenServer, VMware, Hyper-V, Nutanix AHV
+
+		use get-help <functionname> -full to see full help
+    .EXAMPLE
+		Get-BISFHypervisor
+
+    .Inputs
+    .Outputs
+    .NOTES
+		Author: Matthias Schlimm
+		Company: EUCweb.com
+
+		History
+      	Last Change: 26.03.2018 MS: Script created
+
+	.Link
+	  #
+#>
+
+#Xenserver
+	$svc = Test-BISFService -ServiceName "xenagent" -ProductName "XenServer Tools"
+	$HV="XenServer"
+#VMware
+	$svc = Test-BISFService -ServiceName "vmtools" -ProductName "VMware Tools"
+	$HV="VMware"
+#Hyper-V
+	$svc = Test-BISFService -ServiceName "vmicguestinterface" -ProductName "Hyper-V Guest Service Interface"
+	$HV="Hyper-V"
+#NUatnix AHV
+	$svc = Test-BISFService -ServiceName "Nutanix Guest Agent" -ProductName "Nutanix Guest Tools"
+	$HV="AHV"
+
+IF ($svc)
+{
+	return $HV
+} ELSE
+{
+	Write-BISFLog -Msg "No supported Hypervisor Tools installed, maybe BIS-F is running on hardware" -ShowConsole -Type W
+	$return $false
+}
+
 function Test-ServiceState {
 	<#
     .SYNOPSIS
@@ -3016,4 +3463,8 @@ function Test-ServiceState {
 		Write-BISFlog -Msg "The Service $($svc.DisplayName) is NOT successfully in $Status state" -Type W -SubMsg
 	}
 	return $svc.Status
+}
+
+
+
 }
