@@ -1,40 +1,41 @@
 ﻿Function Initialize-Configuration {
-	<#
-    .SYNOPSIS
-        define global environment
-	.Description
-      	defines the global variables for using in the script framework
-		use get-help <functionname> -full to see full help
-    .EXAMPLE
-		Initialize-BISFConfiguration
+<#
+.SYNOPSIS
+	define global environment
+.Description
+	defines the global variables for using in the script framework
+	use get-help <functionname> -full to see full help
+.EXAMPLE
+	Initialize-BISFConfiguration
 
-    .Inputs
-    .Outputs
-    .NOTES
-		Author: Matthias Schlimm
-      	Company: Login Consultants Germany GmbH
+.Inputs
+.Outputs
+.NOTES
+	Author: Matthias Schlimm
+	Company: Login Consultants Germany GmbH
 
-		History
-      	Last Change: dd.mm.yyyy MS: function created
-		Last Change: 07.09.2015 MS: Added .SYNOPSIS to this function
-		Last Change: 03.11.2015 MS: Removed function NimbleFastReclaim would be replaced with Write-ZeroesToFreeSpace
-	    Last Change: 25.11.2015 MS: Changed WindowTitle from 2015 to 2016
-	    Last Change: 16.12.2015 MS: Fixed code error 1133 Write-Progress "Done" "Done" -completed
-		Last Change: 17.12.2015 MS: Bugfix :$ImageSW=$false would be set to false, wrong order
-		Last Change: 07.01.2016 MS: Added Optimize-WinSxs
-		Last Change: 07.01.2016 MS: Added Test-VMwareHorizonViewSoftware
-		Last Change: 07.01.2016 MS: Function Invoke-Service: If No Image Management-Software would be detected, the Service Startup type would not changed to manual
-	    Last Change: 20.01.2016 MS: Fixed wrong syntax to check if Image Management Software like VDA, PVS Target Device Driver or VMware View Agent is installed
-		Last Change: 21.01.2016 MS: Added function Get-OSCSessionType to run BIS-F from console session only
-        Last Change: 04.03.2016 MS: Fixed important bug in function invoke-service, servies would not started if needed
-	    Last Change: 04.10.2016 MS: Changed $Global:CTX_BISF_SCRIPTS = "Citrix BISF Scripts" to $Global:CTX_BISF_SCRIPTS = "Login BIS-F"
-		Last Change: 09.01.2017 MS: Created function Get-MacAddress
-		Last Change: 19.01.2017 JP: Line 1898; Added -Wait parameter for Start-Process
-		Last Change: 12.03.2017 MS: add $Global:Wait1= "10"  #global time in seconds
-		Last Change: 05.09.2017 TT: added "MaximumExecutionTime" to Show-ProgressBar
-		Last Change: 11.09.2017 MS: add $TaskStates to control the Preparation is running after Personlization first
-	        Last Change: 14.09.2017 TT: Added "Get-FileVersion" function
-	.Link
+	History
+	Last Change: dd.mm.yyyy MS: function created
+	Last Change: 07.09.2015 MS: Added .SYNOPSIS to this function
+	Last Change: 03.11.2015 MS: Removed function NimbleFastReclaim would be replaced with Write-ZeroesToFreeSpace
+	Last Change: 25.11.2015 MS: Changed WindowTitle from 2015 to 2016
+	Last Change: 16.12.2015 MS: Fixed code error 1133 Write-Progress "Done" "Done" -completed
+	Last Change: 17.12.2015 MS: Bugfix :$ImageSW=$false would be set to false, wrong order
+	Last Change: 07.01.2016 MS: Added Optimize-WinSxs
+	Last Change: 07.01.2016 MS: Added Test-VMwareHorizonViewSoftware
+	Last Change: 07.01.2016 MS: Function Invoke-Service: If No Image Management-Software would be detected, the Service Startup type would not changed to manual
+	Last Change: 20.01.2016 MS: Fixed wrong syntax to check if Image Management Software like VDA, PVS Target Device Driver or VMware View Agent is installed
+	Last Change: 21.01.2016 MS: Added function Get-OSCSessionType to run BIS-F from console session only
+	Last Change: 04.03.2016 MS: Fixed important bug in function invoke-service, servies would not started if needed
+	Last Change: 04.10.2016 MS: Changed $Global:CTX_BISF_SCRIPTS = "Citrix BISF Scripts" to $Global:CTX_BISF_SCRIPTS = "Login BIS-F"
+	Last Change: 09.01.2017 MS: Created function Get-MacAddress
+	Last Change: 19.01.2017 JP: Line 1898; Added -Wait parameter for Start-Process
+	Last Change: 12.03.2017 MS: add $Global:Wait1= "10"  #global time in seconds
+	Last Change: 05.09.2017 TT: added "MaximumExecutionTime" to Show-ProgressBar
+	Last Change: 11.09.2017 MS: add $TaskStates to control the Preparation is running after Personlization first
+	Last Change: 14.09.2017 TT: Added "Get-FileVersion" function
+	Last Change: 14.09.2017 JP: Fixed error at line 3240
+.LINK
 #>
 
     Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
@@ -3417,7 +3418,7 @@ IF ($svc)
 } ELSE
 {
 	Write-BISFLog -Msg "No supported Hypervisor Tools installed, maybe BIS-F is running on hardware" -ShowConsole -Type W
-	$return $false
+	return $false
 }
 
 function Test-ServiceState {
