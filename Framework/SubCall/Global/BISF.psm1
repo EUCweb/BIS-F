@@ -3416,7 +3416,7 @@ Function Get-Hypervisor {
 	}
  ELSE {
 		Write-BISFLog -Msg "No supported Hypervisor Tools installed, maybe BIS-F is running on hardware" -ShowConsole -Type W
-		$return $false
+		return $false
 	}
 }
 
