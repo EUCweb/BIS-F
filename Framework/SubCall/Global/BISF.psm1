@@ -1198,13 +1198,13 @@ function Set-PreparationState {
 	.Description
 		Sets the current state of preparation to either InProgress, RebootRequired or Completed.
 		When preparation is run, the initial state is set to InProgress.  If a task or process
-		requires a reboot *which can be deferred*, the script must use this function to set the 
+		requires a reboot *which can be deferred*, the script must use this function to set the
 		state to RebootRequired.
 		RebootRequired is a value that is checked at the end of the preparation process.  If it's
 		found then a reboot is executed.  It is up to your script to ensure that whatever
 		caused the reboot has been satisfied so that it does not set "RebootRequired" in a infinite loop.
 		Diagram:
-			
+
                  ----------------------
         |----->  |BISF-Prep is started|
         |        ----------------------
@@ -1213,11 +1213,11 @@ function Set-PreparationState {
         |         --------------------------------------
         |         |LIC_BISF_PrepState value set to     |
         |         |"InProgress" and BISF Prep Scheduled| (Occurs in PrepBISF_Start.ps1)
-        |         |Task is "Enabled"                   |                                                    
-        |         --------------------------------------                                                    
-        |                   |                                                                                
-        |          _________V___________                                                                
-        |         /Does a script within \                                                                    
+        |         |Task is "Enabled"                   |
+        |         --------------------------------------
+        |                   |
+        |          _________V___________
+        |         /Does a script within \
         |        / Prep phase require a  \_____ No------------------------------------------------------|
         |        \        reboot?        /                                                              |
         |         -----------------------                                                               |
@@ -1231,7 +1231,7 @@ function Set-PreparationState {
         |                   No                                           |                              |
         |                   |                                            |                              |
         |                   V                                            |                              |
-        |         ----------------------                    ____________/\____________                  V    
+        |         ----------------------                    ____________/\____________                  V
         |         |       Reboot       |<--RebootRequired--< LIC_BISF_PrepState Check >(Occurs in 99_PrepBISF_POST_BaseImage.ps1)
         |         ----------------------                     -----------\/-------------
         |                   |                                            |
@@ -1242,10 +1242,10 @@ function Set-PreparationState {
         |      /-------------------------/                ----------------------------------------
         |                   |                             | "Disable" BISF Prep scheduled task   |(Occurs in 99_PrepBISF_POST_BaseImage.ps1)
         --------------------                              | set LIC_BISF_PrepState to Completed  |
-                                                          ----------------------------------------   
+                                                          ----------------------------------------
                                                                         |
                                                                         V
-                                                                     Shutdown  
+                                                                     Shutdown
 
 
 
@@ -2770,7 +2770,7 @@ function Move-EvtLogs
 			#$Error.ErrorRecord
 			#$Error.Errors
 			$x = $_.Exception.Message
-			Write-BISFLog -Msg “Error:`t`t $x" -Type W
+			Write-BISFLog -Msg "Error:`t`t $x" -Type W
 
 			#Exit
 		 }
@@ -3377,7 +3377,7 @@ PARAM(
 }
 
 Function Get-Hypervisor {
-<#
+	<#
     .SYNOPSIS
         Get the installed Hypervisor like XenServer, VMware, Hyper-V, Nutanix AHV
 
@@ -3398,30 +3398,30 @@ Function Get-Hypervisor {
 	  #
 #>
 
-#Xenserver
+	#Xenserver
 	$svc = Test-BISFService -ServiceName "xenagent" -ProductName "XenServer Tools"
-	$HV="XenServer"
-#VMware
+	$HV = "XenServer"
+	#VMware
 	$svc = Test-BISFService -ServiceName "vmtools" -ProductName "VMware Tools"
-	$HV="VMware"
-#Hyper-V
+	$HV = "VMware"
+	#Hyper-V
 	$svc = Test-BISFService -ServiceName "vmicguestinterface" -ProductName "Hyper-V Guest Service Interface"
-	$HV="Hyper-V"
-#NUatnix AHV
+	$HV = "Hyper-V"
+	#NUatnix AHV
 	$svc = Test-BISFService -ServiceName "Nutanix Guest Agent" -ProductName "Nutanix Guest Tools"
-	$HV="AHV"
+	$HV = "AHV"
 
-IF ($svc)
-{
-	return $HV
-} ELSE
-{
-	Write-BISFLog -Msg "No supported Hypervisor Tools installed, maybe BIS-F is running on hardware" -ShowConsole -Type W
-	$return $false
+	IF ($svc) {
+		return $HV
+	}
+ ELSE {
+		Write-BISFLog -Msg "No supported Hypervisor Tools installed, maybe BIS-F is running on hardware" -ShowConsole -Type W
+		$return $false
+	}
 }
 
-function Test-ServiceState {
-	<#
+	function Test-ServiceState {
+		<#
     .SYNOPSIS
         check the State of the Service
 	.Description
@@ -3442,29 +3442,54 @@ function Test-ServiceState {
 	.Link
 #>
 
-	param (
-		# Specifies the ServiceName
-		[parameter(Mandatory = $true)]
-		[ValidateNotNullOrEmpty()]$ServiceName,
+		param (
+			# Specifies the ServiceName
+			[parameter(Mandatory = $true)]
+			[ValidateNotNullOrEmpty()]$ServiceName,
 
-		# Specifies the Starttype: Disabled, Manual, Automatic
-		[parameter(Mandatory = $false)]
-		[ValidateSet("Running","Stopped")]
-		[ValidateNotNullOrEmpty()]$Status
+			# Specifies the Starttype: Disabled, Manual, Automatic
+			[parameter(Mandatory = $false)]
+			[ValidateSet("Running", "Stopped")]
+			[ValidateNotNullOrEmpty()]$Status
 
-	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
-	$svc = Get-Service $Servicename
+		)
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+		$svc = Get-Service $Servicename
 
-	IF ($Status -eq $svc.Status )
-	{
-		Write-BISFlog -Msg "The Service $($svc.DisplayName) is successfully in $($svc.Status) state"
-	}	else {
-		Write-BISFlog -Msg "The Service $($svc.DisplayName) is NOT successfully in $Status state" -Type W -SubMsg
+		IF ($Status -eq $svc.Status ) {
+			Write-BISFlog -Msg "The Service $($svc.DisplayName) is successfully in $($svc.Status) state"
+		}
+		else {
+			Write-BISFlog -Msg "The Service $($svc.DisplayName) is NOT successfully in $Status state" -Type W -SubMsg
+		}
+		return $svc.Status
 	}
-	return $svc.Status
-}
 
+	function Test-XiFrameSoftware {
+		<#
+    .SYNOPSIS
+        check if the Nutanix XiFrame Agent is installed
+	.Description
+      	if the Nutanix XiFrame Agent installed they will send a true or false value and will set the global variable ImageSW to true or false
+		use get-help <functionname> -full to see full help
 
+	.EXAMPLE
+		Test-XiFrameSoftware
+    .Inputs
+    .Outputs
+    .NOTES
+		Author: Matthias Schlimm
+      	Company: EUCweb.com
 
-}
+		History
+      	Last Change: 12.05.2019 MS: function created
+		Last Change:
+
+	.Link
+#>
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+		$svc = Test-BISFService -ServiceName "MF2Service" -ProductName "Nutanix XiFrame"
+		IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+		return $svc
+
+	}
