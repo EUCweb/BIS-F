@@ -3393,31 +3393,17 @@ Function Get-Hypervisor {
 
 		History
       	Last Change: 26.03.2018 MS: Script created
-
+		Last Change: 13.05.2019 MS: FRQ 76 - rewritten script to detect the platform of the running computer
 	.Link
 	  #
 #>
 
-	#Xenserver
-	$svc = Test-BISFService -ServiceName "xenagent" -ProductName "XenServer Tools"
-	$HV = "XenServer"
-	#VMware
-	$svc = Test-BISFService -ServiceName "vmtools" -ProductName "VMware Tools"
-	$HV = "VMware"
-	#Hyper-V
-	$svc = Test-BISFService -ServiceName "vmicguestinterface" -ProductName "Hyper-V Guest Service Interface"
-	$HV = "Hyper-V"
-	#NUatnix AHV
-	$svc = Test-BISFService -ServiceName "Nutanix Guest Agent" -ProductName "Nutanix Guest Tools"
-	$HV = "AHV"
+	$HV = Get-WmiObject -query 'select * from Win32_ComputerSystem' | select-object Manufacturer, Model
+	$Platform = $HV.Manufacturer + " " + $HV.Model
+	Write-BISFLog -Msg "Your Computer is running on $Platform Paltform" -Color Cyan -ShowConsole
+	return $Platform
 
-	IF ($svc) {
-		return $HV
-	}
- ELSE {
-		Write-BISFLog -Msg "No supported Hypervisor Tools installed, maybe BIS-F is running on hardware" -ShowConsole -Type W
-		return $false
-	}
+
 }
 
 	function Test-ServiceState {
