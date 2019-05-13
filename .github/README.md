@@ -1,4 +1,4 @@
-# BIS-F (Bugs Bunny Release)
+# BIS-F
 Base Image Script Framework (BIS-F)
 
 The Base Image Script Framework (BIS-F) is the perfect way to seal your Base Image. 
