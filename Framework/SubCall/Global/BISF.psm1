@@ -42,7 +42,7 @@
 	Write-BISFLog -Msg "Checking Prerequisites" -ShowConsole -color Cyan
     $Global:computer = gc env:computername
     $Global:cu_user = $env:username
-    $Global:Domain = (Get-WmiObject -Class Win32_ComputerSystem).domain
+    $Global:Domain = (Get-CimInstance -Class Win32_ComputerSystem).Domain
     $Global:hklm_software = "HKLM:\SOFTWARE"
     $Global:hklm_system = "HKLM:\SYSTEM"
     $Global:hkcu_software= "HKCU:\Software"
@@ -128,11 +128,11 @@ function Get-Adaptername {
 	.Link
 #>
     Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
-	$AdapterIndex = Get-WmiObject -Query "select * from win32_networkadapterconfiguration where DHCPEnabled = ""True"" and DNSHostName = ""$env:computername"" "
+	$AdapterIndex = Get-CimInstance -Query "select * from win32_networkadapterconfiguration where DHCPEnabled = ""True"" and DNSHostName = ""$env:COMPUTERNAME"" "
     IF (!($AdapterIndex -eq $null)) {
 		foreach ($Adapter in $AdapterIndex) {
 			$AdapterNr = $Adapter.Index
-			$AdapterName = Get-WmiObject -Query "select NetConnectionID from win32_networkadapter where Index = ""$AdapterNr"" "
+			$AdapterName = Get-CimInstance -Query "select NetConnectionID from win32_networkadapter where Index = ""$AdapterNr"" "
 			[array]$AdapterNames += $AdapterName.NetConnectionID
 		}
 	} Else {
@@ -428,7 +428,7 @@ function Test-WriteCacheDisk{
 #>
     $Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
     Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
-    $CacheDisk = Get-WmiObject -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
+    $CacheDisk = Get-CimInstance -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
     IF ($CacheDisk -eq $null) {
 	    $title="Fatal Error !!!"
         $text="Disk $PVSDiskDrive not exist. Please create a local new harddrive with enough space, assign driveletter $PVSDiskDrive and run this script again..!!"
@@ -605,7 +605,7 @@ function Test-XDSoftware{
 
 function Get-OSinfo{
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
-    $win32OS = Get-WmiObject Win32_OperatingSystem
+    $win32OS = Get-CimInstance -Class Win32_OperatingSystem
     $Global:OSName = $win32OS.caption
     $Global:OSBitness = $win32OS.OSArchitecture
     $Global:OSVersion = $win32OS.version
@@ -1315,8 +1315,8 @@ function Get-vDiskDrive
     $PVSDestDrive="FALSE"
 	$SysDrive = $env:SystemDrive
     $array = @()
-    $Sysdrvlabel = gwmi -Class win32_volume -Filter "Driveletter = '$SysDrive' "| % {$_.Label}
-    $Sysdrv=gwmi -Class win32_volume -Filter "Label = '$Sysdrvlabel'" | % {$_.DriveLetter}
+    $Sysdrvlabel = Get-CimInstance -Class win32_volume -Filter "Driveletter = '$SysDrive' "| ForEach-Object {$_.Label}
+    $Sysdrv=Get-CimInstance -Class win32_volume -Filter "Label = '$Sysdrvlabel'" | ForEach-Object {$_.DriveLetter}
     $array += $Sysdrv
 	IF (!($CTXAppLayeringSW))
 	{
@@ -1727,8 +1727,8 @@ function Test-Service {
  		write-BISFlog -Msg "Service $($ServiceName) exists"
 		IF ($ProductName) {
 			$SVCFileVersion = $null
-			$service = gwmi -class Win32_Service | ? {$_.Name -eq $($ServiceName)}
-			$SVCImagePath = ($service | Select -Expand PathName) -split "-|/"
+			$service = Get-CimInstance -Class Win32_Service | Where-Object {$_.Name -eq $($ServiceName)}
+			$SVCImagePath = ($service | Select-Object -Expand PathName) -split "-|/"
 			$SVCImagePath= $SVCImagePath[0]
 			$SVCImagePath = $SVCImagePath -replace ('"','')
 			$Global:glbSVCImagePath = "$SVCImagePath"
@@ -1756,10 +1756,10 @@ function Invoke-Service
  {
 	<#
     .SYNOPSIS
-        reconfigure the service
+        Reconfigure the service
 	.Description
-      	reconfigure a specified service to Start or Stop the service and set the startuptype to disabled, manual, automatic
-		use get-help <functionname> -full to see full help
+      	Reconfigure a specified service to Start or Stop the service and set the startuptype to disabled, manual, automatic
+		Use get-help <functionname> -full to see full help
     .EXAMPLE
 		The service will be stopped and set to manual startup type
 		 Invoke-BISFService -ServiceName wuauserv -Action Stop -StartType manual
@@ -1775,8 +1775,6 @@ function Invoke-Service
 	.EXAMPLE
 		The service will be started if the Image is in ReadOnly Mode
 		 Invoke-BISFService -ServiceName wuauserv -Action Start -CheckDiskMode RO
-    .Inputs
-    .Outputs
     .NOTES
 		Author: Matthias Schlimm, Florian Frank
       	Company: Login Consultants Germany GmbH
@@ -1792,7 +1790,7 @@ function Invoke-Service
 		Last Change: 11.09.2017 FF: add missing function name
 		Last Change: 29.10.2017 MS: test DiskMode match VDA instead of MCS
 		Last Change: 01.07.2018 MS: Hotfix 49: running Test-BISFServiceState after changing Service to get the right Status back
-	.Link
+	.LINK
 #>
 
 	param (
@@ -1816,6 +1814,7 @@ function Invoke-Service
 		[ValidateNotNullOrEmpty()]$CheckDiskMode
 
 	)
+
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
 	If (!($CheckDiskMode -eq $null))
 	{
@@ -2433,8 +2432,8 @@ function Get-MacAddress
     Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
     $computer = $env:COMPUTERNAME
 	$HostIP = [System.Net.Dns]::GetHostByName($computer).AddressList[0].IPAddressToString
-	$wmi = gwmi -Class Win32_NetworkAdapterConfiguration -ComputerName $computer
-	$mac = (($wmi | where { $_.IPAddress -eq $HostIP }).MACAddress)
+	$wmi = Get-CimInstance -Class Win32_NetworkAdapterConfiguration
+	$mac = (($wmi | Where-Object { $_.IPAddress -eq $HostIP }).MACAddress)
 	$Delimiter = ":"
     $mac = $mac -replace "$Delimiter",""
 	Write-BISFLog -Msg "The MAC-Address for further use would be resolved: $mac"
@@ -3252,7 +3251,7 @@ function Start-VHDOfflineDefrag
 				Write-BISFLog -Msg "Two new drives were added. Checking which drive requires offline defragmentation" -ShowConsole -SubMsg -Color DarkCyan
 				foreach ( $Drive in $Drives ) {
 					Write-BISFLog -Msg "Checking drive $($Drive):" -ShowConsole -SubMsg -Color DarkCyan
-					if ( (Get-WmiObject -Class win32_volume -Filter "DriveLetter = '$($Drive):'").Label -like "*Reserved*") {
+					if ( (Get-CimInstance -Class win32_volume -Filter "DriveLetter = '$($Drive):'").Label -like "*Reserved*") {
 						Write-BISFLog -Msg "Drive $($Drive): is the 'System Reserved' drive. This one does not require offline defragmentation" -ShowConsole -SubMsg -Color DarkCyan
 					} else {
 						Write-BISFLog -Msg "Drive $($Drive): is the primary partition and requires offline defragmentation" -ShowConsole -SubMsg -Color DarkCyan
