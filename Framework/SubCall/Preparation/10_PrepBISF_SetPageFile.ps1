@@ -42,8 +42,8 @@ Process {
     Write-BISFLog -Msg "Variable pageFileInitialSize         : $pageFileInitialSize" -ShowConsole -Color Cyan  -SubMsg
     Write-BISFLog -Msg "Variable pageFileMaximumSize         : $pageFileMaximumSize" -ShowConsole -Color Cyan  -SubMsg
 
-    $CurrentPageFile = Get-WmiObject -query "select * from Win32_PageFileSetting"
-    $System = Get-WmiObject Win32_ComputerSystem -EnableAllPrivileges
+    $CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
+    $System = Get-CimInstance -ClassName Win32_ComputerSystem -EnableAllPrivileges
 
     #we set our pagefile to D:\pagefile.sys with initial and maximum values at 4096MB and disable automatic pagefile management
     if ($System.AutomaticManagedPagefile -eq $true) {
@@ -75,14 +75,14 @@ Process {
     }
 
     if ($recreatePageFile -eq $true) {
-        $CurrentPageFile = Get-WmiObject -query "select * from Win32_PageFileSetting"
+        $CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
         $CurrentPageFile.Delete()
-        $CurrentPageFile = Get-WmiObject -query "select * from Win32_PageFileSetting"
+        $CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
         if ($CurrentPageFile -ne $null) { $CurrentPageFile.Delete() }
         
-        Set-WMIInstance -class Win32_PageFileSetting -Arguments @{name=$pageFileLocation;InitialSize = $pageFileInitialSize;MaximumSize = $pageFileMaximumSize} | out-null
+        Set-CimInstance -ClassName Win32_PageFileSetting -Arguments @{name=$pageFileLocation;InitialSize = $pageFileInitialSize;MaximumSize = $pageFileMaximumSize} | out-null
         Write-BISFLog -Msg  "New Pagefile settings applied:" -ShowConsole -Color DarkCyan -SubMsg
-        $CurrentPageFile = Get-WmiObject -query "select * from Win32_PageFileSetting"
+        $CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
         Write-BISFLog -Msg  "Number of pagefiles: $($($CurrentPageFile.SettingID).count)" -ShowConsole -Color DarkCyan -SubMsg
         Write-BISFLog -Msg  "Pagefile location: $($CurrentPageFile.name)" -ShowConsole -Color DarkCyan -SubMsg
         Write-BISFLog -Msg  "Pagefile initial size: $($CurrentPageFile.initialSize)" -ShowConsole -Color DarkCyan -SubMsg

@@ -35,6 +35,7 @@
 	Last Change: 11.09.2017 MS: add $TaskStates to control the Preparation is running after Personlization first
 	Last Change: 14.09.2017 TT: Added "Get-FileVersion" function
 	Last Change: 14.09.2017 JP: Fixed error at line 3240
+	Last Change: 14.05.2019 JP: Improved Get-PendingReboot function, removed wmi commands
 .LINK
 #>
 
@@ -42,7 +43,7 @@
 	Write-BISFLog -Msg "Checking Prerequisites" -ShowConsole -color Cyan
     $Global:computer = gc env:computername
     $Global:cu_user = $env:username
-    $Global:Domain = (Get-CimInstance -Class Win32_ComputerSystem).Domain
+    $Global:Domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
     $Global:hklm_software = "HKLM:\SOFTWARE"
     $Global:hklm_system = "HKLM:\SYSTEM"
     $Global:hkcu_software= "HKCU:\Software"
@@ -605,7 +606,7 @@ function Test-XDSoftware{
 
 function Get-OSinfo{
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
-    $win32OS = Get-CimInstance -Class Win32_OperatingSystem
+    $win32OS = Get-CimInstance -ClassName Win32_OperatingSystem
     $Global:OSName = $win32OS.caption
     $Global:OSBitness = $win32OS.OSArchitecture
     $Global:OSVersion = $win32OS.version
@@ -845,13 +846,11 @@ Function Get-PendingReboot {
 If (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return $true }
 If (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) { return $true }
 If (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name PendingFileRenameOperations -EA Ignore) { return $true }
- try {
-		$util = [wmiclass]"\.\root\ccm\clientsdk:CCM_ClientUtilities"
-		$status = $util.DetermineIfRebootPending()
-		if(($status -ne $null) -and $status.RebootPending) {
-			return $true
-		}
- }
+try {
+		$RebootPending = Invoke-CimMethod -Namespace root\ccm\ClientSDK -ClassName CCM_ClientUtilities -Name DetermineIfRebootPending | Select-Object "RebootPending"
+		$IsHardRebootPending = Invoke-CimMethod -Namespace root\ccm\ClientSDK -ClassName CCM_ClientUtilities -Name DetermineIfRebootPending | Select-Object "IsHardRebootPending"
+		If (($RebootPending -eq $true) -or ($IsHardRebootPending -eq $true)) { return $true }
+ 	}
 	catch {}
 	return $false
 }
@@ -1315,8 +1314,8 @@ function Get-vDiskDrive
     $PVSDestDrive="FALSE"
 	$SysDrive = $env:SystemDrive
     $array = @()
-    $Sysdrvlabel = Get-CimInstance -Class win32_volume -Filter "Driveletter = '$SysDrive' "| ForEach-Object {$_.Label}
-    $Sysdrv=Get-CimInstance -Class win32_volume -Filter "Label = '$Sysdrvlabel'" | ForEach-Object {$_.DriveLetter}
+    $Sysdrvlabel = Get-CimInstance -Class Win32_Volume -Filter "Driveletter = '$SysDrive' "| ForEach-Object {$_.Label}
+    $Sysdrv=Get-CimInstance -ClassName Win32_Volume -Filter "Label = '$Sysdrvlabel'" | ForEach-Object {$_.DriveLetter}
     $array += $Sysdrv
 	IF (!($CTXAppLayeringSW))
 	{
@@ -1348,7 +1347,7 @@ function Get-ScriptExecutionPath
 	# 05.05.2015 MS: running BIS-F from local drives only
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
 	$scriptdrive = $Main_Folder.Substring(0,2)
-	$locadrives = get-wmiobject win32_volume | ? { $_.DriveType -eq 3 } | % {$_.Driveletter}
+	$locadrives = Get-CimInstance -ClassName Win32_Volume | Where-Object { $_.DriveType -eq 3 } | Where-Object {$_.Driveletter}
 	Foreach ($localdrive in $locadrives)
 	{
     	IF ($localdrive -eq $scriptdrive)
@@ -1727,7 +1726,7 @@ function Test-Service {
  		write-BISFlog -Msg "Service $($ServiceName) exists"
 		IF ($ProductName) {
 			$SVCFileVersion = $null
-			$service = Get-CimInstance -Class Win32_Service | Where-Object {$_.Name -eq $($ServiceName)}
+			$service = Get-CimInstance -ClassName Win32_Service | Where-Object {$_.Name -eq $($ServiceName)}
 			$SVCImagePath = ($service | Select-Object -Expand PathName) -split "-|/"
 			$SVCImagePath= $SVCImagePath[0]
 			$SVCImagePath = $SVCImagePath -replace ('"','')
@@ -2432,7 +2431,7 @@ function Get-MacAddress
     Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
     $computer = $env:COMPUTERNAME
 	$HostIP = [System.Net.Dns]::GetHostByName($computer).AddressList[0].IPAddressToString
-	$wmi = Get-CimInstance -Class Win32_NetworkAdapterConfiguration
+	$wmi = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration
 	$mac = (($wmi | Where-Object { $_.IPAddress -eq $HostIP }).MACAddress)
 	$Delimiter = ":"
     $mac = $mac -replace "$Delimiter",""
@@ -3251,7 +3250,7 @@ function Start-VHDOfflineDefrag
 				Write-BISFLog -Msg "Two new drives were added. Checking which drive requires offline defragmentation" -ShowConsole -SubMsg -Color DarkCyan
 				foreach ( $Drive in $Drives ) {
 					Write-BISFLog -Msg "Checking drive $($Drive):" -ShowConsole -SubMsg -Color DarkCyan
-					if ( (Get-CimInstance -Class win32_volume -Filter "DriveLetter = '$($Drive):'").Label -like "*Reserved*") {
+					if ( (Get-CimInstance -ClassName Win32_Volume -Filter "DriveLetter = '$($Drive):'").Label -like "*Reserved*") {
 						Write-BISFLog -Msg "Drive $($Drive): is the 'System Reserved' drive. This one does not require offline defragmentation" -ShowConsole -SubMsg -Color DarkCyan
 					} else {
 						Write-BISFLog -Msg "Drive $($Drive): is the primary partition and requires offline defragmentation" -ShowConsole -SubMsg -Color DarkCyan
