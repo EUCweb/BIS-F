@@ -1,18 +1,17 @@
-<#
+﻿<#
     .SYNOPSIS
         Prepare Cylance PROTECT Agent for Image Managemement
-	.Description
-      	Delete Computer specified entries
+	.DESCRIPTION
+      	Delete computer specific entries
     .EXAMPLE
-    .Inputs
-    .Outputs
     .NOTES
-    Author:  Mathias Kowalkowski
-    Company: SVA System Vertrieb Alexander GmbH
+		Author:  Mathias Kowalkowski
+		Company: SVA System Vertrieb Alexander GmbH
 
-    History
-        Last Change: 09.05.2019 MK: Script created
-	.Link
+		History
+        09.05.2019 MK: Script created
+	.LINK
+        https://eucweb.com
 #>
 
 Begin {
@@ -25,10 +24,10 @@ Begin {
     $ProductPath = "${env:ProgramFiles}\Cylance\Desktop"
     $ServiceName= "CylanceSvc"
 	[array]$ToDelete = @(
-        [pscustomobject]@{type="REG";value="HKLM:\SOFTWARE\Cylance\Desktop";data="FP"},
-        [pscustomobject]@{type="REG";value="HKLM:\SOFTWARE\Cylance\Desktop";data="FPMask"},
-        [pscustomobject]@{type="REG";value="HKLM:\SOFTWARE\Cylance\Desktop";data="FPVersion"},
-        [pscustomobject]@{type="REG";value="HKLM:\SOFTWARE\Cylance\Desktop";data="SelfProtectionLevel"}
+		[pscustomobject]@{type="REG";value="HKLM:\SOFTWARE\Cylance\Desktop";data="FP"},
+		[pscustomobject]@{type="REG";value="HKLM:\SOFTWARE\Cylance\Desktop";data="FPMask"},
+		[pscustomobject]@{type="REG";value="HKLM:\SOFTWARE\Cylance\Desktop";data="FPVersion"},
+		[pscustomobject]@{type="REG";value="HKLM:\SOFTWARE\Cylance\Desktop";data="SelfProtectionLevel"}
 	)
 }
 
