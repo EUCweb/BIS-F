@@ -1543,15 +1543,15 @@ function Optimize-WinSxs {
     .Outputs
     .NOTES
 		Author: Matthias Schlimm
-      	Company: Login Consultants Germany GmbH
+      	Company: EUCweb.com
 
 		History
       	Last Change: 07.01.2016 MS: function created
-
+		Last Change: 17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
 	.Link
 #>
 		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
-	    Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase | out-Null'
+	    Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase'
 		Show-BISFProgressBar -CheckProcess "Dism" -ActivityText "run DISM to cleanup WinSxs Folder ..."
 
 }
