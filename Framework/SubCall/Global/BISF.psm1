@@ -1184,13 +1184,13 @@ function Set-PreparationState {
 	.DESCRIPTION
 		Sets the current state of preparation to either InProgress, RebootRequired or Completed.
 		When preparation is run, the initial state is set to InProgress.  If a task or process
-		requires a reboot *which can be deferred*, the script must use this function to set the 
+		requires a reboot *which can be deferred*, the script must use this function to set the
 		state to RebootRequired.
 		RebootRequired is a value that is checked at the end of the preparation process.  If it's
 		found then a reboot is executed.  It is up to your script to ensure that whatever
 		caused the reboot has been satisfied so that it does not set "RebootRequired" in a infinite loop.
 		Diagram:
-			
+
 				 ----------------------
 		|----->  |BISF-Prep is started|
 		|        ----------------------
@@ -1199,11 +1199,11 @@ function Set-PreparationState {
 		|         --------------------------------------
 		|         |LIC_BISF_PrepState value set to     |
 		|         |"InProgress" and BISF Prep Scheduled| (Occurs in PrepBISF_Start.ps1)
-		|         |Task is "Enabled"                   |                                                    
-		|         --------------------------------------                                                    
-		|                   |                                                                                
-		|          _________V___________                                                                
-		|         /Does a script within \                                                                    
+		|         |Task is "Enabled"                   |
+		|         --------------------------------------
+		|                   |
+		|          _________V___________
+		|         /Does a script within \
 		|        / Prep phase require a  \_____ No------------------------------------------------------|
 		|        \        reboot?        /                                                              |
 		|         -----------------------                                                               |
@@ -1217,7 +1217,7 @@ function Set-PreparationState {
 		|                   No                                           |                              |
 		|                   |                                            |                              |
 		|                   V                                            |                              |
-		|         ----------------------                    ____________/\____________                  V    
+		|         ----------------------                    ____________/\____________                  V
 		|         |       Reboot       |<--RebootRequired--< LIC_BISF_PrepState Check >(Occurs in 99_PrepBISF_POST_BaseImage.ps1)
 		|         ----------------------                     -----------\/-------------
 		|                   |                                            |
@@ -1228,10 +1228,10 @@ function Set-PreparationState {
 		|      /-------------------------/                ----------------------------------------
 		|                   |                             | "Disable" BISF Prep scheduled task   |(Occurs in 99_PrepBISF_POST_BaseImage.ps1)
 		--------------------                              | set LIC_BISF_PrepState to Completed  |
-														  ----------------------------------------   
+														  ----------------------------------------
 																		|
 																		V
-																	 Shutdown  
+																	 Shutdown
 
 
 
@@ -1898,16 +1898,16 @@ function Optimize-WinSxs {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company: EUCweb.com
 
 		History:
 	  	07.01.2016 MS: function created
-
+        17.05.2019 MS: HF 106 - remove uneccesary out-null command
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
-	Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase | out-Null'
+	Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase'
 	Show-BISFProgressBar -CheckProcess "Dism" -ActivityText "run DISM to cleanup WinSxs Folder ..."
 
 }

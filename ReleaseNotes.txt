@@ -1,11 +1,8 @@
-<<<<<<< HEAD
+17.05.2019 MS: HF 106 - remove uneccesary out-null command function Optimize-WinSxs
+15.05.2019 JP: Fixed encoding, tabs (4), format, style, a few typos, merging errors and removed eof extra lines
 13.05.2019 MS: FRQ 76 - detect the platform of the running computer
 12.05.2019 MS: FRQ 97 - Nutanix Xi Frame Support
-=======
----------------------------------
-15.05.2019 JP: Fixed encoding, tabs (4), format, style, a few typos, merging errors and removed eof extra lines
 12.05.2019 MS: FRQ 97: Nutanix Xi Frame Support
->>>>>>> 9ed2d823b5efeed5be42ee80f6fedfd471bd5cd0
 10.05.2019 MK: FRQ 89: Cylance PROTECT generalization
 07.05.2019 JP: FRQ 91: Moved FSLogix settings to Microsoft ADMX category
 07.05.2019 JP: Updated Group Policy templates, fixed typos and errors, removed the german one since it's in english anyway
