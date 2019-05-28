@@ -13,6 +13,7 @@
 		27.10.2014 MS: Fix wrong $cachelocation from XML-File (thx to David Rosenthal)
 		12.12.2014 MS: syntax error at line 33
 		30.09.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
+		28.05.2019 MK: added a more stable verification for the empirum services and $cachelocation\Packages\* to file removal
 	.LINK
 		https://eucweb.com
 #>
@@ -22,12 +23,17 @@ Begin {
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
 	$script_name = [System.IO.Path]::GetFileName($script_path)
-	$servicename = "Eris"
-	$servicename1 = "MATRIXAUT"
+    $ServiceNames = @("Eris", "MATRIXAUT")
 	$product = "Matrix42 Empirum"
 }
 
 Process {
+    function StopService {
+        ForEach ($ServiceName in $ServiceNames) {
+            $svc = Test-BISFService -ServiceName "$ServiceName"
+            IF ($svc -eq $true) { Invoke-BISFService -ServiceName "$($ServiceName)" -Action Stop }
+        }
+    }
 	function deleteAgentData {
 		[xml]$xmlfile = Get-Content "$Empirum_path\AgentConfig.xml"
 		$cachelocation = Select-Xml "//Transport/Protocols/CommonParameters/LocalCache[@Platform='Windows']" $xmlfile | % { $_.Node.'#text' }
@@ -41,6 +47,7 @@ Process {
 		Remove-Item "$cachelocation\DDS\*" -Force -Recurse
 		Remove-Item "$cachelocation\Values\MachineValues\*" -Force -Recurse
 		Remove-Item "$cachelocation\Values\UserValues\*" -Force -Recurse
+        Remove-Item "$cachelocation\Packages\*" -Force -Recurse
 		
 		Write-Log -Msg "remove Empirum Agent specified registry entries" -Color Cyan
 		Remove-Item "$hklm_sw\MATRIX42\AGENT" -Force -ErrorAction SilentlyContinue
@@ -56,13 +63,11 @@ Process {
 	####################################################################
 
 	#### Main Program
-	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$product"
-	
-	IF ($svc -eq $true) {
-		Invoke-BISFService -ServiceName "$servicename" -Action Stop
-		Invoke-BISFService -ServiceName "$servicename1" -Action Stop
-		deleteAgentData
-	}
+    $svc = Test-BISFService -ServiceName $ServiceNames[0] -ProductName "$product"
+    if ($svc -eq $true) {
+        StopService
+        DeleteAgentData
+    }
 }
 
 End {
