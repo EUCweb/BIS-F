@@ -1,5 +1,6 @@
+30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
-28.03.2019 MS: FRQ 86 - Office 2019 Support
+28.03.2019 MS: FRQ 86: Office 2019 Support
 ---------------------------------
 Version 6.1.0 build 01.103 -- 17.12.2018 16:09:57 :
 17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
