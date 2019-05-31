@@ -9,7 +9,7 @@ param(
 	.NOTES
 		Author: Matthias Schlimm
 		Editor: Mike Bijl (Rewritten variable names and script format)
-		Company: Login Consultants Germany GmbH
+		Company: EUCweb.com
 
 		History:
 		21.09.2012 MS: Script created
@@ -58,6 +58,7 @@ param(
 		21.10.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution
 		05.11.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution - add .xml for all $templates
 		17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
+		30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 	  .LINK
 		https://eucweb.com
 	#>
@@ -371,9 +372,9 @@ Begin {
 							}
 							else {
 								Write-BISFLog -Msg "Template Path for $AppName is configured by GPO: $LIC_BISF_CLI_CTXOE_TP"
-								$template = $LIC_BISF_CLI_CTXOE_TP
+								$templates = $LIC_BISF_CLI_CTXOE_TP
 							}
-							Write-BISFLog -Msg "Template for $AppName : $template"
+							Write-BISFLog -Msg "Template for $AppName : $templates"
 
 							#Groups
 							if (($LIC_BISF_CLI_CTXOE_GROUPS -eq "") -or ($LIC_BISF_CLI_CTXOE_GROUPS -eq $null)) {
@@ -400,27 +401,29 @@ Begin {
 							}
 
 							#Commandline
-							IF (Test-Path "$CTXOTemplatePath\$template") {
-								Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template" -ShowConsole -SubMsg -Color DarkCyan
-								Write-BISFLog -Msg "Create temporary CMD-File ($tmpPS1) to run $AppName from them"
-								$logfolder_bisf = (Get-Item -Path $logfile | Select-Object -ExpandProperty Directory).FullName
-								$timestamp = Get-Date -Format yyyyMMdd-HHmmss
-								$output_XML = "$logfolder_bisf\Prep_BIS_CTXOE_$($computer)_$timestamp.xml"
-								"& ""$fileExists"" -Source ""$template""$groups-mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
-								$Global:LIC_BISF_3RD_OPT = $true # BIS-F own optimization will be disabled, if 3rd Party Optimization is true
-								$ctxoe_proc = Start-Process -FilePath powershell.exe -ArgumentList "-file $tmpPS1" -WindowStyle Hidden -PassThru
-								Show-BISFProgressBar -CheckProcessId $ctxoe_proc.Id -ActivityText "Running $AppName...please wait"
-								Remove-Item $tmpPS1 -Force
+							ForEach ($template in $templates.split(",")) {
+								IF (Test-Path "$CTXOTemplatePath\$template") {
+									Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template" -ShowConsole -SubMsg -Color DarkCyan
+									Write-BISFLog -Msg "Create temporary CMD-File ($tmpPS1) to run $AppName from them"
+									$logfolder_bisf = (Get-Item -Path $logfile | Select-Object -ExpandProperty Directory).FullName
+									$timestamp = Get-Date -Format yyyyMMdd-HHmmss
+									$output_XML = "$logfolder_bisf\Prep_BIS_CTXOE_$($computer)_$timestamp.xml"
+									"& ""$fileExists"" -Source ""$template""$groups-mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
+									$Global:LIC_BISF_3RD_OPT = $true # BIS-F own optimization will be disabled, if 3rd Party Optimization is true
+									$ctxoe_proc = Start-Process -FilePath powershell.exe -ArgumentList "-file $tmpPS1" -WindowStyle Hidden -PassThru
+									Show-BISFProgressBar -CheckProcessId $ctxoe_proc.Id -ActivityText "Running $AppName...please wait"
+									Remove-Item $tmpPS1 -Force
 
-								#CTXOE Logfile
-								$scriptfolder = (Get-Item -Path $FileExists | Select-Object -ExpandProperty Directory).FullName
-								$logfolder = "$scriptfolder\Logs"
-								$logfile_path = Get-ChildItem -Path "$logfolder" -filter "Log_Debug_CTXOE.log" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Select-Object -Last 1
-								Write-BISFLog -Msg "Add $AppName logfile from $logfile_path to BIS-F logfile"
-								Get-BISFLogContent -GetLogFile $logfile_path
-							}
-							ELSE {
-								Write-BISFLog -Msg "ERROR: Citrix Optimizer Template $CTXOTemplatePath\$template NOT exists !!" -Type E -SubMsg
+									#CTXOE Logfile
+									$scriptfolder = (Get-Item -Path $FileExists | Select-Object -ExpandProperty Directory).FullName
+									$logfolder = "$scriptfolder\Logs"
+									$logfile_path = Get-ChildItem -Path "$logfolder" -filter "Log_Debug_CTXOE.log" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Select-Object -Last 1
+									Write-BISFLog -Msg "Add $AppName logfile from $logfile_path to BIS-F logfile"
+									Get-BISFLogContent -GetLogFile $logfile_path
+								}
+								ELSE {
+									Write-BISFLog -Msg "ERROR: Citrix Optimizer Template $CTXOTemplatePath\$template NOT exists !!" -Type E -SubMsg
+								}
 							}
 						}
 						ELSE {

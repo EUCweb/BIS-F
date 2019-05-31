@@ -1,4 +1,5 @@
-30.05.2019 MK: ENH 104: updated service detection in 10_PrepBISF_Empirum.ps1
+30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
+28.05.2019 MK: ENH 104: updated service detection in 10_PrepBISF_Empirum.ps1
 17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
 15.05.2019 JP: Fixed encoding, tabs (4), format, style, a few typos, merging errors and removed eof extra lines
 13.05.2019 MS: FRQ 76: detect the platform of the running computer
