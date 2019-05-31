@@ -1,3 +1,4 @@
+31.05.2019 MS: FRQ 92: Server 2019 Support
 31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
 30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 28.05.2019 MK: ENH 104: updated service detection in 10_PrepBISF_Empirum.ps1
