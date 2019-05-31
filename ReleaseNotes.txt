@@ -1,5 +1,4 @@
 31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
-31.05.2019 MS: HF 109: Citrix BrokerAgent Service set to manual if VDA Delay Configuration is enabled
 30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 28.05.2019 MK: ENH 104: updated service detection in 10_PrepBISF_Empirum.ps1
 17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
