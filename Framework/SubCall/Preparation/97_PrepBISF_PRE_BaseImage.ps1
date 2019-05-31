@@ -96,6 +96,7 @@ param(
 		19.10.2018 MS: Bugfix 71: not to process ANY scheduled task disable actions
 		20.10.2018 MS: Bugfix 56: Office click to run issue after BIS-F seal
 		31.05.2019 MS: FRQ 92: Server 2019 Support
+		31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
 	.LINK
 		https://eucweb.com
 #>
@@ -190,7 +191,7 @@ Begin {
 		CLI         = "LIC_BISF_CLI_SM";
 		TestPath    = "";
 		Description = "Delete AllUsers Start Menu $Dir_AllUsersStartMenu ?";
-		Command     = "Remove-Item '$Dir_AllUsersStartMenu' -Recurse -Force -ErrorAction SilentlyContinue"
+		Command="Get-ChildItem -path '$Dir_AllUsersStartMenu' -Exclude 'Administrative Tools' | remove-item -Force -Recurse"
 	};
 	$ordercnt += 1
 
