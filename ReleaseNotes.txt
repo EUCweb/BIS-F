@@ -1,3 +1,5 @@
+---------------------------------
+Version 6.1.1 build 01.105 -- 31.05.2019 15:53:41 :
 31.05.2019 MS: update link to new webpage https://eucweb.com
 31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
 31.05.2019 MS: FRQ 92: Server 2019 Support
