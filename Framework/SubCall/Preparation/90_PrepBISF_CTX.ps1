@@ -59,6 +59,7 @@ param(
 		05.11.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution - add .xml for all $templates
 		17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
 		30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
+        31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
 	  .LINK
 		https://eucweb.com
 	#>
@@ -476,10 +477,11 @@ Begin {
 		$servicename = "BrokerAgent"
 		IF ($LIC_BISF_CLI_CDS -eq "1") {
 			Write-BISFLog -Msg "The $servicename would configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
-			Invoke-BISFService -ServiceName "$servicename" -StartType disabled -Action stop
+			Invoke-BISFService -ServiceName "$servicename" -StartType Disabled -Action stop
 		}
 		ELSE {
 			Write-BISFLog -Msg "The $servicename would not configured through ADMX.. normal operation state"
+			Invoke-BISFService -ServiceName "$servicename" -StartType Automatic -Action Start
 		}
 
 	}

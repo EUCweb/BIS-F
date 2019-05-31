@@ -1,3 +1,5 @@
+31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
+31.05.2019 MS: HF 109: Citrix BrokerAgent Service set to manual if VDA Delay Configuration is enabled
 30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 28.05.2019 MK: ENH 104: updated service detection in 10_PrepBISF_Empirum.ps1
 17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
@@ -16,7 +18,6 @@
 25.03.2018 MS: FRQ 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
 25.03.2018 MS: FRQ 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
 22.03.2018 MS: FRQ 15: support for Office 365 ClicktoRun
-21.03.2018 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
 25.02.2018 MS: HF 29: AppLayering does not detect the right layer
 15.02.2017 MS: HF 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 11.02.2018 MS: HF 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks

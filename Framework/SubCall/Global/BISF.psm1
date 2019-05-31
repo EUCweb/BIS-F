@@ -2698,7 +2698,7 @@ function Move-EvtLogs {
 			#$Error.ErrorRecord
 			#$Error.Errors
 			$x = $_.Exception.Message
-			Write-BISFLog -Msg “Error:`t`t $x" -Type W
+			Write-BISFLog -Msg "Error:`t`t $x" -Type W
 
 			#Exit
 		}
@@ -3304,7 +3304,6 @@ Function Get-Hypervisor {
 		Author: Matthias Schlimm
 		Company: EUCweb.com
 
-<<<<<<< HEAD
 		History
       	Last Change: 26.03.2018 MS: Script created
 		Last Change: 13.05.2019 MS: FRQ 76 - rewritten script to detect the platform of the running computer
@@ -3319,36 +3318,6 @@ Function Get-Hypervisor {
 
 
 }
-=======
-		History:
-	  	26.03.2018 MS: Script created
-
-	.LINK
-		https://eucweb.com
-	  #
-#>
-
-	#Xenserver
-	$svc = Test-BISFService -ServiceName "xenagent" -ProductName "XenServer Tools"
-	$HV = "XenServer"
-	#VMware
-	$svc = Test-BISFService -ServiceName "vmtools" -ProductName "VMware Tools"
-	$HV = "VMware"
-	#Hyper-V
-	$svc = Test-BISFService -ServiceName "vmicguestinterface" -ProductName "Hyper-V Guest Service Interface"
-	$HV = "Hyper-V"
-	#NUatnix AHV
-	$svc = Test-BISFService -ServiceName "Nutanix Guest Agent" -ProductName "Nutanix Guest Tools"
-	$HV = "AHV"
-
-	IF ($svc) {
-		return $HV
-	}
-	ELSE {
-		Write-BISFLog -Msg "No supported Hypervisor Tools installed, maybe BIS-F is running on hardware" -ShowConsole -Type W
-		return $false
-	}
->>>>>>> 9ed2d823b5efeed5be42ee80f6fedfd471bd5cd0
 
 	function Test-ServiceState {
 		<#
