@@ -1,3 +1,5 @@
+31.05.2019 MS: FRQ 92: Server 2019 Support
+31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
 30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
 28.03.2019 MS: FRQ 86: Office 2019 Support
