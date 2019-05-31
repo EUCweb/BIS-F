@@ -1,3 +1,4 @@
+31.05.2019 MS: update link to new webpage https://eucweb.com
 31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
 31.05.2019 MS: FRQ 92: Server 2019 Support
 31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
