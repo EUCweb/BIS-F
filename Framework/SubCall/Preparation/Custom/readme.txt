@@ -1,1 +1,1 @@
-put your custom scripts for the preparation during sealing here
+Store your custom scripts for the preparation during sealing here.
