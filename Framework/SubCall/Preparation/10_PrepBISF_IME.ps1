@@ -1,25 +1,31 @@
 ﻿[CmdletBinding(SupportsShouldProcess = $true)]
 param( 
 )
-<#
-	.SYNOPSIS
-		Delete Office 2010 IME Keyboards from Autorun
-	.DESCRIPTION
-	.EXAMPLE
-	.NOTES
-		Author: Benjamin Ruoff
-		Company: Login Consultants Germany GmbH
+    <#
+    .Synopsis
+      Delete Office 2010 IME Keyboards from Autorun
+    .Description
+    .EXAMPLE
+    .Inputs
+    .Outputs
+    .NOTES
+      Author: Benjamin Ruoff
+      Edittor: Benjamin Ruoff
+	  Company: Login Consultants Germany GmbH
+      
+      Date: 26.10.2015
+      
+      History
+      Last Change: 26.10.2015 MS: Script created
+      Last Change:
 
-		History
-		26.10.2015 MS: Script created
-	.LINK
-		https://eucweb.com
-#>
+    .Link
+    #>
 
 Begin {
 
-	####################################################################
-	# define environment
+    ####################################################################
+    # define environment
   
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
@@ -35,12 +41,17 @@ Begin {
 	[array]$reg_IME_name += "IME14 CHS Setup"
 	[array]$reg_IME_name += "IME14 CHT Setup"
 	
-	####################################################################
+
 	
-	function deleteOfficeIME {
-		# Delete specified Data
-		foreach ($path in $reg_IME_string) {
-			foreach ($key in $reg_IME_name) {
+    ####################################################################
+	
+	function deleteOfficeIME
+    {
+        # Delete specified Data
+	foreach ($path in $reg_IME_string) 
+		{
+			foreach ($key in $reg_IME_name)
+			{
 				Write-BISFLog -Msg "delete specified registry items in $($path)..."
 				Write-BISFLog -Msg "delete $key"
 				Remove-ItemProperty -Path $path -Name $key -ErrorAction SilentlyContinue
@@ -50,15 +61,16 @@ Begin {
 
 	} 
 	
+	
 	####################################################################
 }
 
 Process {
-	#### Main Program
+    #### Main Program
 	deleteOfficeIME
 
 }
 
 End {
-	Add-BISFFinishLine	
+    Add-BISFFinishLine	
 }
