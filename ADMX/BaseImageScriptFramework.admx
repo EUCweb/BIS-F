@@ -1,10 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--  (c) 2017 Base Script Image Framework  -->
-<policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   revision="1.1" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+<policyDefinitions revision="1.1" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="bisf" namespace="LoginConsultant.Policies.BISF" />
-    <using namespace="Microsoft.Policies.Windows" prefix="windows"/>
+    <target prefix="fullarmor" namespace="FullArmor.Policies.4B45A5FD_5F2A_4F83_8D05_801E155D82C4" />
+    <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
   <supportedOn>
@@ -949,6 +946,28 @@
           </value>
         </item>
       </disabledList>
+    </policy>
+    <policy name="POL_WinSxS" class="Machine" displayName="$(string.POL_WinSxS)" explainText="$(string.POL_WinSxS_Help)" presentation="$(presentation.POL_WinSxS)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WinSxS">
+      <parentCategory ref="CAT_MS" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxS">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxS">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+      <elements>
+        <boolean id="CHK_WinSxSBaseImage" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxSBaseImage" />
+        <decimal id="DXT_WinSxSTimeout" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxSTimeout" minValue="60" maxValue="480" />
+      </elements>
     </policy>
   </policies>
 </policyDefinitions>
