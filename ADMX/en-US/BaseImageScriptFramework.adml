@@ -35,8 +35,8 @@ Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F
 since BIS-F 6.1.1 you can enter multiuple templates with comma-separated and no space, like:
 PVS_Optimization.xml,3rd_Party.xml
 
-since BIS-F 6.12 autoselect for multiple Templates should work too:
-For Autoselection of the OS Template in combination with multiple Templates plese use:
+since BIS-F 6.1.2 AutoSelect for multiple Templates should work too:
+For Autoselection of the OS Template in combination with multiple Templates please use:
 AutoSelect,PVS_Optimization.xml,3rd_Party.xml
 
 AutoSelect is hardcoded and must be used, BIS-F will trigger the right OS template for Citrix Optimzer</string>
