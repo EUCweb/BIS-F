@@ -1,3 +1,4 @@
+21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
 21.06.2019 MS: HF 82 - RES ONE Automation Agent - Action is missing
 21.06.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template
 21.06.2019 MS: FRQ 115: ADMX: Control of WinSxS Optimization
