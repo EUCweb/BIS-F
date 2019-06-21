@@ -39,7 +39,7 @@ since BIS-F 6.12 autoselect for multiple Templates should work too:
 For Autoselection of the OS Template in combination with multiple Templates plese use:
 AutoSelect,PVS_Optimization.xml,3rd_Party.xml
 
-AutiSelect is hardcoded and must be used, BIS-F will trigger the right OS template for Citrix Optimzer</string>
+AutoSelect is hardcoded and must be used, BIS-F will trigger the right OS template for Citrix Optimzer</string>
       <string id="POL_SDelete">Run SDelete</string>
       <string id="POL_SDelete_Help">Run SDelete on PVS WriteCacheDisk if vDisk is in shared mode only 
 
