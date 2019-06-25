@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <policyDefinitionResources revision="1.0" schemaVersion="1.0">
   <displayName>
   </displayName>
@@ -30,7 +29,17 @@ To run Citrix Optimizer in analyze-only mode, check "Mode: Analyze only".
 If you disable this policy setting, Citrix Optimizer will not be executed.
 If you do not configure this policy setting, you'll be prompted during the sealing process.
 
-Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\Citrix Optimizer </string>
+Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\Citrix Optimizer 
+
+(Optional) Template:
+since BIS-F 6.1.1 you can enter multiuple templates with comma-separated and no space, like:
+PVS_Optimization.xml,3rd_Party.xml
+
+since BIS-F 6.1.2 AutoSelect for multiple Templates should work too:
+For Autoselection of the OS Template in combination with multiple Templates please use:
+AutoSelect,PVS_Optimization.xml,3rd_Party.xml
+
+AutoSelect is hardcoded and must be used, BIS-F will trigger the right OS template for Citrix Optimzer</string>
       <string id="POL_SDelete">Run SDelete</string>
       <string id="POL_SDelete_Help">Run SDelete on PVS WriteCacheDisk if vDisk is in shared mode only 
 
@@ -496,16 +505,35 @@ Note: If you has the Device personalization configured to skip it on all DiskMod
 If you enable this policy setting, .NET Optimization is running during sealing
 If you disable this policy setting, .NET Optimization is disabled during sealing
 If you do not configure this policy setting, .NET Optimization is running during sealing</string>
+      <string id="POL_WinSxS">WinSxS Optimization</string>
+      <string id="POL_WinSxS_Help">Run WinSxS Optimization during sealing (preparation)
+
+If you enable this policy setting, WinSxS Optimization is running during sealing
+If you disable this policy setting, WinSxS Optimization is disabled during sealing
+If you do not configure this policy setting, WinSxS Optimization is running during sealing
+
+execute WinSxS Optimization on BaseDisk only:
+If you using Citrix PVS or MCS the WinSxS Optimization is running on the BaseDisk only, during a parent disk seal process the WinSxS Optimization is skipped.
+
+Maximum Execution Timeout:
+You can specifiy the maximum executio timeout for the WinSxS Optimization. default is det to 240 minutes, min. 60, max 480. you can increase/decrease the value in steps of 15 minutes. if this value is reached during the WinSxS Optimization the DISM Process is terminated.
+
+About WinSxS:
+The Windows component store (C:\Windows\winsxs) directory is used during servicing operations within Windows installations. Servicing operations include, but are not limited to, Windows Update, service pack, and hotfix installations. 
+
+The component store contains all the files that are required for a Windows installation. And, any updates to those files are also held within the component store as the updates are installed. This causes the component store to grow over time as more updates, features, or roles are added to the installation. The component store uses NTFS hard links between itself and other Windows directories to increase the robustness of the Windows platform. </string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
         <textBox refId="TXT_CTXOE_TemplatePath">
           <label>(Optional) Template:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
         <textBox refId="TXT_CTXOE_Groups">
           <label>(Optional) List of enabled Groups:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
         <checkBox refId="CB_CTXOE_Analyze">Mode: Analyze only</checkBox>
         <checkBox refId="CHK_CTXOE_SF">Enable custom search folder</checkBox>
@@ -535,13 +563,15 @@ If you do not configure this policy setting, .NET Optimization is running during
       <presentation id="GhostDeviceClass">
         <textBox refId="GhostDeviceClassBox">
           <label>Classes:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="GhostDeviceFriendlyName">
         <textBox refId="GhostDeviceFriendlyNameBox">
           <label>Devices:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="GhostDeviceRemoval">
@@ -585,7 +615,8 @@ If you do not configure this policy setting, .NET Optimization is running during
         </text>
         <textBox refId="TXT_OT_Templ">
           <label>Template Name</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_CCleaner">
@@ -659,6 +690,10 @@ If you do not configure this policy setting, .NET Optimization is running during
           <label>Custom search folder</label>
           <defaultValue>C:\Windows\System32</defaultValue>
         </textBox>
+      </presentation>
+      <presentation id="POL_WinSxS">
+        <checkBox refId="CHK_WinSxSBaseImage">Execute WinSxS Optimization on BaseDisk only</checkBox>
+        <decimalTextBox refId="DXT_WinSxSTimeout" defaultValue="240" spinStep="15">Maximum Execution Timeout (min)</decimalTextBox>
       </presentation>
     </presentationTable>
   </resources>

@@ -1543,17 +1543,43 @@ function Optimize-WinSxs {
     .Outputs
     .NOTES
 		Author: Matthias Schlimm
-      	Company: Login Consultants Germany GmbH
+      	Company: EUCweb.com
 
 		History
       	Last Change: 07.01.2016 MS: function created
-
+		Last Change: 17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
+		Last Change: 21.06.2019 MS: FRQ 115: ADMX: Control of WinSxS Optimization
+		Last Change:
 	.Link
 #>
-		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
-	    Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase | out-Null'
-		Show-BISFProgressBar -CheckProcess "Dism" -ActivityText "run DISM to cleanup WinSxs Folder ..."
+    Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name})  #must be added at the begin to each function
+	IF (!(LIC_BISF_CLI_WinSxS -eq "NO"))		
+	{
+		Write-BISFLog -Msg "Perform WinSxS Optimization" -ShowConsole -Color Cyan
+		$runWinSxs = 1
+		IF ($LIC_BISF_CLI_WinSxSBaseImage -eq 1)
+		{
+			$DiskNameExtension = Get-BISFDiskNameExtension
+			IF (($DiskNameExtension -eq "BaseDisk") -or ($DiskNameExtension -eq "noVirtualDisk"))
+			{
+				$runWinSxs = 1
+			} ELSE {
+				$runWinSxs = 0
+				Write-BISFLog "WinSxS Optimization is configured in ADMX to run on BaseDisk or with noVirtualDisk assigned , $DiskNameExtension detected" -ShowConsole -SubMsg -Color DarkCyan
+			}
 
+		}
+		IF ($runWinSxs -eq 1) {
+			IF (!($LIC_BISF_CLI_WinSxSTimeout)) {$LIC_BISF_CLI_WinSxSTimeout = 60}
+			Write-BISFLog -Msg "WinSxS MaxExecutionTimeout is set to $LIC_BISF_CLI_WinSxSTimeout minutes" -ShowConsole -SubMsg -Color DarkCyan
+			Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase' 
+			Show-BISFProgressBar -CheckProcess "Dism" -ActivityText "run DISM to cleanup WinSxs Folder ...(max. Execution Timeout $LIC_BISF_CLI_WinSxSTimeout min)" -MaximumExecutionMinutes $LIC_BISF_CLI_WinSxSTimeout
+		} ELSE {
+			Write-BISFLog -Msg "WinSxS Optimization will not run (runWinSxs = 0)" -ShowConsole -SubMsg -Color DarkCyan
+		}
+	} ELSE {
+		Write-BISFLog -Msg "WinSxS Optimization is disabled in ADMX configuration."
+	}
 }
 
 function Test-VMwareHorizonViewSoftware{
@@ -2371,7 +2397,7 @@ function Move-EvtLogs
 			#$Error.ErrorRecord
 			#$Error.Errors
 			$x = $_.Exception.Message
-			Write-BISFLog -Msg “Error:`t`t $x" -Type W
+			Write-BISFLog -Msg "Error:`t`t $x" -Type W
 
 			#Exit
 		 }
