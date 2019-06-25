@@ -1,13 +1,22 @@
 #
+<<<<<<< HEAD
 # Modulmanifest für das Modul "PSGet_BISF"
 #
 # Generiert von: Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank
 #
 # Generiert am: 31.05.2019
+=======
+# Modulmanifest fï¿½r das Modul "PSGet_BISF"
+#
+# Generiert von: Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank
+#
+# Generiert am: 17.12.2018
+>>>>>>> ef2c05970961b73a4ccd50b560e6588484435e09
 #
 
 @{
 
+<<<<<<< HEAD
 # Die diesem Manifest zugeordnete Skript- oder Binärmoduldatei.
 RootModule = 'BISF.psm1'
 
@@ -120,31 +129,146 @@ AliasesToExport = @()
 
 # Die privaten Daten, die an das in "RootModule/ModuleToProcess" angegebene Modul übergeben werden sollen. Diese können auch eine PSData-Hashtabelle mit zusätzlichen von PowerShell verwendeten Modulmetadaten enthalten.
 PrivateData = @{
+=======
+	# Die diesem Manifest zugeordnete Skript- oder Binï¿½rmoduldatei.
+	RootModule = 'BISF.psm1'
 
-    PSData = @{
+	# Die Versionsnummer dieses Moduls
+	ModuleVersion = '6.1.0'
 
-        # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+	# Unterstï¿½tzte PSEditions
+	# CompatiblePSEditions = @()
 
-        # A URL to the license for this module.
-        # LicenseUri = ''
+	# ID zur eindeutigen Kennzeichnung dieses Moduls
+	GUID = '632e959f-fff8-40ee-96f4-d8fb3f122a9f'
 
-        # A URL to the main website for this project.
-        # ProjectUri = ''
+	# Autor dieses Moduls
+	Author = 'Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank'
 
-        # A URL to an icon representing this module.
-        # IconUri = ''
+	# Unternehmen oder Hersteller dieses Moduls
+	CompanyName = 'Login Consultants'
 
-        # ReleaseNotes of this module
-        # ReleaseNotes = ''
+	# Urheberrechtserklï¿½rung fï¿½r dieses Modul
+	Copyright = '(c) 2016 Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank. All rights reserved.'
 
-        # External dependent modules of this module
-        # ExternalModuleDependencies = ''
+	# Beschreibung der von diesem Modul bereitgestellten Funktionen
+	Description = 'This module contains functions and global variables needed for the Login Consultants Base Image Script Framework (BISF)
+	Author: Benjamin Ruoff
+	Date: 11.03.2014
 
-    } # End of PSData hashtable
+	History:
+	11.03.2014 BR: Script created -function Get-Adaptername  
+	13.03.2014 MS: add function Show-MessageBox (thx to BR)
+	18.03.2014 BR: new functions added (Write-Log, Set-Logfile, Invoke-FolderScripts)
+	21.03.2014 MS: last code change before release to web
+	01.04.2014 MS: added central functions and global environment variables from 10_XX_LIB_Config.ps1
+	15.05.2014 MS: add function get-version, to display this in the console window
+	06.08.2014 MS: Add function ChangeNetworkProviderOrder
+	11.08.2014 MS: change function set-Logfile to a single LogFile, like $LOG = "$regdata_log1\$LogFileName"
+	11.08.2014 MS: add $Global:hkcu_software= "HKCU:\SOFTWARE"
+	12.08.2014 MS: add function CheckPVSSoftware to check BNDevice.exe
+	12.08.2014 MS: move Set-Logfile to 10_XX_LIB_Config.ps1 / remove CheckLogDir
+	14.08.2014 MS: add Type for Info, Warning, Error for function Write-Log, exit script if Type = Error
+	15.08.2014 MS: function Get-Adaptername: add check AdapterIndex IF (!($AdapterIndex -eq $null))...
+	15.08.2014 MS: Change Title to "Base Image Script Framework (BIS-F)"
+	15.08.2014 MS: add function get-OSinfo
+	15.08.2014 MS: add function CheckXDSoftware
+	19.08.2014 MS: line 43: reduce PVSDiskDrive to 2 strings if variable exists -> $env:PVSWriteCacheDisk.Substring(0,2)
+	19.08.2014 MS: move function progressbar from 98_XX_PrepPVS_BUILD_vDisk.ps1 to this script 
+	19.08.2014 MS: add function get-LogContent
+	31.10.2014 MB: Renamed functions: Progressbar -> Show-progressbar / CheckXDSoftware -> Test-XDSoftware / CheckPVSSoftware -> Test-PVSSoftware / ChangeNetworkProviderOrder -> Set-NetworkProviderOrder / CheckPSVersion -> Get-PSVersion 
+	31.10.2014 MB: Renamed variables: hklm_sw -> hklm_software / hklm_sys -> hklm_system / hkcu_sw -> hkcu_software / CTX_PVS_SCRIPTS -> CTX_BISF_SCRIPTS / $LogFolderName = "BISLogs" -> $LogFolderName = "BISFLogs" / hklm_software_LIC_CTX_PVS_SCRIPTS -> hklm_software_LIC_CTX_BISF_SCRIPTS
+	06.02.2015 MS: add function Get-PendingReboot to BISF.psd1
+	24.04.2015 MS: change powershell minimum version to 3.0, because with version 2.0 the psd1 would not loaded corretly
+	21.08.2015 MS: Change Request 77 - remove all XX,XA,XD from al files and Scripts
+'
 
-} # End of PrivateData hashtable
+	# Die fï¿½r dieses Modul mindestens erforderliche Version des Windows PowerShell-Moduls
+	PowerShellVersion = '2.0'
 
+	# Der Name des fï¿½r dieses Modul erforderlichen Windows PowerShell-Hosts
+	# PowerShellHostName = ''
+
+	# Die fï¿½r dieses Modul mindestens erforderliche Version des Windows PowerShell-Hosts
+	# PowerShellHostVersion = ''
+
+	# Die fï¿½r dieses Modul mindestens erforderliche Microsoft .NET Framework-Version. Diese erforderliche Komponente ist nur fï¿½r die PowerShell Desktop-Edition gï¿½ltig.
+	# DotNetFrameworkVersion = ''
+
+	# Die fï¿½r dieses Modul mindestens erforderliche Version der CLR (Common Language Runtime). Diese erforderliche Komponente ist nur fï¿½r die PowerShell Desktop-Edition gï¿½ltig.
+	# CLRVersion = ''
+
+	# Die fï¿½r dieses Modul erforderliche Prozessorarchitektur ("Keine", "X86", "Amd64").
+	# ProcessorArchitecture = ''
+
+	# Die Module, die vor dem Importieren dieses Moduls in die globale Umgebung geladen werden mï¿½ssen
+	# RequiredModules = @()
+
+	# Die Assemblys, die vor dem Importieren dieses Moduls geladen werden mï¿½ssen
+	# RequiredAssemblies = @()
+
+	# Die Skriptdateien (PS1-Dateien), die vor dem Importieren dieses Moduls in der Umgebung des Aufrufers ausgefï¿½hrt werden.
+	# ScriptsToProcess = @()
+
+	# Die Typdateien (.ps1xml), die beim Importieren dieses Moduls geladen werden sollen
+	# TypesToProcess = @()
+
+	# Die Formatdateien (.ps1xml), die beim Importieren dieses Moduls geladen werden sollen
+	# FormatsToProcess = @()
+
+	# Die Module, die als geschachtelte Module des in "RootModule/ModuleToProcess" angegebenen Moduls importiert werden sollen.
+	# NestedModules = @()
+
+	# Aus diesem Modul zu exportierende Funktionen. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und lï¿½schen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Funktionen vorhanden sind.
+	FunctionsToExport = '*'
+
+	# Aus diesem Modul zu exportierende Cmdlets. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und lï¿½schen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Cmdlets vorhanden sind.
+	CmdletsToExport = '@()'
+
+	# Die aus diesem Modul zu exportierenden Variablen
+	# VariablesToExport = @()
+
+	# Aus diesem Modul zu exportierende Aliase. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und lï¿½schen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Aliase vorhanden sind.
+	AliasesToExport = @()
+
+	# Aus diesem Modul zu exportierende DSC-Ressourcen
+	# DscResourcesToExport = @()
+
+	# Liste aller Module in diesem Modulpaket
+	# ModuleList = @()
+
+	# Liste aller Dateien in diesem Modulpaket
+	# FileList = @()
+
+	# Die privaten Daten, die an das in "RootModule/ModuleToProcess" angegebene Modul ï¿½bergeben werden sollen. Diese kï¿½nnen auch eine PSData-Hashtabelle mit zusï¿½tzlichen von PowerShell verwendeten Modulmetadaten enthalten.
+	PrivateData = @{
+>>>>>>> ef2c05970961b73a4ccd50b560e6588484435e09
+
+		PSData = @{
+
+			# Tags applied to this module. These help with module discovery in online galleries.
+			# Tags = @()
+
+			# A URL to the license for this module.
+			# LicenseUri = ''
+
+			# A URL to the main website for this project.
+			# ProjectUri = ''
+
+			# A URL to an icon representing this module.
+			# IconUri = ''
+
+			# ReleaseNotes of this module
+			# ReleaseNotes = ''
+
+			# External dependent modules of this module
+			# ExternalModuleDependencies = ''
+
+		} # End of PSData hashtable
+
+	} # End of PrivateData hashtable
+
+<<<<<<< HEAD
 # HelpInfo-URI dieses Moduls
 HelpInfoURI = 'http://www.loginconsultants.com/de/ueber-uns/news/tech-update/item/base-image-script-framework-bis-f'
 
@@ -152,4 +276,12 @@ HelpInfoURI = 'http://www.loginconsultants.com/de/ueber-uns/news/tech-update/ite
 DefaultCommandPrefix = 'BISF'
 
 }
+=======
+	# HelpInfo-URI dieses Moduls
+	HelpInfoURI = 'https://eucweb.com/'
 
+	# Standardprï¿½fix fï¿½r Befehle, die aus diesem Modul exportiert werden. Das Standardprï¿½fix kann mit "Import-Module -Prefix" ï¿½berschrieben werden.
+	DefaultCommandPrefix = 'BISF'
+>>>>>>> ef2c05970961b73a4ccd50b560e6588484435e09
+
+}
