@@ -1,7 +1,7 @@
 03.07.2019 MS: ENH 117: WinSxS hide DISM process and get logfile of the DISM Process into BIS-F log
 29.06.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template
 21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
-21.06.2019 MS: HF 82 - RES ONE Automation Agent - Action is missing
+21.06.2019 MS: HF 82: RES ONE Automation Agent - Action is missing
 21.06.2019 MS: FRQ 115: ADMX: Control of WinSxS Optimization
 ---------------------------------
 Version 6.1.1 build 01.105 -- 31.05.2019 15:53:41 :
