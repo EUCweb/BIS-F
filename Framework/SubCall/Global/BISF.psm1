@@ -1570,6 +1570,7 @@ function Optimize-WinSxs {
 
 		}
 		IF ($runWinSxs -eq 1) {
+			IF (!($LIC_BISF_CLI_WinSxSTimeout)) {$LIC_BISF_CLI_WinSxSTimeout = 60}
 			IF (Test-path "C:\Windows\logs\DISM\dism_bisf.log") {Remove-Item "C:\Windows\logs\DISM\dism_bisf.log" -Force}
                 	Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:C:\Windows\logs\DISM\dism_bisf.log' -RedirectStandardOutput "C:\windows\temp\WinSxs.log" -NoNewWindow
 			Show-BISFProgressBar -CheckProcess "Dism" -ActivityText "run DISM to cleanup WinSxs Folder ...(max. Execution Timeout $LIC_BISF_CLI_WinSxSTimeout min)" -MaximumExecutionMinutes $LIC_BISF_CLI_WinSxSTimeout

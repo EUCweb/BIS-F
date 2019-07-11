@@ -21,7 +21,7 @@
 		03.04.2017 MS: BugFix - RES Workspace: delete not all folders in the CachePath
 		12.07.2017 FF: BugFix for Redirecting RES Cache (Setting Cache Path to WCD)
 		21.09.2017 MS: Feature: RES Automation Agent Service could be controlled from ADMX
-		04.05.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
+		21.06.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
 	.LINK
 		https://eucweb.com
 #>
