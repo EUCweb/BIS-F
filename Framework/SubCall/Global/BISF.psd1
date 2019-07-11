@@ -1,5 +1,5 @@
-#
-# Modulmanifest für das Modul "PSGet_BISF"
+ï»¿#
+# Modulmanifest fï¿½r das Modul "PSGet_BISF"
 #
 # Generiert von: Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank
 #
@@ -8,13 +8,13 @@
 
 @{
 
-# Die diesem Manifest zugeordnete Skript- oder Binärmoduldatei.
+# Die diesem Manifest zugeordnete Skript- oder Binï¿½rmoduldatei.
 RootModule = 'BISF.psm1'
 
 # Die Versionsnummer dieses Moduls
 ModuleVersion = '6.1.1'
 
-# Unterstützte PSEditions
+# Unterstï¿½tzte PSEditions
 # CompatiblePSEditions = @()
 
 # ID zur eindeutigen Kennzeichnung dieses Moduls
@@ -26,7 +26,7 @@ Author = 'Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank'
 # Unternehmen oder Hersteller dieses Moduls
 CompanyName = 'Login Consultants'
 
-# Urheberrechtserklärung für dieses Modul
+# Urheberrechtserklï¿½rung fï¿½r dieses Modul
 Copyright = '(c) 2016 Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank. All rights reserved.'
 
 # Beschreibung der von diesem Modul bereitgestellten Funktionen
@@ -61,31 +61,31 @@ Description = 'This module contains functions and global variables needed for th
   Last Change: 21.08.2015 MS: Change Request 77 - remove all XX,XA,XD from al files and Scripts
 '
 
-# Die für dieses Modul mindestens erforderliche Version des Windows PowerShell-Moduls
+# Die fï¿½r dieses Modul mindestens erforderliche Version des Windows PowerShell-Moduls
 PowerShellVersion = '2.0'
 
-# Der Name des für dieses Modul erforderlichen Windows PowerShell-Hosts
+# Der Name des fï¿½r dieses Modul erforderlichen Windows PowerShell-Hosts
 # PowerShellHostName = ''
 
-# Die für dieses Modul mindestens erforderliche Version des Windows PowerShell-Hosts
+# Die fï¿½r dieses Modul mindestens erforderliche Version des Windows PowerShell-Hosts
 # PowerShellHostVersion = ''
 
-# Die für dieses Modul mindestens erforderliche Microsoft .NET Framework-Version. Diese erforderliche Komponente ist nur für die PowerShell Desktop-Edition gültig.
+# Die fï¿½r dieses Modul mindestens erforderliche Microsoft .NET Framework-Version. Diese erforderliche Komponente ist nur fï¿½r die PowerShell Desktop-Edition gï¿½ltig.
 # DotNetFrameworkVersion = ''
 
-# Die für dieses Modul mindestens erforderliche Version der CLR (Common Language Runtime). Diese erforderliche Komponente ist nur für die PowerShell Desktop-Edition gültig.
+# Die fï¿½r dieses Modul mindestens erforderliche Version der CLR (Common Language Runtime). Diese erforderliche Komponente ist nur fï¿½r die PowerShell Desktop-Edition gï¿½ltig.
 # CLRVersion = ''
 
-# Die für dieses Modul erforderliche Prozessorarchitektur ("Keine", "X86", "Amd64").
+# Die fï¿½r dieses Modul erforderliche Prozessorarchitektur ("Keine", "X86", "Amd64").
 # ProcessorArchitecture = ''
 
-# Die Module, die vor dem Importieren dieses Moduls in die globale Umgebung geladen werden müssen
+# Die Module, die vor dem Importieren dieses Moduls in die globale Umgebung geladen werden mï¿½ssen
 # RequiredModules = @()
 
-# Die Assemblys, die vor dem Importieren dieses Moduls geladen werden müssen
+# Die Assemblys, die vor dem Importieren dieses Moduls geladen werden mï¿½ssen
 # RequiredAssemblies = @()
 
-# Die Skriptdateien (PS1-Dateien), die vor dem Importieren dieses Moduls in der Umgebung des Aufrufers ausgeführt werden.
+# Die Skriptdateien (PS1-Dateien), die vor dem Importieren dieses Moduls in der Umgebung des Aufrufers ausgefï¿½hrt werden.
 # ScriptsToProcess = @()
 
 # Die Typdateien (.ps1xml), die beim Importieren dieses Moduls geladen werden sollen
@@ -97,16 +97,16 @@ PowerShellVersion = '2.0'
 # Die Module, die als geschachtelte Module des in "RootModule/ModuleToProcess" angegebenen Moduls importiert werden sollen.
 # NestedModules = @()
 
-# Aus diesem Modul zu exportierende Funktionen. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Funktionen vorhanden sind.
+# Aus diesem Modul zu exportierende Funktionen. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und lï¿½schen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Funktionen vorhanden sind.
 FunctionsToExport = '*'
 
-# Aus diesem Modul zu exportierende Cmdlets. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Cmdlets vorhanden sind.
+# Aus diesem Modul zu exportierende Cmdlets. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und lï¿½schen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Cmdlets vorhanden sind.
 CmdletsToExport = '@()'
 
 # Die aus diesem Modul zu exportierenden Variablen
 # VariablesToExport = @()
 
-# Aus diesem Modul zu exportierende Aliase. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Aliase vorhanden sind.
+# Aus diesem Modul zu exportierende Aliase. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und lï¿½schen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Aliase vorhanden sind.
 AliasesToExport = @()
 
 # Aus diesem Modul zu exportierende DSC-Ressourcen
@@ -118,7 +118,7 @@ AliasesToExport = @()
 # Liste aller Dateien in diesem Modulpaket
 # FileList = @()
 
-# Die privaten Daten, die an das in "RootModule/ModuleToProcess" angegebene Modul übergeben werden sollen. Diese können auch eine PSData-Hashtabelle mit zusätzlichen von PowerShell verwendeten Modulmetadaten enthalten.
+# Die privaten Daten, die an das in "RootModule/ModuleToProcess" angegebene Modul ï¿½bergeben werden sollen. Diese kï¿½nnen auch eine PSData-Hashtabelle mit zusï¿½tzlichen von PowerShell verwendeten Modulmetadaten enthalten.
 PrivateData = @{
 
     PSData = @{
@@ -148,7 +148,7 @@ PrivateData = @{
 # HelpInfo-URI dieses Moduls
 HelpInfoURI = 'http://www.loginconsultants.com/de/ueber-uns/news/tech-update/item/base-image-script-framework-bis-f'
 
-# Standardpräfix für Befehle, die aus diesem Modul exportiert werden. Das Standardpräfix kann mit "Import-Module -Prefix" überschrieben werden.
+# Standardprï¿½fix fï¿½r Befehle, die aus diesem Modul exportiert werden. Das Standardprï¿½fix kann mit "Import-Module -Prefix" ï¿½berschrieben werden.
 DefaultCommandPrefix = 'BISF'
 
 }
