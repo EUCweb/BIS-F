@@ -64,7 +64,7 @@ param(
 	  Last Change: 17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
 	  Last Change: 30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 	  Last Change: 31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
-	  Last Change: 11.07.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template
+	  Last Change: 12.07.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template
 	  .Link
     #>
 
@@ -385,25 +385,27 @@ Begin {
 							ForEach ($template in $templates.split(",")) {
 								Write-BISFLog "Processing Template $template" -ShowConsole -SubMsg -Color DarkCyan
                                 IF ($template -eq "AutoSelect") {
-									$CTXAutoSelect = $true	
+									$CTXAutoSelect = $true
 								} Else { 
-									$CTXAutoSelect = $false 
+									$CTXAutoSelect = $false
 								}
+								
+								Write-BISFLog -Msg "Create temporary CMD-File ($tmpPS1) to run $AppName from them"
+								$logfolder_bisf = (Get-Item -Path $logfile | Select-Object -ExpandProperty Directory).FullName
+								$timestamp = Get-Date -Format yyyyMMdd-HHmmss
+								$XMLtemplate = $template.split(".")[0]
+								$output_XML = "$logfolder_bisf\Prep_BIS_CTXO_$($computer)_$($XMLtemplate)_$timestamp.xml"
 
 								IF ((Test-Path "$CTXOTemplatePath\$template") -or ($CTXAutoSelect -eq $true)) {
 									IF ($CTXAutoSelect -eq $true) {
 										Write-BISFLog "Using AutoSelect for OS Optimization " -ShowConsole -SubMsg -Color DarkCyan
 										"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default   
-										$XMLtemplate = "AutoSelect"
+										
 									} ELSE {
                                         Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template" -ShowConsole -SubMsg -Color DarkCyan
                                         "& ""$fileExists"" -Source ""$template""$groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
-										$XMLtemplate = $template.split(".")[0]
                                     }
-									Write-BISFLog -Msg "Create temporary CMD-File ($tmpPS1) to run $AppName from them"
-									$logfolder_bisf = (Get-Item -Path $logfile | Select-Object -ExpandProperty Directory).FullName
-									$timestamp = Get-Date -Format yyyyMMdd-HHmmss
-									$output_XML = "$logfolder_bisf\Prep_BIS_CTXO_$($computer)_$XMLtemplate_$timestamp.xml"
+									
 									
 									$Global:LIC_BISF_3RD_OPT = $true # BIS-F own optimization will be disabled, if 3rd Party Optimization is true
 									$ctxoe_proc = Start-Process -FilePath powershell.exe -ArgumentList "-file $tmpPS1" -WindowStyle Hidden -PassThru
