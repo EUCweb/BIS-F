@@ -460,7 +460,7 @@ function Get-Version{
     IF ($mainmodulename -ne $null) {
 		$ver = (Get-Module $mainmodulename).Version.ToString()
 		$Global:BISFversion = "$ver build $LIC_BISF_BuildNumber"
-		IF ($ExportSharedConfiguration) {$Host.UI.RawUI.WindowTitle = "$BISFtitle [2019 - $BISFversion] - ExportSharedConfiguration"} ELSE {$Host.UI.RawUI.WindowTitle = "$BISFtitle [2019 - $BISFversion]"}
+		IF ($ExportSharedConfiguration) {$Host.UI.RawUI.WindowTitle = "$BISFtitle [2018 - $BISFversion] - ExportSharedConfiguration"} ELSE {$Host.UI.RawUI.WindowTitle = "$BISFtitle [2018 - $BISFversion]"}
 
 	} ELSE {
 		write-BISFlog -Msg "$FrameworkName Version could not get from Manifest" -Type W -SubMsg
