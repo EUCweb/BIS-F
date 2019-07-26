@@ -12,7 +12,7 @@
 RootModule = 'BISF.psm1'
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '6.1.1'
+ModuleVersion = '6.1.2'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()

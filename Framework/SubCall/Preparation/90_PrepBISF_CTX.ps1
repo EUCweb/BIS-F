@@ -65,6 +65,7 @@ param(
 	  Last Change: 30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 	  Last Change: 31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
 	  Last Change: 12.07.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template
+	  Last Change: 26.07.2019 MS: ENH 122: Citrix Optimizer Templateprefix support
 	  .Link
     #>
 
@@ -355,6 +356,16 @@ Begin {
 								$templates = $LIC_BISF_CLI_CTXOE_TP
                                 Write-BISFLog -Msg "Template(s) for $AppName is configured by GPO: $templates"
 							}
+
+							#Templateprefix
+							IF (($LIC_BISF_CLI_CTXOE_TP_PREFIX -eq "") -or ($null -eq $LIC_BISF_CLI_CTXOE_TP_PREFIX))
+							{
+								$templatePrefix = $null
+
+							} ELSE {
+								$templatePrefix = $LIC_BISF_CLI_CTXOE_TP_PREFIX
+								Write-BISFLog -Msg "Using Templateprefix: $templatePrefix" -ShowConsole -SubMsg -Color DarkCyan
+							}
 							
 
 							#Groups
@@ -398,13 +409,18 @@ Begin {
 
 								IF ((Test-Path "$CTXOTemplatePath\$template") -or ($CTXAutoSelect -eq $true)) {
 									IF ($CTXAutoSelect -eq $true) {
-										Write-BISFLog "Using AutoSelect for OS Optimization " -ShowConsole -SubMsg -Color DarkCyan
-										"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default   
-										
+										IF ($null -eq $templateprefix)
+										{
+											Write-BISFLog "Using AutoSelect for OS Optimization " -ShowConsole -SubMsg -Color DarkCyan
+											"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default   
+										} ELSE {
+											Write-BISFLog "Using AutoSelect for OS Optimization with Templateprefix" -ShowConsole -SubMsg -Color DarkCyan
+											"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml"" -Templateprefix ""$templateprefix""" | Out-File $tmpPS1 -Encoding default
+										}
 									} ELSE {
-                                        Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template" -ShowConsole -SubMsg -Color DarkCyan
-                                        "& ""$fileExists"" -Source ""$template""$groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
-                                    }
+										Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template with Tem" -ShowConsole -SubMsg -Color DarkCyan
+										"& ""$fileExists"" -Source ""$template""$groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
+									}
 									
 									
 									$Global:LIC_BISF_3RD_OPT = $true # BIS-F own optimization will be disabled, if 3rd Party Optimization is true
