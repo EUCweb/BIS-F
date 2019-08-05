@@ -690,6 +690,7 @@
         </item>
       </disabledList>
       <elements>
+        <boolean id="CHK_P2V_SKIP_IMG" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_P2V_SKIP_IMG" />
         <enum id="DST_WC_Driveletter" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WCD">
           <item displayName="$(string.ITM_B)">
             <value>

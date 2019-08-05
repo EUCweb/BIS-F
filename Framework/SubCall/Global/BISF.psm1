@@ -1146,6 +1146,7 @@ function Get-DiskMode {
         else {
             $returnValue =  "Unmanaged"
 			IF ($LIC_BISF_CLI_P2V_PT -eq "1") {$returnValue =  $ReturnValue + "UNC-Path"}
+			IF ($LIC_BISF_CLI_P2V_SKIP_IMG -eq "1") {$returnValue =  $ReturnValue + "AndSkipImaging"}
         }
 	}
     Finally { $ErrorActionPreference = "Continue" }
@@ -1235,7 +1236,7 @@ function Get-DiskNameExtension {
     .SYNOPSIS
         Get-BISFDisknameExtension
 	.Description
-      	using with Citrix PVS Environment only. as reuslt give back the last 4 strigns from the attached PVS vDisk
+      	using with Citrix PVS Environment only. as result give back the last 4 strings from the attached PVS vDisk
 		use get-help <functionname> -full to see full help
     .EXAMPLE
 		Get-BISFDiskNameExtension
@@ -2218,7 +2219,15 @@ function Use-PVSConfig{
 			IF ($State -eq "Preparation")
 			{
 				IF ($DiskMode -eq "ReadOnly") {Write-BISFLog -Msg "Mode $DiskMode - vDisk in Standard Mode, read access only!" -Type E -SubMsg}
-				IF ($DiskMode -eq "Unmanaged") {Write-BISFLog -Msg "Mode $DiskMode - No vDisk assigned to this Device" -Type E -SubMsg}
+				IF ($DiskMode -eq "Unmanaged") {
+					IF($LIC_BISF_CLI_P2V_SKIP_IMG -eq 1)
+					{
+						Write-BISFLog -Msg "Mode $DiskMode - Policy 'Skip PVS master image creation' is enabled, so continuing" -SubMsg
+					}
+					ELSE {
+						Write-BISFLog -Msg "Mode $DiskMode - No vDisk assigned to this Device" -Type E -SubMsg
+					}
+				}
 				$Global:returnTestPVSDriveLetter=Test-BISFWriteCacheDisk -Verbose:$VerbosePreference
 			}
 

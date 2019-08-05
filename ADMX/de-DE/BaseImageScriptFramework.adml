@@ -397,7 +397,12 @@ If you disable this policy setting or if you do not configure this policy settin
 
 NOTE: Please specify the Name of the folder only, without any drive letter !!</string>
       <string id="POL_PVSCfg">Configure Citrix PVS Target Device</string>
-      <string id="POL_PVSCfg_Help">WriteCacheDisk drive letter
+      <string id="POL_PVSCfg_Help">Skip PVS master image creation:
+
+If you enable this policy setting, master image creation will be skipped even if Provisioning Services Target Device software is found.
+If you disable this policy setting, the master image creation will run (default).
+      
+WriteCacheDisk drive letter:
 
 If you enable this policy setting, you must select the drive letter for the PVS WriteCacheDisk
 If you disable or do not configure this policy setting and have PVS Target Device Driver installed, an error during BIS-F execution occurs.
@@ -654,6 +659,7 @@ The component store contains all the files that are required for a Windows insta
         </textBox>
       </presentation>
       <presentation id="POL_PVSCfg">
+        <checkBox refId="CHK_P2V_SKIP_IMG">Skip PVS master image creation</checkBox>
         <dropdownList refId="DST_WC_Driveletter" defaultItem="0">WriteCacheDisk drive letter</dropdownList>
         <dropdownList refId="DST_P2PVS_Tool" defaultItem="0">P2V Tool</dropdownList>
         <dropdownList refId="DST_VDISK_FORMAT" noSort="true" defaultItem="1">vDisk Format</dropdownList>
