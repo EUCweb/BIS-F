@@ -1,6 +1,10 @@
 <policyDefinitions revision="1.1" schemaVersion="1.0">
   <policyNamespaces>
+<<<<<<< HEAD
     <target prefix="fullarmor" namespace="FullArmor.Policies.00A67A1B_4BB1_409C_8EC4_41A73C859E16" />
+=======
+    <target prefix="fullarmor" namespace="FullArmor.Policies.5441262D_5B02_4FBE_B8EA_F18FAA72BE7B" />
+>>>>>>> release/6.1.3
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -63,6 +67,7 @@
         <boolean id="CB_CTXOE_Analyze" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_Analyze" />
         <boolean id="CHK_CTXOE_SF" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF" />
         <text id="TXT_CTXOE_SF_CUS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF_CUS" />
+        <text id="TXT_CTXOE_TemplatePreFix" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_TP_PREFIX" />
       </elements>
     </policy>
     <policy name="POL_SDelete" class="Machine" displayName="$(string.POL_SDelete)" explainText="$(string.POL_SDelete_Help)" presentation="$(presentation.POL_SDelete)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SD">
