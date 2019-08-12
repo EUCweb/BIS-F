@@ -1,4 +1,4 @@
-#
+﻿#
 # Modulmanifest f�r das Modul "PSGet_BISF"
 #
 # Generiert von: Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank
@@ -27,7 +27,7 @@
 	CompanyName = 'Login Consultants'
 
 	# Urheberrechtserkl�rung f�r dieses Modul
-	Copyright = '(c) 2016 Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank. All rights reserved.'
+	Copyright = '(c) 2019 Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank. All rights reserved.'
 
 	# Beschreibung der von diesem Modul bereitgestellten Funktionen
 	Description = 'This module contains functions and global variables needed for the Login Consultants Base Image Script Framework (BISF)
@@ -35,7 +35,7 @@
 	Date: 11.03.2014
 
 	History:
-	11.03.2014 BR: Script created -function Get-Adaptername  
+	11.03.2014 BR: Script created -function Get-Adaptername
 	13.03.2014 MS: add function Show-MessageBox (thx to BR)
 	18.03.2014 BR: new functions added (Write-Log, Set-Logfile, Invoke-FolderScripts)
 	21.03.2014 MS: last code change before release to web
@@ -52,9 +52,9 @@
 	15.08.2014 MS: add function get-OSinfo
 	15.08.2014 MS: add function CheckXDSoftware
 	19.08.2014 MS: line 43: reduce PVSDiskDrive to 2 strings if variable exists -> $env:PVSWriteCacheDisk.Substring(0,2)
-	19.08.2014 MS: move function progressbar from 98_XX_PrepPVS_BUILD_vDisk.ps1 to this script 
+	19.08.2014 MS: move function progressbar from 98_XX_PrepPVS_BUILD_vDisk.ps1 to this script
 	19.08.2014 MS: add function get-LogContent
-	31.10.2014 MB: Renamed functions: Progressbar -> Show-progressbar / CheckXDSoftware -> Test-XDSoftware / CheckPVSSoftware -> Test-PVSSoftware / ChangeNetworkProviderOrder -> Set-NetworkProviderOrder / CheckPSVersion -> Get-PSVersion 
+	31.10.2014 MB: Renamed functions: Progressbar -> Show-progressbar / CheckXDSoftware -> Test-XDSoftware / CheckPVSSoftware -> Test-PVSSoftware / ChangeNetworkProviderOrder -> Set-NetworkProviderOrder / CheckPSVersion -> Get-PSVersion
 	31.10.2014 MB: Renamed variables: hklm_sw -> hklm_software / hklm_sys -> hklm_system / hkcu_sw -> hkcu_software / CTX_PVS_SCRIPTS -> CTX_BISF_SCRIPTS / $LogFolderName = "BISLogs" -> $LogFolderName = "BISFLogs" / hklm_software_LIC_CTX_PVS_SCRIPTS -> hklm_software_LIC_CTX_BISF_SCRIPTS
 	06.02.2015 MS: add function Get-PendingReboot to BISF.psd1
 	24.04.2015 MS: change powershell minimum version to 3.0, because with version 2.0 the psd1 would not loaded corretly

@@ -36,9 +36,9 @@
 	https://eucweb.com
 #>
 
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	Write-BISFLog -Msg "Checking Prerequisites" -ShowConsole -color Cyan
-	$Global:computer = gc env:computername
+	$Global:computer = Get-Content env:computername
 	$Global:cu_user = $env:username
 	$Global:Domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
 	$Global:hklm_software = "HKLM:\SOFTWARE"
@@ -68,7 +68,7 @@
 }
 
 function Get-RegistryValues($key) {
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$values = (Get-Item $key).GetValueNames()
 	[array]$result = @()
 	Foreach ($value in $values) {
@@ -78,7 +78,7 @@ function Get-RegistryValues($key) {
 }
 
 function Get-FileVersion ($PathToFile) {
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$File = (Get-Item $PathToFile).VersionInfo
 	$Version = New-Object System.Version -ArgumentList @(
 		$File.FileMajorPart
@@ -94,7 +94,7 @@ function New-GlobalVariable {
 		[string]$Name,
 		[string]$Value
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	## define new global variable
 	New-Variable -Name $Name -Value $Value -option AllScope -Scope Global -Force
 	Write-BISFLog -Msg "Define new global variable $Name=$Value"
@@ -123,7 +123,7 @@ function Get-Adaptername {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$AdapterIndex = Get-CimInstance -Query "select * from win32_networkadapterconfiguration where DHCPEnabled = ""True"" and DNSHostName = ""$env:COMPUTERNAME"" "
 	IF (!($AdapterIndex -eq $null)) {
 		foreach ($Adapter in $AdapterIndex) {
@@ -181,7 +181,7 @@ function Show-MessageBox {
 		[Parameter(Mandatory = $False)][Alias('W')][Switch]$Warning,
 		[Parameter(Mandatory = $False)][Alias('I')][Switch]$Informational
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	#Set Message Box Style
 	IF ($OkCancel) { $Type = 1 }
 	Elseif ($AbortRetryIgnore) { $Type = 2 }
@@ -264,7 +264,7 @@ function Write-Log {
 		$PreMsg = "`t>"
 	}
 
-	$date = get-date -Format G
+	$date = Get-Date -Format G
 	Out-File -Append -Filepath $logfile -inputobject "$date | $env:username | $LogType | $Msg" -Encoding default
 
 	IF ($LIC_BISF_CLI_DB -eq $true) {
@@ -298,7 +298,7 @@ function Write-Log {
 			Write-Host "$PreMsg $Msg"
 		}
 	}
-	IF ($Type -eq "E" ) { $Global:TerminateScript = $true; start-sleep 30; Exit 1 }
+	IF ($Type -eq "E" ) { $Global:TerminateScript = $true; Start-Sleep 30; Exit 1 }
 }
 
 
@@ -308,16 +308,16 @@ Function Invoke-FolderScripts {
 		[parameter(Mandatory = $True)][string]$Path,
 		[parameter(Mandatory = $False)][switch]$Errorhandling
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	write-BISFlog -Msg "Loading Scripts from $Path"
 	$scripts = @(Get-ChildItem -Path $Path -Filter "*.ps1")
-	write-verbose -message "$scripts"
+	Write-Verbose -message "$scripts"
 	IF ($scripts -ne $null) {
 		Foreach ($item in $scripts) {
 			IF ($TerminateScript -eq $true) {
 				write-BISFlog -Msg "Check Logfile $logfile for further informations !!" -Type W
 				write-BISFlog -Msg "Script exiting !!" -Color Red
-				start-sleep 5
+				Start-Sleep 5
 				break
 			}
 			ELSE {
@@ -359,7 +359,7 @@ function Test-WriteCacheDiskDriveLetter {
 		https://eucweb.com
 #>
 
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 	IF ($LIC_BISF_CLI_WCD -eq $null) {
 		$title = "Fatal Error !!!"
@@ -377,14 +377,14 @@ function Test-WriteCacheDiskDriveLetter {
 }
 
 function Get-PSVersion {
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$PShostMajor = $PSVersionTable.PSVersion.Major
 	write-BISFlog -Msg "Powershell Version $PShostMajor" -ShowConsole -Color DarkCyan -SubMsg
 }
 
 function Test-RegHive {
 	# check RegHive if exist
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF (!(Test-Path $hklm_software\$LIC\$CTX_BISF_SCRIPTS)) {
 		New-Item -Path $hklm_software -Name $LIC -Force | Out-Null
 		New-Item -Path $hklm_software"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
@@ -420,7 +420,7 @@ function Test-WriteCacheDisk {
 		https://eucweb.com
 #>
 	$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$CacheDisk = Get-CimInstance -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
 	IF ($CacheDisk -eq $null) {
 		$title = "Fatal Error !!!"
@@ -460,7 +460,7 @@ function Get-Version {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 	$rootfolder = Split-Path -Path $Main_Folder -Parent
 	IF ($mainmodulename -ne $null) {
@@ -495,12 +495,12 @@ function Set-NetworkProviderOrder {
 	PARAM(
 		[parameter(Mandatory = $True)][string]$SaerchProvOrder
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	#search for the entered ProviderOrder and set this to the last one
 	$newproder = @()
 	$key = 'HKLM:\SYSTEM\CurrentControlSet\Control\NetworkProvider\Order'
 	$value = 'ProviderOrder'
-	$proder = (Get-ItemProperty $key $value).$value | % { $_.split(",") }
+	$proder = (Get-ItemProperty $key $value).$value | ForEach-Object { $_.split(",") }
 	$searchPrOrder = $SaerchProvOrder
 	$SaveIndex = 0
 	$Foundproder = 0
@@ -532,7 +532,7 @@ function Set-NetworkProviderOrder {
 			write-BISFlog -Msg "replace array index [$i] with index [$getarray]"
 		}
 	}
-	$writereg = ($proder | Select -Unique) -join ","
+	$writereg = ($proder | Select-Object -Unique) -join ","
 
 	Set-ItemProperty $key $value $writereg
 	write-BISFlog -Msg "change the NetworkProviderOrder to $writereg"
@@ -560,7 +560,7 @@ function Test-PVSSoftware {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "BNDevice" -ProductName "Citrix Provisioning Services Target Device Driver (PVS)"
 	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	return $svc
@@ -588,7 +588,7 @@ function Test-XDSoftware {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "BrokerAgent" -ProductName "Citrix XenDesktop Virtual Desktop Agent (VDA)"
 	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	return $svc
@@ -596,7 +596,7 @@ function Test-XDSoftware {
 }
 
 function Get-OSinfo {
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$win32OS = Get-CimInstance -ClassName Win32_OperatingSystem
 	$Global:OSName = $win32OS.caption
 	$Global:OSBitness = $win32OS.OSArchitecture
@@ -665,7 +665,7 @@ function Show-ProgressBar {
 		[parameter()][int]$MaximumExecutionMinutes,
 		[parameter()][switch]$TerminateRunawayProcess
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$a = 0
 	if ($MaximumExecutionMinutes) {
 		$MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
@@ -703,17 +703,17 @@ function Show-ProgressBar {
 		}
 
 		if ($ProcessActive -eq $null) {
-		   	$a = 100
-		   	Write-Progress -Activity "Finish...wait for next operation in 3 seconds" -PercentComplete $a -Status "Finish."
-		   	IF ($State -eq "Preparation") { Start-Sleep 3 }
+			$a = 100
+			Write-Progress -Activity "Finish...wait for next operation in 3 seconds" -PercentComplete $a -Status "Finish."
+			IF ($State -eq "Preparation") { Start-Sleep 3 }
 			Write-Progress "Done" "Done" -completed
 			break
-	   	}
+		}
 		else {
 			Start-Sleep 1
 			$display = "{0:N2}" -f $a #reduce display to 2 digits on the right side of the numeric
 			Write-Progress -Activity "$ActivityText" -PercentComplete $a -Status "Please wait..."
-	   	}
+		}
 	}
 }
 
@@ -721,7 +721,7 @@ function Get-LogContent {
 	PARAM(
 		[parameter(Mandatory = $True)][string]$GetLogFile
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	write-BISFlog -Msg "Get content from file $GetLogFile...please wait"
 	write-BISFlog -Msg "-----snip-----"
 	$content = Get-Content "$GetLogFile" -ErrorAction SilentlyContinue
@@ -735,11 +735,11 @@ function Test-Log {
 		[parameter(Mandatory = $True)][string]$CheckLogFile,
 		[parameter(Mandatory = $True)][string]$SearchString
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	write-BISFlog -Msg "Check $CheckLogFile"
 	IF (Test-Path ($CheckLogFile) -PathType Leaf) {
 		write-BISFlog -Msg "Check $CheckLogFile for $SearchString"
-		$searchP2PVS = select-string -path "$CheckLogFile" -pattern "$SearchString" | out-string
+		$searchP2PVS = Select-String -path "$CheckLogFile" -pattern "$SearchString" | Out-String
 		IF ($searchP2PVS) { return $True } else { return $false }
 	}
 	ELSE {
@@ -793,14 +793,14 @@ Function Get-SoftwareInfo {
 		[string]$Publisher = "",
 		[string]$InstallLocation = ""
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$info = @()
 
 	# Get Uninstall registry keys x64 on a x64 system or the x86 on a x86 system
-	$Keys = @(get-childitem -path "Registry::HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | Where { ((Get-ItemProperty -Path $_.PsPath).displayname -like "*$Name*") -and ((Get-ItemProperty -Path $_.PsPath).displayVersion -like "*$Version*") -and ((Get-ItemProperty -Path $_.PsPath).Publisher -like "*$Publisher*") -and ((Get-ItemProperty -Path $_.PsPath).InstallLocation -like "*$InstallLocation*") })
+	$Keys = @(Get-ChildItem -path "Registry::HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | Where-Object { ((Get-ItemProperty -Path $_.PsPath).displayname -like "*$Name*") -and ((Get-ItemProperty -Path $_.PsPath).displayVersion -like "*$Version*") -and ((Get-ItemProperty -Path $_.PsPath).Publisher -like "*$Publisher*") -and ((Get-ItemProperty -Path $_.PsPath).InstallLocation -like "*$InstallLocation*") })
 	# Get Uninstall registry keys x86 on a x64 system or skip this step on a x86 system
-	If ((Test-path "Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") -eq $true) {
-		$Keys += @(get-childitem -path "Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" | Where { ((Get-ItemProperty -Path $_.PsPath).displayname -like "*$Name*") -and ((Get-ItemProperty -Path $_.PsPath).displayVersion -like "*$Version*") -and ((Get-ItemProperty -Path $_.PsPath).Publisher -like "*$Publisher*") -and ((Get-ItemProperty -Path $_.PsPath).InstallLocation -like "*$InstallLocation*") })
+	If ((Test-Path "Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall") -eq $true) {
+		$Keys += @(Get-ChildItem -path "Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" | Where-Object { ((Get-ItemProperty -Path $_.PsPath).displayname -like "*$Name*") -and ((Get-ItemProperty -Path $_.PsPath).displayVersion -like "*$Version*") -and ((Get-ItemProperty -Path $_.PsPath).Publisher -like "*$Publisher*") -and ((Get-ItemProperty -Path $_.PsPath).InstallLocation -like "*$InstallLocation*") })
 	}
 
 	# Get the values from the registry keys which hold the info.
@@ -834,7 +834,7 @@ Function Get-PendingReboot {
 	  27.05.2018 MS: Hotfix 40: new Script to get pending reboot state
 #>
 
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 
 	If (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return $true }
@@ -851,21 +851,21 @@ Function Get-PendingReboot {
 
 
 function Convert-Settings {
-	Write-BISFFunctionName2Log  -FunctionName ($MyInvocation.MyCommand | % { $_.Name }) #must be added at the begin to each function
+	Write-BISFFunctionName2Log  -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name }) #must be added at the begin to each function
 	# Migrate Registry settings from Citrix BISF Scripts to BISF
 
 	$OldTask = "LIC_PVS_Device_Personalize"
-	$querytask = schtasks /query /v /fo csv | ConvertFrom-Csv | % { $_.TaskName }
+	$querytask = schtasks.exe /query /v /fo csv | ConvertFrom-Csv | ForEach-Object { $_.TaskName }
 	Foreach ($task in  $querytask) {
 		IF ($task -eq "\LIC_PVS_Device_Personalize") {
 			write-BISFlog -Msg "Migrate BISF Settings: delete old Task $OldTask" -ShowConsole -Color DarkCyan -SubMsg
-			& schtasks.exe /delete /TN $OldTask /F | out-null
+			& schtasks.exe /delete /TN $OldTask /F | Out-Null
 		}
 	}
 	$NewRegKey = Test-Path $hklm_software\$LIC\$CTX_BISF_SCRIPTS
 	$oldRegKey = Test-Path "$hklm_software\$LIC\Citrix BISF Scripts"
 	IF (($NewRegKey -eq $false) -and ($NewRegKey -eq $true)) {
-		rename-item "$oldRegKey" -NewName "BISF"
+		Rename-Item "$oldRegKey" -NewName "BISF"
 		write-BISFlog -Msg "Migrate $CTX_BISF_SCRIPTS Registry Settings" -ShowConsole -Color DarkCyan -SubMsg
 
 	}
@@ -874,7 +874,7 @@ function Convert-Settings {
 Function Get-TaskSequence() {
 	# This code was taken from a discussion on the CodePlex PowerShell
 	# App Deployment Toolkit site. It was posted by mmashwani.
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	Try {
 		[__ComObject]$SMSTSEnvironment = New-Object -ComObject Microsoft.SMS.TSEnvironment -ErrorAction 'SilentlyContinue' -ErrorVariable SMSTSEnvironmentErr
 	}
@@ -932,10 +932,10 @@ function Get-ScheduledTask {
 	)
 
 	process {
-		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 		# Try to create the TaskService object on the local computer; throw an error on failure
 		try {
-			$TaskService = new-object -comobject "Schedule.Service"
+			$TaskService = New-Object -comobject "Schedule.Service"
 		}
 		catch [System.Management.Automation.PSArgumentException] {
 			throw $_
@@ -944,15 +944,15 @@ function Get-ScheduledTask {
 			$TaskService.Connect()
 		}
 		catch [System.Management.Automation.MethodInvocationException] {
-			write-warning "$_"
+			Write-Warning "$_"
 			return
 		}
 		function get-task($taskFolder) {
 			$tasks = $taskFolder.GetTasks($Hidden.IsPresent -as [Int])
-			$tasks | foreach-object { $_ }
+			$tasks | ForEach-Object { $_ }
 			try {
 				$taskFolders = $taskFolder.GetFolders(0)
-				$taskFolders | foreach-object { get-task $_ $TRUE }
+				$taskFolders | ForEach-Object { get-task $_ $TRUE }
 			}
 			catch [System.Management.Automation.MethodInvocationException] {
 			}
@@ -996,12 +996,12 @@ function Stop-ScheduledTask {
 	)
 
 	process {
-		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 		#check to see if this is a COMObject (someone is passing a scheduled task into this function) and pull the name from it.
 		if ($TaskName.GetType().Name -eq "__ComObject") { $TaskName = $TaskName.name }
 		# Try to create the TaskService object on the local computer; throw an error on failure
 		try {
-			$TaskService = new-object -comobject "Schedule.Service"
+			$TaskService = New-Object -comobject "Schedule.Service"
 		}
 		catch [System.Management.Automation.PSArgumentException] {
 			throw $_
@@ -1010,15 +1010,15 @@ function Stop-ScheduledTask {
 			$TaskService.Connect()
 		}
 		catch [System.Management.Automation.MethodInvocationException] {
-			write-warning "$_"
+			Write-Warning "$_"
 			return
 		}
 		function get-task($taskFolder) {
 			$tasks = $taskFolder.GetTasks($Hidden.IsPresent -as [Int])
-			$tasks | foreach-object { $_ }
+			$tasks | ForEach-Object { $_ }
 			try {
 				$taskFolders = $taskFolder.GetFolders(0)
-				$taskFolders | foreach-object { get-task $_ $TRUE }
+				$taskFolders | ForEach-Object { get-task $_ $TRUE }
 			}
 			catch [System.Management.Automation.MethodInvocationException] {
 			}
@@ -1063,12 +1063,12 @@ function Disable-ScheduledTask {
 	)
 
 	process {
-		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 		#check to see if this is a COMObject (someone is passing a scheduled task into this function) and pull the name from it.
 		if ($TaskName -ne $null) { if ($TaskName.GetType().Name -eq "__ComObject") { $TaskName = $TaskName.name } }
 		# Try to create the TaskService object on the local computer; throw an error on failure
 		try {
-			$TaskService = new-object -comobject "Schedule.Service"
+			$TaskService = New-Object -comobject "Schedule.Service"
 		}
 		catch [System.Management.Automation.PSArgumentException] {
 			throw $_
@@ -1077,15 +1077,15 @@ function Disable-ScheduledTask {
 			$TaskService.Connect()
 		}
 		catch [System.Management.Automation.MethodInvocationException] {
-			write-warning "$_"
+			Write-Warning "$_"
 			return
 		}
 		function get-task($taskFolder) {
 			$tasks = $taskFolder.GetTasks($Hidden.IsPresent -as [Int])
-			$tasks | foreach-object { $_ }
+			$tasks | ForEach-Object { $_ }
 			try {
 				$taskFolders = $taskFolder.GetFolders(0)
-				$taskFolders | foreach-object { get-task $_ $TRUE }
+				$taskFolders | ForEach-Object { get-task $_ $TRUE }
 			}
 			catch [System.Management.Automation.MethodInvocationException] {
 			}
@@ -1129,12 +1129,12 @@ function Enable-ScheduledTask {
 	)
 
 	process {
-		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 		#check to see if this is a COMObject (someone is passing a scheduled task into this function) and pull the name from it.
 		if ($TaskName -ne $null) { if ($TaskName.GetType().Name -eq "__ComObject") { $TaskName = $TaskName.name } }
 		# Try to create the TaskService object on the local computer; throw an error on failure
 		try {
-			$TaskService = new-object -comobject "Schedule.Service"
+			$TaskService = New-Object -comobject "Schedule.Service"
 		}
 		catch [System.Management.Automation.PSArgumentException] {
 			throw $_
@@ -1143,15 +1143,15 @@ function Enable-ScheduledTask {
 			$TaskService.Connect()
 		}
 		catch [System.Management.Automation.MethodInvocationException] {
-			write-warning "$_"
+			Write-Warning "$_"
 			return
 		}
 		function get-task($taskFolder) {
 			$tasks = $taskFolder.GetTasks($Hidden.IsPresent -as [Int])
-			$tasks | foreach-object { $_ }
+			$tasks | ForEach-Object { $_ }
 			try {
 				$taskFolders = $taskFolder.GetFolders(0)
-				$taskFolders | foreach-object { get-task $_ $TRUE }
+				$taskFolders | ForEach-Object { get-task $_ $TRUE }
 			}
 			catch [System.Management.Automation.MethodInvocationException] {
 			}
@@ -1167,7 +1167,7 @@ function Enable-ScheduledTask {
 }
 
 function Get-PreparationState {
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	#Get Preparation State
 	$BISFRegistry = Get-BISFRegistryValues -key "HKLM:\SOFTWARE\Login Consultants\BISF"
 	Foreach ($regvalue in $BISFRegistry) {
@@ -1253,7 +1253,7 @@ function Set-PreparationState {
 		[Parameter(Mandatory = $False)][Switch]$RebootRequired,
 		[Parameter(Mandatory = $False)][Switch]$Completed
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 	if ($InProgress) {
 		Set-ItemProperty -Path "HKLM:\SOFTWARE\Login Consultants\BISF" -Name "LIC_BISF_PrepState" -Value "InProgress" -Force
@@ -1293,7 +1293,7 @@ function Get-vDiskDrive {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$PVSDestDrive = "FALSE"
 	$SysDrive = $env:SystemDrive
 	$array = @()
@@ -1326,7 +1326,7 @@ function Get-vDiskDrive {
 
 function Get-ScriptExecutionPath {
 	# 05.05.2015 MS: running BIS-F from local drives only
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$scriptdrive = $Main_Folder.Substring(0, 2)
 	$locadrives = Get-CimInstance -ClassName Win32_Volume | Where-Object { $_.DriveType -eq 3 } | Where-Object { $_.Driveletter }
 	Foreach ($localdrive in $locadrives) {
@@ -1362,7 +1362,7 @@ function Enable-Privilege {
 		## Switch to disable the privilege, rather than enable it.
 		[Switch] $Disable
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	## Taken from P/Invoke.NET with minor adjustments.
 	$definition = @'
  using System;
@@ -1442,7 +1442,7 @@ function Get-CLIcmd {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF (Test-Path $Reg_LIC_Policies -ErrorAction SilentlyContinue) {
 		write-BISFlog -Msg "The following CLI commands would set:"
 		$regvalues = Get-BISFRegistryValues $Reg_LIC_Policies
@@ -1494,7 +1494,7 @@ function Get-DiskMode {
 		.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$ErrorActionPreference = "Stop"
 	try {
 		$WriteCacheMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType
@@ -1548,7 +1548,7 @@ function Show-CustomInputBox([string] $title, [string] $message, [string] $defau
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	Add-Type -AssemblyName Microsoft.VisualBasic
 	$inputText = [Microsoft.VisualBasic.Interaction]::InputBox("$message", "$title", "$defaultText")
 	return $inputText
@@ -1585,7 +1585,7 @@ function Test-RegistryValue {
 		[parameter(Mandatory = $true)]
 		[ValidateNotNullOrEmpty()]$Value
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$ErrorActionPreference = "Stop"
 	try {
 		Get-ItemProperty -Path $Path | Select-Object -ExpandProperty $Value | Out-Null
@@ -1632,7 +1632,7 @@ function Get-DiskNameExtension {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$ErrorActionPreference = "Stop"
 	try {
 		$vDiskName = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).DiskName
@@ -1688,7 +1688,7 @@ function Test-Service {
 		[parameter(Mandatory = $false)]
 		[ValidateNotNullOrEmpty()]$ProductName
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF (Get-Service $Servicename -ErrorAction SilentlyContinue) {
 		write-BISFlog -Msg "Service $($ServiceName) exists"
 		IF ($ProductName) {
@@ -1782,7 +1782,7 @@ function Invoke-Service {
 
 	)
 
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	If (!($CheckDiskMode -eq $null)) {
 		$DiskMode = Get-BISFDiskMode
 		IF (($DiskMode -match "ReadOnly") -or ($DiskMode -match "VDAShared")) { $DiskMode = "RO" }
@@ -1868,12 +1868,12 @@ function Get-AdapterGUID {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	write-BISFLog -Msg "Read GUIDs of each Networkadapter"
 	$HKLM_REG_TCPIP = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
-	$AllAdapterGUIDs = Get-ChildItem "$HKLM_REG_TCPIP\Adapters" | Get-ItemProperty | % { $_.PSChildName }
+	$AllAdapterGUIDs = Get-ChildItem "$HKLM_REG_TCPIP\Adapters" | Get-ItemProperty | ForEach-Object { $_.PSChildName }
 	ForEach ($AdapterGUID in $AllAdapterGUIDs) {
-		$TestDHCP = Get-ItemProperty "$HKLM_REG_TCPIP\Interfaces\$AdapterGUID" | % { $_.EnableDHCP }
+		$TestDHCP = Get-ItemProperty "$HKLM_REG_TCPIP\Interfaces\$AdapterGUID" | ForEach-Object { $_.EnableDHCP }
 		IF ($TestDHCP -eq 1) {
 			write-BISFLog -Msg "DHCP on Adapter with GUID $AdapterGUID is enabled"
 			[array]$AdapterGUIDarray += $AdapterGUID
@@ -1906,7 +1906,7 @@ function Optimize-WinSxs {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase'
 	Show-BISFProgressBar -CheckProcess "Dism" -ActivityText "run DISM to cleanup WinSxs Folder ..."
 
@@ -1933,7 +1933,7 @@ function Test-VMwareHorizonViewSoftware {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "WSNM" -ProductName "VMware Horizon View Script Host"
 	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	return $svc
@@ -1959,16 +1959,16 @@ Function Get-OSCSessionType {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF (!($LIC_BISF_CLI_ST)) {
 		#Do not check SessionType
 		IF ($State -eq "Preparation") {
 			$Results = @()
 			#Use commad "query session" to list all sessions
-			$sessions = query session $Env:USERNAME /server:$Env:COMPUTERNAME
+			$sessions = query.exe session $Env:USERNAME /server:$Env:COMPUTERNAME
 			#Split the results and store them into the variable $Result
 			For ($i = 1 ; $i -lt $Sessions.Count) {
-				$temp = "" | Select SessionName, Username
+				$temp = "" | Select-Object SessionName, Username
 				#Split the result to get the session name
 				$temp.SessionName = $sessions[$i].Substring(1, 18).Trim()
 				#Split the result to get the user name
@@ -2022,7 +2022,7 @@ function Request-Sysprep {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF ($State -eq "Preparation") {
 		IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
 			$varCLISP = $LIC_BISF_CLI_SP
@@ -2030,7 +2030,7 @@ function Request-Sysprep {
 				Write-BISFLog -Msg "Silentswitch for Sysprep would be set to $varCLISP"
 			}
 			ELSE {
-	   			Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
+				Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
 				$MPSP = Show-BISFMessageBox -Msg "No Image Management Software like Citrix PVS Target Device Driver, XenDesktop VDA or VMware Horizon View Agent would be detected. You can use Sysprep to 		https://eucweb.com your Image. On Computerstartup BIS-F checked the new generated Computername if they matched WIN- and does not start the Services like SCCM,SCOM, Antivirus, etc. to prevent wrong GUIDS or entries in the System Management Server. If you change the Computername, after reboot BISF starts the services. Would you run SysPrep at the end of BIS-F ?" -Title "Sysprep usage" -YesNo -Question
 				Write-BISFLog -Msg "$MPSP was selected [YES = use Sysprep] [NO = Not use Sysprep]"
 			}
@@ -2078,7 +2078,7 @@ function Set-PostSysprep {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF ( (($computer -notlike "WIN-*") -or ($computer -notlike "DESKTOP-*")) -and ($State -eq "Personalization") -and ($LIC_BISF_RunSysPrep -eq $true) ) {
 		Write-BISFLog -Msg "Running Post Sysprep actions to configure the services in the ServiceList "
 		ForEach ($SPService in $LIC_BISF_Sysprep_ServiceList -split (",")) {
@@ -2120,8 +2120,8 @@ function Start-ProcWithProgBar {
 		[parameter(Mandatory = $True)][string]$ActText
 	)
 	$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
-	$ChkProc = [io.fileinfo] "$ProcPath" | % basename  # get name from executable without path and extension
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	$ChkProc = [io.fileinfo] "$ProcPath" | ForEach-Object basename  # get name from executable without path and extension
 	Write-BISFLog -Msg "Starting Process $ProcPath with ArgumentList $Args"
 	Start-Process -FilePath "$ProcPath" -ArgumentList "$Args" -NoNewWindow -RedirectStandardOutput "$tmpLogFile" | Out-Null
 	Show-BISFProgressBar -CheckProcess $ChkProc -ActivityText $ActText
@@ -2155,7 +2155,7 @@ function Invoke-LogRotate {
 		[Parameter(Mandatory = $False)][Alias('FN')][string]$strLogFileName,
 		[Parameter(Mandatory = $True)][Alias('D')][string]$Directory
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF ($State -eq "Preparation") { $strLogFileName = "Prep*" }
 	IF ($State -eq "Personalization") { $strLogFileName = "Pers*" }
 
@@ -2197,7 +2197,7 @@ function Invoke-LogShare {
 		.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log  -FunctionName ($MyInvocation.MyCommand | % { $_.Name }) #must be added at the begin to each function
+	Write-BISFFunctionName2Log  -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name }) #must be added at the begin to each function
 	IF ($State -eq "Preparation") {
 		Write-BISFLog -Msg "Check Silentswitch..."
 		$varCLILS = $LIC_BISF_CLI_LS
@@ -2236,7 +2236,7 @@ function Invoke-LogShare {
 			ELSE {
 				Write-BISFLog -Msg "The Central LogShare would be previous defined to $LIC_BISF_LogShare, this log would be stored on the Central Share, but for the future the local path would be used" -ShowConsole -Color DarkCyan -SubMsg
 			}
-			remove-itemproperty -path $hklm_software_LIC_CTX_BISF_SCRIPTS -name "LIC_BISF_LogShare" -ErrorAction SilentlyContinue
+			Remove-ItemProperty -path $hklm_software_LIC_CTX_BISF_SCRIPTS -name "LIC_BISF_LogShare" -ErrorAction SilentlyContinue
 			$Global:LIC_BISF_LogShare = ""
 		}
 	}
@@ -2266,14 +2266,14 @@ function Test-AccessRights {
 	Param(
 		[Parameter(Mandatory = $True)][Alias('D')][string]$Directory
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 	$aclfile = "$Directory\$($cu_user)_aclTest.tmp"
 
 	Try {
 		[io.file]::OpenWrite($aclfile).close()
 		Write-BISFLog "granted write-Access to $Directory [io-file $aclfile]"
-		remove-item "$aclfile" -Force
+		Remove-Item "$aclfile" -Force
 		return $true
 	}
 	Catch {
@@ -2339,7 +2339,7 @@ function Set-LastRun {
 #>
 	$cu_user = $env:username
 	IF ($State -eq "Preparation") {
-		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PrepLastRunTime" -value $(Get-Date)
 		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PrepLastRunUser" -value $cu_user
 	}
@@ -2363,7 +2363,7 @@ function Get-MacAddress {
 		https://eucweb.com
 #>
 
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$computer = $env:COMPUTERNAME
 	$HostIP = [System.Net.Dns]::GetHostByName($computer).AddressList[0].IPAddressToString
 	$wmi = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration
@@ -2404,7 +2404,7 @@ function Test-AppLayeringSoftware {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	#default values
 	$Global:CTXAppLayeringSW = $false              # AppLayering is installed
 	$Global:CTXAppLayeringOSLayer = $false       # OS Layer detected
@@ -2497,7 +2497,7 @@ function Use-PVSConfig {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF ($returnTestPVSSoftware) {
 		$Global:Redirection = $false
 		Write-BISFLog -Msg "Check if redirection of Files to PVS WriteCacheDisk is possible" -ShowConsole -Color Cyan
@@ -2580,7 +2580,7 @@ function Move-EvtLogs {
 	   Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig  #>
 
 	#>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	# test if custom searchfolder is enabled
 	IF ($LIC_BISF_CLI_EVTb -eq "1") { $Global:LIC_BISF_EvtPath = "$PVSDiskDrive\$LIC_BISF_CLI_EvtFolder" }
 
@@ -2739,7 +2739,7 @@ function Get-BootMode {
 	Param ()
 
 
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	Add-Type -Language CSharp -TypeDefinition @'
 
 	using System;
@@ -2828,7 +2828,7 @@ Function Export-Registry {
 	)
 
 	Begin {
-		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 		Write-BISFlog "Starting registry Export" -ShowConsole -Color Cyan
 		#initialize an array to hold the results
 		$data = @()
@@ -2841,7 +2841,7 @@ Function Export-Registry {
 			$regItem = Get-Item -Path $item
 			#get property names
 			$properties = $RegItem.Property
-			Write-BISFlog "Retrieved $(($properties | measure-object).count) properties" -ShowConsole -Color DarkCyan -SubMsg
+			Write-BISFlog "Retrieved $(($properties | Measure-Object).count) properties" -ShowConsole -Color DarkCyan -SubMsg
 			if (-not ($properties)) {
 				#no item properties were found so create a default entry
 				$value = $Null
@@ -2886,15 +2886,15 @@ Function Export-Registry {
 			#filter out binary if specified
 			if ($NoBinary) {
 				Write-BISFlog "Removing binary values" -ShowConsole -Color DarkCyan -SubMsg
-				$data = $data | Where { $_.Type -ne "Binary" }
+				$data = $data | Where-Object { $_.Type -ne "Binary" }
 			}
 
 			#export to a file both a type and path were specified
 			if ($ExportType -AND $ExportPath) {
 				Write-BISFlog "Exporting $ExportType data to $ExportPath" -ShowConsole -Color DarkCyan -SubMsg
 				Switch ($exportType) {
-					"csv" { $data | Export-CSV -Path $ExportPath -noTypeInformation }
-					"xml" { $data | Export-CLIXML -Path $ExportPath }
+					"csv" { $data | Export-Csv -Path $ExportPath -noTypeInformation }
+					"xml" { $data | Export-Clixml -Path $ExportPath }
 				} #switch
 
 
@@ -2961,7 +2961,7 @@ function Import-SharedConfiguration {
 	.LINK
 		https://eucweb.com
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$XMLConfigFile = "$InstallLocation" + "BISFSharedConfig.xml"
 	IF (Test-Path $XMLConfigFile -PathType Leaf) {
 		Write-BISFlog "Reading Shared Configuration from file $XMLConfigFile" -ShowConsole -SubMsg -Color DarkCyan
@@ -2976,8 +2976,8 @@ function Import-SharedConfiguration {
 				write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
 			}
 			Write-BISFlog "Import XML Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
-			$object = Import-CliXML "$xmlSharedConfigFile"
-			$object | foreach { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | out-Null }
+			$object = Import-Clixml "$xmlSharedConfigFile"
+			$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
 
 		}
 		ELSE {
@@ -3011,7 +3011,7 @@ function Remove-FolderAndContents {
 		https://eucweb.com
 	  # http://stackoverflow.com/a/9012108
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	param(
 		[Parameter(Mandatory = $true, Position = 1)] [string] $folder_path
 	)
@@ -3049,7 +3049,7 @@ function Start-CDS {
 		https://eucweb.com
 	  #
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 	IF ($returnTestXDSoftware -eq "true") {
 		# Citrix VDA only
@@ -3094,7 +3094,7 @@ function Start-VHDOfflineDefrag {
 		https://eucweb.com
 	  #
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 	# define Error handling
 	# note: do not change these values
@@ -3122,14 +3122,14 @@ function Start-VHDOfflineDefrag {
 	# Mount VHD(X) (using cvhdmount.exe)
 	$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
 	Write-BISFLog -Msg "Mount (attach) the $vhdext (using cvhdmount.exe)" -ShowConsole -Color DarkCyan -SubMsg
-	$process = start-process -FilePath "C:\Program Files\Citrix\Provisioning Services\CVhdMount.exe" -ArgumentList "-p 1 ""$VHDFileToDefrag""" -wait -PassThru -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
+	$process = Start-Process -FilePath "C:\Program Files\Citrix\Provisioning Services\CVhdMount.exe" -ArgumentList "-p 1 ""$VHDFileToDefrag""" -wait -PassThru -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
 	Get-BISFLogContent -GetLogFile "$tmpLogFile"
 	Remove-Item -Path "$tmpLogFile" -Force | Out-Null
 	$ProcessExitCode = $Process.ExitCode
 	Start-Sleep -Seconds 5
 
 	Write-BISFLog -Msg "bring the attached $vhdext online" -ShowConsole -Color DarkCyan -SubMsg
-	$process = start-process -FilePath "C:\Program Files\Citrix\Provisioning Services\CVhdMount.exe" -ArgumentList "-o 1 ""$VHDFileToDefrag""" -wait -PassThru -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
+	$process = Start-Process -FilePath "C:\Program Files\Citrix\Provisioning Services\CVhdMount.exe" -ArgumentList "-o 1 ""$VHDFileToDefrag""" -wait -PassThru -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
 	$ProcessExitCode = $Process.ExitCode
 	Get-BISFLogContent -GetLogFile "$tmpLogFile"
 	Remove-Item -Path "$tmpLogFile" -Force | Out-Null
@@ -3208,10 +3208,10 @@ function Start-VHDOfflineDefrag {
 		$DiskpartFile = "$env:TEMP\$computer-DiskpartFile.txt"
 		If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 
-		"select volume $VolNbrVHDX" | out-file -filepath $DiskpartFile -encoding Default
-		"uniqueid disk ID=$DiskIDOSDisk" | out-file -filepath $DiskpartFile -encoding Default -append
+		"select volume $VolNbrVHDX" | Out-File -filepath $DiskpartFile -encoding Default
+		"uniqueid disk ID=$DiskIDOSDisk" | Out-File -filepath $DiskpartFile -encoding Default -append
 		get-LogContent -GetLogFile "$DiskpartFile"
-		diskpart /s $DiskpartFile
+		diskpart.exe /s $DiskpartFile
 		Write-BISFLog -Msg "Disk ID $DiskIDOSDisk is set on $DriveLetterToDefrag"
 	}
 	ELSE {
@@ -3220,7 +3220,7 @@ function Start-VHDOfflineDefrag {
 
 	# Un-mount VHD(X) (using diskpart)
 	Write-BISFLog -Msg "Un-mount (detach) the $vhdext (using CVhdMount.exe)" -ShowConsole -SubMsg -Color DarkCyan
-	$process = start-process -FilePath "C:\Program Files\Citrix\Provisioning Services\CVhdMount.exe" -ArgumentList "-u 1 ""$VHDFileToDefrag""" -Wait -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
+	$process = Start-Process -FilePath "C:\Program Files\Citrix\Provisioning Services\CVhdMount.exe" -ArgumentList "-u 1 ""$VHDFileToDefrag""" -Wait -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
 	$ProcessExitCode = $Process.ExitCode
 	Write-BISFLog -Msg  "ExitCode: $ProcessExitCode"
 	Get-BISFLogContent -GetLogFile "$tmpLogFile"
@@ -3256,13 +3256,13 @@ Function Get-DiskID {
 	PARAM(
 		[parameter(Mandatory = $True)][string]$Driveletter
 	)
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$DiskpartFile = "$env:TEMP\$computer-DiskpartFile.txt"
 	Write-BISFLog -Msg "Get UniqueID from Drive $DriveLetter" -ShowConsole -Color DarkCyan -SubMsg
 	$DriveLetter = $DriveLetter.substring(0, 1)
 	Write-BISFLog -Msg "use Diskpart, search Driveletter $DriveLetter"
 
-	$Searchvol = "list volume" | diskpart | select-string -pattern "Volume" | select-string -pattern "$DriveLetter " -casesensitive | select-string -pattern NTFS | out-string
+	$Searchvol = "list volume" | diskpart.exe | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
 	Write-BISFLog -Msg "$Searchvol"
 
 	$getvolNbr = $Searchvol.substring(11, 1)   # get Volumenumber from DiskLabel
@@ -3270,11 +3270,11 @@ Function Get-DiskID {
 
 	Remove-Item $DiskpartFile -recurse -ErrorAction SilentlyContinue
 	# Write Diskpart File
-	"select volume $getvolNbr" | out-file -filepath $DiskpartFile -encoding Default
-	"uniqueid disk" | out-file -filepath $DiskpartFile -encoding Default -append
-	$result = diskpart /s $DiskpartFile
+	"select volume $getvolNbr" | Out-File -filepath $DiskpartFile -encoding Default
+	"uniqueid disk" | Out-File -filepath $DiskpartFile -encoding Default -append
+	$result = diskpart.exe /s $DiskpartFile
 	get-BISFLogContent -GetLogFile "$DiskpartFile"
-	$DiskID = $result | select-string -pattern "ID" -casesensitive | out-string
+	$DiskID = $result | Select-String -pattern "ID" -casesensitive | Out-String
 	$DiskID = $DiskID.Split(":")  #split string on ":"
 	$DiskID = $DiskID[1] #get the first string after ":" to get the Disk ID only without the Text
 	$DiskID = $DiskID.trim() #remove empty spaces on the right and left
@@ -3311,7 +3311,7 @@ Function Get-Hypervisor {
 	  #
 #>
 
-	$HV = Get-WmiObject -query 'select * from Win32_ComputerSystem' | select-object Manufacturer, Model
+	$HV = Get-WmiObject -query 'select * from Win32_ComputerSystem' | Select-Object Manufacturer, Model
 	$Platform = $HV.Manufacturer + " " + $HV.Model
 	Write-BISFLog -Msg "Your Computer is running on $Platform Paltform" -Color Cyan -ShowConsole
 	return $Platform
@@ -3319,8 +3319,8 @@ Function Get-Hypervisor {
 
 }
 
-	function Test-ServiceState {
-		<#
+function Test-ServiceState {
+	<#
 	.SYNOPSIS
 		check the State of the Service
 	.DESCRIPTION
@@ -3340,27 +3340,25 @@ Function Get-Hypervisor {
 		https://eucweb.com
 #>
 
-		param (
-			# Specifies the ServiceName
-			[parameter(Mandatory = $true)]
-			[ValidateNotNullOrEmpty()]$ServiceName,
+	param (
+		# Specifies the ServiceName
+		[parameter(Mandatory = $true)]
+		[ValidateNotNullOrEmpty()]$ServiceName,
 
-			# Specifies the Starttype: Disabled, Manual, Automatic
-			[parameter(Mandatory = $false)]
-			[ValidateSet("Running", "Stopped")]
-			[ValidateNotNullOrEmpty()]$Status
+		# Specifies the Starttype: Disabled, Manual, Automatic
+		[parameter(Mandatory = $false)]
+		[ValidateSet("Running", "Stopped")]
+		[ValidateNotNullOrEmpty()]$Status
 
-		)
-		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % { $_.Name })  #must be added at the begin to each function
-		$svc = Get-Service $Servicename
+	)
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	$svc = Get-Service $Servicename
 
-		IF ($Status -eq $svc.Status ) {
-			Write-BISFlog -Msg "The Service $($svc.DisplayName) is successfully in $($svc.Status) state"
-		}
-		else {
-			Write-BISFlog -Msg "The Service $($svc.DisplayName) is NOT successfully in $Status state" -Type W -SubMsg
-		}
-		return $svc.Status
+	IF ($Status -eq $svc.Status ) {
+		Write-BISFlog -Msg "The Service $($svc.DisplayName) is successfully in $($svc.Status) state"
 	}
-
+	else {
+		Write-BISFlog -Msg "The Service $($svc.DisplayName) is NOT successfully in $Status state" -Type W -SubMsg
+	}
+	return $svc.Status
 }
