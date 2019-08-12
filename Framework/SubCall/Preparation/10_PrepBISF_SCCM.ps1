@@ -24,6 +24,7 @@
 		10.05.2019 JP: Added command to remove hardware inventory as recommended by Citrix https://support.citrix.com/article/CTX238513
 		10.05.2019 JP: Converted wmic commands to Get-CimInstance and reworked script synthax
 		14.05.2019 JP: The CcmExec service is no longuer set to manual
+		08.12.2019:JP: Fixed error on line 74, thanks toBrian Timp
 	.LINK
 		https://eucweb.com
 #>
@@ -38,7 +39,6 @@ Begin {
 	[string]$appService = 'CcmExec'
 	[string]$appRegKey = "$hklm_software\Microsoft\SystemCertificates\SMS\Certificates"
 }
-
 
 Process {
 	function Remove-CCMData {
@@ -71,9 +71,9 @@ Process {
 		}
 	}
 
-	If ((Test-BISFService -ServiceName $appService) -eq $True) {
+	If (Test-BISFService -ServiceName $appService -eq $True) {
 		Remove-CCMCache # 01.09.2015 MS: Remove-CCMCache must be run before stopping the service
-		Invoke-BISFService -ServiceName "$appService" -Action Stop
+		Invoke-BISFService -ServiceName $appService -Action Stop
 		Remove-CCMData
 	}
 }
