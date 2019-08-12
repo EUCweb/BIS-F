@@ -1,2 +1,48 @@
+// Place your settings in this file to overwrite the default settings
+
 {
+    // Basic Settings
+    "workbench.settings.editor": "json",
+    "workbench.iconTheme": "vscode-icons",
+    "files.autoSave": "afterDelay",
+    "files.autoGuessEncoding": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "editor.mouseWheelZoom": true,
+    "editor.minimap.enabled": false,
+    "editor.renderControlCharacters": true,
+    "editor.fontSize": 14,
+    "editor.wordWrap": "on",
+    "editor.renderWhitespace": "boundary",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.tabCompletion": "on",
+    "editor.detectIndentation": false,
+    "editor.rulers": [
+        80
+    ],
+
+    // PowerShell
+    "[powershell]": {
+        "files.encoding": "utf8bom",
+        "files.autoGuessEncoding": true,
+    },
+    "workbench.colorTheme": "PowerShell ISE",
+    "files.defaultLanguage": "powershell",
+    "powershell.scriptAnalysis.enable": true,
+    "powershell.scriptAnalysis.settingsPath": "ScriptAnalyzerSettings.psd1",
+    "powershell.integratedConsole.focusConsoleOnExecute": false,
+    "powershell.enableProfileLoading": true,
+    "powershell.startAutomatically": true,
+    "powershell.integratedConsole.showOnStartup": false,
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.ignoreOneLineBlock": true,
+    "powershell.codeFormatting.openBraceOnSameLine": true,
+    "files.associations": {
+        "*.ps1xml": "xml"
+    },
+    "terminal.integrated.fontFamily": "Consolas",
+    "terminal.integrated.fontSize": 18,
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
 }
