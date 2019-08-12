@@ -493,7 +493,7 @@ function Get-Version {
 
 function Set-NetworkProviderOrder {
 	PARAM(
-		[parameter(Mandatory = $True)][string]$SaerchProvOrder
+		[parameter(Mandatory = $True)][string]$SearchProvOrder
 	)
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	#search for the entered ProviderOrder and set this to the last one
@@ -501,7 +501,7 @@ function Set-NetworkProviderOrder {
 	$key = 'HKLM:\SYSTEM\CurrentControlSet\Control\NetworkProvider\Order'
 	$value = 'ProviderOrder'
 	$proder = (Get-ItemProperty $key $value).$value | ForEach-Object { $_.split(",") }
-	$searchPrOrder = $SaerchProvOrder
+	$searchPrOrder = $SearchProvOrder
 	$SaveIndex = 0
 	$Foundproder = 0
 
