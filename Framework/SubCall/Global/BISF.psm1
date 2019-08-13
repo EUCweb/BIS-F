@@ -1480,7 +1480,6 @@ function Get-DiskMode {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
 
 		History:
 	  	dd.mm.yyyy BR: function created
@@ -1491,6 +1490,7 @@ function Get-DiskMode {
 		06.08.2017 MS: Bugfix -if Custom UNC-Path in ADMX is enabled, during "Personalization" the wrong $returnvalue like MCSPrivate is given back, instead of "UNC-Path"
 		15.08.2017 MS: get additional DiskMode with AppLayering back, like ReadWriteAppLayering, ReadOnlyAppLayering
 		29.10.2017 MS: get VDA back instead of MCS
+		13.08.2019 AS: ENH 46 - Make any PVS conversion work Optional
 		.LINK
 		https://eucweb.com
 #>
@@ -1520,6 +1520,7 @@ function Get-DiskMode {
 		else {
 			$returnValue = "Unmanaged"
 			IF ($LIC_BISF_CLI_P2V_PT -eq "1") { $returnValue = $ReturnValue + "UNC-Path" }
+			IF ($LIC_BISF_CLI_P2V_SKIP_IMG -eq "1") { $returnValue = $ReturnValue + "AndSkipImaging" }
 		}
 	}
 	Finally { $ErrorActionPreference = "Continue" }
@@ -1605,7 +1606,7 @@ function Get-DiskNameExtension {
 	.SYNOPSIS
 		Get-BISFDisknameExtension
 	.DESCRIPTION
-	  	using with Citrix PVS Environment only. as reuslt give back the last 4 strigns from the attached PVS vDisk
+	  	using with Citrix PVS Environment only. as result give back the last 4 strigns from the attached PVS vDisk
 		use get-help <functionname> -full to see full help
 	.EXAMPLE
 		Get-BISFDiskNameExtension
@@ -1624,7 +1625,6 @@ function Get-DiskNameExtension {
 
 	.NOTES
 		Author: Matthias Schlimm
-		Company: Login Consultants Germany GmbH
 
 		History:
 	  	01.09.2015 MS: added function, defrag would be performed on BaseDisk and HardDrive only
@@ -2522,6 +2522,7 @@ function Use-PVSConfig {
 		31.08.2017 MS: bugfix - Eventlogs would be moved during Preparation only, this saved time during personalization
 		04.09.2017 MS: bugfix - Eventlogs would be moved for both States (Prep and Pers) now
 		03.11.2017 MS: if PVS Target Device Driver not installed, write info to BIS-F log and set the value $Global:Redirection=$true; $Global:RedirectionCode="NoPVS"
+		13.08.2019 AS: ENH 46 - Make any PVS conversion work Optional
 	.LINK
 		https://eucweb.com
 #>
@@ -2547,7 +2548,14 @@ function Use-PVSConfig {
 			$Global:returnTestPVSEnvVariable = Test-BISFWriteCacheDiskDriveLetter -Verbose:$VerbosePreference
 			IF ($State -eq "Preparation") {
 				IF ($DiskMode -eq "ReadOnly") { Write-BISFLog -Msg "Mode $DiskMode - vDisk in Standard Mode, read access only!" -Type E -SubMsg }
-				IF ($DiskMode -eq "Unmanaged") { Write-BISFLog -Msg "Mode $DiskMode - No vDisk assigned to this Device" -Type E -SubMsg }
+				IF ($DiskMode -eq "Unmanaged") {
+					IF($LIC_BISF_CLI_P2V_SKIP_IMG -eq 1) {
+						Write-BISFLog -Msg "Mode $DiskMode - Policy 'Skip PVS master image creation' is enabled, so continuing" -SubMsg
+					}
+					ELSE {
+						Write-BISFLog -Msg "Mode $DiskMode - No vDisk assigned to this Device" -Type E -SubMsg
+					}
+				}
 				$Global:returnTestPVSDriveLetter = Test-BISFWriteCacheDisk -Verbose:$VerbosePreference
 			}
 

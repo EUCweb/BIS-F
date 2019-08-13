@@ -1,3 +1,4 @@
+13.08.2019 AS: ENH 46 - Make any PVS conversion work Optional
 13.08.2019 MS: ENH 121: change filenameextension from bis to log
 13.08.2019 MS: FRQ 97: Nutanix Xi Frame Support
 28.05.2019 MK: ENH 104: updated service detection in 10_PrepBISF_Empirum.ps1
@@ -749,3 +750,4 @@ FF = Florian Frank
 TT = Trentent Tye
 JS = Jeremy Saunders
 MK = Mathias Kowalkowski
+AS = Andre Sicking

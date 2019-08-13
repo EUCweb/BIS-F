@@ -425,7 +425,12 @@ The vDisk would be created in the VHDX Format with the name %ComputerName%-DateT
 Custom arguments:
 If you enable this policy you, depends on the above configuration you can enter custom arguments, like C: only, example. if you choosing P2PVS the default arguments would be set to C: /Autofit /L, with the custom arguments you overwritten the arguments.
 Note: If you entered incorrect arguments, the conversion of the PVS vDisk might be failed !
-If you do not enable, the default arguments inside BIS-F will be used.</string>
+If you do not enable, the default arguments inside BIS-F will be used.
+
+Skip PVS master image creation:
+If you enable this policy setting, master image creation will be skipped even if Provisioning Services Target Device software is found.
+If you disable this policy setting, the master image creation will run (default).
+</string>
       <string id="ITM_B">B:</string>
       <string id="ITM_C">C:</string>
       <string id="ITM_D">D:</string>
@@ -733,7 +738,8 @@ Note: Enter the name of the configurations file only, the path is defined in the
         </textBox>
       </presentation>
       <presentation id="POL_PVSCfg">
-        <dropdownList refId="DST_WC_Driveletter" defaultItem="0">Write cache drive letter</dropdownList>
+        <checkBox refId="CHK_P2V_SKIP_IMG">Skip PVS master image creation</checkBox>
+		<dropdownList refId="DST_WC_Driveletter" defaultItem="0">Write cache drive letter</dropdownList>
         <dropdownList refId="DST_P2PVS_Tool" defaultItem="0">P2V Tool</dropdownList>
         <dropdownList refId="DST_VDISK_FORMAT" noSort="true" defaultItem="1">vDisk Format</dropdownList>
         <checkBox refId="CHK_P2VHDX">Enable P2V Custom UNC-Path</checkBox>
