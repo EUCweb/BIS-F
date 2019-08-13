@@ -97,6 +97,7 @@ param(
 		20.10.2018 MS: Bugfix 56: Office click to run issue after BIS-F seal
 		31.05.2019 MS: FRQ 92: Server 2019 Support
 		31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
+		21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
 	.LINK
 		https://eucweb.com
 #>
@@ -886,37 +887,37 @@ Process {
 
 	## OS Windows 7
 	IF ($OSName -contains '*Windows 7*') {
-		Write-BISFLog -Msg "Running PreCommands for Windows 7" -ShowConsole -Color Cyan
+		Write-BISFLog -Msg "Running PreCommands for $OSName" -ShowConsole -Color Cyan
 		Pre-Win7
 	}
 
 	## OS Windows 2008 R2
 	IF (($OSVersion -like "6.1*") -and ($ProductType -eq "3")) {
-		Write-BISFLog -Msg "Running PreCommands for Windows 2008 R2" -ShowConsole -Color Cyan
+		Write-BISFLog -Msg "Running PreCommands for $OSName" -ShowConsole -Color Cyan
 		Pre-Win2008R2
 	}
 
 	## OS Windows 8
 	IF ($OSName -contains '*Windows 8*') {
-		Write-BISFLog -Msg "Running PreCommands for Windows 8" -ShowConsole -Color Cyan
+		Write-BISFLog -Msg "Running PreCommands for $OSName" -ShowConsole -Color Cyan
 		Pre-Win8
 	}
 
 	## OS Windows 2012 R2
 	IF (($OSVersion -like "6.3*") -and ($ProductType -eq "3")) {
-		Write-BISFLog -Msg "Running PreCommands for Windows 2012 R2" -ShowConsole -Color Cyan
+		Write-BISFLog -Msg "Running PreCommands for $OSName ($OSVersion)" -ShowConsole -Color Cyan
 		Pre-Win2012R2
 	}
 
 	## OS Windows Server 2016 and higher
 	IF (($OSVersion -like "10*") -and ($ProductType -eq "3")) {
-		Write-BISFLog -Msg "Running PreCommands for Windows Server $OSVersion" -ShowConsole -Color Cyan
+		Write-BISFLog -Msg "Running PreCommands for $OSName ($OSVersion)" -ShowConsole -Color Cyan
 		Pre-Win2016
 	}
 
 	## OS Windows 10
 	IF (($OSVersion -like "10*") -and ($ProductType -eq "1")) {
-		Write-BISFLog -Msg "Running PreCommands for Windows $OSVersion" -ShowConsole -Color Cyan
+		Write-BISFLog -Msg "Running PreCommands for $OSName ($OSVersion)" -ShowConsole -Color Cyan
 		Pre-Win10
 	}
 
