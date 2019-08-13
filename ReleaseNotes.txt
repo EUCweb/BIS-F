@@ -1,9 +1,4 @@
-31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
-31.05.2019 MS: FRQ 92: Server 2019 Support
-31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
-30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
 28.05.2019 MK: ENH 104: updated service detection in 10_PrepBISF_Empirum.ps1
-17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
 15.05.2019 JP: Fixed encoding, tabs (4), format, style, a few typos, merging errors and removed eof extra lines
 13.05.2019 MS: FRQ 76: detect the platform of the running computer
 12.05.2019 MS: FRQ 97: Nutanix Xi Frame Support
@@ -11,15 +6,11 @@
 07.05.2019 JP: FRQ 91: Moved FSLogix settings to Microsoft ADMX category
 07.05.2019 JP: Updated Group Policy templates, fixed typos and errors, removed the german one since it's in english anyway
 11.04.2019 MS: HF 87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
-28.03.2019 MS: FRQ 86: Office 2019 Support
 28.03.2019 MS: FRQ 83: McAfee Move integration
 01.07.2018 MS: FRQ 11: If WEM Agent Policy is disabled or PVS redirection not enabled, configure WEM Cache back to origin path
-30.03.2018 MS: HF 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
-29.03.2018 MS: HF 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
 25.03.2018 MS: FRQ 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
 25.03.2018 MS: FRQ 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
-22.03.2018 MS: FRQ 15: support for Office 365 ClicktoRun
-25.02.2018 MS: HF 29: AppLayering does not detect the right layer
+22.03.2018 MS: Feature 15: support for Office 365 ClicktoRun
 15.02.2017 MS: HF 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 11.02.2018 MS: HF 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
 21.09.2017 TT: Added Powershell Web Server Log Viewer
@@ -32,6 +23,28 @@
 07.09.2017 TT: Added the ability of BISF to reboot and start over until completed
 05.09.2017 TT: Updated Write-BISFProgressBar to include the options MaximumExecutionMinutes and TerminateRunawayProcess
 04.09.2017 MS: HF - Eventlogs would be moved for both States (Prep and Pers) now, after changing it in V6.1.0 build 03.101
+---------------------------------
+Version 6.1.3 build 01.110 -- 11.08.2019 20:19:27 :
+26.07.2019 MS: ENH 122: Citrix Optimizer Templateprefix support
+---------------------------------
+Version 6.1.2 build 01.109 -- 24.07.2019 05:31:52 :
+12.07.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template.
+11.07.2019 MS: ENH 117: WinSxS hide DISM process and get logfile of the DISM Process into BIS-F log
+21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
+21.06.2019 MS: HF 82: RES ONE Automation Agent - Action is missing
+21.06.2019 MS: FRQ 115: ADMX: Control of WinSxS Optimization
+---------------------------------
+Version 6.1.1 build 01.105 -- 31.05.2019 15:53:41 :
+31.05.2019 MS: update link to new webpage https://eucweb.com
+31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
+31.05.2019 MS: FRQ 92: Server 2019 Support
+31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
+30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
+17.05.2019 MS: HF 106: remove uneccesary out-null command function Optimize-WinSxs
+11.04.2019 MS: HF 87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
+---------------------------------
+Version 6.1.0 build 01.104 -- 31.03.2019 21:44:28 :
+28.03.2019 MS: FRQ 86: Office 2019 Support
 ---------------------------------
 Version 6.1.0 build 01.103 -- 17.12.2018 16:09:57 :
 17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
@@ -71,21 +84,10 @@ Version 6.1.0 build 01.101 -- 20.03.2018 21:22:37 :
 01.07.2018 MS: Feature 11: If WEM Agent Policy is disabled or PVS redirection not enabled, configure WEM Cache back to origin path
 30.03.2018 MS: Bugfix 38: MachineState 3 not detected, Pre-ELM State, Layer finalized must not run
 29.03.2018 MS: Bugfix 37: SCOM 2016, uses new cerfifcate store Microsoft Monitoring Agent
-25.03.2018 MS: Feature 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
-25.03.2018 MS: Feature 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
-22.03.2018 MS: Feature 15: support for Office 365 ClicktoRun
 21.03.2018 MS: Bugfix 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
 25.02.2018 MS: Bugfix 29: AppLayering does not detect the right layer
 15.02.2017 MS: Bugfix 32: Fslogix - When in the GPO specify "Configure FSLogix central rule share" to Disabled, the script still prompt for the path when is executed.
 11.02.2018 MS: Bugfix 33: if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
-21.09.2017 TT: Added Powershell Web Server Log Viewer
-18.09.2017 TT: Added updating Symantec Endpoint Protection AV virus definitions to PREP
-18.09.2017 TT: Added the removal of ACL's for BUILTIN\USERS to C:\
-18.09.2017 TT: Added the ability to run Windows Update via WUAgent or SCCM and enable that option via GPO
-14.09.2017 JP: Fixed typos in the ADMX/AMDL file, moved settings back to the MS Cat, reordered the Cat alphanumerically
-11.09.2017 TT: Added a scheduled task that is added when installed to allow reboot to complete
-08.09.2017 TT: Removed the disabling of Receive Side Scaling
-07.09.2017 TT: Added the ability of BISF to reboot and start over until completed
 05.09.2017 TT: Updated Write-BISFProgressBar to include the options MaximumExecutionMinutes and TerminateRunawayProcess
 04.09.2017 MS: Bugfix: Eventlogs would be moved for both States (Prep and Pers) now, after changing it in V6.1.0 build 03.101
 ---------------------------------

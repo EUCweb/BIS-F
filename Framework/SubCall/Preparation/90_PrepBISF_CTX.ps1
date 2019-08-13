@@ -6,63 +6,67 @@ param(
 	  Prepare Citrix for Image Management Software, like PVS or MCS
 	.DESCRIPTION
 	.EXAMPLE
+    .Inputs
+    .Outputs
 	.NOTES
 		Author: Matthias Schlimm
 		Editor: Mike Bijl (Rewritten variable names and script format)
 		Company: EUCweb.com
 
-		History:
-		21.09.2012 MS: Script created
-		18.09.2013 MS: Replaced $date with $(Get-date) to get current timestamp at running scriptlines write to the logfile
-		17.12.2013 MS: Check Citrix XenApp 6.5 Installation
-		18.03.2014 BR: Revisited Script
-		02.04.2014 MS: Redirect Citrix Cache to persistent drive
-		03.04.2014 MS: Redirect LHC.mdb and RadeOffline.mdb to persistend drive
-		13.05.2014 BR: Cleanup Citrix Group Policy Cache > function CleanUpCTXPolCache
-		13.08.2014 MS: Removed $logfile = Set-logFile, it would be used in the 10_XX_LIB_Config.ps1 Script only
-		09.02.2015 MS: Renamed Script from XenApp to Citrix to have all CTX Modules in one script
-		09.02.2015 MS: Moved SetSTA from single to the CTX Script
-		09.02.2015 JP/MS: Cleanup Citrix Application Streaming offline database > dsmaint recreaterade
-		09.02.2015 JP/MS: Cleanup Citrix Profile Management cache and logs > function CleanUpProfileManagement
-		09.02.2015 JP/MS: Cleanup Citrix streamed application cache > function CleanUpRadeCache
-		09.02.2015 JP/MS: Cleanup Citrix EdgeSight > function CleanUpEdgeSight
-		15.04.2015 MS: Added fix for MSMQ Service if occured with XD FP1 and sessionrecording, the VDA has the same QMId as the MSMQ (http://support.citrix.com/proddocs/topic/xenapp-xendesktop-76fp1/xad-xaxd76fp1-knownissues.html)
-		10.08.2015 MS/BR: ReAdded "Removing Local Citrix Group Policy Settings" in function CleanUpCTXPolCache
-		01.10.2015 MS: Change Line 239 to Set-ItemProperty -Path HKLM:Software\Microsoft\MSMQ\Parameters\MachineCache -Name "QMId" -Value ([byte[]]$new_QMID) -Force
-		01.10.2015 MS: Change Line 103 to create Cache Directory to store the CTX License File: New-Item -path "$LIC_BISF_CtxCache" -ItemType Directory -Force
-		01.10.2015 MS: Rewritten script to use central BISF function
-		10.11.2016 MS: Set-QMID would never be processed, wrong syntax in IF (($returnTestXDSoftware -eq "true") -or ($returnTestPVSSoftware -eq "true"))
-		10.11.2016 MS: Added Citrix Workspace Environment Agent detection, to reconfigure AgentAlternateCacheLocation
-		09.01.2017 MS: Bug fix 136; If EdgeSight DataPath not exist, it removes all under the C drive !!
-		09.01.2017 MS: Bug fix 135; If PVS Target Device Driver is installed, XA LicenseFile  would be redirected to WriteCacheDisk, otherwise leave it in origin path
-		10.01.2017 MS: Review 140; During Prepare XenApp for Provisioning you can remove RemoveCurrentServer and ClearLocalDatabaseInformation, this would be set with this Parameter or prompted to administrator to choose
-		18.01.2017 MS: Bug 127; Removed Set-QMID, replaced with Test-MSMQ, a random QMId would be set during system startup with BIS-F
-		18.01.2017 JP: Bug 127; Removed /PrepMsmq:False for XenApp 65, a random QMId would be set during system startup with BIS-F
-		20.02.2017 MS: Removing configure WEMBrokerName with BIS-F, must be configured with WEM ADMX or AMD from Citrix, not here !!
-		06.03.2017 MS: Bugfix read Variable $varCLI = ...
-		13.06.2017 FF: Add Citrix System Optimizer Engine
-		28.06.2017 MS: Feature Request 169: add AppLayering Support
-		03.07.2017 FF: CTXOE can be executed on every device (if "installed" + not disabled by GPO/skipped by user)
-		26.07.2017 MS: Bugfix Citrix Applayering: check Universervice ProcessID instead of ProcessName
-		31.07.2017 MS: Show ConsoleMessage during prepare Citrix AppLayering if installed
-		01.08.2017 MS: CTXOE: using custom searchfolder from ADMX if enabled
-		10.09.2017 MS: Delay Citrix Desktop Service if configured through ADMX
-		11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
-		11.09.2017 MS: Bugfix Delay Citrix Desktop Service must be stopped also
-		12.09.2017 MS: Invoke-CDS Changing to $servicename = "BrokerAgent"
-		16.10.2017 MS: Bugfix Applayering, check if the Layer finalize is allowed before continue, thx to Brandon Mitchell
-		29.10.2017 MS: Bugfix AppLayering, Outside ELM no UniService must be running
-		07.11.2017 MS: enable 3rd Party Optimizations, if CTXO is executed, this disabled BIS-F own optimizations
-		01.07.2018 MS: Bugfix 44: Pickup the right Citrix Optimizer Default Template, like Citrix_Windows10_1803.xml, also prepare for Server 2019 Template, like Citrix_WindowsServer2019_1803.xml
-		08.10.2018 MS: Bugfix 44: fix $template typo
-		21.10.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution
-		05.11.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution - add .xml for all $templates
-		17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
-		30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
-        31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
-	  .LINK
-		https://eucweb.com
-	#>
+      History
+	21.09.2012 MS: Script created
+     	18.09.2013 MS: Replaced $date with $(Get-date) to get current timestamp at running scriptlines write to the logfile
+      	17.12.2013 MS: Check Citrix XenApp 6.5 Installation
+        18.03.2014 BR: Revisited Script
+      : 02.04.2014 MS: Redirect Citrix Cache to persistent drive
+        03.04.2014 MS: Redirect LHC.mdb and RadeOffline.mdb to persistend drive
+        13.05.2014 BR: Cleanup Citrix Group Policy Cache > function CleanUpCTXPolCache
+        13.08.2014 MS: Removed $logfile = Set-logFile, it would be used in the 10_XX_LIB_Config.ps1 Script only
+        09.02.2015 MS: Renamed Script from XenApp to Citrix to have all CTX Modules in one script
+        09.02.2015 MS: Moved SetSTA from single to the CTX Script
+        09.02.2015 JP/MS: Cleanup Citrix Application Streaming offline database > dsmaint recreaterade
+        09.02.2015 JP/MS: Cleanup Citrix Profile Management cache and logs > function CleanUpProfileManagement
+        09.02.2015 JP/MS: Cleanup Citrix streamed application cache > function CleanUpRadeCache
+        09.02.2015 JP/MS: Cleanup Citrix EdgeSight > function CleanUpEdgeSight
+        15.04.2015 MS: Added fix for MSMQ Service if occured with XD FP1 and sessionrecording, the VDA has the same QMId as the MSMQ (http://support.citrix.com/proddocs/topic/xenapp-xendesktop-76fp1/xad-xaxd76fp1-knownissues.html)
+        10.08.2015 MS/BR: ReAdded "Removing Local Citrix Group Policy Settings" in function CleanUpCTXPolCache
+        01.10.2015 MS: Change Line 239 to Set-ItemProperty -Path HKLM:Software\Microsoft\MSMQ\Parameters\MachineCache -Name "QMId" -Value ([byte[]]$new_QMID) -Force
+	01.10.2015 MS: Change Line 103 to create Cache Directory to store the CTX License File: New-Item -path "$LIC_BISF_CtxCache" -ItemType Directory -Force
+	01.10.2015 MS: Rewritten script to use central BISF function
+	10.11.2016 MS: Set-QMID would never be processed, wrong syntax in IF (($returnTestXDSoftware -eq "true") -or ($returnTestPVSSoftware -eq "true"))
+	10.11.2016 MS: Added Citrix Workspace Environment Agent detection, to reconfigure AgentAlternateCacheLocation
+	09.01.2017 MS: Bug fix 136; If EdgeSight DataPath not exist, it removes all under the C drive !!
+	09.01.2017 MS: Bug fix 135; If PVS Target Device Driver is installed, XA LicenseFile  would be redirected to WriteCacheDisk, otherwise leave it in origin path
+	10.01.2017 MS: Review 140; During Prepare XenApp for Provisioning you can remove RemoveCurrentServer and ClearLocalDatabaseInformation, this would be set with this Parameter or prompted to administrator to choose
+	18.01.2017 MS: Bug 127; Removed Set-QMID, replaced with Test-MSMQ, a random QMId would be set during system startup with BIS-F
+	18.01.2017 JP: Bug 127; Removed /PrepMsmq:False for XenApp 65, a random QMId would be set during system startup with BIS-F
+	20.02.2017 MS: Removing configure WEMBrokerName with BIS-F, must be configured with WEM ADMX or AMD from Citrix, not here !!
+	06.03.2017 MS: Bugfix read Variable $varCLI = ...
+	13.06.2017 FF: Add Citrix System Optimizer Engine
+	28.06.2017 MS: Feature Request 169: add AppLayering Support
+	03.07.2017 FF: CTXOE can be executed on every device (if "installed" + not disabled by GPO/skipped by user)
+	26.07.2017 MS: Bugfix Citrix Applayering: check Universervice ProcessID instead of ProcessName
+	31.07.2017 MS: Show ConsoleMessage during prepare Citrix AppLayering if installed
+	01.08.2017 MS: CTXOE: using custom searchfolder from ADMX if enabled
+	10.09.2017 MS: Delay Citrix Desktop Service if configured through ADMX
+	11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
+	11.09.2017 MS: Bugfix Delay Citrix Desktop Service must be stopped also
+	12.09.2017 MS: Invoke-CDS Changing to $servicename = "BrokerAgent"
+	16.10.2017 MS: Bugfix Applayering, check if the Layer finalize is allowed before continue, thx to Brandon Mitchell
+	29.10.2017 MS: Bugfix AppLayering, Outside ELM no UniService must be running
+	07.11.2017 MS: enable 3rd Party Optimizations, if CTXO is executed, this disabled BIS-F own optimizations
+	01.07.2018 MS: Bugfix 44: Pickup the right Citrix Optimizer Default Template, like Citrix_Windows10_1803.xml, also prepared for Server 2019 Template, like Citrix_WindowsServer2019_1803.xml
+	08.10.2018 MS: Bugfix 44: fix $template typo
+	21.10.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution
+	05.11.2018 MS: Bugfix 75: CTXO: If template not exist, end BIS-F execution - add .xml for all $templates
+	17.12.2018 MS: Bugfix 80: CTXO: Templatenames are changed in order to support auto-selection
+	30.05.2019 MS: FRQ 111: Support for multiple Citrix Optimizer Templates
+	31.05.2019 MS: HF 24: reconfigure Citrix Broker Service if disabled / not configured in ADMX
+	12.07.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template
+	26.07.2019 MS: ENH 122: Citrix Optimizer Templateprefix support
+	
+	.Link
+    #>
 
 Begin {
 
@@ -233,11 +237,13 @@ Begin {
 		IF ($EdgeSightData_Path) { Remove-Item $EdgeSightData_Path\* -Force -Recurse -ErrorAction SilentlyContinue | out-null }
 	}
 
+
 	function Test-MSMQ {
 		$servicename = "MSMQ"
 		$svc = Test-BISFService -ServiceName "$servicename"
 		IF ($svc) { Write-BISFLog -Msg "Random QMID would be generated during system startup" -ShowConsole -Color Cyan }
 	}
+
 
 	#Citrix Workspace Environment Management Agent
 	function Set-WEMAgent {
@@ -288,6 +294,7 @@ Begin {
 
 				Write-BISFLog -Msg "Running Agent Cache Management Utility with $product" -ShowConsole -Color DarkCyan -SubMsg
 				Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility" | Out-Null
+
 
 			}
 
@@ -341,41 +348,24 @@ Begin {
 
 							#Template
 							if (($LIC_BISF_CLI_CTXOE_TP -eq "") -or ($LIC_BISF_CLI_CTXOE_TP -eq $null)) {
-								Write-BISFLog -Msg "No Template Path for $AppName is configured by GPO. We will search for a default Template..."
-								if ($OSName -like '*Windows 10*') {
-									$ReleaseID = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\" -Name ReleaseID).ReleaseId
-									$template = "Citrix_Windows_10_$($ReleaseID).xml"
-								}
-								elseif ($OSName -like '*Windows 7*') {
-									$template = "Citrix_Windows_7.xml"
-								}
-								elseif ($OSName -like '*Windows 8*') {
-									$template = "Citrix_Windows_81.xml"
-								}
-								elseif ($OSName -like '*Server 2008 R2*') {
-									$template = "Citrix_Windows_Server_2008R2.xml"
-								}
-								elseif ($OSName -like '*Server 2012 R2*') {
-									$template = "Citrix_Windows_Server_2012R2.xml"
-								}
-								elseif ($OSName -like '*Server 2016*') {
-									$ReleaseID = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\" -Name ReleaseID).ReleaseId
-									$template = "Citrix_Windows_Server_2016_$($ReleaseID).xml"
-								}
-								elseif ($OSName -like '*Server 2019*') {
-									$ReleaseID = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\" -Name ReleaseID).ReleaseId
-									$template = "Citrix_Windows_Server_2019_$($ReleaseID).xml"
-								}
-								else {
-									Write-BISFLog -Msg "There is no appropriate Template for $AppName . No optimization by $AppName"
-									break
-								}
+								$templates = "AutoSelect"
+								Write-BISFLog -Msg "No Template for $AppName is configured by GPO, using $templates"
 							}
 							else {
-								Write-BISFLog -Msg "Template Path for $AppName is configured by GPO: $LIC_BISF_CLI_CTXOE_TP"
 								$templates = $LIC_BISF_CLI_CTXOE_TP
+                                Write-BISFLog -Msg "Template(s) for $AppName is configured by GPO: $templates"
 							}
-							Write-BISFLog -Msg "Template for $AppName : $templates"
+
+							#Templateprefix
+							IF (($LIC_BISF_CLI_CTXOE_TP_PREFIX -eq "") -or ($null -eq $LIC_BISF_CLI_CTXOE_TP_PREFIX))
+							{
+								$templatePrefix = $null
+
+							} ELSE {
+								$templatePrefix = $LIC_BISF_CLI_CTXOE_TP_PREFIX
+								Write-BISFLog -Msg "Using Templateprefix: $templatePrefix" -ShowConsole -SubMsg -Color DarkCyan
+							}
+							
 
 							#Groups
 							if (($LIC_BISF_CLI_CTXOE_GROUPS -eq "") -or ($LIC_BISF_CLI_CTXOE_GROUPS -eq $null)) {
@@ -403,13 +393,35 @@ Begin {
 
 							#Commandline
 							ForEach ($template in $templates.split(",")) {
-								IF (Test-Path "$CTXOTemplatePath\$template") {
-									Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template" -ShowConsole -SubMsg -Color DarkCyan
-									Write-BISFLog -Msg "Create temporary CMD-File ($tmpPS1) to run $AppName from them"
-									$logfolder_bisf = (Get-Item -Path $logfile | Select-Object -ExpandProperty Directory).FullName
-									$timestamp = Get-Date -Format yyyyMMdd-HHmmss
-									$output_XML = "$logfolder_bisf\Prep_BIS_CTXOE_$($computer)_$timestamp.xml"
-									"& ""$fileExists"" -Source ""$template""$groups-mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
+								Write-BISFLog "Processing Template $template" -ShowConsole -SubMsg -Color DarkCyan
+                                IF ($template -eq "AutoSelect") {
+									$CTXAutoSelect = $true
+								} Else { 
+									$CTXAutoSelect = $false
+								}
+								
+								Write-BISFLog -Msg "Create temporary CMD-File ($tmpPS1) to run $AppName from them"
+								$logfolder_bisf = (Get-Item -Path $logfile | Select-Object -ExpandProperty Directory).FullName
+								$timestamp = Get-Date -Format yyyyMMdd-HHmmss
+								$XMLtemplate = $template.split(".")[0]
+								$output_XML = "$logfolder_bisf\Prep_BIS_CTXO_$($computer)_$($XMLtemplate)_$timestamp.xml"
+
+								IF ((Test-Path "$CTXOTemplatePath\$template") -or ($CTXAutoSelect -eq $true)) {
+									IF ($CTXAutoSelect -eq $true) {
+										IF ($null -eq $templateprefix)
+										{
+											Write-BISFLog "Using AutoSelect for OS Optimization " -ShowConsole -SubMsg -Color DarkCyan
+											"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default   
+										} ELSE {
+											Write-BISFLog "Using AutoSelect for OS Optimization with Templateprefix" -ShowConsole -SubMsg -Color DarkCyan
+											"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml"" -Templateprefix ""$templateprefix""" | Out-File $tmpPS1 -Encoding default
+										}
+									} ELSE {
+										Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template with Tem" -ShowConsole -SubMsg -Color DarkCyan
+										"& ""$fileExists"" -Source ""$template""$groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
+									}
+									
+									
 									$Global:LIC_BISF_3RD_OPT = $true # BIS-F own optimization will be disabled, if 3rd Party Optimization is true
 									$ctxoe_proc = Start-Process -FilePath powershell.exe -ArgumentList "-file $tmpPS1" -WindowStyle Hidden -PassThru
 									Show-BISFProgressBar -CheckProcessId $ctxoe_proc.Id -ActivityText "Running $AppName...please wait"
@@ -477,14 +489,16 @@ Begin {
 		$servicename = "BrokerAgent"
 		IF ($LIC_BISF_CLI_CDS -eq "1") {
 			Write-BISFLog -Msg "The $servicename would configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
-			Invoke-BISFService -ServiceName "$servicename" -StartType Disabled -Action stop
+			Invoke-BISFService -ServiceName "$servicename" -StartType disabled -Action stop
 		}
 		ELSE {
 			Write-BISFLog -Msg "The $servicename would not configured through ADMX.. normal operation state"
-			Invoke-BISFService -ServiceName "$servicename" -StartType Automatic -Action Start
+			Invoke-BISFService -ServiceName "$servicename" -StartType Automatic -Action start
 		}
 
 	}
+
+
 
 	####################################################################
 }
@@ -501,6 +515,7 @@ Process {
 		CleanUpCTXPolCache
 		CleanUpProfileManagement
 		CleanUpEdgeSight
+
 	}
 
 	IF (($returnTestXDSoftware -eq "true") -or ($returnTestPVSSoftware -eq "true")) {
