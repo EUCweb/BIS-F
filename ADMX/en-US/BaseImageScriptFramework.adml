@@ -28,8 +28,28 @@ To run Citrix Optimizer in analyze-only mode, check "Mode: Analyze only".
 If you disable this policy setting, Citrix Optimizer will not be executed.
 If you do not configure this policy setting, you'll be prompted during the sealing process.
 
-Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\Citrix Optimizer </string>
-      <string id="POL_SDelete">Run SDelete</string>
+Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\CitrixOptimizer </string>
+
+(Optional) Template:
+Enter multiple templates with comma-separated and no space, like:
+PVS_Optimization.xml,3rd_Party.xml
+
+AutoSelect with Multiple Templates:
+For Autoselection of the OS Template in combination with multiple Templates please use:
+AutoSelect,PVS_Optimization.xml,3rd_Party.xml
+
+AutoSelect is a hardcoded string and must be used in the GPO, BIS-F will trigger the right OS template for Citrix Optimzer
+
+(Optional) Templateprefix:
+By default, Citrix Optimizer is looking for templates that start with "Citrix_Windows" and are provided by Citrix as part of default Optimizer build.
+If you would like to use your own templates with auto-select, you can override the default templates prefix.
+For example if your template is called "EUCweb_Windows_10_1809.xml", use TemplatePrefix "EUCweb_Windows" to automatically
+select your templates based on current operating system and build.
+
+
+</string>
+
+	  <string id="POL_SDelete">Run SDelete</string>
       <string id="POL_SDelete_Help">Run SDelete on PVS write cache disk if vDisk is in shared mode only
 
 If you enable this policy setting, SDelete will be executed on the PVS write cache disk in shared mode.
@@ -488,6 +508,23 @@ Note: If you have the device personalization configured to skip it on all disk m
 If you enable this policy setting, .NET Optimization is running during sealing
 If you disable this policy setting, .NET Optimization is disabled during sealing
 If you do not configure this policy setting, .NET Optimization is running during sealing</string>
+	  <string id="POL_WinSxS">WinSxS Optimization</string>
+      <string id="POL_WinSxS_Help">Run WinSxS Optimization during sealing (preparation)
+
+If you enable this policy setting, WinSxS Optimization is running during sealing
+If you disable this policy setting, WinSxS Optimization is disabled during sealing
+If you do not configure this policy setting, WinSxS Optimization is running during sealing
+
+execute WinSxS Optimization on BaseDisk only:
+If you using Citrix PVS or MCS the WinSxS Optimization is running on the BaseDisk only, during a parent disk seal process the WinSxS Optimization is skipped.
+
+Maximum Execution Timeout:
+You can specifiy the maximum executio timeout for the WinSxS Optimization. default is det to 240 minutes, min. 60, max 480. you can increase/decrease the value in steps of 15 minutes. if this value is reached during the WinSxS Optimization the DISM Process is terminated.
+
+About WinSxS:
+The Windows component store (C:\Windows\winsxs) directory is used during servicing operations within Windows installations. Servicing operations include, but are not limited to, Windows Update, service pack, and hotfix installations.
+
+The component store contains all the files that are required for a Windows installation. And, any updates to those files are also held within the component store as the updates are installed. This causes the component store to grow over time as more updates, features, or roles are added to the installation. The component store uses NTFS hard links between itself and other Windows directories to increase the robustness of the Windows platform. </string>
       <string id="POL_WUAgent">Install Windows Updates using WUAgent</string>
       <string id="POL_WUAgent_Help">Install Windows Update using the native Windows Update Agent
 
@@ -570,7 +607,11 @@ Note: Enter the name of the configurations file only, the path is defined in the
         <checkBox refId="CHK_CTXOE_SF">Enable custom search folder</checkBox>
         <textBox refId="TXT_CTXOE_SF_CUS">
           <label>Custom search folder</label>
-          <defaultValue>C:\Program Files (x86)\Citrix Optimizer</defaultValue>
+          <defaultValue>C:\Program Files (x86)\CitrixOptimizer</defaultValue>
+        </textBox>
+		<textBox refId="TXT_CTXOE_TemplatePreFix">
+          <label>(Optional) Templateprefix</label>
+          <defaultValue>Citrix_Windows</defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_FSXRulesShare">
@@ -729,6 +770,10 @@ Note: Enter the name of the configurations file only, the path is defined in the
           <label>Custom search folder</label>
           <defaultValue>C:\Windows\System32</defaultValue>
         </textBox>
+      </presentation>
+	  <presentation id="POL_WinSxS">
+        <checkBox refId="CHK_WinSxSBaseImage">Execute WinSxS Optimization on BaseDisk only</checkBox>
+        <decimalTextBox refId="DXT_WinSxSTimeout" defaultValue="240" spinStep="15">Maximum Execution Timeout (min)</decimalTextBox>
       </presentation>
       <presentation id="POL_METCfg">
         <decimalTextBox refId="DXT_MET" defaultValue="60">MaxExecution timeout in minutes (default: 60)</decimalTextBox>

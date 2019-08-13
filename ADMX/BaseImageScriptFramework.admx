@@ -58,6 +58,7 @@
         <boolean id="CHK_CTXOE_Analyze" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_Analyze" />
         <boolean id="CHK_CTXOE_SF" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF" />
         <text id="TXT_CTXOE_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF_CUS" />
+		<text id="TXT_CTXOE_TemplatePreFix" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_TP_PREFIX" />
       </elements>
     </policy>
     <policy name="POL_SDelete" class="Machine" displayName="$(string.POL_SDelete)" explainText="$(string.POL_SDelete_Help)" presentation="$(presentation.POL_SDelete)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SD">
@@ -942,6 +943,28 @@
           </value>
         </item>
       </disabledList>
+    </policy>
+	<policy name="POL_WinSxS" class="Machine" displayName="$(string.POL_WinSxS)" explainText="$(string.POL_WinSxS_Help)" presentation="$(presentation.POL_WinSxS)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WinSxS">
+      <parentCategory ref="CAT_MS" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxS">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxS">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+      <elements>
+        <boolean id="CHK_WinSxSBaseImage" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxSBaseImage" />
+        <decimal id="DXT_WinSxSTimeout" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxSTimeout" minValue="60" maxValue="480" />
+      </elements>
     </policy>
     <policy name="POL_WUSCCM" class="Machine" displayName="$(string.POL_WUSCCM)" explainText="$(string.POL_WUSCCM_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WUSCCM">
       <parentCategory ref="CAT_MS" />
