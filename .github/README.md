@@ -1,6 +1,8 @@
 # BIS-F
 Base Image Script Framework (BIS-F)
 
+**This is the new upcoming Release 7 1912 (Code Name: Bugs Bunny)**
+
 The Base Image Script Framework (BIS-F) is the perfect way to seal your Base Image. 
 Whatever your environment has run Citrix XenApp, Citrix XenDesktop with PVS or MCS, Citrix AppLayering, VMware Horizon View, 
 you must 		https://eucweb.com your Base Image before you can distribute this Image to multiple devices. 
