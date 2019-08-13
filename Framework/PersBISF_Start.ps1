@@ -1,4 +1,4 @@
-﻿<# 
+﻿<#
 	.SYNOPSIS
 		Personalization of the  BaseImage for Image Management Software like PVS, MCS,VMware View, Mirosofft only environemnts, sysprep images
 	.DESCRIPTION
@@ -6,7 +6,7 @@
 	.NOTES
 		Author: Matthias Schlimm
 		Company: Login Consultants Germany GmbH
-			
+
 		History:
 		24.09.2012 MS: Script created
 		26.08.2013 MS: Removed $XA_GenPVS_Folder = $SubCall_Folder + "30_XA_GenPVS\"
@@ -31,37 +31,40 @@
 		11.09.2017 MS: Writing PersSate "PersRunning" and "PersFinished" to BISF Registry to control running prep after pers first
 		12.09.2017 MS: Using array $PersState = $TaskStates[0-4] to set the right State in the registry instead of hardcoded value
 		03.10.2017 MS: Bugfix 215: writing wrong PersState to registry, preparation does not run in that case
+		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
 	.LINK
 		https://eucweb.com
 #>
 
 Begin {
 	$error.Clear()
-	If ( $TerminateScript -is [system.object] ) {Remove-Variable TerminateScript}
+	If ( $TerminateScript -is [system.object] ) { Remove-Variable TerminateScript }
 	Clear-Host
 	$computer = gc env:computername
 	$timestamp = Get-Date -Format yyyyMMdd-HHmmss
-	
-	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version. 
-	If ($($host.name) -like "* ISE *") { # Running script from Windows Powershell ISE
+
+	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version.
+	If ($($host.name) -like "* ISE *") {
+		# Running script from Windows Powershell ISE
 		$PSScriptFullName = $psise.CurrentFile.FullPath.ToLower()
 		$PSCommand = (Get-PSCallStack).InvocationInfo.MyCommand.Definition
-	} ELSE {
+	}
+ ELSE {
 		$PSScriptFullName = $MyInvocation.MyCommand.Definition.ToLower()
 		$PSCommand = $MyInvocation.Line
 	}
 	[string]$PSScriptName = (Split-Path $PSScriptFullName -leaf).ToLower()
-	If (($PSScriptRoot -eq "") -or ($PSScriptRoot -eq $null)) { [string]$PSScriptRoot = (Split-Path $PSScriptFullName).ToLower()}
-		
+	If (($PSScriptRoot -eq "") -or ($PSScriptRoot -eq $null)) { [string]$PSScriptRoot = (Split-Path $PSScriptFullName).ToLower() }
+
 	# define environment
 	$Global:State = "Personalization"
-	$Global:LogFileName = 
+	$Global:LogFileName =
 	$Global:Main_Folder = $PSScriptRoot
 	$Global:SubCall_Folder = $PSScriptRoot + "\SubCall\"
 	$Global:LIB_Folder = $SubCall_Folder + "Global\"
-	$Global:LogFileName = "Pers_BIS_$($computer)_$timestamp.bis"
-	$Global:LOGFile="C:\Windows\Logs\$LogFileName"
-	$Global:LOG=$LOGFile
+	$Global:LogFileName = "Pers_BIS_$($computer)_$timestamp.log"
+	$Global:LOGFile = "C:\Windows\Logs\$LogFileName"
+	$Global:LOG = $LOGFile
 
 }
 
@@ -81,7 +84,7 @@ Process {
 		Throw "An error occured while loading modules. The error is: $_"
 		Exit 1
 	}
-	
+
 	# Initialize all variables used by BISF
 	Initialize-BISFConfiguration
 
@@ -89,56 +92,56 @@ Process {
 	Write-BISFLog -Msg "Write PersState to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_PersState -Value: $PersState"
 	Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState" -value "$PersState" -Force #-ErrorAction SilentlyContinue
 
-	
+
 	#Migrate Settings from PVS to BISF
 	Convert-BISFSettings
 
-#Load Global environment
-$psfolder = $LIB_Folder
-Invoke-BISFFolderScripts -Path "$psfolder" -Verbose:$VerbosePreference
-$PersState = $TaskStates[3]
-Switch ($LIC_BISF_CLI_DM) #Skip Device Personalization, based on ADMX configuration
-	{
+	#Load Global environment
+	$psfolder = $LIB_Folder
+	Invoke-BISFFolderScripts -Path "$psfolder" -Verbose:$VerbosePreference
+	$PersState = $TaskStates[3]
+	Switch ($LIC_BISF_CLI_DM) {
+		#Skip Device Personalization, based on ADMX configuration
 		All {
 			Start-BISFCDS
 			Write-BISFLog -Msg "Write PersState to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_PersState -Value: $PersState"
 			Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState" -value "$PersState" -Force #-ErrorAction SilentlyContinue
-			Write-BISFLog -Msg "Image in Mode $DiskMode, skip device personalization (configured: all)" -Type E -SubMsg;Exit
+			Write-BISFLog -Msg "Image in Mode $DiskMode, skip device personalization (configured: all)" -Type E -SubMsg; Exit
 		}
-		Never {Write-BISFLog -Msg "Image in Mode $DiskMode, device personalization would not being skipped (configured: never)" -ShowConsole -Color DarkCyan}
+		Never { Write-BISFLog -Msg "Image in Mode $DiskMode, device personalization would not being skipped (configured: never)" -ShowConsole -Color DarkCyan }
 		ReadWrite {
-			IF (($DiskMode -match "Private") -or ($DiskMode -match "ReadWrite"))
-			{
+			IF (($DiskMode -match "Private") -or ($DiskMode -match "ReadWrite")) {
 				Start-BISFCDS
 				Write-BISFLog -Msg "Write PersState to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_PersState -Value: $PersState"
 				Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState" -value "$PersState" -Force #-ErrorAction SilentlyContinue
-				Write-BISFLog -Msg "Image in Mode $DiskMode, skip device personalization (configured: Private Mode) " -Type E -SubMsg;Exit
-			} ELSE 
-			{Write-BISFLog -Msg "Image in Mode $DiskMode, device personalization would not being skipped (configured: Private Mode)" -ShowConsole -Color DarkCyan}
+				Write-BISFLog -Msg "Image in Mode $DiskMode, skip device personalization (configured: Private Mode) " -Type E -SubMsg; Exit
+			}
+			ELSE
+			{ Write-BISFLog -Msg "Image in Mode $DiskMode, device personalization would not being skipped (configured: Private Mode)" -ShowConsole -Color DarkCyan }
 		}
-		Default {Write-BISFLog -Msg "Default Action selected, device personalization would not being skipped (not configured in ADMX)" -ShowConsole -Color DarkCyan}
+		Default { Write-BISFLog -Msg "Default Action selected, device personalization would not being skipped (not configured in ADMX)" -ShowConsole -Color DarkCyan }
 	}
-Add-BISFFinishLine
+	Add-BISFFinishLine
 
-#load predefined scripts from LOGIN Consultants
-$psfolder = $SubCall_Folder + "Personalization"
+	#load predefined scripts from LOGIN Consultants
+	$psfolder = $SubCall_Folder + "Personalization"
  Invoke-BISFFolderScripts -Path "$psfolder" -Verbose:$VerbosePreference
 
-Add-BISFFinishLine
+	Add-BISFFinishLine
 
-#load custom scripts
-$psfolder = $SubCall_Folder + "Personalization\Custom"
+	#load custom scripts
+	$psfolder = $SubCall_Folder + "Personalization\Custom"
  Invoke-BISFFolderScripts -Path "$psfolder" -Verbose:$VerbosePreference
 
-Start-BISFCDS # Start the Citrix Desktop Service, if configured through ADMX
+	Start-BISFCDS # Start the Citrix Desktop Service, if configured through ADMX
 
-$PersState = $TaskStates[3]
-Write-BISFLog -Msg "Write PersState to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_PersState -Value: $PersState"
-Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState" -value "$PersState" -Force #-ErrorAction SilentlyContinue
+	$PersState = $TaskStates[3]
+	Write-BISFLog -Msg "Write PersState to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_PersState -Value: $PersState"
+	Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState" -value "$PersState" -Force #-ErrorAction SilentlyContinue
 
 }
 
- End {
+End {
 	try {
 		Write-BISFLog -Msg "- - - End Of Script - - - "
 		#unload BISF Modules

@@ -68,6 +68,7 @@
 		12.09.2017 MS: using progressbar during wait for the personlization is finished
 		16.10.2017 MS: Bugfix detecting wrong POSH Version if running BIS-F remotly, using $PSVersionTable.PSVersion.Major, thx to Fabian Danner
 		12.07.2018 MS: Bugfix 40: PendingReboot - give a empty value back
+		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
 	.LINK
 		https://eucweb.com
 #>
@@ -104,7 +105,7 @@ Begin {
 	$Global:Main_Folder = $PSScriptRoot
 	$Global:SubCall_Folder = $PSScriptRoot + "\SubCall\"
 	$Global:LIB_Folder = $SubCall_Folder + "Global\"
-	$Global:LogFileName = "Prep_BIS_$($computer)_$timestamp.bis"
+	$Global:LogFileName = "Prep_BIS_$($computer)_$timestamp.log"
 	$Global:LOGFile = "C:\Windows\Logs\$LogFileName"
 	$Global:LOG = $LOGFile
 	$Global:ExportSharedConfiguration = $ExportSharedConfiguration
@@ -144,8 +145,8 @@ Process {
 	#check Powershell minimun version 3.0
 	$PSverMin = "3"
 	If (-not ($PSVersionTable.PSVersion.Major -ge $PSverMin)) {
-		write-host "Powershell v$PSverMin or higher is required for BIS-F, detected version: $($PSVersionTable.PSVersion.Major)" -ForegroundColor white -BackgroundColor red
-		start-sleep 999
+		Write-Host "Powershell v$PSverMin or higher is required for BIS-F, detected version: $($PSVersionTable.PSVersion.Major)" -ForegroundColor white -BackgroundColor red
+		Start-Sleep 999
 		break
 	}
 
@@ -185,7 +186,7 @@ Process {
 			Write-Progress -Activity "Personalization is in current ""$PersState"" state, waiting if finished..." -PercentComplete $a -Status "Please wait...$a %"
 
 		}
-		start-sleep -seconds 1
+		Start-Sleep -seconds 1
 	} While ($a -ne 100)
 
 

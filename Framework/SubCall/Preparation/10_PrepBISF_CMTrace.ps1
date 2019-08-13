@@ -7,10 +7,10 @@
 	.NOTES
 		Author: Matthias Schlimm
 		Company: Login Consultants Germany GmbH
-		
+
 		History:
 		11.08.2014 MS: Script created
-		12.08.2014 MS: Change Extension from .log to .bis (BIS = BaseImageScripts) 
+		12.08.2014 MS: Change Extension from .log to .bis (BIS = BaseImageScripts)
 		13.08.2014 MS: remove $logfile = Set-logFile, it would be used in the 10_XX_LIB_Config.ps1 Script only
 		13.08.2014 MS: Check if not exists C:\Windows\trace32.exe
 		15.08.2014 MS: suppress pupup for current user to register viewer for all *.log files
@@ -20,21 +20,22 @@
 		30.09.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		10.11.2016 MS: CMTrace would not longer distributed by BIS-F, customer must have them in their environment installed
 		21.09.2017 MS: using custom searchfolder from ADMX if enabled
+		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
 	.LINK
 		https://eucweb.com
 #>
 
 Begin {
-	$PSScriptFullName = $MyInvocation.MyCommand.Path 
-	$PSScriptRoot = Split-Path -Parent $PSScriptFullName 
+	$PSScriptFullName = $MyInvocation.MyCommand.Path
+	$PSScriptRoot = Split-Path -Parent $PSScriptFullName
 	$PSScriptName = [System.IO.Path]::GetFileName($PSScriptFullName)
-	
+
 	$AppName = "CMTrace"
 	$reg_hklm_classes = "$hklm_software\Classes"
 	$reg_Hkcu_classes = "$hkcu_software\Classes"
 	$reg_LogFile = "BIS.File\shell\open\command"
-	$reg_log = ".bis"
-	$reg_lo = ".bi_"
+	$reg_log = ".log"
+	$reg_lo = ".lo_"
 	$found = $false
 	IF ($LIC_BISF_CLI_OT_SF -eq "1") {
 		$SMSSearchFolders = $LIC_BISF_CLI_OT_SF_CUS
@@ -51,9 +52,9 @@ Process {
 		ForEach ($SMSSearchFolder in $SMSSearchFolders) {
 			If ($found -eq $false) {
 				Write-BISFLog -Msg "Looking in $SMSSearchFolder"
-				$CMTRaceExists = Get-ChildItem -Path "$SMSSearchFolder" -filter "CMTrace.exe" -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notlike "*Tools\*" } | % { $_.FullName }
-			
-				IF (($CMTRaceExists -ne $null) -and ($found -ne $true)) { 
+				$CMTRaceExists = Get-ChildItem -Path "$SMSSearchFolder" -filter "CMTrace.exe" -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notlike "*Tools\*" } | ForEach-Object { $_.FullName }
+
+				IF (($CMTRaceExists -ne $null) -and ($found -ne $true)) {
 					$SMSTraceDestination = $CMTRaceExists
 					Write-BISFLog -Msg "Product $($AppName) installed" -ShowConsole -Color Cyan
 					$found = $true
