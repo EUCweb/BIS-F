@@ -3390,3 +3390,30 @@ function Test-ServiceState {
 	}
 	return $svc.Status
 }
+
+function Test-NutanixFrameSoftware {
+	<#
+	.SYNOPSIS
+		check if the Nutanix Frame Agent installed
+	.DESCRIPTION
+	  	if the Nutanix Frame Agent installed they will send a true or false value and will set the global variable ImageSW to true or false
+		use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		Test-BISFNutanixFrameSoftware
+	.NOTES
+		Author: Matthias Schlimm
+
+
+		History:
+	  	13.08.2019 MS: function created
+
+	.LINK
+		https://eucweb.com
+#>
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	$svc = Test-BISFService -ServiceName "MF2Service" -ProductName "Nutanix Xi Frame"
+	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	return $svc
+
+}

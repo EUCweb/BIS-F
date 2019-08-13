@@ -1,7 +1,7 @@
+13.08.2019 MS: FRQ 97: Nutanix Xi Frame Support
 28.05.2019 MK: ENH 104: updated service detection in 10_PrepBISF_Empirum.ps1
 15.05.2019 JP: Fixed encoding, tabs (4), format, style, a few typos, merging errors and removed eof extra lines
 13.05.2019 MS: FRQ 76: detect the platform of the running computer
-12.05.2019 MS: FRQ 97: Nutanix Xi Frame Support
 10.05.2019 MK: FRQ 89: Cylance PROTECT generalization
 07.05.2019 JP: FRQ 91: Moved FSLogix settings to Microsoft ADMX category
 07.05.2019 JP: Updated Group Policy templates, fixed typos and errors, removed the german one since it's in english anyway

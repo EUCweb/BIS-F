@@ -13,66 +13,66 @@ param()
       Editor: Mike Bijl (Rewritten variable names and script format)
       Company: Login Consultants Germany GmbH
 
-      History
-      Last Change: 10.09.2013 MS: Script created
-      Last Change: 16.09.2013 MS: function to read values from registry
-      Last Change: 17.09.2013 MS: Add global values for Folders
-      Last Change: 17.09.2013 MS: edit scriptlogic to get varibales and their values from registry, if not defined use script defined values
-      Last Change: 18.09.2013 MS: syntax error line 140 -Erroraction SilentlyContinue
-      Last Change: 18.09.2013 MS: add rearm values for OS (Operting System) and OF (Office)
-      Last Change: 18.09.2013 MS: replace $date with $(Get-date) to get current timestamp at running scriptlines write to the logfile
-      Last Change: 18.09.2013 MS: Add varibale LIC_PVS_CtxImaPath to redirect local hostcache
-      Last Change: 18.09.2013 MS: remove $LIB & $Subcall folder from gloabl variable
-      Last Change: 18.09.2013 MS: add function CheckPVSDriveLetter and CheckPVSSysVariable
-      Last Change: 19.09.2013 MS: remove $LOG = "C:\Windows\Log\$PSScriptName.log"
-      Last Change: 19.09.2013 MS: add $regvarfound = @()
-      Last Change: 19.09.2013 MS: add function CheckRegHive
-      Last Change: 01.10.2013 MS: add global value LIC_PVS_RefSrv_HostName to detect ReferenceServer
-      Last Change: 17.12.2013 MS: Errorhandling: add return $false for exit script
-      Last Change: 18.12.2013 MS: Line 47: $varfound = @()
-      Last Change: 28.01.2014 MS: Add $return for ErrorHandling
-      Last Change: 28.01.2014 MS: Add CheckHostIDDir
-      Last Change: 03.03.2014 BR: Revisited Script
-      Last Change: 10.03.2014 MS: Remove Write-BISFLog in Line 139 and replace with Write-Host
-      Last Change: 10.03.2014 MS: [array]$reg_value_data += "15_XX_Custom"
-      Last Change: 21.03.2014 MS: last code change before release to web
-      Last Change: 01.04.2014 MS: move central functions to 10_XX_LIB_Functions.psm1
-      Last Change: 02.04.2014 MS: add variable to redirect Cache Location ->  $LIC_PVS_CtxCache
-      Last Change: 02.04.2014 MS: Fix: wrong Log-Location
-      Last Change: 15.05.2014 MS: Add get-Version to show current running version
-      Last Change: 11.08.2014 MS: remove $returnCheckPVSDriveLetter
-      Last Change: 12.08.2014 MS: remove to much entries for logging
-      Last Change: 12.08.2014 MS: move function set-logfie from 10_XX_LIB_Functions.psm1 to 10_XX_LIB_Config.ps1, this function would be run from this script only and no more from other scripts
-      Last Change: 13.08.2014 MS: add IF ($PVSDiskDrive -eq $null) {$PVSDiskDrive ="C:\Windows\Logs"}
-      Last Change: 14.08.2014 MS: change function Set-Logfile if the Drive is not reachable
-      Last Change: 15.08.2014 MS: add line 242: get-OSinfo
-      Last Change: 15.08.2014 MS: add line 245: CheckXDSoftware
-      Last Change: 18.08.2014 MS: move Logfilefolder PVSLogs to new Folder BISLogs\PVSLogs_old and remove the registry entry LIC_PVS_LogPath, their no longer needed
-      Last Change: 31.10.2014 MB: Renamed functions: CheckXDSoftware -> Test-XDSoftware / CheckPVSSoftware -> Test-PVSSoftware / CheckPVSDriveLetter -> Get-PVSDriveLetter / CheckRegHive -> Test-BISFRegHive
-      Last Change: 31.10.2014 MB: Renamed variables: returnCheckPVSSysVariable -> returnTestPVSEnvVariable
-      Last Change: 14.04.2015 MS: Get-TaskSequence to activate or suppress a SystemShutdown
-      Last Change: 14.04.2015 MS: detect if running from SCCM/MDT Tasksequence, if so it sets the logfile location to the the task sequence “LogPath”
-      Last Change: 02.06.2015 MS: define new gobal variables for all not predefined customobjects in $BISFconfiguration, do i need to store the CLI commands in registry
-	  Last Change: 02.06.2015 MS: running from SCCM or MDT ->  changing to $logpath only (prev. $LogFilePath = "$logPath\$LogFolderName"), only files directly in the folder are preserved, not subfolders
-      Last Change: 10.08.2015 MS: Bug 50 - added existing funtion $Global:returnTestPVSDriveLetter=Test-PVSDriveLetter -Verbose:$VerbosePreference
-      Last Change: 21.08.2015 MS: remove all XX,XA,XD from al files and Scripts
-      Last Change: 29.09.2015 MS: Bug 93: check if preperation phase is running to run $Global:returnTestPVSDriveLetter=Test-PVSDriveLetter -Verbose:$VerbosePreference
-      Last Change: 16.12.2015 MS: redirect spool directory to PVS WriteCacheDisk, if PVS Target Device Driver is installed only
-      Last Change: 16.12.2015 MS: redirect eventlogs (Aplication, Security, System) to PVS WriteCacheDisk, if PVS Target Device Driver is installed only
-	  Last Change: 07.01.2016 MS: Feature 20: add VMware Horizon View detection
-	  Last Change: 27.01.2016 MS: move $State -eq "Preparation" from BISF.ps1 to function Test-BISFPVSDriveLetter
-	  Last Change: 28.01.2016 MS: add Request-BISFsysprep
-	  Last Change: 02.03.2016 MS: check PVS DiskMode at Prerequisites, to get an error on startup if Disk is in ReadOnly Mode
-	  Last Change: 18.10.2016 MS: change LIC_BISF_MAIN_PersScript to new folderPath, remove wrong clip "}"
-      Last Change: 19.10.2016 MS: add $Global:LogFilePath = "$LogPath"  to function Set-LogFile
-	  Last Change: 27.07.2017 MS: replace redirection of spool and evt-logs with central function Use-BISFPVSConfig, if using Citrix AppLayering with PVS it's a complex matrix to redirect or not.
-	  Last Change: 03.08.2017 MS: add $Gloabl:BootMode = Get-BISFBootMode to get UEFI or Legacy
-	  Last Change: 14.08.2017 MS: add cli switch ExportSharedConfiguration to export BIS-F ADMX Reg Settings into an XML File
-	  Last Change: 07.11.2017 MS: add $LIC_BISF_3RD_OPT = $false, if vmOSOT or CTXO is enabled and found, $LIC_BISF_3RD_OPT = $true and disable BIS-F own optimizations
-	  Last Change: 11.11.2017 MS: Retry 30 times if Logshare on network path is not found with fallback after max. is reached
-	  Last Change: 02.07.2018 MS: Bufix 50 - function Set-Logfile -> invoke-BISFLogShare   (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
-      Last Change: 20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
-      Last Change: 12.05.2019 MS: FRQ 97 - Nutanix Xi Frame Support
+    History
+		10.09.2013 MS: Script created
+		16.09.2013 MS: function to read values from registry
+		17.09.2013 MS: Add global values for Folders
+		17.09.2013 MS: edit scriptlogic to get varibales and their values from registry, if not defined use script defined values
+		18.09.2013 MS: syntax error line 140 -Erroraction SilentlyContinue
+		18.09.2013 MS: add rearm values for OS (Operting System) and OF (Office)
+		18.09.2013 MS: replace $date with $(Get-date) to get current timestamp at running scriptlines write to the logfile
+		18.09.2013 MS: Add varibale LIC_PVS_CtxImaPath to redirect local hostcache
+		18.09.2013 MS: remove $LIB & $Subcall folder from gloabl variable
+		18.09.2013 MS: add function CheckPVSDriveLetter and CheckPVSSysVariable
+		19.09.2013 MS: remove $LOG = "C:\Windows\Log\$PSScriptName.log"
+		19.09.2013 MS: add $regvarfound = @()
+		19.09.2013 MS: add function CheckRegHive
+		01.10.2013 MS: add global value LIC_PVS_RefSrv_HostName to detect ReferenceServer
+		17.12.2013 MS: Errorhandling: add return $false for exit script
+		18.12.2013 MS: Line 47: $varfound = @()
+		28.01.2014 MS: Add $return for ErrorHandling
+		28.01.2014 MS: Add CheckHostIDDir
+		03.03.2014 BR: Revisited Script
+		10.03.2014 MS: Remove Write-BISFLog in Line 139 and replace with Write-Host
+		10.03.2014 MS: [array]$reg_value_data += "15_XX_Custom"
+		21.03.2014 MS: last code change before release to web
+		01.04.2014 MS: move central functions to 10_XX_LIB_Functions.psm1
+		02.04.2014 MS: add variable to redirect Cache Location ->  $LIC_PVS_CtxCache
+		02.04.2014 MS: Fix: wrong Log-Location
+		15.05.2014 MS: Add get-Version to show current running version
+		11.08.2014 MS: remove $returnCheckPVSDriveLetter
+		12.08.2014 MS: remove to much entries for logging
+		12.08.2014 MS: move function set-logfie from 10_XX_LIB_Functions.psm1 to 10_XX_LIB_Config.ps1, this function would be run from this script only and no more from other scripts
+		13.08.2014 MS: add IF ($PVSDiskDrive -eq $null) {$PVSDiskDrive ="C:\Windows\Logs"}
+		14.08.2014 MS: change function Set-Logfile if the Drive is not reachable
+		15.08.2014 MS: add line 242: get-OSinfo
+		15.08.2014 MS: add line 245: CheckXDSoftware
+		18.08.2014 MS: move Logfilefolder PVSLogs to new Folder BISLogs\PVSLogs_old and remove the registry entry LIC_PVS_LogPath, their no longer needed
+		31.10.2014 MB: Renamed functions: CheckXDSoftware -> Test-XDSoftware / CheckPVSSoftware -> Test-PVSSoftware / CheckPVSDriveLetter -> Get-PVSDriveLetter / CheckRegHive -> Test-BISFRegHive
+		31.10.2014 MB: Renamed variables: returnCheckPVSSysVariable -> returnTestPVSEnvVariable
+		14.04.2015 MS: Get-TaskSequence to activate or suppress a SystemShutdown
+		14.04.2015 MS: detect if running from SCCM/MDT Tasksequence, if so it sets the logfile location to the the task sequence “LogPath”
+		02.06.2015 MS: define new gobal variables for all not predefined customobjects in $BISFconfiguration, do i need to store the CLI commands in registry
+		02.06.2015 MS: running from SCCM or MDT ->  changing to $logpath only (prev. $LogFilePath = "$logPath\$LogFolderName"), only files directly in the folder are preserved, not subfolders
+		10.08.2015 MS: Bug 50 - added existing funtion $Global:returnTestPVSDriveLetter=Test-PVSDriveLetter -Verbose:$VerbosePreference
+      	21.08.2015 MS: remove all XX,XA,XD from al files and Scripts
+      	29.09.2015 MS: Bug 93: check if preperation phase is running to run $Global:returnTestPVSDriveLetter=Test-PVSDriveLetter -Verbose:$VerbosePreference
+    	16.12.2015 MS: redirect spool directory to PVS WriteCacheDisk, if PVS Target Device Driver is installed only
+      	16.12.2015 MS: redirect eventlogs (Aplication, Security, System) to PVS WriteCacheDisk, if PVS Target Device Driver is installed only
+	 	07.01.2016 MS: Feature 20: add VMware Horizon View detection
+	 	27.01.2016 MS: move $State -eq "Preparation" from BISF.ps1 to function Test-BISFPVSDriveLetter
+	  	28.01.2016 MS: add Request-BISFsysprep
+	  	02.03.2016 MS: check PVS DiskMode at Prerequisites, to get an error on startup if Disk is in ReadOnly Mode
+	 	18.10.2016 MS: change LIC_BISF_MAIN_PersScript to new folderPath, remove wrong clip "}"
+      	19.10.2016 MS: add $Global:LogFilePath = "$LogPath"  to function Set-LogFile
+	  	27.07.2017 MS: replace redirection of spool and evt-logs with central function Use-BISFPVSConfig, if using Citrix AppLayering with PVS it's a complex matrix to redirect or not.
+	  	03.08.2017 MS: add $Gloabl:BootMode = Get-BISFBootMode to get UEFI or Legacy
+	  	14.08.2017 MS: add cli switch ExportSharedConfiguration to export BIS-F ADMX Reg Settings into an XML File
+	  	07.11.2017 MS: add $LIC_BISF_3RD_OPT = $false, if vmOSOT or CTXO is enabled and found, $LIC_BISF_3RD_OPT = $true and disable BIS-F own optimizations
+	  	11.11.2017 MS: Retry 30 times if Logshare on network path is not found with fallback after max. is reached
+		02.07.2018 MS: Bufix 50 - function Set-Logfile -> invoke-BISFLogShare   (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
+		20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
+     	13.08.2019 MS: FRQ 97 - Nutanix Xi Frame Support
       #>
 Begin {
 
