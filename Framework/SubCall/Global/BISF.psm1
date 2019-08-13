@@ -1902,13 +1902,41 @@ function Optimize-WinSxs {
 
 		History:
 	  	07.01.2016 MS: function created
-        17.05.2019 MS: HF 106 - remove uneccesary out-null command
+		17.05.2019 MS: HF 106 - remove uneccesary out-null command
+		21.06.2019 MS: FRQ 115: ADMX: Control of WinSxS Optimization
+		03.07.2019 MS: ENH 117: WinSxS hide DISM process and get logfile of the DISM Process into BIS-F log
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
-	Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase'
-	Show-BISFProgressBar -CheckProcess "Dism" -ActivityText "run DISM to cleanup WinSxs Folder ..."
+	IF (!($LIC_BISF_CLI_WinSxS -eq "NO"))
+	{
+		Write-BISFLog -Msg "Perform WinSxS Optimization" -ShowConsole -Color Cyan
+		$runWinSxs = 1
+		IF ($LIC_BISF_CLI_WinSxSBaseImage -eq 1)
+		{
+			$DiskNameExtension = Get-BISFDiskNameExtension
+			IF (($DiskNameExtension -eq "BaseDisk") -or ($DiskNameExtension -eq "noVirtualDisk"))
+			{
+				$runWinSxs = 1
+			} ELSE {
+				$runWinSxs = 0
+				Write-BISFLog "WinSxS Optimization is configured in ADMX to run on BaseDisk or with noVirtualDisk assigned , $DiskNameExtension detected" -ShowConsole -SubMsg -Color DarkCyan
+			}
+
+		}
+		IF ($runWinSxs -eq 1) {
+			IF (!($LIC_BISF_CLI_WinSxSTimeout)) {$LIC_BISF_CLI_WinSxSTimeout = 60}
+			IF (Test-path "C:\Windows\logs\DISM\dism_bisf.log") {Remove-Item "C:\Windows\logs\DISM\dism_bisf.log" -Force}
+                	Start-Process 'Dism.exe' -ArgumentList '/online /Cleanup-Image /StartComponentCleanup /ResetBase /Logpath:C:\Windows\logs\DISM\dism_bisf.log' -RedirectStandardOutput "C:\windows\temp\WinSxs.log" -NoNewWindow
+			Show-BISFProgressBar -CheckProcess "Dism" -ActivityText "run DISM to cleanup WinSxs Folder ...(max. Execution Timeout $LIC_BISF_CLI_WinSxSTimeout min)" -MaximumExecutionMinutes $LIC_BISF_CLI_WinSxSTimeout
+		        Get-BISFLogContent -GetLogFile "C:\Windows\logs\DISM\dism_bisf.log"
+		} ELSE {
+			Write-BISFLog -Msg "WinSxS Optimization will not run (runWinSxs = 0)" -ShowConsole -SubMsg -Color DarkCyan
+		}
+	} ELSE {
+		Write-BISFLog -Msg "WinSxS Optimization is disabled in ADMX configuration."
+	}
 
 }
 
