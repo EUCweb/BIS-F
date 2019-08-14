@@ -1,7 +1,7 @@
 # BIS-F (Bugs Bunny Release -> BIS-F .next)
 
 
-Base Image Script Framework (BIS-F)
+Base Image Script Framework (BIS-F) - Bugs Bunny Release
 
 **This is the new upcoming Release 7 1912 (Code Name: Bugs Bunny)**
 
