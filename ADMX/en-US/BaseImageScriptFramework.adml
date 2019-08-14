@@ -28,7 +28,7 @@ To run Citrix Optimizer in analyze-only mode, check "Mode: Analyze only".
 If you disable this policy setting, Citrix Optimizer will not be executed.
 If you do not configure this policy setting, you'll be prompted during the sealing process.
 
-Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\CitrixOptimizer </string>
+Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\CitrixOptimizer
 
 (Optional) Template:
 Enter multiple templates with comma-separated and no space, like:
