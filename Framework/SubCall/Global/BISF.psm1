@@ -2517,6 +2517,7 @@ function Use-PVSConfig {
 		04.09.2017 MS: bugfix - Eventlogs would be moved for both States (Prep and Pers) now
 		03.11.2017 MS: if PVS Target Device Driver not installed, write info to BIS-F log and set the value $Global:Redirection=$true; $Global:RedirectionCode="NoPVS"
 		13.08.2019 AS: ENH 46 - Make any PVS conversion work Optional
+		14.08.2019 MS: ENH 108 - set NTFS Rights for spool directory
 	.LINK
 		https://eucweb.com
 #>
@@ -2566,6 +2567,7 @@ function Use-PVSConfig {
 			$strRegPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Print\Printers"
 			Write-BISFLog -Msg "Configure redirected Spool directory in registry $strRegPath"
 			Set-ItemProperty -Path $strRegPath  -Name "DefaultSpoolDirectory" -Value $LIC_BISF_SpoolPath
+			Set-BISFACLrights -path $LIC_BISF_SpoolPath
 
 			# redirected eventlogs
 			Move-BISFEvtLogs
@@ -2602,6 +2604,7 @@ function Move-EvtLogs {
 		01.08.2017 MS: if custom eventlog folder is enabled in ADMX; use this instead of BIS-F standard
 		02.08.2017 MS: change to new ADMX structure to get custom EventLog foldername
 		11.11.2017 MS: Bugfix, show the right Eventlog during move to the WCD
+		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
 	.COMPONENT
 	   The component this cmdlet belongs to
 	.ROLE
@@ -2737,6 +2740,7 @@ function Move-EvtLogs {
 		}
 		#Write-BISFLog -Msg "`n`n"
 	}
+	Set-BISFACLrights -path $LIC_BISF_EvtPath
 }
 
 function Get-BootMode {
@@ -3417,5 +3421,45 @@ function Test-NutanixFrameSoftware {
 	$svc = Test-BISFService -ServiceName "MF2Service" -ProductName "Nutanix Xi Frame"
 	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	return $svc
+
+}
+
+function Set-ACLrights {
+	<#
+	.SYNOPSIS
+	Set the NTFS rights on the given path
+
+	.DESCRIPTION
+	Long description
+
+	.PARAMETER path
+	defines the path to set the NFTS rights
+
+	.EXAMPLE
+	SET-BISFACLrights -path "D:\eventlogs"
+
+	.NOTES
+			Author: Floris de Widt
+
+			History:
+			14.08.2019 MS: function created
+
+	.Link
+		https://eucweb.com
+#>
+
+	param(
+		[parameter(Mandatory = $true)]
+		[string]$path
+	)
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+
+	Write-BISFlog -Msg "Set NTFS rights on $path" -ShowConsole -Color Cyan
+
+	$acl = Get-Acl -Path '$path'
+	$perm = 'local service', 'FullControl', 'ContainerInherit, ObjectInherit', 'None', 'Allow'
+	$rule = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $perm
+	$acl.SetAccessRule($rule)
+	$acl | Set-Acl -Path '$path'
 
 }

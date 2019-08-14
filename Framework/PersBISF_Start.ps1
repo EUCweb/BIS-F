@@ -123,7 +123,7 @@ Process {
 	}
 	Add-BISFFinishLine
 
-	#load predefined scripts from LOGIN Consultants
+	#load predefined scripts
 	$psfolder = $SubCall_Folder + "Personalization"
  Invoke-BISFFolderScripts -Path "$psfolder" -Verbose:$VerbosePreference
 

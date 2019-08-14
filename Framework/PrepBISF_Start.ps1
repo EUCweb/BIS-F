@@ -236,7 +236,7 @@ Process {
 
 	Add-BISFFinishLine
 
-	#load Preparation Scripts from LOGIN Consultants
+	#load Preparation Scripts
 	$psfolder = $SubCall_Folder + "Preparation"
 	Invoke-BISFFolderScripts -Path "$psfolder" -Verbose:$VerbosePreference
 
