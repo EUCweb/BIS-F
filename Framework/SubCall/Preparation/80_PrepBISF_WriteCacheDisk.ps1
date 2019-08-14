@@ -1,16 +1,16 @@
 ﻿[CmdletBinding(SupportsShouldProcess = $true)]
-param( 
+param(
 )
 <#
 	.SYNOPSIS
-		Prepare PVSWriteCacheDisk 
+		Prepare PVSWriteCacheDisk
 	.DESCRIPTION
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
 		Editor: Mike Bijl (Rewritten variable names and script format)
 		Company: Login Consultants Germany GmbH
-		
+
 		History:
 		28.02.2013 MS: Script created
 		07.03.2013 MS: Read from diskpart, error to read substring, write empty uniqueID to registry
@@ -28,7 +28,7 @@ param(
 		01.10.2015 MS: rewritten script to use central BISF function
 		10.01.2017 MS: BugFix 134- PrepareWriteCacheDisk: add space on either side of the Driveletter variable $searvol, thx to Jeremy Saunders
 		10.01.2017 MS: BugFix 134: PrepareWriteCacheDisk: MBR disk with 8 characters to get the right uniqueID from Diskpart only, PVS does not support GPT disk, see https://support.citrix.com/article/CTX139478 thx to Jeremy Saunders
-		04.03.2017 MS: BugFix: DiskID is not language neutral, split string after ":" to read the right side only 
+		04.03.2017 MS: BugFix: DiskID is not language neutral, split string after ":" to read the right side only
 		29.07.2017 MS: Feature Request 192: support GPT WriteCacheDisk
 	.LINK
 		https://eucweb.com
@@ -38,7 +38,7 @@ Begin {
 
 	####################################################################
 	# define environment
-	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version. 
+	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version.
 	If ($($host.name) -like "* ISE *") {
 		# Running script from Windows Powershell ISE
 		$PSScriptFullName = $psise.CurrentFile.FullPath.ToLower()
@@ -64,37 +64,35 @@ Begin {
 		# Get uniqueid PVSWriteCacheDisk
 		Write-BISFLog -Msg "Get UniqueID from PVSWriteCacheDisk" -ShowConsole -Color Cyan
 		$DriveLetter = $PVSDiskDrive.substring(0, 1)
-		Write-BISFLog -Msg "use Diskpart, search Driveletter $DriveLetter"  
-	
-		$Searchvol = "list volume" | diskpart | select-string -pattern "Volume" | select-string -pattern "$DriveLetter " -casesensitive | select-string -pattern NTFS | out-string    
-		Write-BISFLog -Msg "$Searchvol"  
-	
+		Write-BISFLog -Msg "use Diskpart, search Driveletter $DriveLetter"
+
+		$Searchvol = "list volume" | diskpart | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
+		Write-BISFLog -Msg "$Searchvol"
+
 		$getvolNbr = $Searchvol.substring(11, 1)   # get Volumenumber from DiskLabel
-		Write-BISFLog -Msg "Get Volumenumber $getvolNbr from Disklabel $DriveLetter"  
-	
+		Write-BISFLog -Msg "Get Volumenumber $getvolNbr from Disklabel $DriveLetter"
+
 		Remove-Item $DiskpartFile -recurse -ErrorAction SilentlyContinue
 		# Write Diskpart File
-		"select volume $getvolNbr" | out-file -filepath $DiskpartFile -encoding Default
-		"uniqueid disk" | out-file -filepath $DiskpartFile -encoding Default -append
+		"select volume $getvolNbr" | Out-File -filepath $DiskpartFile -encoding Default
+		"uniqueid disk" | Out-File -filepath $DiskpartFile -encoding Default -append
 		$result = diskpart /s $DiskpartFile
 		get-BISFLogContent -GetLogFile "$DiskpartFile"
-		$getid = $result | select-string -pattern "ID" -casesensitive | out-string
+		$getid = $result | Select-String -pattern "ID" -casesensitive | Out-String
 		$getid = $getid.Split(":")  #split string on ":"
-		$getid = $getid[1] #get the first string after ":" to get the Disk ID only without the Text 
+		$getid = $getid[1] #get the first string after ":" to get the Disk ID only without the Text
 		$getid = $getid.trim() #remove empty spaces on the right and left
 		$start = $getid.length
 		IF ($start -eq "8") {
-			Write-BISFLog -Msg "MBR Disk with $start characters identfied" 
+			Write-BISFLog -Msg "MBR Disk with $start characters identfied"
 
 		}
 		ELSE {
 			Write-BISFLog -Msg "GPT Disk with $start characters identfied"
-			#$WCD_Error_MSG="WriteCache Disk ist not an MBR Disk. PVS does NOT support GPT Disk, your disk has an unique ID like $getid. See https://support.citrix.com/article/CTX139478 for further informations. Please configure an MBR Disk and run the Script again !"
-			#Show-BISFMessageBox -msg "$WCD_Error_MSG" -Critical
-			#Write-BISFLog -Msg "$WCD_Error_MSG" -Type E		
-		}      
-		Write-BISFLog -Msg "UniqueID Disk: $getid"  
-		Write-BISFLog -Msg "Set uniqueID $getid for volume $getvolNbr / Driveletter $DriveLetter to Registry $hklm_software_LIC_CTX_BISF_SCRIPTS" 
+
+		}
+		Write-BISFLog -Msg "UniqueID Disk: $getid"
+		Write-BISFLog -Msg "Set uniqueID $getid for volume $getvolNbr / Driveletter $DriveLetter to Registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
 		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $reg_value_UniqueID -value $getid -ErrorAction SilentlyContinue
 	}
 
@@ -110,7 +108,7 @@ Begin {
 		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_OptDrive" -Value $CDromDriveletter
 		Write-BISFLog -Msg "set optical driveletter $CDromDriveletter"
 	}
-	
+
 	####################################################################
 	####### end functions #####
 	####################################################################
@@ -121,11 +119,11 @@ Process {
 		GetUniqueID
 	}
 	ELSE {
-		Write-BISFLog -Msg "PVSWriteCacheDisk environment variable not defined, skip function to get uniqueID from persistent drive" 
+		Write-BISFLog -Msg "PVSWriteCacheDisk environment variable not defined, skip function to get uniqueID from persistent drive"
 	}
 	SetCDRom
 	SetRefSrv
 }
 END {
-	Add-BISFFinishLine 
+	Add-BISFFinishLine
 }

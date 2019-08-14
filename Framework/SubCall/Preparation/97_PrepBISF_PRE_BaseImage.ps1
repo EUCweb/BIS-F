@@ -9,7 +9,6 @@ param(
 	.NOTES
 		Author: Matthias Schlimm
 		Editor: Mike Bijl (Rewritten variable names and script format)
-		Company: Login Consultants Germany GmbH
 
 		History:
 		27.09.2012 MS: Script created
@@ -98,6 +97,7 @@ param(
 		31.05.2019 MS: FRQ 92: Server 2019 Support
 		31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
 		21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
 #>
@@ -153,123 +153,123 @@ Begin {
 	[array]$PrepCommands = @()
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Delete all Citrix Cached files $CTX_SYS32_CACHE_PATH";
-		Command     = "Remove-Item -Path '$CTX_SYS32_CACHE_PATH' -Recurse -ErrorAction SilentlyContinue"
+		Command = "Remove-Item -Path '$CTX_SYS32_CACHE_PATH' -Recurse -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Delete SoftwareDistribution $Dir_SwDistriPath";
-		Command     = "Remove-Item -Path '$Dir_SwDistriPath' -Recurse -ErrorAction SilentlyContinue"
+		Command = "Remove-Item -Path '$Dir_SwDistriPath' -Recurse -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Delete Windows Update Log $File_WindowsUpdateLog";
-		Command     = "Remove-Item '$File_WindowsUpdateLog' -ErrorAction SilentlyContinue"
+		Command = "Remove-Item '$File_WindowsUpdateLog' -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "Y";
-		CLI         = "LIC_BISF_CLI_SM";
-		TestPath    = "";
+		CLI = "LIC_BISF_CLI_SM";
+		TestPath = "";
 		Description = "Delete AllUsers Start Menu $Dir_AllUsersStartMenu ?";
-		Command="Get-ChildItem -path '$Dir_AllUsersStartMenu' -Exclude 'Administrative Tools' | remove-item -Force -Recurse"
+		Command = "Get-ChildItem -path '$Dir_AllUsersStartMenu' -Exclude 'Administrative Tools' | remove-item -Force -Recurse"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "Y";
-		CLI         = "LIC_BISF_CLI_DP";
-		TestPath    = "$($SearchFoldersDP)\delprof2.exe";
+		CLI = "LIC_BISF_CLI_DP";
+		TestPath = "$($SearchFoldersDP)\delprof2.exe";
 		Description = "Run Delprof2 to deletes inactive user profiles ?";
-		Command     = "$($SearchFoldersDP)\delprof2.exe $($DPargs)"
+		Command = "$($SearchFoldersDP)\delprof2.exe $($DPargs)"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Purge DNS resolver Cache";
-		Command     = "ipconfig /flushdns"
+		Command = "ipconfig /flushdns"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Purge IP-to-Physical address translation tables Cache (ARP Table)";
-		Command     = "arp -d *"
+		Command = "arp -d *"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "Y";
-		CLI         = "LIC_BISF_CLI_CC";
-		TestPath    = "$($SearchFoldersCC)\CCleaner.exe" ;
+		CLI = "LIC_BISF_CLI_CC";
+		TestPath = "$($SearchFoldersCC)\CCleaner.exe" ;
 		Description = "Run CCleaner to clean temp files";
-		Command     = "Start-BISFProcWithProgBar -ProcPath '$($SearchFoldersCC)\CCleaner.exe' -Args '/AUTO' -ActText 'CCleaner is running'"
+		Command = "Start-BISFProcWithProgBar -ProcPath '$($SearchFoldersCC)\CCleaner.exe' -Args '/AUTO' -ActText 'CCleaner is running'"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "Y";
-		CLI         = "LIC_BISF_CLI_PF";
-		TestPath    = "";
+		CLI = "LIC_BISF_CLI_PF";
+		TestPath = "";
 		Description = "Reset Performance Counters";
-		Command     = "lodctr.exe /r"
+		Command = "lodctr.exe /r"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Clear all event logs";
-		Command     = "'wevtutil el | Foreach-Object {wevtutil cl $_}'"
+		Command = "'wevtutil el | Foreach-Object {wevtutil cl $_}'"
 	};
 	$ordercnt += 1
 	IF ($LIC_BISF_3RD_OPT -eq $false) {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Disabling TCP/IP task offloading";
-			Command     = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'DisableTaskOffload' -Value '1' -Type DWORD"
+			Command = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'DisableTaskOffload' -Value '1' -Type DWORD"
 		};
 		$ordercnt += 1
 	}
@@ -279,13 +279,13 @@ Begin {
 
 	IF ($LIC_BISF_3RD_OPT -eq $false) {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Increases the UDP packet size to 1500 bytes for FastSend";
-			Command     = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\afd\Parameters' -Name 'FastSendDatagramThreshold' -Value '1500' -Type DWORD"
+			Command = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\afd\Parameters' -Name 'FastSendDatagramThreshold' -Value '1500' -Type DWORD"
 		};
 		$ordercnt += 1
 	}
@@ -295,13 +295,13 @@ Begin {
 
 	IF ($LIC_BISF_3RD_OPT -eq $false) {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Set multiplication factor to the default UDP scavenge value (MaxEndpointCountMult)";
-			Command     = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\BFE\Parameters' -Name 'MaxEndpointCountMult' -Value '0x10' -Type DWORD"
+			Command = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\BFE\Parameters' -Name 'MaxEndpointCountMult' -Value '0x10' -Type DWORD"
 		};
 		$ordercnt += 1
 	}
@@ -310,68 +310,68 @@ Begin {
 	}
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Disable Receive Side Scaling (RSS)";
-		Command     = "Start-Process -FilePath 'netsh.exe' -Argumentlist 'int tcp set global rss=disable' -Wait -WindowStyle Hidden"
+		Command = "Start-Process -FilePath 'netsh.exe' -Argumentlist 'int tcp set global rss=disable' -Wait -WindowStyle Hidden"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "Y";
-		CLI         = "LIC_BISF_CLI_V6";
-		TestPath    = "";
+		CLI = "LIC_BISF_CLI_V6";
+		TestPath = "";
 		Description = "Disable IPv6 in registry ?";
-		Command     = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\TcpIp6\Parameters' -Name 'DisabledComponents' -Value '0x000000FF' -Type DWORD"
+		Command = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\TcpIp6\Parameters' -Name 'DisabledComponents' -Value '0x000000FF' -Type DWORD"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Disable Data Execution Prevention";
-		Command     = "Start-Process 'bcdedit.exe' -Verb runAs -ArgumentList '/set nx AlwaysOff' | Out-Null"
+		Command = "Start-Process 'bcdedit.exe' -Verb runAs -ArgumentList '/set nx AlwaysOff' | Out-Null"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Disable Startup Repair option";
-		Command     = "Start-Process 'bcdedit.exe' -Verb runAs -ArgumentList '/set {default} bootstatuspolicy ignoreallfailures' | Out-Null"
+		Command = "Start-Process 'bcdedit.exe' -Verb runAs -ArgumentList '/set {default} bootstatuspolicy ignoreallfailures' | Out-Null"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Disable New Network dialog";
-		Command     = "Set-ItemProperty -Name NewNetworkWindowOff -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Network' -Type String -Value 0"
+		Command = "Set-ItemProperty -Name NewNetworkWindowOff -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Network' -Type String -Value 0"
 	};
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Set Power Saving Scheme to High Performance";
-		Command     = "Start-Process 'powercfg.exe' -Verb runAs -ArgumentList '-s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c'"
+		Command = "Start-Process 'powercfg.exe' -Verb runAs -ArgumentList '-s 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c'"
 	};
 	$ordercnt += 1
 
@@ -379,36 +379,36 @@ Begin {
 	IF ($returnTestPVSSoftware -eq "true") {
 		IF (($LIC_BISF_CLI_SD -ne $null) -or ($LIC_BISF_CLI_SD -ne "")) {
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "Reset value LIC_BISF_SDeleteRun in registry ?";
-				Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$false'"
+				Command = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$false'"
 			};
 			$ordercnt += 1
 		}
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "Y";
-			CLI         = "LIC_BISF_CLI_SD";
-			TestPath    = "$($SearchFoldersSD)\sdelete.exe";
+			CLI = "LIC_BISF_CLI_SD";
+			TestPath = "$($SearchFoldersSD)\sdelete.exe";
 			Description = "Run SDelete to Zero-Out free space on PVS WriteCacheDisk on each PVS Target Device at system startup ?";
-			Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$true'"
+			Command = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$true'"
 		};
 		$ordercnt += 1
 	}
 	ELSE {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Reset value LIC_BISF_SDeleteRun in registry ?";
-			Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$false'"
+			Command = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$false'"
 		};
 		$ordercnt += 1
 	}
@@ -420,13 +420,13 @@ Begin {
 		foreach ($element in $NgenPath) {
 			Write-BISFLog -Msg  "Read Ngen Path: $element"
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "Executing all queued .NET compilation jobs for $element";
-				Command     = "Start-BISFProcWithProgBar -ProcPath '$element' -Args 'ExecuteQueuedItems' -ActText 'Running .NET Optimization in $element'"
+				Command = "Start-BISFProcWithProgBar -ProcPath '$element' -Args 'ExecuteQueuedItems' -ActText 'Running .NET Optimization in $element'"
 			};
 			$ordercnt += 1
 		}
@@ -441,13 +441,13 @@ Begin {
 		foreach ($element in $adapter) {
 			Write-BISFLog -Msg  "Read AdapterName: $element"
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "ARP Cache Changes Adapter: $element ... (http://support.citrix.com/article/ctx127549)";
-				Command     = "netsh interface ipv4 set interface ""$element"" basereachable=600000"
+				Command = "netsh interface ipv4 set interface ""$element"" basereachable=600000"
 			};
 			$ordercnt += 1
 
@@ -456,24 +456,24 @@ Begin {
 		## Read GUID of DHCP Network Adapter and clear DHCP-option, see https://www.citrix.com/blogs/2015/09/29/pvs-target-devices-the-blue-screen-of-death-rest-easy-we-can-fix-that/
 		$adapter = get-BISFAdapterGUID
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Stop DHCP Client Service";
-			Command     = "Stop-Service -Name dhcp -ErrorAction SilentlyContinue"
+			Command = "Stop-Service -Name dhcp -ErrorAction SilentlyContinue"
 		};
 		$ordercnt += 1
 
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Clear NameServer in Registry TCPIP\Parameters";
-			Command     = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'NameServer' -value '' "
+			Command = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters' -Name 'NameServer' -value '' "
 		};
 		$ordercnt += 1
 
@@ -481,90 +481,90 @@ Begin {
 			Write-BISFLog -Msg  "Read AdapterGUID: $element"
 			$REG_HKLM_TCPIP_Interfaces_GUID = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\$element"
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "AdapterGUID: $element - clear NameServer";
-				Command     = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'NameServer' -value '' "
+				Command = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'NameServer' -value '' "
 			};
 			$ordercnt += 1
 
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "AdapterGUID: $element - clear Domain";
-				Command     = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'Domain' -value '' "
+				Command = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'Domain' -value '' "
 			};
 			$ordercnt += 1
 
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "AdapterGUID: $element - clear DhcpIPAddress";
-				Command     = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DHCPIPAddress' -value '' "
+				Command = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DHCPIPAddress' -value '' "
 			};
 			$ordercnt += 1
 
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "AdapterGUID: $element - clear DhcpSubnetmask";
-				Command     = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DhcpSubnetmask' -value '' "
+				Command = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DhcpSubnetmask' -value '' "
 			};
 			$ordercnt += 1
 
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "AdapterGUID: $element - clear DhcpServer";
-				Command     = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DhcpServer' -value '' "
+				Command = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DhcpServer' -value '' "
 			};
 			$ordercnt += 1
 
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "AdapterGUID: $element - clear DhcpNameServer";
-				Command     = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DhcpNameServer' -value '' "
+				Command = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DhcpNameServer' -value '' "
 			};
 			$ordercnt += 1
 
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
+				CLI = "";
+				TestPath = "";
 				Description = "AdapterGUID: $element - clear DhcpDefaultGateway";
-				Command     = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DhcpDefaultGateway' -value '' "
+				Command = "Set-ItemProperty -Path '$REG_HKLM_TCPIP_Interfaces_GUID' -Name 'DhcpDefaultGateway' -value '' "
 			};
 			$ordercnt += 1
 
 			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
+				Order = "$ordercnt";
+				Enabled = "$true";
 				showmessage = "Y";
-				CLI         = "LIC_BISF_CLI_V6";
-				TestPath    = "$($SearchFoldersV6)\nvspbind.exe";
+				CLI = "LIC_BISF_CLI_V6";
+				TestPath = "$($SearchFoldersV6)\nvspbind.exe";
 				Description = "Disable IPv6 on AdapterGUID: $element ?";
-				Command     = "$($SearchFoldersV6)\nvspbind.exe /d ""$element"" ms_tcpip6"
+				Command = "$($SearchFoldersV6)\nvspbind.exe /d ""$element"" ms_tcpip6"
 			};
 			$ordercnt += 1
 		}
@@ -576,13 +576,13 @@ Begin {
 	$svc = Test-BISFService -ServiceName "MSDTC"
 	IF ($svc -eq $true) {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Reset Microsoft Distributed Transaction Service ";
-			Command     = "msdtc.exe -reset"
+			Command = "msdtc.exe -reset"
 		};
 		$ordercnt += 1
 	}
@@ -592,13 +592,13 @@ Begin {
 	$svc = Test-BISFService -ServiceName "vmtools"
 	IF ($svc -eq $true) {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Hide Vmware Tools icon in systray";
-			Command     = "Set-ItemProperty -Path 'HKLM:\SOFTWARE\VMware, Inc.\VMware Tools' -Name 'ShowTray' -Value '0' -Type DWORD"
+			Command = "Set-ItemProperty -Path 'HKLM:\SOFTWARE\VMware, Inc.\VMware Tools' -Name 'ShowTray' -Value '0' -Type DWORD"
 		};
 		$ordercnt += 1
 	}
@@ -606,13 +606,13 @@ Begin {
 	$svc = Test-BISFService -ServiceName "vmdebug"
 	IF ($svc -eq $true) {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Disable VMware debug driver";
-			Command     = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\services\vmdebug' -Name 'Start' -Value '4' -Type DWORD"
+			Command = "Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\services\vmdebug' -Name 'Start' -Value '4' -Type DWORD"
 		};
 		$ordercnt += 1
 	}
@@ -621,13 +621,13 @@ Begin {
 	## hide PVS status icon
 	IF ($returnTestPVSSoftware -eq "true") {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Hide PVS Status icon in systray";
-			Command     = "New-Item -Path 'HKLM:\SOFTWARE\CITRIX\ProvisioningServices\Status' -Force | out-null; Set-ItemProperty -Path 'HKLM:\SOFTWARE\CITRIX\ProvisioningServices\Status' -Name 'ShowIcon' -Value '0' -Type DWORD"
+			Command = "New-Item -Path 'HKLM:\SOFTWARE\CITRIX\ProvisioningServices\Status' -Force | out-null; Set-ItemProperty -Path 'HKLM:\SOFTWARE\CITRIX\ProvisioningServices\Status' -Name 'ShowIcon' -Value '0' -Type DWORD"
 		};
 		$ordercnt += 1
 
@@ -638,35 +638,35 @@ Begin {
 	IF ($WSUS_TargetGroupEnabled -eq 1) {
 		Write-BISFLog -Msg "WSUS client-side targeting detected"
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Delete WSUS - SusClientId in $REG_hklm_WSUS";
-			Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientId' -ErrorAction SilentlyContinue"
+			Command = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientId' -ErrorAction SilentlyContinue"
 		};
 		$ordercnt += 1
 
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Delete WSUS - SusClientIdValidation in $REG_hklm_WSUS";
-			Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientIdValidation' -ErrorAction SilentlyContinue"
+			Command = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientIdValidation' -ErrorAction SilentlyContinue"
 		};
 		$ordercnt += 1
 	}
 	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
+		Order = "$ordercnt";
+		Enabled = "$true";
 		showmessage = "N";
-		CLI         = "";
-		TestPath    = "";
+		CLI = "";
+		TestPath = "";
 		Description = "Set Windows Update Service to Disabled";
-		Command     = "Set-Service -Name wuauserv -StartupType Disabled -ErrorAction SilentlyContinue"
+		Command = "Set-Service -Name wuauserv -StartupType Disabled -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
 	IF ($LIC_BISF_3RD_OPT -eq $false) {
@@ -680,13 +680,13 @@ Begin {
 					Write-BISFLog -Msg "Scheduled Task $ScheduledTaskList exists" -ShowConsole -SubMsg -Color DarkCyan
 					$TaskPathName = Get-ScheduledTask -TaskName "$ScheduledTaskList" | % { $_.TaskPath }
 					$PrepCommands += [pscustomobject]@{
-						Order       = "$ordercnt";
-						Enabled     = "$true";
+						Order = "$ordercnt";
+						Enabled = "$true";
 						showmessage = "N";
-						CLI         = "";
-						Testpath    = "";
+						CLI = "";
+						Testpath = "";
 						Description = "Disable scheduled Task $ScheduledTaskList ";
-						Command     = "Disable-ScheduledTask -Taskname '$ScheduledTaskList' -TaskPath '$TaskPathName' | Out-Null"
+						Command = "Disable-ScheduledTask -Taskname '$ScheduledTaskList' -TaskPath '$TaskPathName' | Out-Null"
 					};
 					$ordercnt += 1
 				}
@@ -704,13 +704,13 @@ Begin {
 
 	foreach ($path in $paths) {
 		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
+			Order = "$ordercnt";
+			Enabled = "$true";
 			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
+			CLI = "";
+			TestPath = "";
 			Description = "Cleaning directory: $path";
-			Command     = "Remove-BISFFolderAndContent($path)"
+			Command = "Remove-BISFFolderAndContent($path)"
 		};
 		$ordercnt += 1
 	}
@@ -742,26 +742,25 @@ Begin {
 				# write-host "MessageBox: $($prepCommand.showmessage)" -ForegroundColor White -BackgroundColor Red  #<<< enable for debug only
 				IF ($($prepCommand.showmessage) -eq "N") {
 					# Write-BISFLog -Msg "$($prepCommand.Command)" -ShowConsole
-					invoke-expression $($prepCommand.Command)
+					Invoke-Expression $($prepCommand.Command)
 				}
 				ELSE {
-					Write-BISFLog -Msg "Check Silentswitch..."
+					Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 					$varCLI = Get-Variable -Name $($prepCommand.CLI) -ValueOnly
 					If (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-						Write-BISFLog -Msg "Silentswitch will be set to $varCLI" -ShowConsole -Color DarkCyan -SubMsg
+						Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 					}
 					ELSE {
 
-						If ($LIC_BISF_CLI_VS) {
-							Write-BISFLog -Msg "VerySilent will be configured with the BIS-F ADMX template! Please configure the BIS-F ADMX to run $($prepCommand.Description) and start the script again !" -Type E
-						}
-						Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-						$PreMsgBox = Show-BISFMessageBox -Msg "$($prepCommand.Description)" -Title "PRE build Base Image Action" -YesNo -Question
-						Write-BISFLog -Msg "`"$PreMsgBox`" is the response to perform $($prepCommand.Description)... please wait" -ShowConsole -Color DarkGreen -SubMsg
+						Write-BISFLog -Msg "GPO not configured.. using default setting" -ShowConsole -SubMsg -Color DarkCyan
+						$DefaultValue = "No"
 					}
-					if (($PreMsgBox -eq "YES") -or ($varCLI -eq "YES")) {
+					if (($DefaultValue -eq "YES") -or ($varCLI -eq "YES")) {
 						Write-BISFLog -Msg "Running Command $($prepCommand.Command)"
-						invoke-expression $($prepCommand.Command)
+						Invoke-Expression $($prepCommand.Command)
+					}
+					ELSE {
+						Write-BISFLog -Msg " Skipping Commannd $($prepCommand.Description)" -ShowConsole -Color DarkCyan -SubMsg
 					}
 				}
 				# these 2 variables must be cleared after each step, to not store the value in the variable and use them in the next $prepCommand
@@ -779,7 +778,7 @@ Begin {
 	function Create-BISFTask {
 		# searching for BISF scheduled task and if from different BIS-F version delete them
 
-		$testBISFtask = schtasks /query /v /FO CSV | ConvertFrom-Csv | Where { $_.TaskName -eq "\$BISFtask" }
+		$testBISFtask = schtasks /query /v /FO CSV | ConvertFrom-Csv | where { $_.TaskName -eq "\$BISFtask" }
 		IF (!($testBISFtask)) {
 			Write-BISFLog -Msg "Create startup task $BISFtask to personalize System" -ShowConsole -Color Cyan
 			schtasks.exe /create /sc ONSTART /TN "$BISFtask" /IT /RU 'System' /RL HIGHEST /tr "powershell.exe -Executionpolicy unrestricted -file '$LIC_BISF_MAIN_PersScript'" /f | Out-Null
@@ -832,7 +831,7 @@ Begin {
 
 
 	function Clear-EventLog {
-		wevtutil el | Foreach-Object {
+		wevtutil el | ForEach-Object {
 			Write-BISFLog -Msg  "Clearing Event-Log $_" -ShowConsole -Color DarkCyan -Submsg
 			wevtutil cl "$_"
 		}
@@ -841,9 +840,9 @@ Begin {
 	function Create-AllusersStartmenuPrograms {
 		#bugfix 56: recreate "$Dir_AllUsersStartMenu\Programs" that is necassary for to start Office C2R or other AppX after delete $Dir_AllUsersStartMenu
 		$StartMenuProgramsPath = $Dir_AllUsersStartMenu.Substring(0, $Dir_AllUsersStartMenu.Length - 2) + "\Programs"
-		IF (!(Test-path "$StartMenuProgramsPath")) {
+		IF (!(Test-Path "$StartMenuProgramsPath")) {
 			Write-BISFLog -Msg "Create Directory $StartMenuProgramsPath" -ShowConsole -Color Cyan
-			New-Item -ItemType Directory -Path "$StartMenuProgramsPath" | out-null
+			New-Item -ItemType Directory -Path "$StartMenuProgramsPath" | Out-Null
 		}
 	}
 
@@ -851,7 +850,7 @@ Begin {
 
 	}
 
-   	function Pre-Win2008R2 {
+	function Pre-Win2008R2 {
 
 	}
 

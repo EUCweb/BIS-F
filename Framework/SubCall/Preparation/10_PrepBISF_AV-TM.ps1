@@ -6,8 +6,7 @@
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	17.09.2014 MS: Script created
 		10.08.2015 MS: Kill Tasks of each TM Process before stops the services
@@ -21,6 +20,7 @@
 		Added the TmPfw (OfficeScan NT Firewall) service to the array.
 		20.08.2017 JS: I found that the services were not being stopped and set to manual, so added a new TerminateProcess
 		function and modified the StopService function to make it reliable.
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 
 	.LINK
 		https://eucweb.com
@@ -48,16 +48,15 @@ Process {
 	####################################################################
 
 	function RunFullScan {
-	
-		Write-BISFLog -Msg "Check Silentswitch..."
+
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLI = $LIC_PVS_CLI_AV
 		IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-			Write-BISFLog -Msg "Silentswitch would be set to $varCLI" 
+			Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 		}
 		ELSE {
-			Write-BISFLog -Msg "Silentswitch not defined, show MessageBox" 
-			$MPFullScan = Show-BISFMessageBox -Msg "Would you like to to run a Full Scan ? " -Title "TrendMicro OfficeScan" -YesNo -Question
-			Write-BISFLog -Msg "$MPFullScan would be choosen [YES = Running Full Scan] [NO = No scan would be performed]"
+			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+			$MPFullScan = "YES"
 		}
 		if (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
 			Write-BISFLog -Msg "Running Fullscan... please Wait"
@@ -66,13 +65,13 @@ Process {
 		ELSE {
 			Write-BISFLog -Msg "No Full Scan would be performed"
 		}
-	
+
 	}
-	
-	function deleteTMData {	
+
+	function deleteTMData {
 		foreach ($key in $reg_TM_name) {
 			Write-BISFLog -Msg "delete specified registry items in $reg_TM_string..."
-			Write-BISFLog -Msg "delete $key" 
+			Write-BISFLog -Msg "delete $key"
 			Remove-ItemProperty -Path $reg_TM_string -Name $key -ErrorAction SilentlyContinue
 		}
 	}
@@ -107,7 +106,7 @@ Process {
 					}
 					$i++
 					If ($i -eq $repeat) {
-						break 
+						break
 					}
 					Start-Sleep -Seconds $interval
 				} Until ($ProcessFound -eq $true)
@@ -191,7 +190,7 @@ Process {
 	}
 
 	####### end functions #####
-	
+
 
 	#### Main Program
 	$svc = Test-BISFService -ServiceName $TMServices[0] -ProductName "$product"

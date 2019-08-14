@@ -6,7 +6,6 @@
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
 
 	  	History:
 		26.09.2012 MS: Script created
@@ -48,6 +47,7 @@
 		24.11.2017 MS: Change Name in Log and Display from VIEtool.exe to $VIEProduct = "Symantec Virtual Image Exception (VIE) Tool"
 		20.10.2018 MS: Bugfix 66: vietool.exe - custom searchpath not working correctly
 		11.04.2019 MS: HF 87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
 #>
@@ -111,15 +111,14 @@ Process {
 	####################################################################
 
 	function RunFullScan {
-		Write-BISFLog -Msg "Check Silentswitch..."
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLI = $LIC_BISF_CLI_AV
 		IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-			Write-BISFLog -Msg "Silentswitch would be set to $varCLI"
+			Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 		}
 		ELSE {
-			Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-			$MPFullScan = Show-BISFMessageBox -Msg "Would you like to to run a Full Scan ? " -Title "Symantec Endpoint Protection" -YesNo -Question
-			Write-BISFLog -Msg "$MPFullScan would be choosen [YES = Running Full Scan] [NO = No scan would be performed]"
+			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+			$MPFullScan = "YES"
 		}
 
 		If (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
@@ -144,7 +143,7 @@ Process {
 				Write-BISFLog -Msg "Product $VIEProduct installed" -ShowConsole -Color Cyan
 				$found = $true
 				Write-BISFLog "Copy $VIEappDestination to $VIEtmpFolder"
-				Copy-Item "$VIEappDestination" -Destination "$VIEtmpFolder" -Force | out-null
+				Copy-Item "$VIEappDestination" -Destination "$VIEtmpFolder" -Force | Out-Null
 				$VIEappDestination = "$VIEtmpFolder\$VIEApp"
 
 			}
@@ -152,22 +151,21 @@ Process {
 
 		If ($found -eq $true) {
 
-			Write-BISFLog -Msg "Check Silentswitch..."
+			Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 			$varCLIVIE = $LIC_BISF_CLI_AV_VIE
 			IF (($varCLIVIE -eq "YES") -or ($varCLIVIE -eq "NO")) {
-				Write-BISFLog -Msg "Silentswitch would be set to $varCLIVIE"
+				Write-BISFLog -Msg "GPO Valuedata: $varCLIVIE"
 			}
 			ELSE {
-		   		Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-				$MPVIE = Show-BISFMessageBox -Msg "Would you like to to run the $VIEProduct ? Read more about this Tool Symantec KB DOC4335" -Title "$VIEProduct" -YesNo -Question
-				Write-BISFLog -Msg "$MPVIE was selected [YES = Running VIE Tool] [NO = Skip VIETool]"
+				Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+				$MPVIE = "YES"
 			}
 
 			If (($MPVIE -eq "YES" ) -or ($varCLIVIE -eq "YES")) {
 				Write-BISFLog -Msg "Running VIETool... please Wait"
 				Start-Process -FilePath "$VIEappDestination" -ArgumentList "c: --generate --log $VIELog" -RedirectStandardOutput "$VIEConsoleLog" -NoNewWindow
 				Show-BISFProgressBar -CheckProcess "VIETool" -ActivityText "$VIEProduct is flagging out the scanned files"
-				Remove-Item -Path "$VIEappDestination" -Force | out-null
+				Remove-Item -Path "$VIEappDestination" -Force | Out-Null
 				#get-LogContent "$VIELog" # 18.05.2015 MS deactivate to see, VIETool is not running a long time
 			}
 			ELSE {
@@ -186,7 +184,7 @@ Process {
 				Write-BISFLog -Msg "Search path $path"
 				foreach ($file in $search_file) {
 					Write-BISFLog -Msg "Search for file  $file"
-					Get-ChildItem -Path $path -filter $file -ErrorAction SilentlyContinue | foreach ($_) { remove-item $_.fullname }
+					Get-ChildItem -Path $path -filter $file -ErrorAction SilentlyContinue | foreach ($_) { Remove-Item $_.fullname }
 				}
 			}
 		}
@@ -196,7 +194,7 @@ Process {
 				Write-BISFLog -Msg "Search path $path"
 				foreach ($file in $search_file) {
 					Write-BISFLog -Msg "Search for file  $file"
-					Get-ChildItem -Path $path -filter $file -Recurse -ErrorAction SilentlyContinue | foreach ($_) { remove-item $_.fullname -ErrorAction SilentlyContinue }
+					Get-ChildItem -Path $path -filter $file -Recurse -ErrorAction SilentlyContinue | foreach ($_) { Remove-Item $_.fullname -ErrorAction SilentlyContinue }
 				}
 			}
 		}
@@ -232,7 +230,7 @@ Process {
 
 	function Configure-SepService {
 		# Stop SEP
-   		Write-BISFLog -Msg "Preparing $product for Imaging" -ShowConsole -Color DarkCyan -SubMsg
+		Write-BISFLog -Msg "Preparing $product for Imaging" -ShowConsole -Color DarkCyan -SubMsg
 		Write-BISFLog -Msg "Stop $Product Service"
 		& $ProgramFilesx86'\Symantec\Symantec Endpoint Protection\smc.exe' "-stop"
 		IF ($ImageSW -eq $false) {
@@ -250,8 +248,7 @@ Process {
 
 	#### Main Program
 
-	If (Test-Path ("$SEP_path\smc.exe") -PathType Leaf)
-	{
+	If (Test-Path ("$SEP_path\smc.exe") -PathType Leaf) {
 		Write-BISFLog -Msg "Product $Product installed" -ShowConsole -Color Cyan
 		RunFullScan
 		RunVIE
@@ -260,7 +257,7 @@ Process {
 		deleteSEPData
 		Set-BISFNetworkProviderOrder -SaerchProvOrder "SnacNp"
 		Write-BISFLog -Msg "Write GpNetworkStartTimeoutPolicyValue to registry from http://www.symantec.com/business/support/index?page=content&id=TECH200321"
-		New-ItemProperty -Path "$hklm_sw\Microsoft\Windows NT\CurrentVersion\Winlogon"-Name "GpNetworkStartTimeoutPolicyValue" -PropertyType DWORD -value 60 -ErrorAction SilentlyContinue | out-null
+		New-ItemProperty -Path "$hklm_sw\Microsoft\Windows NT\CurrentVersion\Winlogon"-Name "GpNetworkStartTimeoutPolicyValue" -PropertyType DWORD -value 60 -ErrorAction SilentlyContinue | Out-Null
 	}
 	ELSE {
 		Write-BISFLog -msg "Product $Product not installed"

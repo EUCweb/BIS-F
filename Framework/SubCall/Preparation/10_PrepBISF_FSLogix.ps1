@@ -32,13 +32,13 @@ Begin {
 
 Process {
 	function ClearConfig {
-		Write-BISFLog -Msg "FSlogix Rules - Check GPO Configuration" -SubMsg -Color DarkCyan
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLIFS = $LIC_BISF_CLI_FS
 		IF (($varCLIFS -eq "YES") -or ($varCLIFS -eq "NO")) {
 			Write-BISFLog -Msg "GPO Valuedata: $varCLIFS"
 		}
 		ELSE {
-			Write-BISFLog -Msg "FSLogix GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
 			$MPFS = "NO"
 		}
 

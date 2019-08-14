@@ -6,7 +6,6 @@
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
 
 		History
 		10.12.2014 JP: Script created
@@ -24,6 +23,7 @@
 		08.01.2017 JP: Fixed typos
 		15.10.2018 MS: Bugfix 58 - remove hardcoded maconfig.exe path
 		28.03.2019 MS: FRQ 83 - McAfee Move integration
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
 #>
@@ -79,15 +79,14 @@ Process {
 
 	Function RunFullScan {
 
-		Write-BISFLog -Msg "Check Silentswitch..."
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLI = $LIC_BISF_CLI_AV
 		If (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-			Write-BISFLog -Msg "Silentswitch will be set to $varCLI"
+			Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 		}
 		Else {
-			Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-			$MPFullScan = Show-BISFMessageBox -Msg "Would you like to to run a Full Scan ? " -Title "$Product" -YesNo -Question
-			Write-BISFLog -Msg "$MPFullScan will be choosen [YES = Run Full Scan] [NO = No scan will be performed]"
+			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+			$MPFullScan = "YES"
 		}
 		If (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
 			Write-BISFLog -Msg "Running Full Scan...please wait"

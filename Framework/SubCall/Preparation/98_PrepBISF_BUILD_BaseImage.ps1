@@ -9,7 +9,6 @@ param(
 	.NOTES
 		Author: Matthias Schlimm
 		Editor: Mike Bijl (Rewritten variable names and script format)
-		Company: Login Consultants Germany GmbH
 
 		History:
 		27.09.2012 MS: Script created
@@ -63,6 +62,7 @@ param(
 		17.10.2017 MS: Feature: ADM extension PVS Target Device: select vDisk Type VHDX/VHD that can be using for P2PVS only, thx to Christian Schuessler
 		29.10.2017 MS: Bugfix: Custom UNC-Path get the wrong value back and does not perform a defrag on the vhd(x) and set the right value now $Global:TestDiskMode
 		14.08.2019 MS: ENH 98 - Skip execution of PVS Target OS Optimization
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
 #>
@@ -328,94 +328,91 @@ Process {
 		IF ($ProductType -eq "1") {
 			$PreTXT = "Run Citrix personal vDisk Inventory Update ?"
 			Write-BISFLog -Msg "$PreTXT" -Color DarkCyan -SubMsg
-			Write-BISFLog -Msg "Check Silentswitch..."
+			Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 			$varCLI = $LIC_BISF_CLI_PD
 			IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-				Write-BISFLog -Msg "Silentswitch would be set to $varCLI"
+				Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 			}
 			ELSE {
-				If ($LIC_BISF_CLI_VS) {
-					Write-BISFLog -Msg "Messagebox would be suppressed from CLI switch ! Please configure it with the ADMX $($prepCommand.Description) and start the script again !" -Type E
-				}
-				Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-				$PreMsgBox = Show-BISFMessageBox -Msg "$PreTXT" -Title "PRE vDisk Action" -YesNo -Question
-				Write-BISFLog -Msg "$PreMsgBox would be choosen for this action... please wait" -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+				$DefaultValue = "NO"
 			}
-			if (($PreMsgBox -eq "YES") -or ($varCLI -eq "YES")) {
+			if (($DefaultValue -eq "YES") -or ($varCLI -eq "YES")) {
 				Remove-Item $PvD_LOGFile -recurse -ErrorAction SilentlyContinue
 				Start-Process -FilePath 'C:\Program Files\Citrix\personal vDisk\bin\CtxPvD.exe' -ArgumentList '-s inventoryonly'
 				Show-BISFProgressBar -CheckProcess "CtxPvd" -ActivityText "run Citrix Personal vDisk Inventory Update"
 				$Global:runPvd = $true
 			}
+			ELSE {
+				Write-BISFLog -Msg "Skipping Citrix Personal vDisk Inventory"
+			}
+			ELSE {
+				Write-BISFLog -Msg "Citrix Personal vDisk could be run on Client-OS (ProductType=1) only"
+			}
+
 		}
 		ELSE {
-			Write-BISFLog -Msg "Citrix Personal vDisk could be run on Client-OS (ProductType=1) only"
+			Write-BISFLog -Msg "Skip personal vDisk Inventory Update, Citrix Virtual Desktop Agent not installed"
 		}
 
-	}
-	ELSE {
-		Write-BISFLog -Msg "Skip personal vDisk Inventory Update, Citrix Virtual Desktop Agent not installed"
-	}
-
-	IF ($runPvd -eq "true") {
-		$CheckPvdLog = Test-BISFLog -CheckLogFile "$Pvd_LOGFile" -SearchString "$Pvd_LOGFile_search"
-		IF ($CheckPvdLog -eq $true) {
-			Write-BISFLog -Msg "Successfully Update the Personal vDisk Inventory" -ShowConsole -Color DarkGreen -SubMsg
-			Write-BISFLog -Msg "Personal vDisk: $Pvd_LOGFile_search"
-			Write-BISFLog -Msg "Wait $Wait1 seconds to proceed.."
-			Start-Sleep -s $Wait1
-		}
-		ELSE {
-			get-BISFLogContent -GetLogFile "$Pvd_LOGFile"
-			Show-BISFMessageBox -msg "Personal vDisk Inventory Update NOT successfull, check $Pvd_LOGFile for further details" -Critical
-			Write-BISFLog -Msg "Personal vDisk Inventory Update NOT successfull, check $Pvd_LOGFile for further details" -Type E -SubMsg
-			$CheckPvdLog = $false
-		}
-	}
-
-	IF ($returnTestPVSSoftware -eq $true) {
-		IF ($returnTestAppLayeringSoftware -eq $false) {
-			Set-P2VTool
-			IF ($TestDiskMode) { $vDiskMode = Test-BootMode }
-			IF (($vDiskMode -eq "HD") -or ($TestDiskMode -eq $false)) {
-				IF ($TestDiskMode) {
-					Write-BISFLog -Msg "Mode $vDiskMode - Boot from HardDisk in Private Mode" -ShowConsole -Color DarkCyan -SubMsg
-				}
-				ELSE {
-					Write-BISFLog -Msg "Mode UNC-Path - Boot from HardDisk" -ShowConsole -Color DarkCyan -SubMsg
-				}
-				## 12.08.2015 MS: Get-P2PVSLog must be running 2 times for P2V and after that
-				Get-P2PVSLog -PreCmd
-				Write-BISFLog -Msg "Using $PVSTool with Arguments $PVSToolArgs" -ShowConsole -SubMSg -Color DarkCyan
-				Start-P2PVS
-				IF (!($DiskMode -match "UNC-Path")) {
-					Show-BISFProgressBar -CheckProcess "$PVSTool" -ActivityText "convert $SysDrive to PVS vDisk...($PVSTool)"
-				}
-				ELSE {
-					Show-BISFProgressBar -CheckProcess "$PVSTool" -ActivityText "convert $SysDrive to $DiskMode -vDiskName: $vDiskName -UNC-Path: $LIC_BISF_CLI_P2V_PT_CUS...($PVSTool)"
-				}
-				Get-P2PVSLog
-				$Global:CheckP2PVSlog = "True"
+		IF ($runPvd -eq "true") {
+			$CheckPvdLog = Test-BISFLog -CheckLogFile "$Pvd_LOGFile" -SearchString "$Pvd_LOGFile_search"
+			IF ($CheckPvdLog -eq $true) {
+				Write-BISFLog -Msg "Successfully Update the Personal vDisk Inventory" -ShowConsole -Color DarkGreen -SubMsg
+				Write-BISFLog -Msg "Personal vDisk: $Pvd_LOGFile_search"
+				Write-BISFLog -Msg "Wait $Wait1 seconds to proceed.."
+				Start-Sleep -s $Wait1
 			}
-			IF ($vDiskMode -eq "P") {
-				Write-BISFLog -Msg "Mode $vDiskMode - Boot from vDisk/avhd in Private Mode"
-				$Global:CheckP2PVSlog = "FALSE"
+			ELSE {
+				get-BISFLogContent -GetLogFile "$Pvd_LOGFile"
+				Write-BISFLog -Msg "Personal vDisk Inventory Update NOT successfull, check $Pvd_LOGFile for further details" -Type E -SubMsg
+				$CheckPvdLog = $false
 			}
-			IF ($vDiskMode -eq "S") {
-				$a = New-Object -comobject wscript.shell
-				$b = $a.popup("vDisk in Standard Mode (Mode: $vDiskMode), read access only. After shutdown, change the WriteCacheType to Private Image Mode and run the script again", 0, "Error", 0)
-				$Global:CheckP2PVSlog = "ERROR"
-				Write-BISFLog -Msg "Mode $vDiskMode - vDisk in Standard Mode, read access only!" -Type E -SubMsg
+		}
+
+		IF ($returnTestPVSSoftware -eq $true) {
+			IF ($returnTestAppLayeringSoftware -eq $false) {
+				Set-P2VTool
+				IF ($TestDiskMode) { $vDiskMode = Test-BootMode }
+				IF (($vDiskMode -eq "HD") -or ($TestDiskMode -eq $false)) {
+					IF ($TestDiskMode) {
+						Write-BISFLog -Msg "Mode $vDiskMode - Boot from HardDisk in Private Mode" -ShowConsole -Color DarkCyan -SubMsg
+					}
+					ELSE {
+						Write-BISFLog -Msg "Mode UNC-Path - Boot from HardDisk" -ShowConsole -Color DarkCyan -SubMsg
+					}
+					## 12.08.2015 MS: Get-P2PVSLog must be running 2 times for P2V and after that
+					Get-P2PVSLog -PreCmd
+					Write-BISFLog -Msg "Using $PVSTool with Arguments $PVSToolArgs" -ShowConsole -SubMSg -Color DarkCyan
+					Start-P2PVS
+					IF (!($DiskMode -match "UNC-Path")) {
+						Show-BISFProgressBar -CheckProcess "$PVSTool" -ActivityText "convert $SysDrive to PVS vDisk...($PVSTool)"
+					}
+					ELSE {
+						Show-BISFProgressBar -CheckProcess "$PVSTool" -ActivityText "convert $SysDrive to $DiskMode -vDiskName: $vDiskName -UNC-Path: $LIC_BISF_CLI_P2V_PT_CUS...($PVSTool)"
+					}
+					Get-P2PVSLog
+					$Global:CheckP2PVSlog = "True"
+				}
+				IF ($vDiskMode -eq "P") {
+					Write-BISFLog -Msg "Mode $vDiskMode - Boot from vDisk/avhd in Private Mode"
+					$Global:CheckP2PVSlog = "FALSE"
+				}
+				IF ($vDiskMode -eq "S") {
+					$a = New-Object -comobject wscript.shell
+					$b = $a.popup("vDisk in Standard Mode (Mode: $vDiskMode), read access only. After shutdown, change the WriteCacheType to Private Image Mode and run the script again", 0, "Error", 0)
+					$Global:CheckP2PVSlog = "ERROR"
+					Write-BISFLog -Msg "Mode $vDiskMode - vDisk in Standard Mode, read access only!" -Type E -SubMsg
+				}
+			}
+			ELSE {
+				Write-BISFLog -Msg "Citrix AppLayering installed, convert to Disk not necassary" -ShowConsole -Color DarkCyan -SubMsg
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "Citrix AppLayering installed, convert to Disk not necassary" -ShowConsole -Color DarkCyan -SubMsg
+			Write-BISFLog -Msg "Skip convert System to vDisk, Citrix Provisioning Services Software not installed"
 		}
 	}
-	ELSE {
-		Write-BISFLog -Msg "Skip convert System to vDisk, Citrix Provisioning Services Software not installed"
+	End {
+		Add-BISFFinishLine
 	}
-}
-End {
-	Add-BISFFinishLine
-}

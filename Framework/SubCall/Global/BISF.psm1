@@ -163,6 +163,8 @@ function Show-MessageBox {
 		History:
 	  	dd.mm.yyyy MS: function created
 		07.09.2015 MS: add .SYNOPSIS to this function
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+
 
 	.LINK
 		https://eucweb.com
@@ -1452,7 +1454,6 @@ function Get-CLIcmd {
 	}
 	ELSE {
 		Write-BISFLog -Msg "No configuration via ADMX or Shared Configuration detected" -SubMsg -Type W -ShowConsole
-		#IF ($State -eq "Preparation") {$return_admx = Show-BISFMessageBox -Msg "$FrameworkName can be configured with ADMX for complete automation. Please copy the ADMX and the ADML files from the BIS-F installation folder to your PolicyDefinitions folder and configure them via group policy for your Base Images" -Title "ADMX Configuration" -Information}
 
 	}
 
@@ -2046,6 +2047,7 @@ function Request-Sysprep {
 	  	28.01.2016 MS: function created
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		11.02.2018 MS: Bugfix 235, if sysprep is enabled and other Management SW like Citrix VDA, PVS Target Device Driver, VMWare View Agent is installed, the script breaks
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 
 	.LINK
 		https://eucweb.com
@@ -2058,9 +2060,8 @@ function Request-Sysprep {
 				Write-BISFLog -Msg "Silentswitch for Sysprep would be set to $varCLISP"
 			}
 			ELSE {
-				Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-				$MPSP = Show-BISFMessageBox -Msg "No Image Management Software like Citrix PVS Target Device Driver, XenDesktop VDA or VMware Horizon View Agent would be detected. You can use Sysprep to 		https://eucweb.com your Image. On Computerstartup BIS-F checked the new generated Computername if they matched WIN- and does not start the Services like SCCM,SCOM, Antivirus, etc. to prevent wrong GUIDS or entries in the System Management Server. If you change the Computername, after reboot BISF starts the services. Would you run SysPrep at the end of BIS-F ?" -Title "Sysprep usage" -YesNo -Question
-				Write-BISFLog -Msg "$MPSP was selected [YES = use Sysprep] [NO = Not use Sysprep]"
+				Write-BISFLog -Msg "GPO not configured.. using default setting"
+				$MPSP = "NO"
 			}
 
 			if (($MPSP -eq "YES" ) -or ($varCLISP -eq "YES")) {
@@ -2214,7 +2215,6 @@ function Invoke-LogShare {
 		Invoke-BISFLogShare
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
 
 		History:
 	  	16.03.2016 MS: function created
@@ -2222,6 +2222,7 @@ function Invoke-LogShare {
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		18.08.2017 FF: Fix for Bug 200: Popup shouldn't show up if Central Logshare is enabled OR disabled
 		02.07.2018 MS: Bugfix 50 - set Global Variable after Registry is set (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		.LINK
 		https://eucweb.com
 #>
@@ -2237,16 +2238,9 @@ function Invoke-LogShare {
 			$CentralLogShare = $varCLILS
 		}
 		ELSE {
-			Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-			$MPLS = Show-BISFMessageBox -Msg "Would you like to define a central LogShare to save all BIS-F Logs on one central place? [YES] Enter the UNC-Path \\Server\Share. Recommended: Authenticated users have Read/Write Access to this folder. [NO] Skip Central LogShare. BIS-F LogFiles would be stored on each computer!" -Title "BISF Central Log-Share" -YesNo -Question
-			Write-BISFLog -Msg "$MPLS was selected [YES = define Central LogShare] [NO = Skip Central LogShare]"
-			IF ($MPLS -eq "YES") {
-				Write-BISFLog -Msg "Silentswitch not defined, show Inputprompt to define UNC-Path, to define the Central LogShare"
-				$IBLS = Show-BISFCustomInputBox -title "BISF Central LogShare" -message "Please enter the UNC-Path for the Central LogShare \\Server\Share. Recommended: Authenticated users have Read/Write Access to this folder !" "" -defaultText $LIC_BISF_LogShare
-				$CentralLogShare = $IBLS
-			}
-			ELSE {
-				$CentralLogShare = ""
+			Write-BISFLog -Msg "GPO not configured.. using default setting"
+			$MPLS = "NO"
+			$CentralLogShare = ""
 			}
 		}
 

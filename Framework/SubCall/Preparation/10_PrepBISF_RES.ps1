@@ -6,8 +6,8 @@
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultant Germany GmbH
-				 Thanks to Company RES Germany: Oliver Lomberg & Nina Metz for additional enhacements informations to create this script
+
+		Thanks to Company RES Germany: Oliver Lomberg & Nina Metz for additional enhacements informations to create this script
 
 		History:
 		10.01.2017 MS: Initial Script Created
@@ -22,6 +22,7 @@
 		12.07.2017 FF: BugFix for Redirecting RES Cache (Setting Cache Path to WCD)
 		21.09.2017 MS: Feature: RES Automation Agent Service could be controlled from ADMX
 		04.05.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
 #>
@@ -82,12 +83,12 @@ Process {
 
 		$TestROWValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROW" -Value "LocalCachePath"
 		IF ($TestROWValue) {
-			$LocalCachePath_REG = get-itemProperty -path "$HKLM_REG_ROW" | % { $_.LocalCachePath }
+			$LocalCachePath_REG = Get-ItemProperty -path "$HKLM_REG_ROW" | % { $_.LocalCachePath }
 			Write-BISFLog -Msg "LocalCachePath is set to $LocalCachePath_REG and would deleted now"
 			IF (Test-Path $LocalCachePath_REG) { Remove-Item -Path "$LocalCachePath_REG" -recurse -force }
 		}
 		ELSE {
-			$InstallDir_REG = get-itemProperty -path "$HKLM_REG_ROW" | % { $_.InstallDir }
+			$InstallDir_REG = Get-ItemProperty -path "$HKLM_REG_ROW" | % { $_.InstallDir }
 
 			IF (Test-Path $InstallDir_REG) {
 				Write-BISFLog -Msg "DB Cache is set to $InstallDir_REG\Data\DBCache and would deleted now"
@@ -157,7 +158,7 @@ Process {
 
 		$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "LastKnownResourceCacheFolder"
 		IF ($TestROAValue) {
-			$LastKnownResourceCacheFolder_REG = get-itemProperty -path "$HKLM_REG_ROA" | % { $_.LastKnownResourceCacheFolder }
+			$LastKnownResourceCacheFolder_REG = Get-ItemProperty -path "$HKLM_REG_ROA" | % { $_.LastKnownResourceCacheFolder }
 			Write-BISFLog -Msg "LastKnownResourceCacheFolder is set to $LastKnownResourceCacheFolder_REG and would deleted now"
 			IF (Test-Path $LastKnownResourceCacheFolder_REG) { Remove-Item -Path "$LastKnownResourceCacheFolder_REG\*" -recurse }
 		}
@@ -186,15 +187,14 @@ Process {
 			}
 		}
 
-		Write-BISFLog -Msg "Check Silentswitch..."
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLI = $LIC_BISF_CLI_RA
 		IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-			Write-BISFLog -Msg "Silentswitch would be set to $varCLI"
+			Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 		}
 		ELSE {
-		   	Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-			$ROADisableSVC = Show-BISFMessageBox -Msg "Would you like to disable the $Prd3 Agent Service ($Svc3) on the base image and on all your cloned devices to prevent license usage. You can reconfigure the Service on your cloned devices via Group Policy" -Title "$Prd3 Agent Service" -YesNo -Question
-			Write-BISFLog -Msg "$ROADisableSVC would be choosen [YES = Disable Service] [NO = Service configuration not changed]"
+			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+			$ROADisableSVC = "NO"
 		}
 
 		If (($ROADisableSVC -eq "YES" ) -or ($varCLI -eq "YES")) {

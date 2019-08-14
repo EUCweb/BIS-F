@@ -6,12 +6,12 @@
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	09.01.2017 MS: Script created
 		20.02.2017 MS: fix typos to get the right servicename -> $ServiceNames[0]
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
 #>
@@ -25,7 +25,7 @@ Begin {
 	$Product = "Sophos AntiVirus"
 	$Inst_path = "$ProgramFilesx86\Sophos\Sophos Anti-Virus"
 	$ServiceNames = @("Sophos Agent", "Sophos AutoUpdate Service", "Sophos Message Router")
-	
+
 	[array]$ToDelete = @(
 		[pscustomobject]@{type = "REG"; value = "HKLM:\SOFTWARE\Wow6432Node\Sophos\Messaging System\Router\Private"; data = "pkc" },
 		[pscustomobject]@{type = "REG"; value = "HKLM:\SOFTWARE\Wow6432Node\Sophos\Messaging System\Router\Private"; data = "pkp" },
@@ -33,7 +33,7 @@ Begin {
 		[pscustomobject]@{type = "REG"; value = "HKLM:\SOFTWARE\Wow6432Node\Sophos\Remote Management System\ManagementAgent\Private"; data = "pkp" },
 		[pscustomobject]@{type = "FILE"; value = "C:\ProgramData\Sophos\AutoUpdate\data"; data = "machine_ID.txt" },
 		[pscustomobject]@{type = "FILE"; value = "C:\ProgramData\Sophos\AutoUpdate\data\status"; data = "status.xml" }
-	)	
+	)
 }
 
 Process {
@@ -42,16 +42,15 @@ Process {
 	####################################################################
 
 	function RunFullScan {
-	
-		Write-BISFLog -Msg "Check Silentswitch..."
+
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLI = $LIC_BISF_CLI_AV
 		IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-			Write-BISFLog -Msg "Silentswitch would be set to $varCLI"
+			Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 		}
 		ELSE {
-		   	Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-			$MPFullScan = Show-BISFMessageBox -Msg "Would you like to to run a Full Scan ? " -Title "$Product" -YesNo -Question
-			Write-BISFLog -Msg "$MPFullScan would be choosen [YES = Running Full Scan] [NO = No scan would be performed]"
+			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+			$MPFullScan = "YES"
 		}
 		if (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
 			Write-BISFLog -Msg "Running Fullscan... please Wait"
@@ -62,11 +61,11 @@ Process {
 		ELSE {
 			Write-BISFLog -Msg "No Full Scan would be performed"
 		}
-	
+
 	}
-	
+
 	function deleteData {
-		Write-BISFLog -Msg "Delete specified items "	
+		Write-BISFLog -Msg "Delete specified items "
 		Foreach ($2Delete in $ToDelete) {
 			IF ($2Delete.type -eq "REG") {
 				Write-BISFLog -Msg "Processing Registry-Items to delete" -ShowConsole -SubMsg -color DarkCyan
@@ -76,7 +75,7 @@ Process {
 					Remove-ItemProperty -Path $2Delete.value -Name $2Delete.data -ErrorAction SilentlyContinue
 				}
 			}
-			
+
 			IF ($2Delete.type -eq "FILE") {
 				Write-BISFLog -Msg "Processing Files to delete" -ShowConsole -SubMsg -color DarkCyan
 				$File2Del = "$2Delete.value\$2Delete.data"

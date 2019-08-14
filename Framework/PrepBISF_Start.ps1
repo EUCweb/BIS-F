@@ -69,6 +69,7 @@
 		16.10.2017 MS: Bugfix detecting wrong POSH Version if running BIS-F remotly, using $PSVersionTable.PSVersion.Major, thx to Fabian Danner
 		12.07.2018 MS: Bugfix 40: PendingReboot - give a empty value back
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
 #>
@@ -193,7 +194,6 @@ Process {
 	#check script execution path (added 05.05.2015)
 	$checkScriptExecutionPath = get-BISFScriptExecutionPath
 	IF (!($checkScriptExecutionPath -eq $true)) {
-		Show-BISFMessageBox -msg "Script must be running from local drive, no UNC path or mapped drive allowed ! Please copy the script to a local drive and run it again" -Critical
 		Write-BISFLog -Msg "Script must be running from local drive, no UNC path or mapped drive allowed ! Please copy the script to a local drive and run it again" -Type E -SubMsg
 	}
 
@@ -217,13 +217,12 @@ Process {
 		IF (($LIC_BISF_CLI_SR -eq "NO") -or !($LIC_BISF_CLI_SR)) {
 			$title = "Pending Reboot"
 			$text = "A pending system reboot was detected, please reboot and run the script again !!!"
-			$PNDReboot = Show-BISFMessageBox -Title $title -Msg $text -Critical
 			Write-BISFLog -Msg $Text -Type E
 			return $false
 			break
 		}
 		ELSE {
-			Write-BISFLog -Msg "A pending reboot was detected, but it would be suppressed !!!" -Type W
+			Write-BISFLog -Msg "A pending reboot was detected, but suppressed from GPO configuration !!!" -Type W
 		}
 	}
 	ELSE {
