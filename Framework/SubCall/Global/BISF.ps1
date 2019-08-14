@@ -72,7 +72,8 @@ param()
 	  	11.11.2017 MS: Retry 30 times if Logshare on network path is not found with fallback after max. is reached
 		02.07.2018 MS: Bufix 50 - function Set-Logfile -> invoke-BISFLogShare   (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
 		20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
-     	13.08.2019 MS: FRQ 97 - Nutanix Xi Frame Support
+		13.08.2019 MS: FRQ 97 - Nutanix Xi Frame Support
+		14.08.2019 MS: FRQ 6 - Parallels RAS Support
       #>
 Begin {
 
@@ -268,6 +269,7 @@ Process {
 	$Global:returnTestPVSSoftware = Test-BISFPVSSoftware -Verbose:$VerbosePreference
 	$Global:returnTestVMHVSoftware = Test-BISFVMwareHorizonViewSoftware -Verbose:$VerbosePreference
 	$Global:returnTestXiFrameSoftware = Test-BISFXiFrameSoftware -Verbose:$VerbosePreference
+	$Global:returnTestParallelsRASSoftware = Test-BISFParallelsRASSoftware -Verbose:$VerbosePreference
 	$Global:returnRequestSysprep = Request-BISFSysprep -Verbose:$VerbosePreference
 	$Global:DiskMode = Get-BISFDiskMode -Verbose:$VerbosePreference
 	$Global:BootMode = Get-BISFBootMode

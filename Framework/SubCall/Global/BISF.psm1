@@ -3424,6 +3424,32 @@ function Test-NutanixFrameSoftware {
 
 }
 
+function Test-ParallelsRASSoftware {
+	<#
+	.SYNOPSIS
+		check if the RAS RD Session Host Agent installed
+	.DESCRIPTION
+	  	if the RAS RD Session Host Agent installed they will send a true or false value and will set the global variable ImageSW to true or false
+		use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		Test-BISFParallelsRASSoftware
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+	  	14.08.2019 MS: function created
+
+	.LINK
+		https://eucweb.com
+#>
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	$svc = Test-BISFService -ServiceName "RAS RD Session Host Agent" -ProductName "Parallels RAS Software"
+	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	return $svc
+
+}
+
 function Set-ACLrights {
 	<#
 	.SYNOPSIS
