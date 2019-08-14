@@ -1,5 +1,5 @@
 ﻿[CmdletBinding(SupportsShouldProcess = $true)]
-param( 
+param(
 )
 <#
 	.SYNOPSIS
@@ -10,13 +10,13 @@ param(
 		Author: Matthias Schlimm
 		Editor: Mike Bijl (Rewritten variable names and script format)
 		Company: Login Consultants Germany GmbH
-		
+
 		History:
 		27.09.2012 MS: Script created
 		17.10.2012 MS: Write-BISFLog TGTOPT disabled: TargetDeviceOptimizer, Values Write via GPO
 		27.02.2013 MS: Write-BISFLog CheckvDisk: prüfen ob personalityfile existiert.
 		28.02.2013 MS: Remove-Item $P2PVS_LOGFile -recurse -ErrorAction SilentlyContinue
-		27.08.2013 MS: Read WriteCacheType from PVSAgent, to identifiy the vDisk access 
+		27.08.2013 MS: Read WriteCacheType from PVSAgent, to identifiy the vDisk access
 		12.09.2013 MS: Add progress bar during P2PVS
 		16.09.2013 MS: check personality.ini if Device boot up from hardDisk or vDisk
 		17.09.2013 MS: increase Wait to 20 seconds to identify the destination disk
@@ -30,7 +30,7 @@ param(
 		11.08.2014 MS: remove Write-Host change to Write-BISFLog
 		13.08.2014 MS: remove $logfile = Set-logFile, it would be used in the 10_XX_LIB_Config.ps1 Script only
 		13.08.2014 MS: add IF ($returnTestPVSSoftware -eq "true") to build vDisk
-		18.08.2014 MS: change check personality.ini for XenApp/XenDesktop 7.5 
+		18.08.2014 MS: change check personality.ini for XenApp/XenDesktop 7.5
 		19.08.2014 MS: move progressbar Write-BISFLog to central Write-BISFLogs
 		20.08.2014 MS: add and use XenConvert to reduce vDisk storage, older technoloy but do not capture free space of the Base-Image. IF xenconvert not exist, P2PVS that comes with PVS71 would be used
 		15.09.2014 MS: remove XenConvert from Toolsfolder... to longer use you must install XenConvert on your baseimage in "C:\Program Files\Citrix\XenConvert"
@@ -40,28 +40,29 @@ param(
 		18.05.2015 MS: Bug 43: wrong CLI variable for P2PVS -> Line 150 must be changed from $LIC_PVS_CLI_PT to $LIC_BISF_CLI_PT
 		18.05.2015 MS: add CLI Switch VERYSILENT handling
 		02.06.2015 MS: Line 152: check ($LIC_BISF_CLI_PT -eq $false) if set with CLI Command to get from registry
-		07.08.2015 MS: script is looking in the wrong path for XenConvert, use new variable $PVSToolPath to define the correct path 
-		10.08.2015 MS: Bug 52: changing code for P2PVS or XenConvert Logfile detection, looking in all paths and deleted older files 
+		07.08.2015 MS: script is looking in the wrong path for XenConvert, use new variable $PVSToolPath to define the correct path
+		10.08.2015 MS: Bug 52: changing code for P2PVS or XenConvert Logfile detection, looking in all paths and deleted older files
 		11.08.2015 MS: LogFile Check and P2PVS Tool would only be checked if boot up from local harddrive
 		12.08.2015 MS: separate Write-BISFLog get-p2pvslog to get P2PVS or XenConvert Logfile
 		01.10.2015 MS: rewritten script to use central BISF
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		12.03.2016 MS: move $Pvd_LOGFile_search="Update Inventory completed" from 99_PrepBISF_PostBaseImage.ps1 to this script, thx to Mathias Kowalkowski
 		22.03.2017 MS: Bugfix to read the right State from personality.ini if used VDA with PVS
-		22.03.2017 MS: for P2PVS reconfigure Microsoft Software Shadow Copy Provider Service and VSS Service, needed them for P2PVS 
+		22.03.2017 MS: for P2PVS reconfigure Microsoft Software Shadow Copy Provider Service and VSS Service, needed them for P2PVS
 		14.06.2017 MS: Running ImagingWizard instead of P2PVS to support UEFI Boot
 		14.06.2017 MS: Stopping Shell Hardware Detection Service before ImagingWizard/XenConvert is starting, messagebox to format the disk supressed now
 		14.06.2017 MS: If Citrix AppLayering and PVS Target Device Driver installed, skip vDisk Operations
 		02.08.2017 MS: Removing XenConvert completly and using settings from new ADMX to choose ImagingWizard or P2PVS
 		02.08.2017 MS: IF ADMX for custom UNC-Path is enabled, the arguments for the P2V Tool must be changed, this vDisk Mode must not being checked
 		03.08.2017 MS: Get-BISFBootMode get back UEFI or Legacy to using different command line switches for ImagingWizard or P2PVS
-		03.08.2017 MS: Automatic fallback to ImagingWizard with UEFI BootMode, if P2PVS in ADMX is selected 
+		03.08.2017 MS: Automatic fallback to ImagingWizard with UEFI BootMode, if P2PVS in ADMX is selected
 		25.08.2017 MS: Bugfix - P2V with UNC Path failed with space is in UNC Path
 		25.08.2017 MS: Bugfix - VHDX on UNC-Path would be vreated with double .vdhx extension
 		06.09.2017 MS: Feature: Using custom arguments from PVS Target Configuration if enabled
 		17.09.2017 MS: Bugfix 212 - If Custom UNC-Path in ADMX is selected, and booting up a PVS avhd/avhdx, imaging wizard/P2PVS would be executed
 		17.10.2017 MS: Feature: ADM extension PVS Target Device: select vDisk Type VHDX/VHD that can be using for P2PVS only, thx to Christian Schuessler
 		29.10.2017 MS: Bugfix: Custom UNC-Path get the wrong value back and does not perform a defrag on the vhd(x) and set the right value now $Global:TestDiskMode
+		14.08.2019 MS: ENH 98 - Skip execution of PVS Target OS Optimization
 	.LINK
 		https://eucweb.com
 #>
@@ -70,7 +71,7 @@ Begin {
 
 	####################################################################
 	# define environment
-	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version. 
+	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version.
 	If ($($host.name) -like "* ISE *") {
 		# Running script from Windows Powershell ISE
 		$PSScriptFullName = $psise.CurrentFile.FullPath.ToLower()
@@ -85,7 +86,6 @@ Begin {
 
 	$SysDrive = gc env:systemdrive
 	$PVSPATH = "$env:ProgramFiles\Citrix\Provisioning Services"
-	$PVSPATH_TGTOPT = "$PVSPATH\TargetOSOptimizer.exe"
 	$Global:Pvd_LogFile = "$env:ALLUSERSPROFILE\Citrix\personal vDisk\LOGS\PvDSvc.log.txt"
 	$Pvd_LOGFile_search = "Update Inventory completed"
 	$Personality_file = "$env:SystemDrive\Personality.ini"
@@ -104,46 +104,46 @@ Begin {
 		if ((Test-Path -Path $Personality_file) -eq $true) {
 			IF ($returnTestXDSoftware -eq "true") {
 				Write-BISFLog -Msg "Start $Personality_file for Citrix Desktop Agent"
-				Write-BISFLog -Msg "Search for $Personality_search2" 
-				$Sel2 = Select-String -Pattern "$Personality_search2" -Path $Personality_file	
+				Write-BISFLog -Msg "Search for $Personality_search2"
+				$Sel2 = Select-String -Pattern "$Personality_search2" -Path $Personality_file
 				If (!($Sel2 -eq $null)) {
-					Write-BISFLog -Msg "Boot from HardDisk"  
+					Write-BISFLog -Msg "Boot from HardDisk"
 					$vDiskMode = "HD"
 					return $vDiskMode
-				} 
-				$Sel3 = Select-String -Pattern $Personality_search3 -Path $Personality_file	
+				}
+				$Sel3 = Select-String -Pattern $Personality_search3 -Path $Personality_file
 				If (!($sel3 -eq $null)) {
 					$vDiskMode = $null
-					Write-BISFLog -Msg "vDisk in Shared Mode - READ Access only !!"  
+					Write-BISFLog -Msg "vDisk in Shared Mode - READ Access only !!"
 					$vDiskMode = "S"
 					return $vDiskMode
 				}
 				ELSE {
-					Write-BISFLog -Msg "vDisk in Private Mode"  
+					Write-BISFLog -Msg "vDisk in Private Mode"
 					$vDiskMode = "P"
 					return $vDiskMode
 				}
 			}
 			ELSE {
-				Write-BISFLog -Msg "Start $Personality_file for Citrix Provisioning Services"  
-				Write-BISFLog -Msg "Search for $Personality_search1"  
-				$Sel1 = Select-String -Pattern "$Personality_search1" -Path $Personality_file	
+				Write-BISFLog -Msg "Start $Personality_file for Citrix Provisioning Services"
+				Write-BISFLog -Msg "Search for $Personality_search1"
+				$Sel1 = Select-String -Pattern "$Personality_search1" -Path $Personality_file
 				$Sel2 = Select-String -Pattern "$Personality_search2" -Path $Personality_file
 				If (!($sel1 -eq $null) -or (!($sel2 -eq $null))) {
-					Write-BISFLog -Msg "vDisk in Private Mode"  
+					Write-BISFLog -Msg "vDisk in Private Mode"
 					$vDiskMode = "P"
 					return $vDiskMode
 				}
 				ELSE {
-					Write-BISFLog -Msg "vDisk in Shared Mode - READ Access only !!"  
+					Write-BISFLog -Msg "vDisk in Shared Mode - READ Access only !!"
 					$vDiskMode = "S"
 					return $vDiskMode
 				}
 			}
-		
+
 		}
 		ELSE {
-			Write-BISFLog -Msg "$Personality_file not found, Device boot from HardDisk" 
+			Write-BISFLog -Msg "$Personality_file not found, Device boot from HardDisk"
 			$vDiskMode = "HD"
 			return $vDiskMode
 		}
@@ -153,21 +153,41 @@ Begin {
 	####################################################################
 	### P2PVS
 	function Start-P2PVS {
+		<#
+		.SYNOPSIS
+		Starting the convertion for Citrix Provisioning Services
+
+		.DESCRIPTION
+		If the PVS Target Device software is installed, this will convert the Hraddrive C
+		to the attached vDisk
+
+		.EXAMPLE
+		Start-P2PVS
+
+		.NOTES
+		Author: Matthias Schlimm
+
+		History:
+			14.08.2019 MS: ENH 98 - Skip execution of PVS Target OS Optimization
+
+		.Link
+		https://eucweb.com
+		#>
+
+
 		$P2PVSTool = "$PVSToolPath\$PVSTool.exe"
-		Write-BISFLog -Msg "start $PVSPATH_TGTOPT in silentmode to optimize the image." 
-		Start-Process $PVSPATH_TGTOPT /s -Wait
 		Write-BISFLog -Msg "Check Microsoft Software Shadow Copy Provider Service is running, needed for $PVSTool"
 		Invoke-BISFService -ServiceName swprv -StartType manual -Action Start
-		Restart-Service swprv | out-Null
+		Restart-Service swprv | Out-Null
 		Write-BISFLog -Msg "Check Volume Shadow Copy Service is running, needed for $PVSTool"
 		Invoke-BISFService -ServiceName vss -StartType manual -Action Start
-		Restart-Service vss | out-Null
+		Restart-Service vss | Out-Null
 		Write-BISFLog -Msg "Stopping Shell Hardware Detection Service before $PVSTool is starting"
 		Invoke-BISFService -ServiceName ShellHWDetection -Action Stop
-		start-sleep $Wait1
+		Start-Sleep $Wait1
 		Write-BISFLog -Msg "Run start-process $P2PVSTool -ArgumentList '$PVSToolArgs' "
 		Write-BISFLog -Msg "Running $P2PVSTool to convert HardDisk to vDisk now" -ShowConsole -Color DarkCyan -SubMsg
-		start-process $P2PVSTool -ArgumentList "$($PVSToolArgs)"
+		Start-Process $P2PVSTool -ArgumentList "$($PVSToolArgs)"
 	}
 	####################################################################
 
@@ -191,10 +211,10 @@ Begin {
 			}
 			ELSE {
 				IF ($LIC_BISF_CLI_P2V_CUS_ARGS -eq "1") { $Global:PVSToolArgs = "P2PVS $($LIC_BISF_CLI_P2V_ARGS)" } ELSE { $Global:PVSToolArgs = "P2PVS C: /QuitWhenDone" }
-			}	
+			}
 			$Global:P2PVS_LOGFile = @()
 			$Global:TestDiskMode = $true
-			
+
 		}
 		ELSE {
 			$Global:PVSTool = "P2PVS"
@@ -213,13 +233,13 @@ Begin {
 				$Global:LIC_BISF_CLI_PT_FT = "vhdx"
 				Write-BISFLog -Msg "vDisk type not selected in ADMX, using default value $LIC_BISF_CLI_PT_FT"
 			}
-			
+
 			IF ($BootMode -eq "UEFI") {
 				# UEFI boot with UNC-Path for VHDX
 				IF ($PVSTool -eq "ImagingWizard") {
 					$Global:LIC_BISF_CLI_PT_FT = "vhdx" # imagingWizard accept vhdx only
 					IF ($LIC_BISF_CLI_P2V_CUS_ARGS -eq "1") { $Global:PVSToolArgs = "p2$($LIC_BISF_CLI_PT_FT) $vDiskName ""$LIC_BISF_CLI_P2V_PT_CUS"" $($LIC_BISF_CLI_P2V_ARGS)" } ELSE { $Global:PVSToolArgs = "p2$($LIC_BISF_CLI_PT_FT) $vDiskName ""$LIC_BISF_CLI_P2V_PT_CUS"" /QuitWhenDone" }
-				} 
+				}
 			}
 			ELSE {
 				# Legacy boot with UNC-Path for VHDX
@@ -228,7 +248,7 @@ Begin {
 					IF ($LIC_BISF_CLI_P2V_CUS_ARGS -eq "1") { $Global:PVSToolArgs = "p2$($LIC_BISF_CLI_PT_FT) $vDiskName ""$LIC_BISF_CLI_P2V_PT_CUS"" $($LIC_BISF_CLI_P2V_ARGS)" } ELSE { $Global:PVSToolArgs = "p2$($LIC_BISF_CLI_PT_FT) $vDiskName ""$LIC_BISF_CLI_P2V_PT_CUS"" C: /QuitWhenDone" }
 				}
 				ELSE {
-					IF ($LIC_BISF_CLI_P2V_CUS_ARGS -eq "1") { $Global:PVSToolArgs = "p2$($LIC_BISF_CLI_PT_FT) $vDiskName ""$LIC_BISF_CLI_P2V_PT_CUS"" $($LIC_BISF_CLI_P2V_ARGS)" } ELSE { $Global:PVSToolArgs = "p2$($LIC_BISF_CLI_PT_FT) $vDiskName ""$LIC_BISF_CLI_P2V_PT_CUS"" C:" }		
+					IF ($LIC_BISF_CLI_P2V_CUS_ARGS -eq "1") { $Global:PVSToolArgs = "p2$($LIC_BISF_CLI_PT_FT) $vDiskName ""$LIC_BISF_CLI_P2V_PT_CUS"" $($LIC_BISF_CLI_P2V_ARGS)" } ELSE { $Global:PVSToolArgs = "p2$($LIC_BISF_CLI_PT_FT) $vDiskName ""$LIC_BISF_CLI_P2V_PT_CUS"" C:" }
 				}
 			}
 			IF ($DiskMode -eq "ReadWrite") {
@@ -245,12 +265,12 @@ Begin {
 			Write-BISFLog -Msg "TestDiskMode is set to $TestDiskMode value, based on DiskMode $DiskMode"
 		}
 		Write-BISFLog -Msg "System BootMode $BootMode detected" -ShowConsole -SubMSg -Color DarkCyan
-	}	
-	
+	}
+
 	function Get-P2PVSLog {
-		Param( 
-			[Parameter(Mandatory = $False)][Alias('P')][switch]$PreCmd 
-		) 
+		Param(
+			[Parameter(Mandatory = $False)][Alias('P')][switch]$PreCmd
+		)
 		$P2PVSLogs = @("$env:ALLUSERSPROFILE\Citrix\$($PVSTool)\$($PVSTool).txt", "$env:ALLUSERSPROFILE\Citrix\$($PVSTool)\$($PVSTool).log")
 		Write-BISFLog -Msg "Looking for the $($PVSTool) Logfile" -ShowConsole -Color DarkCyan -SubMsg
 		$P2PVSfound = $false
@@ -269,12 +289,12 @@ Begin {
 						ELSE {
 							Write-BISFLog "File $P2PVSLog would be created on $DateFromFile and not from today $DateFromToday, it would be deleted now" -Type W -SubMsg
 							Remove-Item $P2PVSLog -recurse -ErrorAction SilentlyContinue
-							$P2PVSfound = $false			
+							$P2PVSfound = $false
 						}
 					}
 					ELSE {
 						Write-BISFLog "LogFile $P2PVSLog NOT exist" -Type W -SubMsg
-						$P2PVSfound = $false		
+						$P2PVSfound = $false
 					}
 				}
 				ELSE {
@@ -288,14 +308,14 @@ Begin {
 					Remove-Item $P2PVSLog -recurse -ErrorAction SilentlyContinue
 				}
 				ELSE {
-					Write-BISFLog -Msg "Logfile $P2PVSLog not exist" 
+					Write-BISFLog -Msg "Logfile $P2PVSLog not exist"
 				}
 			}
 		}
-		
+
 	}
-	
-	
+
+
 }
 
 
@@ -311,7 +331,7 @@ Process {
 			Write-BISFLog -Msg "Check Silentswitch..."
 			$varCLI = $LIC_BISF_CLI_PD
 			IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-				Write-BISFLog -Msg "Silentswitch would be set to $varCLI" 
+				Write-BISFLog -Msg "Silentswitch would be set to $varCLI"
 			}
 			ELSE {
 				If ($LIC_BISF_CLI_VS) {
@@ -323,13 +343,13 @@ Process {
 			}
 			if (($PreMsgBox -eq "YES") -or ($varCLI -eq "YES")) {
 				Remove-Item $PvD_LOGFile -recurse -ErrorAction SilentlyContinue
-				Start-Process -FilePath 'C:\Program Files\Citrix\personal vDisk\bin\CtxPvD.exe' -ArgumentList '-s inventoryonly'   
+				Start-Process -FilePath 'C:\Program Files\Citrix\personal vDisk\bin\CtxPvD.exe' -ArgumentList '-s inventoryonly'
 				Show-BISFProgressBar -CheckProcess "CtxPvd" -ActivityText "run Citrix Personal vDisk Inventory Update"
 				$Global:runPvd = $true
-			} 
+			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "Citrix Personal vDisk could be run on Client-OS (ProductType=1) only" 
+			Write-BISFLog -Msg "Citrix Personal vDisk could be run on Client-OS (ProductType=1) only"
 		}
 
 	}
@@ -342,7 +362,7 @@ Process {
 		IF ($CheckPvdLog -eq $true) {
 			Write-BISFLog -Msg "Successfully Update the Personal vDisk Inventory" -ShowConsole -Color DarkGreen -SubMsg
 			Write-BISFLog -Msg "Personal vDisk: $Pvd_LOGFile_search"
-			Write-BISFLog -Msg "Wait $Wait1 seconds to proceed.." 
+			Write-BISFLog -Msg "Wait $Wait1 seconds to proceed.."
 			Start-Sleep -s $Wait1
 		}
 		ELSE {
@@ -363,7 +383,7 @@ Process {
 				}
 				ELSE {
 					Write-BISFLog -Msg "Mode UNC-Path - Boot from HardDisk" -ShowConsole -Color DarkCyan -SubMsg
-				} 
+				}
 				## 12.08.2015 MS: Get-P2PVSLog must be running 2 times for P2V and after that
 				Get-P2PVSLog -PreCmd
 				Write-BISFLog -Msg "Using $PVSTool with Arguments $PVSToolArgs" -ShowConsole -SubMSg -Color DarkCyan
@@ -377,12 +397,12 @@ Process {
 				Get-P2PVSLog
 				$Global:CheckP2PVSlog = "True"
 			}
-			IF ($vDiskMode -eq "P") {	
-				Write-BISFLog -Msg "Mode $vDiskMode - Boot from vDisk/avhd in Private Mode" 
+			IF ($vDiskMode -eq "P") {
+				Write-BISFLog -Msg "Mode $vDiskMode - Boot from vDisk/avhd in Private Mode"
 				$Global:CheckP2PVSlog = "FALSE"
 			}
 			IF ($vDiskMode -eq "S") {
-				$a = new-object -comobject wscript.shell
+				$a = New-Object -comobject wscript.shell
 				$b = $a.popup("vDisk in Standard Mode (Mode: $vDiskMode), read access only. After shutdown, change the WriteCacheType to Private Image Mode and run the script again", 0, "Error", 0)
 				$Global:CheckP2PVSlog = "ERROR"
 				Write-BISFLog -Msg "Mode $vDiskMode - vDisk in Standard Mode, read access only!" -Type E -SubMsg
@@ -397,5 +417,5 @@ Process {
 	}
 }
 End {
-	Add-BISFFinishLine 
+	Add-BISFFinishLine
 }
