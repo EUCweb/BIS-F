@@ -3347,7 +3347,7 @@ Function Get-Hypervisor {
 
 	$HV = Get-WmiObject -query 'select * from Win32_ComputerSystem' | Select-Object Manufacturer, Model
 	$Platform = $HV.Manufacturer + " " + $HV.Model
-	Write-BISFLog -Msg "Your Computer is running on $Platform Paltform" -Color Cyan -ShowConsole
+	Write-BISFLog -Msg "Your Computer is running on $Platform Platform" -Color Cyan -ShowConsole
 	return $Platform
 
 
