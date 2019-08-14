@@ -2228,21 +2228,21 @@ function Invoke-LogShare {
 #>
 	Write-BISFFunctionName2Log  -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name }) #must be added at the begin to each function
 	IF ($State -eq "Preparation") {
-		Write-BISFLog -Msg "Check Silentswitch..."
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLILS = $LIC_BISF_CLI_LS
 		$varCLILSb = $LIC_BISF_CLI_LSb
 		$varCLILSCfg = $LIC_BISF_CLI_LogCfg
 		IF ($varCLILSCfg -ne $null) {
 			IF ($varCLILSb -eq "NO") { $varCLILS = $varCLILSb }
-			Write-BISFLog -Msg "Silentswitch would be set to $varCLILS"
+			Write-BISFLog -Msg "GPO Valuedata: $varCLILS"
 			$CentralLogShare = $varCLILS
 		}
 		ELSE {
 			Write-BISFLog -Msg "GPO not configured.. using default setting"
 			$MPLS = "NO"
 			$CentralLogShare = ""
-			}
 		}
+
 
 		If (($CentralLogShare -ne "") -and ($CentralLogShare -ne "NO")) {
 			Write-BISFLog -Msg "The BIS-F Central LogShare for the Client personalization would be set to $CentralLogShare" -ShowConsole -Color DarkCyan -SubMsg
@@ -2262,7 +2262,6 @@ function Invoke-LogShare {
 			$Global:LIC_BISF_LogShare = ""
 		}
 	}
-
 }
 
 function Test-AccessRights {
