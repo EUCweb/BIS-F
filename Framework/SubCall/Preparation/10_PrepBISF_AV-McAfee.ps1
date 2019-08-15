@@ -22,8 +22,11 @@
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		08.01.2017 JP: Fixed typos
 		15.10.2018 MS: Bugfix 58 - remove hardcoded maconfig.exe path
-		28.03.2019 MS: FRQ 83 - McAfee Move integration
+		28.03.2019 MS: FRQ 83 - Supporting McAfee Move integration (thanks to Torsten Witsch)
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		15.08.2019 MS: FRQ 88 - Supporting McAfee Endpoint Security (thanks to Wing2005)
+		15.08.2019 MS: Added .SYNOPSIS to all functions and using recommended POSH Verbs for functions too
+
 	.LINK
 		https://eucweb.com
 #>
@@ -33,7 +36,7 @@ Begin {
 	$Script_Dir = Split-Path -Parent $Script_Path
 	$Script_Name = [System.IO.Path]::GetFileName($Script_Path)
 
-	# Product specIfied
+	# Product specified
 	$Product = "McAfee VirusScan Enterprise"
 	$Product2 = "McAfee Agent"
 	$reg_product_string = "$hklm_sw_x86\Network Associates\ePolicy Orchestrator\Agent"
@@ -43,7 +46,10 @@ Begin {
 	$ServiceName2 = "McShield"
 	$ServiceName3 = "McTaskManager"
 	$PrepApp = "maconfig.exe"
-	$PrepAppSearchFolder = @("${env:ProgramFiles}\McAfee\Common Framework", "${env:ProgramFiles(x86)}\McAfee\Common Framework")
+
+	#Wing2005 - added 2 new paths to check
+	$PrepAppSearchFolder = @("${env:ProgramFiles}\McAfee\Common Framework", "${env:ProgramFiles(x86)}\McAfee\Common Framework", "${env:ProgramFiles}\McAfee\Agent", "${env:ProgramFiles(x86)}\McAfee\Agent")
+
 	[array]$reg_product_name = "AgentGUID"
 	[array]$reg_product_name += "MacAddress"
 	[array]$reg_product_name += "ComputerName"
@@ -62,6 +68,11 @@ Begin {
 	$HKLMAgent10key2_2 = "ServerAddress2"
 	$HKLMAgent10key2_3 = "ODSUniqueId"
 
+	## McAfee Endpoint Security Detection
+	$Product20 = "McAfee Endpoint Security"
+	$Product_Path20_1 = "$env:ProgramFiles\McAfee\Endpoint Security\Endpoint Security Platform"
+	$Product_Path20_2 = "$env:ProgramFiles\McAfee\Endpoint Security\Threat Prevention"
+
 }
 
 Process {
@@ -69,15 +80,76 @@ Process {
 	####### Functions #####
 	####################################################################
 
-	Function DefUpdates {
+	Function Start-DefUpdates {
+		<#
+		.SYNOPSIS
+		Update McAfee AV pattern Files
+
+		.DESCRIPTION
+		Long description
+
+		.PARAMETER engine
+		Parameter description
+
+		.EXAMPLE
+		Update Pattern Files for McAfee Virus Scan Enterprise (VSE)
+		Start-DefUpdates -engine $product
+
+		.EXAMPLE
+		Update Pattern Files for McAfee Endpoint Security (ENS)
+		Start-DefUpdates -engine $product20
+
+		.NOTES
+		Author: Matthias Schlimm
+
+		History:
+			15.12.2014 JP: Added automatic virus definitions updates
+			28.04.2019 wing2005: Added Parameter - due to change in update mchanism
+
+		#>
+
+
+		param(
+			[parameter(Mandatory = $true)]$engine
+		)
 		Invoke-BISFService -ServiceName "$ServiceName1" -Action Start
 		Write-BISFLog -Msg "Updating virus definitions...please wait"
-		Start-Process -FilePath "$Product_Path\mcupdate.exe" -ArgumentList "/update /quiet"
-		Show-BISFProgressBar -CheckProcess "mcupdate" -ActivityText "$Product is updating the virus definitions...please wait"
-		Start-Sleep -s 3
+		switch($engine) {
+			$Product {
+				Start-Process -FilePath "$Product_Path\mcupdate.exe" -ArgumentList "/update /quiet"
+				Show-BISFProgressBar -CheckProcess "mcupdate" -ActivityText "$engine is updating the virus definitions...please wait"
+				Start-Sleep -s 3
+			}
+			$Product20 {
+				#ENS
+				Start-Process -FilePath "$Product_Path20_2\amcfg.exe" -ArgumentList "/update"
+				Show-BISFProgressBar -CheckProcess "amcfg" -ActivityText "$engine is updating the virus definitions...please wait"
+				Start-Sleep -s 3
+			}
+		}
 	}
 
-	Function RunFullScan {
+	Function Start-AVScan {
+		<#
+		.SYNOPSIS
+		Starting a AV Full Scan on the system
+
+		.DESCRIPTION
+		before image sealing it's vendor beste practices to start a full scan
+		to prevent performance bottlenecks and got a full scanned image
+
+		.EXAMPLE
+		Start-AVScan
+
+		.NOTES
+		Author: Matthias Schlimm
+
+		History:
+			10.12.2014 MS: script created
+			14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+
+		#>
+
 
 		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLI = $LIC_BISF_CLI_AV
@@ -100,7 +172,25 @@ Process {
 
 	}
 
-	Function DeleteVSEData {
+	Function Remove-VSEData {
+		<#
+		.SYNOPSIS
+		Remvoving MacAfee VirusScan Enterprise Agent Data
+
+		.DESCRIPTION
+		For Image sealing it's necassary to delete vendor recommended files, registryitems
+
+		.EXAMPLE
+		Remove-VSEData
+
+		.NOTES
+		Author: Matthias Schlimm
+
+		History:
+			10.12.2014 MS: script created
+
+		#>
+
 		If ($reg_agent_version -lt "5.0") {
 			Invoke-BISFService -ServiceName "$ServiceName1" -Action Stop
 			Invoke-BISFService -ServiceName "$ServiceName2" -Action Stop
@@ -115,7 +205,9 @@ Process {
 
 			$found = $false
 			Write-BISFLog -Msg "Searching for $PrepApp on the system" -ShowConsole -Color DarkCyan -SubMsg
-			$PrepAppExists = Get-ChildItem -Path "$PrepAppSearchFolder" -filter "$PrepApp" -ErrorAction SilentlyContinue | % { $_.FullName }
+
+			# Wing2005 - FIX: -Path parameter (was with quotes)
+			$PrepAppExists = Get-ChildItem -Path $PrepAppSearchFolder -filter "$PrepApp" -ErrorAction SilentlyContinue | % { $_.FullName }
 
 			IF (($PrepAppExists -ne $null) -and ($found -ne $true)) {
 
@@ -129,7 +221,24 @@ Process {
 		}
 	}
 
-	Function Delete-Agent10Data {
+	Function Remove-Agent10Data {
+		<#
+		.SYNOPSIS
+		Remove MCAfee Move Agent data
+
+		.DESCRIPTION
+		For Image sealing it's necassary to delete vendor recommended files, registryitems
+
+		.EXAMPLE
+		Remove-Agent10Data
+
+		.NOTES
+		Author: Matthias Schlimm
+
+		History:
+			28.03.2019 MS: script created
+		#>
+
 		Write-BISFLog -Msg "Remove Registry $HKLMAgent10path1 - Key $HKLMAgent10key1" -ShowConsole -Color DarkCyan -SubMsg
 		Remove-ItemProperty -Path $HKLMAgent10path1 -Name $HKLMAgent10key1 -ErrorAction SilentlyContinue
 
@@ -150,26 +259,40 @@ Process {
 	####################################################################
 
 	#### Main Program
+
+	# Discovering McAfee Virus Scan Enterprise (VSE)
 	If (Test-Path ("$Product_Path\shstat.exe") -PathType Leaf) {
 		Write-BISFLog -Msg "Product $Product installed" -ShowConsole -Color Cyan
 		$reg_agent_version = (Get-ItemProperty "$reg_agent_string").AgentVersion
 		Write-BISFLog -Msg "Product $Product2 $reg_agent_version installed" -ShowConsole -Color Cyan
-		DefUpdates
-		RunFullScan
-		DeleteVSEData
+		Start-DefUpdates -engine $Product
+		Start-AVScan
+		Remove-VSEData
 	}
 	Else {
 		Write-BISFLog -Msg "Product $Product NOT installed"
 	}
 
+	#Discovering McAfee Move
 	$svc = Test-BISFService -ServiceName $servicename10 -ProductName "$product10"
 	IF ($svc -eq $true) {
 		Write-BISFLog -Msg "Information only: Unselect 'Enable Selfprotection' on the McAfee Management Server and/or in the Policy for MOVE AV Common" -ShowConsole -Color DarkCyan -SubMsg
-		Write-BISFLog -Msg "Perform an  On Demand Scan (ODS) before you run this script to build up the cache"
-		Delete-Agent10Data
+		Write-BISFLog -Msg "Perform an On Demand Scan (ODS) before you run this script to build up the cache"
+		Remove-Agent10Data
+	}
+
+	#Discovering McAfee Endpoint Security (ENS)
+	IF (Test-Path ("$Product_Path20_1\mfeesp.exe") -PathType Leaf) {
+		Write-BISFLog -Msg "Product $Product20 installed" -ShowConsole -Color Cyan
+		$reg_agent_version = (Get-ItemProperty "$reg_agent_string").AgentVersion
+		Write-BISFLog -Msg "Product $Product20 $reg_agent_version installed" -ShowConsole -Color Cyan
+		DefUpdates -engine $Product20
+		#wing2005 - Disabled Scan From Commandline not supported yet (will be in ENS 10.7)
+		#Start-AVScan
+		Remove-VSEData
 	}
 	Else {
-		Write-BISFLog -Msg "Product $Product10 NOT installed"
+		Write-BISFLog -Msg "Product $Product20 NOT installed"
 	}
 
 }
