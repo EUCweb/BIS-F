@@ -3499,7 +3499,7 @@ function Add-StartLine {
 	and logfile too
 
 	.PARAMETER scriptname
-	the name of the curren t powershell script itself
+	the name of the current powershell script itself
 
 	.EXAMPLE
 	Add-BISFStartLine -ScriptName 97_PrepBISF_PRE_BaseImage.ps1
