@@ -595,6 +595,40 @@ If your Platform Layer is domain joined you can enable this setting and enter a 
 If you disable this policy setting or do not configure this policy setting, no different BIS-F shared configurations can be used.
 
 Note: Enter the name of the configurations file only, the path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
+<string id="POL_VDASSL">Configure SSL for the Citrix VDA</string>
+      <string id="POL_VDASSL_Help">Configure SSL for the Citrix VDA
+
+If you enable this policy setting, you can set options for assigning an SSL to the Citrix VDA.
+If you disable this policy than SSL assignment will be explicitly disabled.
+If you do not configure this policy then the VDA SSL script will be skipped.
+
+Certificate Thumbprint:
+Enter the certificate thumbprint you want assigned to the VDA SSL in this field. Thumbprints are in the following format:
+9fe2c86fc2ca0fffe935d116e568010223fa9881
+
+If you make this field blank the script will attempt to auto-assign a certificate. Auto-assignment is done via 2 methods:
+1) If the DNS Names List (as found in Subject Alternative Name) has a matching computer name.
+2) If a certificate has a Subject Name in the format: CN=$FQDN,
+Note the comma at the end of the Subject Name and "CN=" at the start.  A computer with the name "W2016" and a domain of "contoso.com" would have the following name: CN=W2016.contoso.com,"
+
+SSL Port:
+The port you want to assign the VDA SSL service.(default = 443)
+
+Minimum SSL Version:
+The minimum SSL Version you want to allow for your certificate. (default = TLS_1.0)
+
+SSL Cipher Suite:
+A predefined cipher suite for use with your certificate (default = ALL)
+See here for more information:
+https://support.citrix.com/article/CTX220062
+</string>
+      <string id="ITM_TLS10">TLS_1.0</string>
+      <string id="ITM_TLS11">TLS_1.1</string>
+      <string id="ITM_TLS12">TLS_1.2</string>
+      <string id="ITM_SSL30">SSL_3.0</string>
+	  <string id="ITM_GOV">GOV</string>
+      <string id="ITM_COM">COM</string>
+      <string id="ITM_ALL">ALL</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -769,6 +803,18 @@ Note: Enter the name of the configurations file only, the path is defined in the
       <presentation id="POL_VDACfg">
         <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
         <decimalTextBox refId="DXT_CLI_CDSdelay" defaultValue="0" spinStep="5">Additional delay (seconds)</decimalTextBox>
+      </presentation>
+	  <presentation id="POL_VDASSL">
+        <textBox refId="TXT_VDASSL_CertThumbprint">
+          <label>(Optional) Certificate Thumbprint:</label>
+          <defaultValue></defaultValue>
+        </textBox>
+        <textBox refId="TXT_SSLPORT">
+          <label>SSL Port:</label>
+          <defaultValue>443</defaultValue>
+        </textBox>
+		<dropdownList refId="DST_SSLMinVersion" defaultItem="1">Minimum SSL Version</dropdownList>
+        <dropdownList refId="DST_SSLCipherSuite" defaultItem="0">SSL Cipher Suite</dropdownList>
       </presentation>
       <presentation id="POL_VieScan">
         <checkBox refId="CHK_AV_VIE_SF">Enable custom search folder</checkBox>

@@ -898,6 +898,67 @@
         <text id="TXT_EX_PT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_EX_PT" />
       </elements>
     </policy>
+	<policy name="POL_VDASSL" class="Machine" displayName="$(string.POL_VDASSL)" explainText="$(string.POL_VDASSL_Help)" presentation="$(presentation.POL_VDASSL)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_VDASSL">
+      <parentCategory ref="CAT_CTX" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDASSL">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDASSL">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+	  <elements>
+		<text id="TXT_VDASSL_CertThumbprint" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDASSL_CertThumbprint" />
+		<text id="TXT_SSLPORT" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDASSL_SSLPORT" />
+		  <enum id="DST_SSLMinVersion" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDASSL_MinVer">
+			  <item displayName="$(string.ITM_TLS10)">
+				<value>
+				  <string>TLS_1.0</string>
+				</value>
+			  </item>
+			  <item displayName="$(string.ITM_TLS11)">
+				<value>
+				  <string>TLS_1.1</string>
+				</value>
+			  </item>
+			  <item displayName="$(string.ITM_TLS12)">
+				<value>
+				  <string>TLS_1.2</string>
+				</value>
+			  </item>
+			  <item displayName="$(string.ITM_SSL30)">
+				<value>
+				  <string>SSL_3.0</string>
+				</value>
+			  </item>
+			</enum>
+			<enum id="DST_SSLCipherSuite" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDASSL_CipherSuite">
+			  <item displayName="$(string.ITM_ALL)">
+				<value>
+				  <string>ALL</string>
+				</value>
+			  </item>
+			  <item displayName="$(string.ITM_GOV)">
+				<value>
+				  <string>GOV</string>
+				</value>
+			  </item>
+			  <item displayName="$(string.ITM_COM)">
+				<value>
+				  <string>COM</string>
+				</value>
+			  </item>
+			</enum>
+		</elements>
+    </policy>
     <policy name="POL_VDACfg" class="Machine" displayName="$(string.POL_VDACfg)" explainText="$(string.POL_VDACfg_Help)" presentation="$(presentation.POL_VDACfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_VDACfg">
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
