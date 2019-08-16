@@ -21,6 +21,7 @@
 		10.11.2016 MS: CMTrace would not longer distributed by BIS-F, customer must have them in their environment installed
 		21.09.2017 MS: using custom searchfolder from ADMX if enabled
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -46,6 +47,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	$varCLI = $LIC_BISF_CLI_CM
 	IF (!($varCLI -eq "NO") -or ($varCLI -eq $null)) {
 		Write-BISFLog -Msg "Searching for Logfileviewer ($AppName)"

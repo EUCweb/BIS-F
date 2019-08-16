@@ -14,6 +14,7 @@
 		10.01.2017 MS: add CLI command or MessageBox to delete PreCached App-V Packages
 		24.11.2017 MS: add SubMSg do Write-BISFLog -Msg "The App-V PackageInstallationRoot $PckInstRoot Folder not exist, nothing to clean up." -Type W -SubMsg
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -27,6 +28,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	function PrepareAgent {
 		$AppvsvcStatus = Get-Service -Name $servicename
 		If ($AppvsvcStatus.Status -ne "Running") {

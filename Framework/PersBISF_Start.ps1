@@ -32,6 +32,7 @@
 		12.09.2017 MS: Using array $PersState = $TaskStates[0-4] to set the right State in the registry instead of hardcoded value
 		03.10.2017 MS: Bugfix 215: writing wrong PersState to registry, preparation does not run in that case
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -69,6 +70,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	#load BISF Modules
 	try {
 		$Modules = @(Get-ChildItem -path $LIB_Folder -filter "*.psd1" -Force)

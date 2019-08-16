@@ -8,13 +8,14 @@
 	.EXAMPLE
 	.NOTES
 		Author: Trentent Tye
-	  	Company: TheoryPC / Login Consultants 
-		
+	  	Company: TheoryPC / Login Consultants
+
 		History:
 		29.06.2017 TT: Script created
 		01.07.2017 MS: Import Script into BIS-F and change variables to BIS-F global variables LIC_BISF_CLI_GD_ExCL and LIC_BISF_CLI_GD_ExFN
 		05.07.2017 FF: Substitute 'break' with 'return', if Remove Ghost Devices is not configured
 		07.07.2017 FF: Change script console output to be in compliance with BIS-F
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -40,6 +41,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	####################################################################
 	####### functions #####
 	####################################################################
@@ -48,21 +50,21 @@ Process {
 		if ($LIC_BISF_POL_GD -eq 1) {
 			Write-BISFLog -Msg "Ghost device removal mode detected: $LIC_BISF_CLI_GD"
 
-			switch ($LIC_BISF_CLI_GD) { 
+			switch ($LIC_BISF_CLI_GD) {
 				"Remove" {
 					Write-BISFLog -Msg "Remove ghost devices enabled.  Ghost devices that pass filters will be removed."
 					$script:removeGhostDevices = $true
-				} 
+				}
 				"ListAllDevices" {
 					Write-BISFLog -Msg "Remove ghost devices enabled.  List devices without removing any is configured."
 					$script:removeGhostDevices = $false
 					$script:listDevicesOnly = $true
-				} 
+				}
 				"ListOnlyGhostDevices" {
 					Write-BISFLog -Msg "Remove ghost devices enabled.  List ghost devices without removing any is configured."
 					$script:removeGhostDevices = $false
 					$script:listGhostDevicesOnly = $true
-				} 
+				}
 				default {
 					Write-BISFLog -Msg "Remove ghost devices not configured. Exiting."
 					$script:removeGhostDevices = $false
@@ -101,7 +103,7 @@ Process {
 		if ($LIC_BISF_CLI_GD_ExCL -ne $null) {
 			#if ($GhostDeviceExcludedClasses -ne $null) {
 			Write-BISFLog -Msg "Detected Class filters"
-			
+
 			#$ClassFilters = ((Get-ItemProperty -Path HKLM:\$reg_BISF).$reg_ClassesToExclude).split(";")
 			$ClassFilters = $LIC_BISF_CLI_GD_ExCL.split(";")
 			#if the user terminates the list with a semicolon it creates an additional, blank, object that gets a full wild card search.
@@ -117,7 +119,7 @@ Process {
 			Write-BISFLog -Msg "No filters detected.  Defaulting to searching for all ghost devices."
 		}
 	}
-	
+
 	####################################################################
 	####### end functions #####
 	####################################################################
@@ -144,7 +146,7 @@ namespace Win32
 		   IntPtr hwndParent,
 		   int Flags
 		);
-	
+
 		// 2nd form uses an Enumerator only, with ClassGUID = IntPtr.Zero
 		[DllImport("setupapi.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr SetupDiGetClassDevs(
@@ -153,14 +155,14 @@ namespace Win32
 		   IntPtr hwndParent,
 		   int Flags
 		);
-		
+
 		[DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern bool SetupDiEnumDeviceInfo(
 			IntPtr DeviceInfoSet,
 			uint MemberIndex,
 			ref SP_DEVINFO_DATA DeviceInfoData
 		);
-	
+
 		[DllImport("setupapi.dll", SetLastError = true)]
 		public static extern bool SetupDiDestroyDeviceInfoList(
 			IntPtr DeviceInfoSet
@@ -184,7 +186,7 @@ namespace Win32
 			out int RequiredSize
 		);
 
-	
+
 		[DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern bool SetupDiRemoveDevice(IntPtr DeviceInfoSet,ref SP_DEVINFO_DATA DeviceInfoData);
 	}
@@ -247,7 +249,7 @@ namespace Win32
 	}
 }
 "@
-	Add-Type -TypeDefinition $setupapi		
+	Add-Type -TypeDefinition $setupapi
 
 	#Array for all removed devices report
 	$removeArray = @()
@@ -266,7 +268,7 @@ namespace Win32
 	$devCount = 0
 	#Enumerate Devices
 	while ([Win32.SetupApi]::SetupDiEnumDeviceInfo($devs, $devCount, [ref]$devInfo)) {
-	
+
 		#Will contain an enum depending on the type of the registry Property, not used but required for call
 		$propType = 0
 		#Buffer is initially null and buffer size 0 so that we can get the required Buffer size first
@@ -413,13 +415,13 @@ namespace Win32
 		$ghostDevicesCount = 0
 		$ghostDevicesCount = $ghostDevices.count
 		$ghostDevices = $ghostDevices | out-string
-			
+
 		if ($ghostDevicesCount -ge 1) {
 			#more than 1 ghost device found.  Output chart.
 			Write-BISFLog -Msg "$ghostDevices"
 		}
 		Write-BISFLog -Msg  "Total ghost devices found : $($ghostDevicesCount)"
-			
+
 	}
 
 	if ($script:removeGhostDevices -eq $true) {

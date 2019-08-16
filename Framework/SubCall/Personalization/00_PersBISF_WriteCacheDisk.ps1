@@ -12,7 +12,7 @@
 	.NOTES
 		Author: Matthias Schlimm
 	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	24.09.2012 MS: Script created
 		09.10.2012 MS: Set uniqueid disk ID=<uniqueID>
@@ -45,6 +45,7 @@
 		15.08.2017 MS: If Citrix AppLayering is installed, skip reboot
 		14.09.2017 MS: after WriteCacheDisk would formatted, wait after reboot
 		22.09.2017 MS: change reboot command to use shutdown /r instead of restart-computer
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -66,11 +67,12 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	# Get uniqueID from MasterImage
 	function GetUniqueIDreg {
-		#read UniqueID from registry 
+		#read UniqueID from registry
 		Write-BISFLog -Msg "Read uniqueID from registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
-		$uniqueid_REG = get-itemProperty -path $hklm_software_LIC_CTX_BISF_SCRIPTS | % { $_.LIC_BISF_UniqueID_Disk }
+		$uniqueid_REG = Get-ItemProperty -path $hklm_software_LIC_CTX_BISF_SCRIPTS | % { $_.LIC_BISF_UniqueID_Disk }
 		$uniqueid_REG
 		Write-BISFLog -Msg "Read uniqueID $uniqueid_REG"
 	}
@@ -90,74 +92,74 @@ Process {
 			Write-BISFLog -Msg "LogFolder $LIC_BISF_LogPath does not exist" -Type W -SubMsg
 			# Check for Cache on Device HardDrive Mode
 			if ((Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType -eq 4 -or (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType -eq 9) {
-				Write-BISFLog -Msg "vDisk is set to Cache on Device Hard Drive Mode"   
+				Write-BISFLog -Msg "vDisk is set to Cache on Device Hard Drive Mode"
 				If ((Get-CimInstance -ClassName Win32_volume).count -lt 3) {
 					# WriteCache Disk not Formatted
 					# Construct Diskpart File to Format Disk
 
-					Write-BISFLog -Msg "WriteCache partition is not formatted"   
-				
+					Write-BISFLog -Msg "WriteCache partition is not formatted"
+
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-					"select disk 0" | out-file -filepath $DiskpartFile -encoding Default
-					"online disk noerr" | out-file -filepath $DiskpartFile -encoding Default -append
-					"rescan" | out-file -filepath $DiskpartFile -encoding Default -append
-					"rescan" | out-file -filepath $DiskpartFile -encoding Default -append
-					"create partition primary" | out-file -filepath $DiskpartFile -encoding Default -append
-					"assign letter $PVSDiskDrive" | out-file -filepath $DiskpartFile -encoding Default -append
-					"Format FS=NTFS LABEL=$PVSDiskLabel QUICK" | out-file -filepath $DiskpartFile -encoding Default -append
+					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
+					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"create partition primary" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"Format FS=NTFS LABEL=$PVSDiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
 					get-LogContent -GetLogFile "$DiskpartFile"
 					diskpart /s $DiskpartFile
-					Write-BISFLog -Msg "WriteCache partition is now formatted and the drive letter $PVSDiskDrive assigned"   
+					Write-BISFLog -Msg "WriteCache partition is now formatted and the drive letter $PVSDiskDrive assigned"
 
 					# Get WriteCache Volume and Restore Unique ID
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-					#$Searchvol = "list volume" | diskpart | select-string -pattern "Volume" | select-string -pattern "$PVSDiskDrive.substring(0,1)" -casesensitive | select-string -pattern NTFS | out-string    
+					#$Searchvol = "list volume" | diskpart | select-string -pattern "Volume" | select-string -pattern "$PVSDiskDrive.substring(0,1)" -casesensitive | select-string -pattern NTFS | out-string
 					#$getvolNbr    = $Searchvol.substring(11,1)   # get Volumenumber from DiskLabel
 					#"select volume $getvolNbr" | out-file -filepath $DiskpartFile -encoding Default
-					"select disk 0" | out-file -filepath $DiskpartFile -encoding Default
-					"uniqueid disk ID=$uniqueid_REG" | out-file -filepath $DiskpartFile -encoding Default -append
+					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
+					"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
 					get-LogContent -GetLogFile "$DiskpartFile"
 					diskpart /s $DiskpartFile
-					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"   
+					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 				}
 				else {
 					# WriteCache Formatted, but No or Wrong Drive Letter Assigned
 					Write-BISFLog -Msg "WriteCache disk is formatted, but no or the wrong drive letter is assigned"  -Type W -SubMsg
 
-					Write-BISFLog -Msg "Fixing drive letter assignemnt on WriteCache disk"   
+					Write-BISFLog -Msg "Fixing drive letter assignemnt on WriteCache disk"
 					$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
 					Set-CimInstance -InputObject $WriteCache  -Arguments @{DriveLetter = "$PVSDiskDrive" }
-			
+
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-					#$Searchvol = "list volume" | diskpart | select-string -pattern $PVSDiskLabel | out-string    
+					#$Searchvol = "list volume" | diskpart | select-string -pattern $PVSDiskLabel | out-string
 					#$getvolNbr = $Searchvol.substring(11,1)   # get Volumenumber from DiskLabel
 					#"select volume $getvolNbr" | out-file -filepath $DiskpartFile -encoding Default
-					"select disk 0" | out-file -filepath $DiskpartFile -encoding Default
-					"online disk noerr" | out-file -filepath $DiskpartFile -encoding Default -append
-					"rescan" | out-file -filepath $DiskpartFile -encoding Default -append
-					"rescan" | out-file -filepath $DiskpartFile -encoding Default -append
-					"uniqueid disk ID=$uniqueid_REG" | out-file -filepath $DiskpartFile -encoding Default -append
+					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
+					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
 					get-LogContent -GetLogFile "$DiskpartFile"
 					$result = diskpart /s $DiskpartFile
-					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"  
+					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 				}
 			}
 			else {
 				Write-BISFLog -Msg "vDisk is not in Read Only Mode, skipping WriteCache preparation"
 			}
-	
+
 			IF (!($SkipReboot -eq "TRUE")) {
 				Write-BISFLog -Msg "Wait 60 seconds before system restart" -Type W
-				Write-BISFLog -Msg "Reboot needed for config changes"  
+				Write-BISFLog -Msg "Reboot needed for config changes"
 				Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare WriteCacheDisk - reboot in 60 seconds.."" " -Wait
-				start-sleep 120
+				Start-Sleep 120
 			}
 			ELSE {
 				Write-BISFLog -Msg "SkipReboot is set to $SkipReboot on this computer $computer"
 			}
 		}
 		else {
-			Write-BISFLog -Msg "WriteCache partition is properly configured"  
+			Write-BISFLog -Msg "WriteCache partition is properly configured"
 		}
 	}
 
@@ -173,9 +175,9 @@ Process {
 		}
 		ELSE {
 			Write-BISFLog -Msg "Read reference server hostname from registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
-			$RefSrv_Hostname_REG = get-itemProperty -path $hklm_software_LIC_CTX_BISF_SCRIPTS | % { $_.LIC_BISF_RefSrv_Hostname }
+			$RefSrv_Hostname_REG = Get-ItemProperty -path $hklm_software_LIC_CTX_BISF_SCRIPTS | % { $_.LIC_BISF_RefSrv_Hostname }
 			IF ($RefSrv_Hostname_REG -eq "$computer")
-			{ $SkipReboot = "TRUE" } 
+			{ $SkipReboot = "TRUE" }
 			Write-BISFLog -Msg "Reference server hostname [$RefSrv_Hostname_REG] / hostname from this machine [$computer] - set SkipReboot = $SkipReboot "
 		}
 		return $SkipReboot
@@ -196,7 +198,7 @@ Process {
 		}
 	}
 	ELSE {
-		Write-BISFLog -Msg "PVSWriteCacheDisk not configured with the ADMX, skip function to set uniqueID from persistent drive" 
+		Write-BISFLog -Msg "PVSWriteCacheDisk not configured with the ADMX, skip function to set uniqueID from persistent drive"
 	}
 }
 

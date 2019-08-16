@@ -10,6 +10,7 @@
 		History
 			09.05.2019 MK: Script created
 			14.08.2019 MS: ENH 98: add function Set-CompatibilityMode
+			16.08.2019 MS: Add-BISFStartLine
 	.LINK
         https://eucweb.com
 #>
@@ -32,6 +33,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 
 	####################################################################
 	####### Functions #####

@@ -6,7 +6,7 @@
 	.NOTES
 		Author: Benjamin Ruoff
 	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	04.03.2014 BR: Script created
 		11.03.2014 MS: IF (Test-Path ("C:\Program Files (x86)\Novell\ZENworks\bin\zac.exe"))
@@ -20,6 +20,7 @@
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS
 		12.03.2017 MS: using $LIC_BISF_CLI_ZCM to configure ZCM with ADMX
 		29.10.2017 MS: replace $DiskMode -eq "VDAShared", instead of MCSShared
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -35,14 +36,15 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	####################################################################
 	####### functions #####
 	####################################################################
 	function CheckConfigFiles {
 		$result = $true
-		foreach ($file in $ZCMConfigFiles) { 
+		foreach ($file in $ZCMConfigFiles) {
 			if (!(Test-Path -Path $ZcmConfigPath$file -PathType Leaf)) {
-				$result = $false 
+				$result = $false
 			}
 		}
 		return $result
@@ -55,23 +57,23 @@ Process {
 	IF ($svc -eq $true) {
 		# Check Disk Mode
 		$DiskMode = Get-BISFDiskMode
-	
+
 
 		if (($DiskMode -eq "ReadOnly") -or ($DiskMode -eq "VDAShared")) {
-			Write-BISFLog -Msg "vDisk in Standard Mode, Processing ZCM Agent"   
+			Write-BISFLog -Msg "vDisk in Standard Mode, Processing ZCM Agent"
 			if (!(CheckConfigFiles)) {
-				Write-BISFLog -Msg "ZCM Config Files not valid, Clean Directory $ZCMConfigPath" -Type W  -SubMsg 
+				Write-BISFLog -Msg "ZCM Config Files not valid, Clean Directory $ZCMConfigPath" -Type W  -SubMsg
 				Get-ChildItem $ZCMConfigPath | Remove-Item -Force -ErrorAction SilentlyContinue
 
 				Write-BISFLog -Msg "Starting ZCM Agent"
 				Start-Service -Name 'Novell ZENworks Agent Service' -PassThru
-	
+
 				Write-BISFLog -Msg "Registering ZCM Agent with Arguments $LIC_BISF_CLI_ZCM"
 				Start-Process -FilePath "$ProgramFilesx86\Novell\ZENworks\bin\zac.exe" -ArgumentList $LIC_BISF_CLI_ZCM
-		
+
 				# Wait 3 Minutes before File Backup
-				Sleep -Seconds 180
-		
+				sleep -Seconds 180
+
 				Write-BISFLog -Msg "Backup Config Files to $ZCMConfigPath"
 				foreach ($file in $ZCMConfigFiles) {
 					Copy-Item -Path "$ProgramFilesx86\Novell\ZENworks\conf\$file" -Destination $ZCMConfigPath -Force
@@ -88,9 +90,9 @@ Process {
 			}
 		}
 		else {
-			Write-BISFLog -Msg "vDisk in not in Standard Mode ($DiskMode), Skipping ZCM Agent preparation" -Type W -SubMsg 
+			Write-BISFLog -Msg "vDisk in not in Standard Mode ($DiskMode), Skipping ZCM Agent preparation" -Type W -SubMsg
 		}
-  
+
 	}
 
 }

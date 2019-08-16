@@ -41,6 +41,7 @@ param(
 		22.03.2018 MS: Feature 15 - support for Office 365 ClicktoRun
 		28.03.2019 MS: FRQ 86 - Office 2019 support
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -266,6 +267,7 @@ Begin {
 	####################################################################
 }
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	#### Main Program
 	#Loads the WinForm Assembly, Out-Null hides the message while loading.
 	[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null

@@ -11,6 +11,7 @@
 		History:
 		14.04.2016 BR: Script created
 		17.06.2016 BR: Added Filter for Operating System Type
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -49,13 +50,13 @@ Begin {
 		$definition = @'
 	 using System;
 	 using System.Runtime.InteropServices;
-	
+
 	 public class AdjPriv
 	 {
 		[DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
 		internal static extern bool AdjustTokenPrivileges(IntPtr htok, bool disall,
 		 ref TokPriv1Luid newst, int len, IntPtr prev, IntPtr relen);
-	
+
 		[DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
 		internal static extern bool OpenProcessToken(IntPtr h, int acc, ref IntPtr phtok);
 		[DllImport("advapi32.dll", SetLastError = true)]
@@ -67,7 +68,7 @@ Begin {
 		 public long Luid;
 		 public int Attr;
 		}
-	
+
 		internal const int SE_PRIVILEGE_ENABLED = 0x00000002;
 		internal const int SE_PRIVILEGE_DISABLED = 0x00000000;
 		internal const int TOKEN_QUERY = 0x00000008;
@@ -103,9 +104,10 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	if ((Get-CimInstance -ClassName Win32_OperatingSystem).ProductType -eq "3") {
 		#Adjust current uSer privilegs
-		enable-privilege SeTakeOwnershipPrivilege 
+		enable-privilege SeTakeOwnershipPrivilege
 
 		#Take Ownership of Registry Key
 		$key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("SYSTEM\CurrentControlSet\Control\Terminal Server\RCM\GracePeriod", [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]::takeownership)

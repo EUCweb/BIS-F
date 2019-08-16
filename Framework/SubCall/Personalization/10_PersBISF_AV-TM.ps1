@@ -7,13 +7,14 @@
 	.NOTES
 		Author: Matthias Schlimm
 	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	17.09.2014 MS: Script created
 		10.08.2015 MS: define array for TM services for better scripthandling
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS
 		09.01.2017 MS: change code to get MacAdress to use function Get-BISMACAddress
 		01.08.2017 JS: Added the TmPfw (OfficeScan NT Firewall) service to the array
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -37,12 +38,13 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 
 	## Start TM Service
 	function StartService {
 		ForEach ($TMService in $TMServices) {
 			# check if service exist
-			
+
 			$svc = Test-BISFService -ServiceName "$TMService"
 			IF ($svc -eq $true) {
 				Invoke-BISFService -ServiceName "$TMService" -Action Start
@@ -54,21 +56,21 @@ Process {
 	## set HostID in Registry
 	function SetHostID {
 		$mac = Get-BISFMACAddress
-		Write-BISFLog -Msg "$reg_SEP_name Prefix: $HostID_Prfx"  
+		Write-BISFLog -Msg "$reg_SEP_name Prefix: $HostID_Prfx"
 		$regHostID = $HostID_Prfx + $mac
-		Write-BISFLog -Msg "set TrendMicro $reg_TM_name in Registry $regHostID_string..."  
+		Write-BISFLog -Msg "set TrendMicro $reg_TM_name in Registry $regHostID_string..."
 		Set-ItemProperty -Path $reg_TM_string -Name $reg_TM_name -value $regHostID -ErrorAction SilentlyContinue
 	}
 	####################################################################
 
 	#### Main Program
 	$svc = Test-BISFService -ServiceName $TMServices[0] -ProductName "$product"
-	
+
 	IF ($svc) {
 		# Note that if the services start before the GUID is set it won't register with the OfficeScan Management Server
 		SetHostID
 		StartService
-	} 
+	}
 
 }
 

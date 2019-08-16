@@ -6,7 +6,7 @@
 	.NOTES
 		Author: Benjamin Ruoff
 	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	27.10.2014 BR: Script created
 		15.10.2014 JP: Added wait:0 parameter fo gpupdate
@@ -15,18 +15,23 @@
 		02.08.2016 MS: With AppLayering in OS-Layer do nothing
 		31.08.2017 MS: Change sleep timer from 60 to 5 seconds after time sync on startup
 		11.09.2017 MS: Change sleep timer from 5 to 20 seconds after time sync on startup
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
 
 Begin {
+	$script_path = $MyInvocation.MyCommand.Path
+	$script_dir = Split-Path -Parent $script_path
+	$script_name = [System.IO.Path]::GetFileName($script_path)
 
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	IF (!($CTXAppLayerName -eq "OS-Layer")) {
 		# Resync Time with Domain
-		Write-BISFLog -Msg "Syncing Time from Domain" 
+		Write-BISFLog -Msg "Syncing Time from Domain"
 		& "$env:SystemRoot\system32\w32tm.exe" /config /update
 		& "$env:SystemRoot\system32\w32tm.exe" /resync /nowait
 		sleep 20

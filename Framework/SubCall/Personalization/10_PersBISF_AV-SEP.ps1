@@ -27,6 +27,7 @@
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS, central BISF function couldn't used for services, SEP Service must being started with smc.exe
 		09.01.2017 MS: change code to get MacAdress to use function Get-BISMACAddress
 		01.07.2018 MS: Hotfix 49: After SEP is started with smc.exe, sometimes the service will not be started. Controlled and logged now with Test-BISFServiceState in Line 58
+		16.08.2019 MS: Add-BISFStartLine
 
 	.LINK
 		https://eucweb.com
@@ -47,7 +48,7 @@ Begin {
 }
 
 Process {
-
+	Add-BISFStartLine -ScriptName $PSScriptName
 	## Start SEP Service
 	function StartSEP {
 		Write-BISFLog -Msg "Start Service $($ServiceName.DisplayName)"

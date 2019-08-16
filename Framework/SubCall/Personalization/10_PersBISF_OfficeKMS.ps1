@@ -14,6 +14,7 @@
 		01.11.2017 MS: get Office activation state and License state back to the BIS-F log
 		22.03.2018 MS: Feature 15 - support for Office 365 ClicktoRun
 		28.03.2019 MS: FRQ 86 - Office 2019 support
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
         https://eucweb.com
 #>
@@ -26,6 +27,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	# Check the installation path of Office 2010
 	$Office2010InstallRoot = $null
 	If ([Environment]::Is64BitOperatingSystem) {

@@ -74,6 +74,7 @@ param()
 		20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
 		13.08.2019 MS: FRQ 97 - Nutanix Xi Frame Support
 		14.08.2019 MS: FRQ 6 - Parallels RAS Support
+		16.08.2019 MS: Add-BISFStartLine
       #>
 Begin {
 
@@ -134,7 +135,7 @@ Begin {
 	function Set-Logfile {
 		IF (!(Test-Path "$env:windir\Logs")) {
 			Write-BISFLog -Msg "Folder $env:windir\Logs NOT Exist, will be created now !" -Type W -ShowConsole
-			new-item -ItemType Directory -path "$env:windir\Logs" | out-null
+			New-Item -ItemType Directory -path "$env:windir\Logs" | Out-Null
 
 		}
 		Try {
@@ -210,11 +211,11 @@ Begin {
 		# Check for every key found if this is a valid configuration item and update the data of the value
 		Foreach ($regvalue in $regvalues) {
 			# look if there is a value in the $BISFconfiguration with the same name as the registry value
-			$predefineddata = ($BISFconfiguration | Where { $_.value -eq ($regvalue.value) }).data
+			$predefineddata = ($BISFconfiguration | where { $_.value -eq ($regvalue.value) }).data
 			If ($predefineddata -ne $null) {
-				$defaultdata = ($BISFconfiguration | Where { $_.value -eq ($regvalue.value) }).data
-				($BISFconfiguration | Where { $_.value -eq ($regvalue.value) }).data = $regvalue.data # Update the data property in the array with the regvalue data
-				($BISFconfiguration | Where { $_.value -eq ($regvalue.value) }).FoundInReg = $true # Update the FoundInReg property in the array with $true
+				$defaultdata = ($BISFconfiguration | where { $_.value -eq ($regvalue.value) }).data
+				($BISFconfiguration | where { $_.value -eq ($regvalue.value) }).data = $regvalue.data # Update the data property in the array with the regvalue data
+				($BISFconfiguration | where { $_.value -eq ($regvalue.value) }).FoundInReg = $true # Update the FoundInReg property in the array with $true
 				#Write-BISFLog -Msg "The value `"$($regvalue.value)`" with data `"$($regvalue.data)`" read from registry $hklm_software_LIC_CTX_BISF_SCRIPTS overwrites the default value `"$defaultdata`""
 			}
 			ELSE {
@@ -230,6 +231,7 @@ Begin {
 ####################################################################
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	Write-BISFLog -Msg "Setting LogFile to $(Set-Logfile -Verbose:$VerbosePreference)" -ShowConsole -Color DarkCyan -SubMsg
 	Get-ActualConfig -Verbose:$VerbosePreference # Update the $BISFconfiguration with possible registry values
 	Write-BISFLog -Msg "Update LogFile to $(Set-Logfile -Verbose:$VerbosePreference)" -ShowConsole -Color DarkCyan -SubMsg

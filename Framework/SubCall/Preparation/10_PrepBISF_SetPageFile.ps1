@@ -12,6 +12,7 @@
 		2017.06.27 TT: Script created
 		2017.08.05 TT: Tested on 2008 R2
 		2018.01.29 TT: Fixed error appearing even though no such error existed.
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -32,8 +33,8 @@ Begin {
 }
 
 Process {
-	Write-BISFLog -Msg "===========================$script_name===========================" -ShowConsole -Color DarkCyan -SubMsg
-	Write-BISFLog -Msg "Checking PageFile settings" -ShowConsole -Color Cyan 
+	Add-BISFStartLine -ScriptName $script_name
+	Write-BISFLog -Msg "Checking PageFile settings" -ShowConsole -Color Cyan
 	Write-BISFLog -Msg "Variable LIC_BISF_CLI_PAGEFILE_SIZE  : $LIC_BISF_CLI_PAGEFILE_SIZE" -ShowConsole -Color Cyan  -SubMsg
 	Write-BISFLog -Msg "Variable LIC_BISF_CLI_PAGEFILE_DRIVE : $LIC_BISF_CLI_PAGEFILE_DRIVE" -ShowConsole -Color Cyan  -SubMsg
 	Write-BISFLog -Msg "Variable LIC_BISF_CLI_WCD            : $LIC_BISF_CLI_WCD" -ShowConsole -Color Cyan  -SubMsg
@@ -78,8 +79,8 @@ Process {
 		$CurrentPageFile.Delete()
 		$CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
 		if ($CurrentPageFile -ne $null) { $CurrentPageFile.Delete() }
-		
-		Set-CimInstance -ClassName Win32_PageFileSetting -Arguments @{name = $pageFileLocation; InitialSize = $pageFileInitialSize; MaximumSize = $pageFileMaximumSize } | out-null
+
+		Set-CimInstance -ClassName Win32_PageFileSetting -Arguments @{name = $pageFileLocation; InitialSize = $pageFileInitialSize; MaximumSize = $pageFileMaximumSize } | Out-Null
 		Write-BISFLog -Msg  "New Pagefile settings applied:" -ShowConsole -Color DarkCyan -SubMsg
 		$CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
 		Write-BISFLog -Msg  "Number of pagefiles: $($($CurrentPageFile.SettingID).count)" -ShowConsole -Color DarkCyan -SubMsg

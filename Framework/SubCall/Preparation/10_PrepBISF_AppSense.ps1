@@ -11,6 +11,7 @@
 		History
 		22.03.2016 MS: Script created
 		28.06.2017 MS: Bugfix 186 - AppSense Product Path - thx to Matthias Kowalkowski
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -26,6 +27,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$product"
 	IF ($svc -eq $true) {
 		Write-BISFLog -Msg "Preperaring $Product for Imaging" -ShowConsole -Color DarkCyan -SubMsg

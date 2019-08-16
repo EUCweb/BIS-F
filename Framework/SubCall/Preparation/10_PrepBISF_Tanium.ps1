@@ -8,6 +8,7 @@
 		13.06.2017 - MT :Initial script created
 	  	30.08.2018 - MT Script update to set the service to Automatic and correct a file deletion issue
 		14.08.2019 - MS: ENH 118: Add Tanium Support into BIS-F
+		16.08.2019 MS: Add-BISFStartLine
 
 .LINK
 	https://eucweb.com
@@ -23,6 +24,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	####################################################################
 	####### functions #####
 	####################################################################
@@ -68,14 +70,14 @@ Process {
 		}
 
 	}
-		#### Main Program
+	#### Main Program
 
-		$svc = Test-BISFService -ServiceName $ServiceName -ProductName "$product"
-		IF ($svc -eq $true) {
-			Stop-Service
-			Remove-Data
+	$svc = Test-BISFService -ServiceName $ServiceName -ProductName "$product"
+	IF ($svc -eq $true) {
+		Stop-Service
+		Remove-Data
 
-		}
+	}
 
 }
 

@@ -30,6 +30,7 @@ param(
 		10.01.2017 MS: BugFix 134: PrepareWriteCacheDisk: MBR disk with 8 characters to get the right uniqueID from Diskpart only, PVS does not support GPT disk, see https://support.citrix.com/article/CTX139478 thx to Jeremy Saunders
 		04.03.2017 MS: BugFix: DiskID is not language neutral, split string after ":" to read the right side only
 		29.07.2017 MS: Feature Request 192: support GPT WriteCacheDisk
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 	#>
@@ -114,6 +115,7 @@ Begin {
 	####################################################################
 }
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	#### Main Program
 	IF ($returnTestPVSEnvVariable -eq "true") {
 		GetUniqueID

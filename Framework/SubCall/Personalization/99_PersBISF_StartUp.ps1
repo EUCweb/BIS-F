@@ -5,8 +5,7 @@
 	.EXAMPLE
 	.NOTES
 		Author: Benjamin Ruoff
-	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	11.08.2015 BR: Script created
 		06.10.2015 MS: Rewritten script with standard .SYNOPSIS
@@ -17,17 +16,22 @@
 		02.08.2017 MS: With DiskMode AppLayering in OS-Layer the WSUS Update Service would be start
 		29.10.2017 MS: replace VDA instead of MCS in the DiskMode Test
 		20.10.2018 MS: Bugfix 73: MCS Image in Private Mode does not start the Windows Update Service
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
 
 Begin {
+	$script_path = $MyInvocation.MyCommand.Path
+	$script_dir = Split-Path -Parent $script_path
+	$script_name = [System.IO.Path]::GetFileName($script_path)
 	#sdelete
 	IF ($LIC_BISF_CLI_SD_SF -eq "1") { $SDeletePath = "$($LIC_BISF_CLI_SD_SF_CUS)\sdelete.exe" } ELSE { $SDeletePath = "C:\Windows\system32\sdelete.exe" }
-	
+
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	# region functions
 	function start-sdelete {
 		$varSD = Get-Variable -Name LIC_BISF_SDeleteRun -ValueOnly
@@ -43,9 +47,9 @@ Process {
 					Write-BISFLog -Msg "SDelete could not detected in Path $SDeletePath"
 				}
 			}
-			ELSE {	
+			ELSE {
 				Write-BISFLog -Msg "PVS WriteCacheDisk Drive $WCDrive is equal to System Drive $env:SystemDrive... SDelete will not be run" -Type W
-			}	
+			}
 		}
 	}
 
@@ -59,7 +63,7 @@ Process {
 	Write-BISFLog -Msg "Running system startup actions if needed..." -ShowConsole -Color Cyan
 	$DiskMode = Get-BISFDiskMode
 	Switch ($Diskmode) {
-		ReadWrite {	
+		ReadWrite {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
 			start-WUAserv
 		}
@@ -90,9 +94,9 @@ Process {
 			IF ($CTXAppLayerName -eq "OS-Layer") { start-WUAserv }
 		}
 		VDASharedAppLayering { }
-		
+
 		Default { Write-BISFLog -Msg "Default Action selected, doing nothing" -ShowConsole -Color DarkCyan }
-	
+
 	}
 
 }

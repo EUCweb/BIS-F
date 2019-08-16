@@ -13,6 +13,7 @@
 		30.09.2015 MS: Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		04.11.2015 MS: Syntax error -> replace WriteBISF-Log with Write-BISFLog
 		10.12.2015 MS: Change Productname from "Frantrange DSM " to "Heat DSM"
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -28,6 +29,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$product"
 	IF ($svc -eq $true) {
 		Write-BISFLog -Msg "Preperaring $Product for Imaging" -ShowConsole -Color DarkCyan -SubMsg

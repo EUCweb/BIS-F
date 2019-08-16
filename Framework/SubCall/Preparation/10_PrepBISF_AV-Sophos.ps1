@@ -12,6 +12,7 @@
 		20.02.2017 MS: fix typos to get the right servicename -> $ServiceNames[0]
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -37,6 +38,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	####################################################################
 	####### functions #####
 	####################################################################

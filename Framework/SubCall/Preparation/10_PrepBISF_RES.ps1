@@ -23,6 +23,7 @@
 		21.09.2017 MS: Feature: RES Automation Agent Service could be controlled from ADMX
 		04.05.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -57,6 +58,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 
 	#RES ONE Workspace Agent
 	$svc = Test-BISFService -ServiceName $Svc1 -ProductName $Prd1

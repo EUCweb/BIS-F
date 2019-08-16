@@ -12,6 +12,7 @@
 		28.05.2015 MB: Script created
 		12.08.2015 MS: integrated in BIS-F
 		01.10.2015 MS: rewritten script with standard
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -25,6 +26,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	IF ((Test-Path $RootBISFFolder) -eq $true) {
 		Write-BISFLog -Msg "$Product installed, securing folder" -ShowConsole -Color Cyan
 		try {

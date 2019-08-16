@@ -1,5 +1,5 @@
 ﻿[CmdletBinding(SupportsShouldProcess = $true)]
-param( 
+param(
 )
 <#
 	.SYNOPSIS
@@ -12,6 +12,7 @@ param(
 
 		History
 		26.10.2015 MS: Script created
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -20,12 +21,12 @@ Begin {
 
 	####################################################################
 	# define environment
-  
+
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
 	$script_name = [System.IO.Path]::GetFileName($script_path)
 
-	# Product specified 
+	# Product specified
 	$Product = "Office IME Languages Clean-up"
 	[array]$reg_IME_string = "$hklm_software\Microsoft\Windows\CurrentVersion\Run"
 	[array]$reg_IME_string += "$hklm_software\Wow6432Node\Microsoft\Windows\CurrentVersion\Run"
@@ -34,9 +35,9 @@ Begin {
 	[array]$reg_IME_name += "IME14 KOR Setup"
 	[array]$reg_IME_name += "IME14 CHS Setup"
 	[array]$reg_IME_name += "IME14 CHT Setup"
-	
+
 	####################################################################
-	
+
 	function deleteOfficeIME {
 		# Delete specified Data
 		foreach ($path in $reg_IME_string) {
@@ -48,17 +49,18 @@ Begin {
 
 		}
 
-	} 
-	
+	}
+
 	####################################################################
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	#### Main Program
 	deleteOfficeIME
 
 }
 
 End {
-	Add-BISFFinishLine	
+	Add-BISFFinishLine
 }

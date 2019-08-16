@@ -13,6 +13,7 @@
 		17.08.2015 MS: The fslogix rules are copied from the central share but not applied, in thefslogix personalization script, the copy must be performed after starting the fslogix service, to resolve this issue
 		21.08.2015 MS: Do not checked PVS or MCS DiskMode, Service is already running or would be start if stopped
 		01.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -30,17 +31,17 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 
-		
 	function Copy-FSXRules {
 		$ErrorActionPreference = "Stop"
-		$regval = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -ErrorAction SilentlyContinue).LIC_BISF_FSXRulesShare 
+		$regval = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -ErrorAction SilentlyContinue).LIC_BISF_FSXRulesShare
 		IF ($regval -ne $null) {
 			If (Test-Path -Path $regval) {
 				Write-Log -Msg "Starting copy fsLogix Rules & Assignment files" -showConsole -Color Cyan
 				ForEach ($FileCopy in $FSXfiles2Copy) {
 					Write-Log -Msg "Copy fsLogix $FileCopy files"
-					Copy-Item -Path "$regval\*" -Filter "$FileCopy" -Destination "$FSXrulesDest"           
+					Copy-Item -Path "$regval\*" -Filter "$FileCopy" -Destination "$FSXrulesDest"
 				}
 			}
 			ELSE {
@@ -50,7 +51,7 @@ Process {
 		}
 		ELSE {
 			$ErrorActionPreference = "Continue"
-			Write-Log -Msg "No fsLogix Central Rules Share defined, did not copy rules and assignment files !!" -Type W 
+			Write-Log -Msg "No fsLogix Central Rules Share defined, did not copy rules and assignment files !!" -Type W
 		}
 	}
 

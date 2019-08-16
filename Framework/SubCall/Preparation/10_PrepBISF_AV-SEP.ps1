@@ -48,6 +48,7 @@
 		20.10.2018 MS: Bugfix 66: vietool.exe - custom searchpath not working correctly
 		11.04.2019 MS: HF 87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -106,6 +107,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	####################################################################
 	####### functions #####
 	####################################################################

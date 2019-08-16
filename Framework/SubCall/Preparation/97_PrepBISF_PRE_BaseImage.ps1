@@ -98,6 +98,7 @@ param(
 		31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
 		21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -881,6 +882,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $PSScriptName
 	#### Main Program
 
 

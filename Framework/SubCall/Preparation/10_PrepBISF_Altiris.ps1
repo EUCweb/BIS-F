@@ -7,12 +7,13 @@
 	.NOTES
 		Author: Matthias Schlimm
 	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	14.10.2014 MS: function created
 		02.09.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		09.11.2016 MS: add preparation for Altiris Inventory Agent
 		12.07.2017 FF: Create $RegKeys as an array (was a hashtable before)
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -31,6 +32,7 @@ Begin {
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	$svc1 = Test-BISFService -ServiceName "$servicename1" -ProductName "$servicename1"
 	IF ($svc1 -eq $true) {
 		Invoke-BISFService -ServiceName "$servicename1" -Action Stop -StartType manual

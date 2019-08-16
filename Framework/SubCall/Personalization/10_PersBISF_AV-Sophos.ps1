@@ -7,10 +7,11 @@
 	.NOTES
 		Author: Matthias Schlimm
 	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 		09.01.2017 MS: Script created
 		18.08.2017 FF: Use $ServiceNameS instead of $ServiceName for first Test-BISFService
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -26,16 +27,17 @@ Begin {
 	$ServiceNames = @("Sophos Agent", "Sophos AutoUpdate Service", "Sophos Message Router")
 	$HostID_Prfx = "00000000-0000-0000-0000-00"
 	$HostID_File = "C:\programdata\Sophos\AutoUpdate\data\machine_ID.txt"
-	
+
 }
 
 Process {
+	Add-BISFStartLine -ScriptName $script_name
 	####################################################################
 	####### functions #####
 	####################################################################
 
 	function CreateGUID {
-		Write-BISFLog -Msg "GUID Prefix: $HostID_Prfx"  
+		Write-BISFLog -Msg "GUID Prefix: $HostID_Prfx"
 		$mac = Get-BISFMACAddress
 		$regHostID = $HostID_Prfx + $mac
 		Write-BISFLog -Msg "Write Sophos GUID $regHostID to file $HostID_File"
@@ -58,7 +60,7 @@ Process {
 	IF ($svc -eq $true) {
 		CreateGUID
 		StartService
-		
+
 	}
 }
 

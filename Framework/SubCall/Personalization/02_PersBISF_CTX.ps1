@@ -6,7 +6,7 @@
 	.NOTES
 		Author: Matthias Schlimm
 	  	Company: Login Consultants Germany GmbH
-		
+
 		History:
 	  	22.08.2013 MS: Script created
 		17.09.2013 MS: Added last line to log file and remove Clear-Host
@@ -24,6 +24,7 @@
 		11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
 		21.10.2028 MS: Bufix 47: MSMQ windows services will fail to start in App Layering
 		21.10.2028 MS: Bufix 18: XA/ XD 7.x Cache folder will be created
+		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -42,30 +43,30 @@ Begin {
 }
 
 Process {
-
+	Add-BISFStartLine -ScriptName $PSScriptName
 	# Configure STA-File
 	Write-BISFLog -Msg "Check Citrix STA in $location"
 	IF (Test-Path -Path $Location) {
-	
+
 		Write-BISFLog -Msg "Defined STA: $sta"
-	
+
 		# Replace STA ID with Computerhostname
-		(Get-Content $Location) | Foreach-Object { $_ -replace '^UID=.+$', "UID=$Sta" } | Set-Content $Location
+		(Get-Content $Location) | ForEach-Object { $_ -replace '^UID=.+$', "UID=$Sta" } | Set-Content $Location
 		Write-BISFLog -Msg "Set STA in File $Location"
-	
+
 		#Check Service
 		If (Get-Service $Service -ErrorAction SilentlyContinue) {
 			Restart-Service $Service
-			Write-BISFLog -Msg "XenApp Controller Mode - Restart $Service Service" -Color Cyan 
+			Write-BISFLog -Msg "XenApp Controller Mode - Restart $Service Service" -Color Cyan
 		}
 		Else {
 			Write-BISFLog -Msg "XenApp Session Host Mode - No $Service Service"
 		}
-	} 
+	}
 	Else {
-		Write-BISFLog -Msg "STA file $location not found"  
-	}	       
-	
+		Write-BISFLog -Msg "STA file $location not found"
+	}
+
 	#Configure Citrix LicenseFile Cache Location
 	IF (!($returnTestXDSoftware -eq "true")) {
 		If (Test-Path -Path "$LIC_BISF_LogPath") {
@@ -73,7 +74,7 @@ Process {
 			If (!(Test-Path -Path $LIC_BISF_CtxCache)) {
 				Write-BISFLog -Msg "Create Citrix cache location $LIC_BISF_CtxCache" -SubMsg
 				New-Item -Path "$LIC_BISF_CtxCache" -ItemType Directory -Force
-			
+
 				Try {
 					$result = Invoke-Expression -Command "icacls.exe `"$LIC_BISF_CtxCache`" /grant *S-1-5-20:(OI)(CI)(F)"
 					Write-BISFLog -Msg "Added NetworkService account permissions on the folder `"$LIC_BISF_CtxCache`" " -ShowConsole -Color DarkCyan -SubMsg
@@ -82,7 +83,7 @@ Process {
 					Write-BISFLog -Msg "Error changing access for NetworkService account on the folder `"$LIC_BISF_CtxCache`". The output of the action is: $result" -Type W -SubMsg
 				}
 
-			
+
 
 			}
 			Else {
@@ -96,16 +97,16 @@ Process {
 	ELSE {
 		Write-BISFLog -MSG "Citrix VDA installed, skipping Citrix license cache location"
 	}
-	
+
 	$Servicename = "MSMQ"
-	$Svc = Test-BISFService -ServiceName "$servicename"   
+	$Svc = Test-BISFService -ServiceName "$servicename"
 	If ($Svc) {
 		Write-BISFLog -Msg "Delete old QMId from registry and set Sysprep flag for MSMQ"
 		Remove-ItemProperty -Path $hklm_software\Microsoft\MSMQ\Parameters\MachineCache -Name QMId -Force
 		Set-ItemProperty -Path $hklm_software\Microsoft\MSMQ\Parameters -Name "SysPrep" -Type DWord -Value 1
 		Set-ItemProperty -Path $hklm_software\Microsoft\MSMQ\Parameters -Name "LogDataCreated" -Type DWord -Value 0
 		Write-BISFLog -Msg "Get dependent services"
-		$depServices = Get-Service -Name MSMQ -DependentServices | Select -Property Name
+		$depServices = Get-Service -Name MSMQ -DependentServices | select -Property Name
 		Write-BISFLog -Msg "Restart MSMQ to get a new QMId"
 		Restart-Service -Force MSMQ
 		Write-BISFLog -Msg "Start dependent services"
@@ -127,14 +128,14 @@ Process {
 		IF ($PerfCounters -eq "YES") {
 			Write-BISFLog -Msg "reset Performance Counters" -ShowConsole -Color DarkCyan -SubMsg
 			Start-BISFProcWithProgBar -ProcPath "lodctr.exe" -Args "/r" -ActText "reset Performance Counters"
-			
+
 		}
 		ELSE {
 			Write-BISFLog -Msg "reset Performance Counters is not enabled in ADMX" -ShowConsole -Type W -SubMsg
 		}
 	}
 
-	#Citrix Workspace Environment Management Agent 
+	#Citrix Workspace Environment Management Agent
 	$product = "Citrix Workspace Environment Management (WEM) Agent"
 	$servicename = "Norskale Agent Host Service"
 	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$product"
@@ -142,24 +143,24 @@ Process {
 		Invoke-BISFService -ServiceName "$servicename" -Action Stop
 		Start-Sleep $Wait1
 		Invoke-BISFService -ServiceName "$servicename" -Action Start
-		Invoke-BISFService -ServiceName "Netlogon" -Action Start	
-		
+		Invoke-BISFService -ServiceName "Netlogon" -Action Start
+
 		#read WEM AgentAlternateCacheLocation from registry
 		$REG_WEMAgent = "HKLM:\SYSTEM\CurrentControlSet\Control\Norskale\Agent Host"
 		$WEMAgentLocation = (Get-ItemProperty $REG_WEMAgent).AgentLocation
 		Write-BISFLog -Msg "WEM Agent Location: $WEMAgentLocation"
 
-		#read WEM Agent Host BrokerName from registry 
+		#read WEM Agent Host BrokerName from registry
 		$REG_WEMAgentHost = "HKLM:\SOFTWARE\Policies\Norskale\Agent Host"
 		$WEMAgentHostBrokerName = (Get-ItemProperty $REG_WEMAgentHost).BrokerSvcName
 		IF (!$WEMAgentHostBrokerName) { Write-BISFLog -Msg "WEM Agent BrokerName not specified through WEM ADMX" } ELSE { Write-BISFLog -Msg "WEM Agent BrokerName: $WEMAgentHostBrokerName" }
 
 		$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
-			 
-		
+
+
 		Write-BISFLog -Msg "Running Agent Cache Management Utility with $product BrokerName $WEMAgentHostBrokerName " -ShowConsole -Color DarkCyan -SubMsg
 		Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility" | Out-Null
-		 
+
 	}
 }
 
