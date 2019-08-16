@@ -19,6 +19,7 @@
 		30.09.2015 MS: Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		16.08.2019 MS: Add-BISFStartLine
+		16.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
 #>
@@ -38,16 +39,15 @@ Process {
 		Write-BISFLog -Msg "Update VirusSignatures"
 		& "$MSC_path\MpCMDrun.exe" -SignatureUpdate
 
-		Write-BISFLog -Msg "Check Silentswitch..."
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLI = $LIC_BISF_CLI_AV
 
 		IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-			Write-BISFLog -Msg "Silentswitch would be set to $varCLI"
+			Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 		}
 		ELSE {
-			Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-			$MPFullScan = Show-MessageBox -Msg "Would you like to to run a Full Scan ? " -Title "Microsoft Security Client" -YesNo -Question
-			Write-BISFLog -Msg "$MPFullScan would be choosen [YES = Running Full Scan] [NO = No scan would be performed]"
+			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+			$MPFullScan = "YES"
 		}
 
 		if (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
