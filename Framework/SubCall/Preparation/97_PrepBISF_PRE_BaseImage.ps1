@@ -99,6 +99,7 @@ param(
 		21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		16.08.2019 MS: Add-BISFStartLine
+		17.08.2019 MS: ENH 54: ADMX: Configure BIS-F Desktop Shortcut
 	.LINK
 		https://eucweb.com
 #>
@@ -806,16 +807,23 @@ Begin {
 	}
 
 
-	function Add-AdminShortcut {
-		Write-BISFLog -Msg "Create BIS-F Shortcut on your Desktop" -ShowConsole -Color Cyan
-		$DisplayIcon = (Get-ItemProperty "$HKLM_Full_Uninsstall" -Name "DisplayIcon").DisplayIcon
-		$WshShell = New-Object -comObject WScript.Shell
-		$Shortcut = $WshShell.CreateShortcut("$Home\Desktop\PrepareBaseImage (BIS-F) Admin Only.lnk")
-		$Shortcut.TargetPath = "$InstallLocation\PrepareBaseImage.cmd"
-		$Shortcut.IconLocation = "$DisplayIcon"
-		$Shortcut.Description = "Run Base Image Script Framework (Admin Only)"
-		$Shortcut.WorkingDirectory = "$InstallLocation"
-		$Shortcut.Save()
+	function Invoke-DesktopShortcut {
+		IF ($LIC_BISF_CLI_DesktopShortcut -eq "YES") {
+			Write-BISFLog -Msg "Create BIS-F Shortcut on your Desktop" -ShowConsole -Color Cyan
+			$DisplayIcon = (Get-ItemProperty "$HKLM_Full_Uninsstall" -Name "DisplayIcon").DisplayIcon
+			$WshShell = New-Object -comObject WScript.Shell
+			$Shortcut = $WshShell.CreateShortcut("$Home\Desktop\PrepareBaseImage (BIS-F) Admin Only.lnk")
+			$Shortcut.TargetPath = "$InstallLocation\PrepareBaseImage.cmd"
+			$Shortcut.IconLocation = "$DisplayIcon"
+			$Shortcut.Description = "Run Base Image Script Framework (Admin Only)"
+			$Shortcut.WorkingDirectory = "$InstallLocation"
+			$Shortcut.Save()
+		}
+
+		IF ($LIC_BISF_CLI_DesktopShortcut -eq "NO") {
+			Write-BISFLog -Msg "Removing BIS-F Shortcut on your Desktop" -ShowConsole -Color Cyan
+			Remove-Item "$Home\Desktop\PrepareBaseImage (BIS-F) Admin Only.lnk" -Force
+		}
 	}
 
 
@@ -927,7 +935,7 @@ Process {
 	Test-DrvLabel
 	Create-AllusersStartmenuPrograms
 	Create-BISFTask
-	Add-AdminShortcut
+	Invoke-DesktopShortcut
 
 }
 End {
