@@ -130,7 +130,7 @@ Process {
 	$svc = Test-BISFService -ServiceName $Svc3 -ProductName $Prd3
 	IF ($svc) {
 		IF ($LIC_BISF_CLI_RA_SVC -eq "YES") { Invoke-BISFService -ServiceName $Svc3 -Action Stop } ELSE { Write-BISFLog -Msg "$Prd3 Service would not stopped (ADMX configuration)" -SubMsg -ShowConsole -Color DarkCyan }
-		IF (LIC_BISF_CLI_RA_SEAL -ne "YES") {
+		IF ($LIC_BISF_CLI_RA_SEAL -ne "YES") {
 			Write-BISFLog -Msg "Prepare $Prd3 for Imaging..."
 			$glbSVCImagePath = $glbSVCImagePath.split("\")[1] #get $SVCImagePath from Test-BISFService and split them to get ProgramFiles or ProgramFiles(x86) only
 			IF ($glbSVCImagePath -eq "Program Files") {
