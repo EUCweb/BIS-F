@@ -582,6 +582,24 @@
         </item>
       </disabledList>
     </policy>
+	<policy name="POL_RESWASdisableSeal" class="Machine" displayName="$(string.POL_RESWASdisableSeal)" explainText="$(string.POL_RESWASdisableSeal_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA_SEAL">
+      <parentCategory ref="CAT_RES" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA_SEAL">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA_SEAL">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+    </policy>
     <policy name="POL_ZCM" class="Machine" displayName="$(string.POL_ZCM)" explainText="$(string.POL_ZCM_Help)" presentation="$(presentation.POL_ZCM)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_ZCMb">
       <parentCategory ref="CAT_NV" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />

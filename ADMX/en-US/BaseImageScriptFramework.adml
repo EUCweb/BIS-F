@@ -349,7 +349,14 @@ If you disable or do not configure this policy setting, RES ONE Automation Agent
       <string id="POL_RESWASdisableSvc_Help">This policy setting allows you to disable the RES ONE Automation Agent Service during preparation of the execution of BIS-F.
 
 If you enable this policy setting, RES ONE Automation Agent Service will be disabled
-If you disable or do not configure this policy setting, RES ONE Automation Agent Service will not be disabled..</string>
+If you disable or do not configure this policy setting, RES ONE Automation Agent Service will not be disabled.
+</string>
+
+      <string id="POL_RESWASdisableSeal">Disable RES ONE Automation Sealing</string>
+      <string id="POL_RESWASdisableSeal_Help">This policy setting allows you to disable the RES ONE Automation Sealing completly and did non remove entries like CachedDispatchers, CommunicationID or others.
+
+If you enable this policy setting, RES ONE Automation sealing is not running and keep all informations.
+If you disable or do not configure this policy, RES ONE Automation Agent sealing is performed and remove all necessary items.</string>
       <string id="POL_ZCM">Configure Novell ZCM Agent web based URL</string>
       <string id="POL_ZCM_Help">Configure Novell ZCM Agent web based URL
 Enter the URL in the following format:
