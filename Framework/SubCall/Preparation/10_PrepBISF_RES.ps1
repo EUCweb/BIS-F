@@ -24,6 +24,7 @@
 		04.05.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		16.08.2019 MS: Add-BISFStartLine
+		17.08.2019 MS: ENH 78: Sealing for Ivanti Automation agent can be disabled in ADMX
 	.LINK
 		https://eucweb.com
 #>
@@ -129,50 +130,55 @@ Process {
 	$svc = Test-BISFService -ServiceName $Svc3 -ProductName $Prd3
 	IF ($svc) {
 		IF ($LIC_BISF_CLI_RA_SVC -eq "YES") { Invoke-BISFService -ServiceName $Svc3 -Action Stop } ELSE { Write-BISFLog -Msg "$Prd3 Service would not stopped (ADMX configuration)" -SubMsg -ShowConsole -Color DarkCyan }
-		Write-BISFLog -Msg "Prepare for Imaging..."
-		$glbSVCImagePath = $glbSVCImagePath.split("\")[1] #get $SVCImagePath from Test-BISFService and split them to get ProgramFiles or ProgramFiles(x86) only
-		IF ($glbSVCImagePath -eq "Program Files") {
-			$HKLM_REG_ROA = "$hklm_software\RES\AutomationManager"
-			$Inst_Path_ROA = "C:\$glbSVCImagePath\RES\Automation\Agent"
-		}
-		ELSE {
-			$HKLM_REG_ROA = "$HKLM_sw_x86\RES\AutomationManager"
-			$Inst_Path_ROA = "C:\$glbSVCImagePath\RES Software\Automation Manager\Agent"
-		}
-		Write-BISFLog -Msg "RES ROA Registry Path: $HKLM_REG_ROA"
-		Write-BISFLog -Msg "RES ROA Install Path: $Inst_Path_ROA"
-
-		$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "CachedDispatchers"
-		IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "CachedDispatchers" }
-
-		$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "CommunicationID"
-		IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "CommunicationID" }
-
-		$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "DispatcherListKGC"
-		IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "DispatcherListKGC" }
-
-		Set-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "Prepared4Image" -Value "$computer"
-
-		$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Preferences" -Value "WUID"
-		IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Preferences" -Name "WUID" }
-
-		IF (Test-Path "$HKLM_WIN_CVN\WUID") { Remove-Item -Path "$HKLM_WIN_CVN\WUID" }
-
-		$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "LastKnownResourceCacheFolder"
-		IF ($TestROAValue) {
-			$LastKnownResourceCacheFolder_REG = Get-ItemProperty -path "$HKLM_REG_ROA" | % { $_.LastKnownResourceCacheFolder }
-			Write-BISFLog -Msg "LastKnownResourceCacheFolder is set to $LastKnownResourceCacheFolder_REG and would deleted now"
-			IF (Test-Path $LastKnownResourceCacheFolder_REG) { Remove-Item -Path "$LastKnownResourceCacheFolder_REG\*" -recurse }
-		}
-		ELSE {
-			$ROA_StdPath = "$Inst_Path_ROA\Workspace"
-			IF (Test-Path $ROA_StdPath) {
-				Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and would deleted now"
-				Remove-Item -Path "$ROA_StdPath\*" -recurse
+		IF (LIC_BISF_CLI_RA_SEAL -ne "YES") {
+			Write-BISFLog -Msg "Prepare $Prd3 for Imaging..."
+			$glbSVCImagePath = $glbSVCImagePath.split("\")[1] #get $SVCImagePath from Test-BISFService and split them to get ProgramFiles or ProgramFiles(x86) only
+			IF ($glbSVCImagePath -eq "Program Files") {
+				$HKLM_REG_ROA = "$hklm_software\RES\AutomationManager"
+				$Inst_Path_ROA = "C:\$glbSVCImagePath\RES\Automation\Agent"
 			}
 			ELSE {
-				Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and could NOT deleted" -Type W -SubMsg
+				$HKLM_REG_ROA = "$HKLM_sw_x86\RES\AutomationManager"
+				$Inst_Path_ROA = "C:\$glbSVCImagePath\RES Software\Automation Manager\Agent"
 			}
+			Write-BISFLog -Msg "RES ROA Registry Path: $HKLM_REG_ROA"
+			Write-BISFLog -Msg "RES ROA Install Path: $Inst_Path_ROA"
+
+			$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "CachedDispatchers"
+			IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "CachedDispatchers" }
+
+			$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "CommunicationID"
+			IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "CommunicationID" }
+
+			$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "DispatcherListKGC"
+			IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "DispatcherListKGC" }
+
+			Set-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "Prepared4Image" -Value "$computer"
+
+			$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Preferences" -Value "WUID"
+			IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Preferences" -Name "WUID" }
+
+			IF (Test-Path "$HKLM_WIN_CVN\WUID") { Remove-Item -Path "$HKLM_WIN_CVN\WUID" }
+
+			$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "LastKnownResourceCacheFolder"
+			IF ($TestROAValue) {
+				$LastKnownResourceCacheFolder_REG = Get-ItemProperty -path "$HKLM_REG_ROA" | % { $_.LastKnownResourceCacheFolder }
+				Write-BISFLog -Msg "LastKnownResourceCacheFolder is set to $LastKnownResourceCacheFolder_REG and would deleted now"
+				IF (Test-Path $LastKnownResourceCacheFolder_REG) { Remove-Item -Path "$LastKnownResourceCacheFolder_REG\*" -recurse }
+			}
+			ELSE {
+				$ROA_StdPath = "$Inst_Path_ROA\Workspace"
+				IF (Test-Path $ROA_StdPath) {
+					Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and would deleted now"
+					Remove-Item -Path "$ROA_StdPath\*" -recurse
+				}
+				ELSE {
+					Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and could NOT deleted" -Type W -SubMsg
+				}
+			}
+		}
+		ELSE {
+			Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and could NOT deleted" -Type W -SubMsg
 		}
 
 		IF ($returnTestPVSSoftware -eq "true") {
@@ -205,7 +211,7 @@ Process {
 
 		}
 		ELSE {
-			Write-BISFLog -Msg "$Prd3 Agent Service ($Svc3) - configuration not changed"
+			Write-BISFLog -Msg "Sealing for $Prd3 is disabled in GPO" -ShowConsole -SubMSg -Type W
 		}
 	}
 
