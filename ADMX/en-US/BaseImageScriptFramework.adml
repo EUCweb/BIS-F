@@ -450,13 +450,13 @@ If you disable this policy setting, the master image creation will run (default)
       <string id="POL_PersCfg_Help">Configure the Device Personalization
 
 
-Skip Personalization based on DiskMode
-If you enable this policy setting, you can select a DiskMode to skip the Device Personalization on computer startup.
- &gt; None - never skip the Device Personalization
- &gt; ReadWrite - if the Image is in Private Mode (PVS or MCS) skip the Device Personalization
+Skip BIS-F personalization based on DiskMode
+If you enable this policy setting, you can select a DiskMode to skip the Device Personalization on computer startup (BIS-F scheduled Task)
  &gt; All - ignore all DiskMode's and skip the Device Personalization
+ &gt; Never - never skip the Device Personalization (recommended)
+ &gt; Private Mode - if the Image is in Private Mode (PVS or MCS) skip the Device Personalization
 
-If you disable or dor not configure this policy settings, the Device Personalization would not being skipped.
+If you disable or do not configure this policy settings, the Device Personalization would not being skipped.
 </string>
       <string id="POL_ExpCfg">Shared Configuration</string>
       <string id="POL_ExpCfg_Help">This policy settings allows you to export the BISF CLI commands, that would be set from the complete BIS-F policy to an xml file. This can be used for computers that's running in Worker Groups (like Citrix AppLayering) or you have no access to modify the Active Directory Group Policies.
