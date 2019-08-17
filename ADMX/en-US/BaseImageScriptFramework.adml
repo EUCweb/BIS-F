@@ -25,8 +25,7 @@ If you enable this policy setting, Citrix Optimizer (CtxOptimizerEngine.ps1) wil
 It is also possible to define a list of GroupIDs (defined in the template) of setting groups that should be executed. The value must be a comma-separated string; e.g. "DisableServices,OptionalServices". If there are no GroupIDs specified, Citrix Optimizer will execute all available setting groups.
 To run Citrix Optimizer in analyze-only mode, check "Mode: Analyze only".
 
-If you disable this policy setting, Citrix Optimizer will not be executed.
-If you do not configure this policy setting, you'll be prompted during the sealing process.
+If you disable or do not configure this policy setting, Citrix Optimizer will not be executed.
 
 Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\CitrixOptimizer
 
@@ -53,8 +52,7 @@ select your templates based on current operating system and build.
       <string id="POL_SDelete_Help">Run SDelete on PVS write cache disk if vDisk is in shared mode only
 
 If you enable this policy setting, SDelete will be executed on the PVS write cache disk in shared mode.
-If you disable this policy setting, SDelete will not be executed.
-If you do not configure this policy setting, you'll be prompted during the sealing process.
+If you disable or do not configure this policy setting, SDelete will not be executed.
 
 Prerequisites: SDelete must be installed on the Base Image first
 
@@ -68,9 +66,7 @@ You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do 
 
 If you enable this policy setting, Defrag will be executed.
 
-If you disable this policy setting, Defrag will not be executed.
-
-If you do not configure this policy setting, you will be prompted during the sealing process.
+If you disable or do not configure  this policy setting, Defrag will not be executed.
 
 Note: This setting affects the system drive only. It does not affect the write cache disk.</string>
       <string id="POL_OSrearm">Rearm Microsoft Windows once</string>
@@ -78,23 +74,23 @@ Note: This setting affects the system drive only. It does not affect the write c
 
 If you enable this policy setting, Microsoft Windows rearm will be executed once if needed.
 
-If you disable this policy setting, Microsoft Windows rearm will not be executed.
+If you disable or do not configure this policy setting, Microsoft Windows rearm will not be executed.
 
-If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+</string>
       <string id="POL_OFrearm">Rearm Microsoft Office once</string>
       <string id="POL_OFrearm_Help">Run Microsoft Office rearm if needed
 
 If you enable this policy setting, Microsoft Office rearm will be executed once if needed.
 
-If you disable this policy setting, Microsoft Office rearm will not be executed.
+If you disable or do not configure this policy setting, Microsoft Office rearm will not be executed.
 
-If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+</string>
       <string id="POL_AVFullScan">Run AntiVirus full scan</string>
       <string id="POL_AVFullScan_Help">Run AntiVirus full scan
 
-If you enable this policy setting, an Antivirus full scan will be executed.
+If you enable or do not configure this policy setting, an Antivirus full scan will be executed.
 If you disable this policy setting, an AntiVirus full scan will not be executed.
-If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
+</string>
       <string id="POL_GhostDeviceRemoval">Ghost Devices: Operation mode</string>
       <string id="POL_GhostDeviceRemoval_Help">Defines how the ghost device feature will operate.
 
@@ -207,25 +203,23 @@ If you disable this policy setting, or if you do not configure this policy setti
       <string id="POL_VieScan">Run Symantec VIE Tool</string>
       <string id="POL_VieScan_Help">Run Symantec VIEtool to flagged out the scanned files
 
-If you enable this policy setting, Symantec VIEtool will be executed.
+If you enable or do not configure this policy setting, Symantec VIEtool will be executed.
 If you disable this policy setting, Symantec VIEtool will not be executed.
-If you do not configure this policy setting, you'll be prompted during the sealing process.
 
-Prerequisites: VIEtool.exe must be installed on the Base Image first
+Prerequisites: VIEtool.exe must be installed on the Base Image first and must match the Version of SEP Client.
 
 (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy</string>
       <string id="POL_CtxPvD">Configure Citrix Personal vDisk</string>
       <string id="POL_CtxPvD_Help">Run Citrix Personal vDisk inventory on VDI Clients only
 
 If you enable this policy setting, Citrix Personal vDisk inventory will be executed on VDI Clients only.
-If you disable this policy setting, Citrix Personal vDisk inventory will not be executed.
-If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
+If you disable or do not configure this policy setting, Citrix Personal vDisk inventory will not be executed.
+</string>
       <string id="POL_CCleaner">Run CCleaner</string>
       <string id="POL_CCleaner_Help">Run CCleaner on Base Image
 
 If you enable this policy setting, CCleaner will be executed.
-If you disable this policy setting, CCleaner will not be executed.
-If you do not configure this policy setting, you'll be prompted during the sealing process.
+If you disable or do not configure this policy setting, CCleaner will not be executed.
 
 Prerequisites: CCleaner must be installed on the Base Image first
 
@@ -242,9 +236,8 @@ You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do 
       <string id="POL_PerfCnt">Rebuild Performance Counters</string>
       <string id="POL_PerfCnt_Help">Rebuild the Performance Counters. See CTX129350 or CTX127151 for further information
 
-If you enable this policy setting, Performance Counters will be rebuilt.
+If you enable or do not configure this policy setting, Performance Counters will be rebuilt.
 If you disable this policy setting, Performance Counters will not be rebuilt.
-If you do not configure this policy setting, you'll be prompted during the sealing process.
 
 </string>
       <string id="POL_Shutdown">Shutdown Base Image after sealing</string>
@@ -270,29 +263,28 @@ If you do not configure this policy setting, BIS-F message boxes will not be sup
       <string id="POL_FSXdelRules">Delete FSLogix rules</string>
       <string id="POL_FSXdelRules_Help">Delete FSLogix rules
 
-If you enable this policy setting, FSLogix rules will be deleted.
+If you enable or do not configure this policy setting, FSLogix rules will be deleted.
 If you disable this policy setting, FSLogix rules will not be deleted.
-If you do not configure this policy setting, you'll be prompted during the sealing process.
 
 </string>
       <string id="POL_FSXRulesShare">Configure FSLogix central rules share</string>
       <string id="POL_FSXRulesShare_Help">Copy FSLogix rules (*.frx) and assignments (*.fxa) from central share during Device Personalization on System Startup
 
 If you enable this policy setting, you must enter a valid central share location \\Server\Share.
-If you disable this policy setting, a center share location will not be used.
-If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
+If you disable or do not configure this policy setting, a center share location will not be used.
+</string>
       <string id="POL_delAllUsersStartMenu">Delete AllUsersStartMenu content</string>
       <string id="POL_delAllUsersStartMenu_Help">Delete AllUsersStartMenu content
 
 If you enable this policy setting, AllUsersStartMenu content will be deleted.
-If you disable this policy setting, AllUsersStartMenu content will not be deleted.
-If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+If you disable or do not configure this policy setting, AllUsersStartMenu content will not be deleted.
+</string>
       <string id="POL_IPv6">Disable IPv6</string>
       <string id="POL_IPv6_Help">Disable IPv6 in registry and on network adapter
 
 If you enable this policy setting, IPv6 will be disabled.
-If you disable this policy setting, IPv6 will not be disabled.
-If you do not configure this policy setting, you will be prompted during the sealing process.
+If you disable or do not configure this policy setting, IPv6 will not be disabled.
+
 
 Prerequisites: nvpsbind.exe must be installed on the Base Image first
 
@@ -301,14 +293,13 @@ You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do 
       <string id="POL_Sysprep_Help">If No Image Management software such as Citrix VDA, Citrix PVS Target Device Driver or VMware View Agent are detected, BIS-F will prompt to run Microsoft Sysprep at the end of the sealing process.
 
 If you enable this policy setting, sysprep will be executed if no Image Management software is detected.
-If you disable this policy setting, sysprep will not be executed.
-If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+If you disable or do not configure this policy setting, sysprep will not be executed.
+</string>
       <string id="POL_DelProf">Run DelProf2</string>
       <string id="POL_DelProf_Help">Run DelProf2.exe
 
 If you enable this policy setting, DelProf2 will be executed.
-If you disable this policy setting, DelProf2 will not be executed.
-If you do not configure this policy setting, you will be prompted during the sealing process.
+If you disable or do not configure this policy setting, DelProf2 will not be executed.
 
 Prerequisites: delprof2.exe must be installed on the Base Image first
 
@@ -329,14 +320,13 @@ If you do not configure this policy setting, BIS-F can be executed in Console Se
       <string id="POL_TurboUpdate_Help">Configure Turbo Update Device Personalization on System Startup
 
 If you enable this policy setting, Turbo update will be executed. on System Startup.
-If you disable this policy setting, Turbo update will not be executed. on System Startup.
-If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+If you disable or do not configure this policy setting, Turbo update will not be executed. on System Startup.
+</string>
       <string id="POL_vmOSOT">VMware OS Optimization Tool</string>
       <string id="POL_vmOSOT_Help">Run VMware OS Optimization Tool
 
 If you enable this policy setting, VMware OS Optimization Tool will be executed. with the default OS template.
-If you disable this policy setting, VMware OS Optimization Tool will not be executed.
-If you do not configure this policy setting, you will be prompted during the sealing process.
+If you disable or do not configure this policy setting, VMware OS Optimization Tool will not be executed.
 
 Prerequisites: VMware OS Optimization Tool must be installed on the Base Image first
 
@@ -349,20 +339,20 @@ Template Name: Enter the complete path to the the Template that would be used du
       <string id="POL_XAImagePrepRemoval_Help">XA 6.x only: During XenApp preparation for PVS you can remove the current server from the Farm and clear the local database information
 
 If you enable this policy setting, the current XenApp server will be removed from the Farm and the local database information will be cleared.
-If you disable this policy setting, the current XenApp server will not be removed from the Farm and the local database information will not be cleared.
-If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+If you disable or do not configure this policy setting, the current XenApp server will not be removed from the Farm and the local database information will not be cleared.
+</string>
       <string id="POL_AppVPckRemoval">Remove App-V cached packages</string>
       <string id="POL_AppVPckRemoval_Help">Remove App-V Pre-Cached packages on the Base Image
 
 If you enable this policy setting, App-V Pre-Cached packages will be removed.
-If you disable this policy setting, App-V Pre-Cached packages will not be removed.
-If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+If you disable or do not configure this policy setting, App-V Pre-Cached packages will not be removed.
+</string>
       <string id="POL_RESWASdisableBaseImage">Disable RES ONE Automation Agent</string>
       <string id="POL_RESWASdisableBaseImage_Help">This policy setting allows you to disable the RES ONE Automation Agent on the Base Image only to prevent RES ONE license usage.
 
 If you enable this policy setting, RES ONE Automation Agent will be disabled.
-If you disable this policy setting, RES ONE Automation Agent will not be disabled.
-If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+If you disable or do not configure this policy setting, RES ONE Automation Agent will not be disabled.
+</string>
       <string id="POL_RESWASdisableSvc">Disable RES ONE Automation Agent Service</string>
       <string id="POL_RESWASdisableSvc_Help">This policy setting allows you to disable the RES ONE Automation Agent Service during preparation of the execution of BIS-F.
 
@@ -384,8 +374,7 @@ If you disable or do not configure this policy setting, the client device does n
 Configure a central log share during Device Personalization on System Startup. Authenticated Users must have read/write access to this folder
 
 If you enable this policy setting, you must enter a valid log share location \\Server\Share.
-If you disable this policy setting, logs will be written to the write cache disk and you will not be prompted during the sealing process.
-If you do not configure this policy setting, you will be prompted during the sealing process.
+If you disable or do not configure this policy setting, logs will be written to the write cache disk.
 
 Log Retention (Default = 5):
 specify a value between 0 -20, means the number of log files being kept.
