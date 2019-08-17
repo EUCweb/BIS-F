@@ -251,7 +251,15 @@ If you do not configure this policy setting, the Base Image will be shutdown aft
 
 If you enable this policy setting, pending reboot will be suppressed.
 If you disable this policy setting, pending reboot will not be suppressed.
-If you do not configure this policy setting and a pending reboot exist, the scripts will stop working!</string>
+If you do not configure this policy setting and a pending reboot exist, the scripts will stop working!
+</string>
+      <string id="POL_DesktopShortcut">Configure Desktop Shortcut</string>
+      <string id="POL_DesktopShortcut_Help">Create or removed a BIS-F Desktop Shortcut for the user who runs the BIS-F preparation.
+
+If you enable this policy setting, a BIS-F Desktop Shortcut in C:\users\%username%\desktop is created.
+If you disable this policy setting, an existing BIS-F Desktop Shortcut in C:\users\%username%\desktop is removed.
+If you do not configure this policy setting, the configuration is skipped.
+</string>
       <string id="POL_FSXdelRules">Delete FSLogix rules</string>
       <string id="POL_FSXdelRules_Help">Delete FSLogix rules
 
