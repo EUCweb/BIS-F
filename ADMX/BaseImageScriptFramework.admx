@@ -330,24 +330,6 @@
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_CfgVerySilent" class="Machine" displayName="$(string.POL_CfgVerySilent)" explainText="$(string.POL_CfgVerySilent_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_VS">
-      <parentCategory ref="CAT_Global" />
-      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
-      <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VS">
-          <value>
-            <string>YES</string>
-          </value>
-        </item>
-      </enabledList>
-      <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VS">
-          <value>
-            <delete />
-          </value>
-        </item>
-      </disabledList>
-    </policy>
     <policy name="POL_FSXdelRules" class="Machine" displayName="$(string.POL_FSXdelRules)" explainText="$(string.POL_FSXdelRules_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_FS">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />

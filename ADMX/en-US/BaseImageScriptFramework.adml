@@ -15,7 +15,6 @@
       <string id="CAT_Misc">Miscellaneous</string>
       <string id="CAT_NV">Novell</string>
       <string id="CAT_RES">Ivanti</string>
-      <string id="CAT_SilentConfig">Silent Configuration</string>
       <string id="CAT_TBN">Turbo.net</string>
       <string id="LIST_CTXOE_Groups">Enter the Groups that should be executed:</string>
       <string id="POL_CTXOE">Configure Citrix Optimizer</string>
@@ -253,13 +252,6 @@ If you do not configure this policy setting, the Base Image will be shutdown aft
 If you enable this policy setting, pending reboot will be suppressed.
 If you disable this policy setting, pending reboot will not be suppressed.
 If you do not configure this policy setting and a pending reboot exist, the scripts will stop working!</string>
-      <string id="POL_CfgVerySilent">Configure VerySilent</string>
-      <string id="POL_CfgVerySilent_Help">Configure VerySilent to suppress any BIS-F message boxes
-
-If you enable this policy setting, BIS-F message boxes will be suppressed.
-If you disable this policy setting, BIS-F message boxes will not be suppressed.
-If you do not configure this policy setting, BIS-F message boxes will not be suppressed.
-</string>
       <string id="POL_FSXdelRules">Delete FSLogix rules</string>
       <string id="POL_FSXdelRules_Help">Delete FSLogix rules
 
