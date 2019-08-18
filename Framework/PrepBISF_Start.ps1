@@ -70,7 +70,6 @@
 		12.07.2018 MS: Bugfix 40: PendingReboot - give a empty value back
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -144,7 +143,6 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
 	#check Powershell minimun version 3.0
 	$PSverMin = "3"
 	If (-not ($PSVersionTable.PSVersion.Major -ge $PSverMin)) {
