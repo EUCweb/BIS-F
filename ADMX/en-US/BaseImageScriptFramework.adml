@@ -625,6 +625,23 @@ https://support.citrix.com/article/CTX220062
 	  <string id="ITM_GOV">GOV</string>
       <string id="ITM_COM">COM</string>
       <string id="ITM_ALL">ALL</string>
+	  <string id="POL_PVSHydration">Hydrate files on Citrix PVS servers</string>
+      <string id="POL_PVSHydration_Help">Enables hydrating files on Citrix PVS Servers.
+
+If you enable this policy setting, you can set options for which files to hydrate on a Citrix PVS machine.
+If you disable this policy than hydration will be explicitly disabled.
+If you do not configure this policy then the hydration script will be skipped.
+
+Citrix PVS servers will operate faster after some period of time due to the file system caching files into RAM.  However, if you access a file that PVS has not cached previously then there maybe a substantial delay in getting those bits into the file system cache.  This is due to PVS traversing the network back to the source file to pull those bytes.  If the storage those bytes reside on is under some stress or delayed for some reason then it will take even longer to access the file making PVS appear slow.
+
+The fix to this is "hydrating" the file by reading them as soon as the system is booted.
+
+Paths to hydrate:
+Paths you want to have hydrated, seperated by a "|" (pipe) symbol. Paths are searched recursively. (default = C:\Program Files|C:\Program Files (x86))
+
+Extensions to hydrate:
+The file extensions you want to hydrate, seperated by a "," (comma) symbol. (default = *.exe,*.dll)
+</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -811,6 +828,16 @@ https://support.citrix.com/article/CTX220062
         </textBox>
 		<dropdownList refId="DST_SSLMinVersion" defaultItem="1">Minimum SSL Version</dropdownList>
         <dropdownList refId="DST_SSLCipherSuite" defaultItem="0">SSL Cipher Suite</dropdownList>
+      </presentation>
+	  <presentation id="POL_PVSHydration">
+        <textBox refId="TXT_PVSHydration_Paths">
+          <label>Paths to hydrate:</label>
+          <defaultValue>C:\Program Files|C:\Program Files (x86)</defaultValue>
+        </textBox>
+        <textBox refId="TXT_PVSHydration_Extensions">
+          <label>File extensions to hydrate:</label>
+          <defaultValue>*.exe,*.dll</defaultValue>
+        </textBox>
       </presentation>
       <presentation id="POL_VieScan">
         <checkBox refId="CHK_AV_VIE_SF">Enable custom search folder</checkBox>

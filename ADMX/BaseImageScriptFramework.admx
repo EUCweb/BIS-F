@@ -977,6 +977,30 @@
 			</enum>
 		</elements>
     </policy>
+
+	<policy name="POL_PVSHydration" class="Machine" displayName="$(string.POL_PVSHydration)" explainText="$(string.POL_PVSHydration_Help)" presentation="$(presentation.POL_PVSHydration)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_PVSHydration">
+	  <parentCategory ref="CAT_CTX" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PVSHydration">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PVSHydration">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+	  <elements>
+        <text id="TXT_PVSHydration_Paths" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PVSHydration_Paths" />
+        <text id="TXT_PVSHydration_Extensions" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PVSHydration_Extensions" />
+      </elements>
+	</policy>
+
     <policy name="POL_VDACfg" class="Machine" displayName="$(string.POL_VDACfg)" explainText="$(string.POL_VDACfg_Help)" presentation="$(presentation.POL_VDACfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_VDACfg">
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
