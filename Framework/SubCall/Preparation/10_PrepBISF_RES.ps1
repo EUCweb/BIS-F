@@ -178,7 +178,7 @@ Process {
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and could NOT deleted" -Type W -SubMsg
+			Write-BISFLog -Msg "Sealing for $Prd3 is skipped from GPO configuration" -Type W -SubMsg
 		}
 
 		IF ($returnTestPVSSoftware -eq "true") {
