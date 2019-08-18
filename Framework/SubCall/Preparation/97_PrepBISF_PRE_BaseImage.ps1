@@ -100,6 +100,7 @@ param(
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		16.08.2019 MS: Add-BISFStartLine
 		17.08.2019 MS: ENH 54: ADMX: Configure BIS-F Desktop Shortcut
+		18.08.2019 MS: ENH 101: check sdelete Version 2.02 or newer, otherwise send out error
 	.LINK
 		https://eucweb.com
 #>
@@ -734,8 +735,8 @@ Begin {
 					$Productname = (Get-Item $($prepCommand.TestPath)).Basename
 					$ProductFileVersion = (Get-Item $($prepCommand.TestPath)).VersionInfo.FileVersion
 					Write-BISFLog -Msg "Product $Productname $ProductFileVersion installed" -ShowConsole -Color Cyan
-					IF (($Productname -eq "sdelete") -and ($ProductFileVersion -eq "2.0")) {
-						Write-BISFLog -Msg "WARNING: $Productname $ProductFileVersion has an vendor bug, please install Version 1.6.1 or newer !!" -ShowConsole -Type W
+					IF (($Productname -eq "sdelete") -and ($ProductFileVersion -lt "2.02")) {
+						Write-BISFLog -Msg "WARNING: $Productname $ProductFileVersion is not supported, Please use Version 2.02 or newer !!" -ShowConsole -Type E
 						Start-Sleep 20
 					}
 

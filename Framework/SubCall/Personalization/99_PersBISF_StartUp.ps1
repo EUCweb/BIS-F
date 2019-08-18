@@ -17,6 +17,7 @@
 		29.10.2017 MS: replace VDA instead of MCS in the DiskMode Test
 		20.10.2018 MS: Bugfix 73: MCS Image in Private Mode does not start the Windows Update Service
 		16.08.2019 MS: Add-BISFStartLine
+		18.08.2019 MS: ENH 101: Use sdelete64.exe on x64 system
 	.LINK
 		https://eucweb.com
 #>
@@ -26,7 +27,12 @@ Begin {
 	$script_dir = Split-Path -Parent $script_path
 	$script_name = [System.IO.Path]::GetFileName($script_path)
 	#sdelete
-	IF ($LIC_BISF_CLI_SD_SF -eq "1") { $SDeletePath = "$($LIC_BISF_CLI_SD_SF_CUS)\sdelete.exe" } ELSE { $SDeletePath = "C:\Windows\system32\sdelete.exe" }
+	IF ($OSBitness -eq "32-bit") { $sdeleteversion = "sdelete.exe" } ELSE { $sdeleteversion = "sdelete64.exe" }
+	IF ($LIC_BISF_CLI_SD_SF -eq "1") {
+		$SDeletePath = "$($LIC_BISF_CLI_SD_SF_CUS)\$sdeleteversion"
+	} ELSE {
+		$SDeletePath = "C:\Windows\system32\$sdeleteversion"
+	}
 
 }
 
