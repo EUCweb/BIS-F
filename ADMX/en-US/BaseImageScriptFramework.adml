@@ -55,7 +55,7 @@ If you disable or do not configure this policy setting, SDelete will not be exec
 
 Prerequisites: SDelete must be installed on the Base Image first
 
-WARNING: SDelete 2.0 has an vendor bug and can run a very long time without finalize the sdelete process, please use the older sdelete version 1.6.1 or a newer one above 2.0
+INFO: SDelete 2.02 or greater is suppported only. Download it from https://docs.microsoft.com/en-us/sysinternals/downloads/sdelete and place both sdelete.exe and sdeletex64.exe into the folder. Based on OS-Architecture BIS-F use the right one.
 
 You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do not configured or disable the Custom search folder option, the standard BIS-F Folders would be used.
 
