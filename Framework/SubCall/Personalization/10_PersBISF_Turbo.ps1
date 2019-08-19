@@ -10,7 +10,7 @@
 
 	  	History:
 		22.03.2016 MS: Script created
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -31,7 +31,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	####################################################################
 	####### functions #####
 	####################################################################

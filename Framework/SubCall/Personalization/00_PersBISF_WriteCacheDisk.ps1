@@ -45,7 +45,6 @@
 		15.08.2017 MS: If Citrix AppLayering is installed, skip reboot
 		14.09.2017 MS: after WriteCacheDisk would formatted, wait after reboot
 		22.09.2017 MS: change reboot command to use shutdown /r instead of restart-computer
-		16.08.2019 MS: Add-BISFStartLine
 	.LINK
 		https://eucweb.com
 #>
@@ -67,7 +66,6 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
 	# Get uniqueID from MasterImage
 	function GetUniqueIDreg {
 		#read UniqueID from registry

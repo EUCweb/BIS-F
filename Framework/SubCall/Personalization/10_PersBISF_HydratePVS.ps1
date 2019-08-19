@@ -32,7 +32,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 
 	function FileToCache ($File) {
 		#Write-BISFLog -Msg "Caching File : $File" -ShowConsole -Color Cyan

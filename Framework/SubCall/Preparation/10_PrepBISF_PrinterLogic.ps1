@@ -11,7 +11,7 @@
 		History:
 		29.07.2017 MS: Script created
 		01.08.2017 JP: Fixed typo on line 36
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -26,7 +26,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	$Svc = Test-BISFService -ServiceName "$ServiceName" -ProductName "$Product"
 	If ($Svc -eq $true) {
 		Write-BISFLog -Msg "Delete all files in $ProductPath" -ShowConsole -Color DarkCyan -SubMsg

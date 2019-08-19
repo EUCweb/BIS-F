@@ -65,7 +65,7 @@ param(
 		12.07.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template
 		26.07.2019 MS: ENH 122: Citrix Optimizer Templateprefix support
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		16.08.2019 MS: Add-BISFStartLine
+
 
 	.Link
     #>
@@ -507,7 +507,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	#### Main Program
 	$returnXenAppPrep = XenAppPrep
 

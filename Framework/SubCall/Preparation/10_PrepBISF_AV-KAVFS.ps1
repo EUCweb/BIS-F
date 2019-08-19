@@ -12,7 +12,7 @@
 		15.12.2015 MS: Initial script development
 		23.03.2016 MS: add -Recurse to search for files in subfolders
 		12.03.2017 MS: BugFix 112: wrong path to get from executable
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -37,7 +37,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	####################################################################
 	####### functions #####
 	####################################################################

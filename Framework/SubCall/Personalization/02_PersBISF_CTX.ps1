@@ -24,7 +24,7 @@
 		11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
 		21.10.2028 MS: Bufix 47: MSMQ windows services will fail to start in App Layering
 		21.10.2028 MS: Bufix 18: XA/ XD 7.x Cache folder will be created
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -43,7 +43,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	# Configure STA-File
 	Write-BISFLog -Msg "Check Citrix STA in $location"
 	IF (Test-Path -Path $Location) {

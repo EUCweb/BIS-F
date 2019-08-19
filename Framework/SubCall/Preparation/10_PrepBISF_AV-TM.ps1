@@ -21,7 +21,7 @@
 		20.08.2017 JS: I found that the services were not being stopped and set to manual, so added a new TerminateProcess
 		function and modified the StopService function to make it reliable.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		16.08.2019 MS: Add-BISFStartLine
+
 
 	.LINK
 		https://eucweb.com
@@ -44,7 +44,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	####################################################################
 	####### functions #####
 	####################################################################

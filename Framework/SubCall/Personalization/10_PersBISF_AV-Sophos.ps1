@@ -11,7 +11,7 @@
 		History:
 		09.01.2017 MS: Script created
 		18.08.2017 FF: Use $ServiceNameS instead of $ServiceName for first Test-BISFService
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -31,7 +31,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	####################################################################
 	####### functions #####
 	####################################################################

@@ -11,7 +11,7 @@
 		History:
 		14.04.2016 BR: Script created
 		17.06.2016 BR: Added Filter for Operating System Type
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -104,7 +104,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	if ((Get-CimInstance -ClassName Win32_OperatingSystem).ProductType -eq "3") {
 		#Adjust current uSer privilegs
 		enable-privilege SeTakeOwnershipPrivilege

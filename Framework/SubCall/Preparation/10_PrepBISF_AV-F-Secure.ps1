@@ -10,7 +10,7 @@
 		History:
 		  29.07.2017 MS: Script created
 		  14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		  16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
         https://eucweb.com
 #>
@@ -27,7 +27,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	####################################################################
 	####### functions #####
 	####################################################################

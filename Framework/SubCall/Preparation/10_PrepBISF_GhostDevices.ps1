@@ -15,7 +15,7 @@
 		01.07.2017 MS: Import Script into BIS-F and change variables to BIS-F global variables LIC_BISF_CLI_GD_ExCL and LIC_BISF_CLI_GD_ExFN
 		05.07.2017 FF: Substitute 'break' with 'return', if Remove Ghost Devices is not configured
 		07.07.2017 FF: Change script console output to be in compliance with BIS-F
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -41,7 +41,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	####################################################################
 	####### functions #####
 	####################################################################

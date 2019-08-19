@@ -16,7 +16,7 @@
 		01.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		03.10.2017 MS: Bugfix 214: Test path if $OpsStateDirOrigin before delete, instead of complete C: content if if $OpsStateDirOrigin is not available
 		29.03.2018 MS: Bugfix 37: SCOM 2018, uses new cerfifcate store Microsoft Monitoring Agent
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -36,7 +36,7 @@ Begin {
 ####################################################################
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 
 	function ReconfigureAgent {
 		Write-BISFLog -Msg "remove existing certificates for $product"

@@ -25,7 +25,7 @@
 		10.05.2019 JP: Converted wmic commands to Get-CimInstance and reworked script synthax
 		14.05.2019 JP: The CcmExec service is no longuer set to manual
 		08.12.2019:JP: Fixed error on line 74, thanks toBrian Timp
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -42,7 +42,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	function Remove-CCMData {
 		Write-BISFLog -Msg "$appVendor $appName SMSCFG.ini was deleted"
 		Remove-Item -Path "$env:windir\SMSCFG.ini" -Force -ErrorAction SilentlyContinue

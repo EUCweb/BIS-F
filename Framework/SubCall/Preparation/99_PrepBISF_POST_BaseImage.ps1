@@ -55,7 +55,7 @@ param(
 		01.11.2017 MS: check if Defrag Service is running, thx to Lejkin Dmitrij
 		02.11.2017 MS: Bugfix: if booting up in private Mode the vhdx and custom unc-path is configured, defrag runs on the UNC-Path and not on the BaseDisk itself.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -215,7 +215,7 @@ Begin {
 }
 
 	Process {
-		Add-BISFStartLine -ScriptName $PSScriptName
+
 		#### Main Program
 		Write-BISFLog -Msg "Write Sysprep status to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_RunSysPrep -Value: $RunSysPrep"
 		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_RunSysPrep" -value "$RunSysPrep" #-ErrorAction SilentlyContinue

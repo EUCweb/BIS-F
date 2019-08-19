@@ -20,7 +20,7 @@
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS
 		12.03.2017 MS: using $LIC_BISF_CLI_ZCM to configure ZCM with ADMX
 		29.10.2017 MS: replace $DiskMode -eq "VDAShared", instead of MCSShared
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -36,7 +36,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	####################################################################
 	####### functions #####
 	####################################################################

@@ -16,7 +16,7 @@
 		02.08.2017 MS: With DiskMode AppLayering in OS-Layer the WSUS Update Service would be start
 		29.10.2017 MS: replace VDA instead of MCS in the DiskMode Test
 		20.10.2018 MS: Bugfix 73: MCS Image in Private Mode does not start the Windows Update Service
-		16.08.2019 MS: Add-BISFStartLine
+
 		18.08.2019 MS: ENH 101: Use sdelete64.exe on x64 system
 	.LINK
 		https://eucweb.com
@@ -37,7 +37,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	# region functions
 	function start-sdelete {
 		$varSD = Get-Variable -Name LIC_BISF_SDeleteRun -ValueOnly

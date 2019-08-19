@@ -12,7 +12,7 @@
 		History:
 	  	14.10.2014 MS: function created
 		29.09.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
-		16.08.2019 MS: Add-BISFStartLine
+
 
 	.LINK
 		https://eucweb.com
@@ -26,7 +26,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$servicename"
 	IF ($svc) {
 		Invoke-BISFService -ServiceName "$servicename" -Action Start -CheckDiskMode RW

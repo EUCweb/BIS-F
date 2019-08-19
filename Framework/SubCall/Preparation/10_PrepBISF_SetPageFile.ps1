@@ -12,7 +12,7 @@
 		2017.06.27 TT: Script created
 		2017.08.05 TT: Tested on 2008 R2
 		2018.01.29 TT: Fixed error appearing even though no such error existed.
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -33,7 +33,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	Write-BISFLog -Msg "Checking PageFile settings" -ShowConsole -Color Cyan
 	Write-BISFLog -Msg "Variable LIC_BISF_CLI_PAGEFILE_SIZE  : $LIC_BISF_CLI_PAGEFILE_SIZE" -ShowConsole -Color Cyan  -SubMsg
 	Write-BISFLog -Msg "Variable LIC_BISF_CLI_PAGEFILE_DRIVE : $LIC_BISF_CLI_PAGEFILE_DRIVE" -ShowConsole -Color Cyan  -SubMsg

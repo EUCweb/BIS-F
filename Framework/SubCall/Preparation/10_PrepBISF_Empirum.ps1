@@ -14,7 +14,7 @@
 		12.12.2014 MS: syntax error at line 33
 		30.09.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		28.05.2019 MK: added a more stable verification for the empirum services and $cachelocation\Packages\* to file removal
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -29,7 +29,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	function StopService {
 		ForEach ($ServiceName in $ServiceNames) {
 			$svc = Test-BISFService -ServiceName "$ServiceName"

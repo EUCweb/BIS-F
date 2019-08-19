@@ -18,7 +18,7 @@
 		20.02.2015 MS: Added progressbar during fullscan
 		30.09.2015 MS: Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
-		16.08.2019 MS: Add-BISFStartLine
+
 		16.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 	.LINK
 		https://eucweb.com
@@ -33,7 +33,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	function MSCrun {
 
 		Write-BISFLog -Msg "Update VirusSignatures"

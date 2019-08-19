@@ -13,7 +13,7 @@
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		04.03.2016 MS: fixed issue SCOM service would be start on every Image Mode if installed
 		19.10.2018 MS: Bugfix 72: MCS Deployment: SCOM Agent - creates OpsStateDir in C: drive
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -28,7 +28,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$Product"
 	IF ($svc) {
 		$OpsStateDir = (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\services\$servicename\Parameters")."State Directory"

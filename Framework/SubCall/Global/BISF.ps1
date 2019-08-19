@@ -74,7 +74,7 @@ param()
 		20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
 		13.08.2019 MS: FRQ 97 - Nutanix Xi Frame Support
 		14.08.2019 MS: FRQ 6 - Parallels RAS Support
-		16.08.2019 MS: Add-BISFStartLine
+
       #>
 Begin {
 
@@ -231,7 +231,7 @@ Begin {
 ####################################################################
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	Write-BISFLog -Msg "Setting LogFile to $(Set-Logfile -Verbose:$VerbosePreference)" -ShowConsole -Color DarkCyan -SubMsg
 	Get-ActualConfig -Verbose:$VerbosePreference # Update the $BISFconfiguration with possible registry values
 	Write-BISFLog -Msg "Update LogFile to $(Set-Logfile -Verbose:$VerbosePreference)" -ShowConsole -Color DarkCyan -SubMsg

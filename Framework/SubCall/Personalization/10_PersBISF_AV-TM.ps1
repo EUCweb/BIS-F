@@ -14,7 +14,7 @@
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS
 		09.01.2017 MS: change code to get MacAdress to use function Get-BISMACAddress
 		01.08.2017 JS: Added the TmPfw (OfficeScan NT Firewall) service to the array
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -38,7 +38,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 
 	## Start TM Service
 	function StartService {

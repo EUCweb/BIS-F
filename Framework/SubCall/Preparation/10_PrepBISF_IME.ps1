@@ -12,7 +12,7 @@ param(
 
 		History
 		26.10.2015 MS: Script created
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -55,7 +55,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	#### Main Program
 	deleteOfficeIME
 

@@ -24,7 +24,7 @@
 		08.09.2017 FF: Feature 182 - Windows Defender Signature will only be updated if Defender is enabled to run
 		20.10.2018 MS: Bugfix 55: Windows Defender -ArgumentList failing
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 	.LINK
@@ -43,7 +43,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	function MSCrun {
 		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 		$varCLI = $LIC_BISF_CLI_AV

@@ -13,7 +13,7 @@
 		17.08.2015 MS: The fslogix rules are copied from the central share but not applied, in thefslogix personalization script, the copy must be performed after starting the fslogix service, to resolve this issue
 		21.08.2015 MS: Do not checked PVS or MCS DiskMode, Service is already running or would be start if stopped
 		01.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -31,7 +31,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 
 	function Copy-FSXRules {
 		$ErrorActionPreference = "Stop"

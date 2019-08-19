@@ -14,7 +14,7 @@
 		12.01.2017 MS: Added IF (Test-Path $reg_Product_Key) before continue
 		18.01.2017 JP: Fixed typo in product variable
 		28.01.2017 MS: typo in $PSScriptName = [System.IO.Path]::GetFileName($PSScriptFullName)
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -30,7 +30,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	$svc = Test-BISFService -ServiceName $servicename -ProductName $product
 	IF ($svc) {
 		Invoke-BISFService -ServiceName $servicename -Action Stop -StartType automatic

@@ -26,7 +26,7 @@
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		15.08.2019 MS: FRQ 88 - Supporting McAfee Endpoint Security (thanks to Wing2005)
 		15.08.2019 MS: Added .SYNOPSIS to all functions and using recommended POSH Verbs for functions too
-		16.08.2019 MS: Add-BISFStartLine
+
 
 	.LINK
 		https://eucweb.com
@@ -77,7 +77,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	####################################################################
 	####### Functions #####
 	####################################################################

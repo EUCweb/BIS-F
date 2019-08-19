@@ -14,7 +14,7 @@ param(
 		27.05.2015 MS: Script created
 		01.10.2015 MS: Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		12.03.2017 MS: Change $tmparray=$LIC_BISF_ZCM_CFG to $tmparray=$LIC_BISF_CLI_ZCM to configure ZCM with ADMX
-		16.08.2019 MS: Add-BISFStartLine
+
 
 	.LINK
 		https://eucweb.com
@@ -44,7 +44,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	####################################################################
 
 	function PrepareAgent {

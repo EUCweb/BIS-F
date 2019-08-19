@@ -13,7 +13,7 @@
 		06.02.2015 MS: review script
 		01.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		28.05.2018 MS: Bugfix 41: Set SplunkForwarder to StartType Automatic
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -28,7 +28,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$product"
 	IF ($svc -eq $true) {
 		Invoke-BISFService -ServiceName "$servicename" -Action Stop -StartType Automatic

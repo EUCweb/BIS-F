@@ -19,14 +19,14 @@
 		04.08.2017 MS: Bugfix IF (!("$LIC_BISF_CLI_OT_Templ" -eq "") )
 		07.11.2017 MS: enable 3rd Party Optimizations, if vmOSOT is executed, this disabled BIS-F own optimizations
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
         https://eucweb.com
 #>
 
 
 Begin {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	$PSScriptFullName = $MyInvocation.MyCommand.Path
 	$PSScriptRoot = Split-Path -Parent $PSScriptFullName
 	$PSScriptName = [System.IO.Path]::GetFileName($PSScriptFullName)

@@ -10,7 +10,7 @@
       History
 		  2019.07.05 TT: Script created
 		  16.08.2019 MS: ENH 107 - integrated into BIS-F
-		  16.08.2019 MS: Add-BISFStartLine
+
 	  .Link
 		  https://github.com/EUCweb/BIS-F/issues/107
 
@@ -31,7 +31,7 @@ Begin {
 }
 
 Process {
-	Add-BISFStartLine -ScriptName $script_name
+
 	if (-not($EnableMode) -or ($DisableMode)) {
 		Write-BISFLog -Msg "VDA SSL Options not configured."  -ShowConsole -Color Yellow
 		Return

@@ -323,7 +323,7 @@ Function Invoke-FolderScripts {
 				break
 			}
 			ELSE {
-				write-BISFlog -Msg "Start script $($item.name)"
+				Write-BISFLog -Msg "=========================== $($item.name) ===========================" -ShowConsole -Color DarkCyan -SubMsg
 			}
 			$rescode = . $item.FullName
 			if ($Errorhandling) {
@@ -3487,36 +3487,4 @@ function Set-ACLrights {
 	$acl.SetAccessRule($rule)
 	$acl | Set-Acl -Path '$path'
 
-}
-
-function Add-StartLine {
-	<#
-	.SYNOPSIS
-	shows the name of the current running script
-
-	.DESCRIPTION
-	Use this fucntion at the beggining of the process section of each BIS-F scipt to show the name of the current script in the console
-	and logfile too
-
-	.PARAMETER scriptname
-	the name of the current powershell script itself
-
-	.EXAMPLE
-	Add-BISFStartLine -ScriptName 97_PrepBISF_PRE_BaseImage.ps1
-
-	.NOTES
-	Author: Matthias Schlimm
-
-	History:
-		16.08.2019 MS: function created
-
-	.Link
-	https://eucweb.com
-	#>
-
-	param(
-		[parameter(Mandatory = $true)]
-		[string]$ScriptName
-	)
-		Write-BISFLog -Msg "===========================$ScriptName===========================" -ShowConsole -Color DarkCyan -SubMsg
 }

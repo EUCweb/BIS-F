@@ -63,7 +63,7 @@ param(
 		29.10.2017 MS: Bugfix: Custom UNC-Path get the wrong value back and does not perform a defrag on the vhd(x) and set the right value now $Global:TestDiskMode
 		14.08.2019 MS: ENH 98 - Skip execution of PVS Target OS Optimization
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		16.08.2019 MS: Add-BISFStartLine
+
 	.LINK
 		https://eucweb.com
 #>
@@ -323,7 +323,7 @@ Begin {
 ####################################################################
 
 Process {
-	Add-BISFStartLine -ScriptName $PSScriptName
+
 	#### Main Program
 	Write-BISFLog -Msg "Build your Base-Image now..." -ShowConsole -Color Cyan
 	IF ($returnTestXDSoftware -eq "true") {
