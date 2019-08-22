@@ -288,7 +288,7 @@ Process {
 		Write-BISFLog -Msg "Product $Product20 installed" -ShowConsole -Color Cyan
 		$reg_agent_version = (Get-ItemProperty "$reg_agent_string").AgentVersion
 		Write-BISFLog -Msg "Product $Product20 $reg_agent_version installed" -ShowConsole -Color Cyan
-		DefUpdates -engine $Product20
+		Start-DefUpdates -engine $Product20
 		#wing2005 - Disabled Scan From Commandline not supported yet (will be in ENS 10.7)
 		#Start-AVScan
 		Remove-VSEData
