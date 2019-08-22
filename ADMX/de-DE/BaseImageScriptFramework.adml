@@ -536,13 +536,11 @@ The component store contains all the files that are required for a Windows insta
       <presentation id="POL_CTXOE">
         <textBox refId="TXT_CTXOE_TemplatePath">
           <label>(Optional) Template:</label>
-          <defaultValue>
-          </defaultValue>
+          <defaultValue></defaultValue>
         </textBox>
         <textBox refId="TXT_CTXOE_Groups">
           <label>(Optional) List of enabled Groups:</label>
-          <defaultValue>
-          </defaultValue>
+          <defaultValue></defaultValue>
         </textBox>
         <checkBox refId="CB_CTXOE_Analyze">Mode: Analyze only</checkBox>
         <checkBox refId="CHK_CTXOE_SF">Enable custom search folder</checkBox>
@@ -576,15 +574,13 @@ The component store contains all the files that are required for a Windows insta
       <presentation id="GhostDeviceClass">
         <textBox refId="GhostDeviceClassBox">
           <label>Classes:</label>
-          <defaultValue>
-          </defaultValue>
+          <defaultValue></defaultValue>
         </textBox>
       </presentation>
       <presentation id="GhostDeviceFriendlyName">
         <textBox refId="GhostDeviceFriendlyNameBox">
           <label>Devices:</label>
-          <defaultValue>
-          </defaultValue>
+          <defaultValue></defaultValue>
         </textBox>
       </presentation>
       <presentation id="GhostDeviceRemoval">
@@ -628,8 +624,7 @@ The component store contains all the files that are required for a Windows insta
         </text>
         <textBox refId="TXT_OT_Templ">
           <label>Template Name</label>
-          <defaultValue>
-          </defaultValue>
+          <defaultValue></defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_CCleaner">
