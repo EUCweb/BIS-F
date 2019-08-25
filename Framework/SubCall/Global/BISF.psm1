@@ -3488,3 +3488,36 @@ function Set-ACLrights {
 	$acl | Set-Acl -Path '$path'
 
 }
+
+function Test-WVDSoftware {
+	<#
+	.SYNOPSIS
+		check if the Windows 10 Enterprise for Virtual Desktops is installed
+	.DESCRIPTION
+	  	if the Win32_OperatingSystem.Name is 'Microsoft Windows 10 Enterprise for Virtual Desktops' they  will send a true or false value and will set the global variable ImageSW to true or false
+		use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		Test-BISFWVDSoftware
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+	  	25.08.2019 MS: function created
+
+	.LINK
+		https://eucweb.com
+#>
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	$OSName = (Get-WMIObject Win32_OperatingSystem).Name
+	$product = "Microsoft Windows 10 Enterprise for Virtual Desktops"
+	IF ($OSName -eq $product) {
+		Write-BISFlog -Msg "Product $product installed" -ShowConsole -Color Cyan
+		$Global:ImageSW = $true
+	} ELSE {
+		Write-BISFlog -Msg "Product $product NOT installed"
+		$Global:ImageSW = $false
+	}
+	return $ImageSW
+
+}

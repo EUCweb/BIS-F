@@ -74,6 +74,7 @@ param()
 		20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
 		13.08.2019 MS: FRQ 97 - Nutanix Xi Frame Support
 		14.08.2019 MS: FRQ 6 - Parallels RAS Support
+		25.08.2019 MS: FRQ 132 - Windows 10 Enterprise for Virtual Desktops (WVD) Support
 
       #>
 Begin {
@@ -272,6 +273,7 @@ Process {
 	$Global:returnTestVMHVSoftware = Test-BISFVMwareHorizonViewSoftware -Verbose:$VerbosePreference
 	$Global:returnTestXiFrameSoftware = Test-BISFXiFrameSoftware -Verbose:$VerbosePreference
 	$Global:returnTestParallelsRASSoftware = Test-BISFParallelsRASSoftware -Verbose:$VerbosePreference
+	$Global:returnTestWVDSoftware = Test-WVDSoftware -Verbose:$VerbosePreference
 	$Global:returnRequestSysprep = Request-BISFSysprep -Verbose:$VerbosePreference
 	$Global:DiskMode = Get-BISFDiskMode -Verbose:$VerbosePreference
 	$Global:BootMode = Get-BISFBootMode
