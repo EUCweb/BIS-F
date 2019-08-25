@@ -2517,6 +2517,7 @@ function Use-PVSConfig {
 		03.11.2017 MS: if PVS Target Device Driver not installed, write info to BIS-F log and set the value $Global:Redirection=$true; $Global:RedirectionCode="NoPVS"
 		13.08.2019 AS: ENH 46 - Make any PVS conversion work Optional
 		14.08.2019 MS: ENH 108 - set NTFS Rights for spool directory
+		25.08.2019 MS: ENH 128 - Disable redirection if WriteCacheDisk is set to NONE
 	.LINK
 		https://eucweb.com
 #>
@@ -2534,6 +2535,9 @@ function Use-PVSConfig {
 		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Preparation")) { $Global:Redirection = $false; $Global:RedirectionCode = "PVS-AppLay-Prep" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Preparation") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $false; $Global:RedirectionCode = "PVS-AppLay-Prep-BI" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Personalization") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $false; $Global:RedirectionCode = "PVS-AppLay-Pers-BI" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+		IF ($LIC_BISF_CLI_WCD -eq "NONE") {Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-No-WCD" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
 
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configure it now" -ShowConsole -SubMsg -Color DarkCyan

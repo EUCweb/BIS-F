@@ -45,6 +45,7 @@
 		15.08.2017 MS: If Citrix AppLayering is installed, skip reboot
 		14.09.2017 MS: after WriteCacheDisk would formatted, wait after reboot
 		22.09.2017 MS: change reboot command to use shutdown /r instead of restart-computer
+		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
 	.LINK
 		https://eucweb.com
 #>
@@ -106,7 +107,7 @@ Process {
 					"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"Format FS=NTFS LABEL=$PVSDiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
 					get-LogContent -GetLogFile "$DiskpartFile"
-					diskpart /s $DiskpartFile
+					diskpart.exe /s $DiskpartFile
 					Write-BISFLog -Msg "WriteCache partition is now formatted and the drive letter $PVSDiskDrive assigned"
 
 					# Get WriteCache Volume and Restore Unique ID
@@ -117,7 +118,7 @@ Process {
 					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
 					"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
 					get-LogContent -GetLogFile "$DiskpartFile"
-					diskpart /s $DiskpartFile
+					diskpart.exe /s $DiskpartFile
 					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 				}
 				else {
@@ -138,7 +139,7 @@ Process {
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
 					get-LogContent -GetLogFile "$DiskpartFile"
-					$result = diskpart /s $DiskpartFile
+					$result = diskpart.exe /s $DiskpartFile
 					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 				}
 			}
@@ -186,17 +187,17 @@ Process {
 	$SkipReboot = GetRefSrv
 	CheckCDRom
 
-	IF (!($LIC_BISF_CLI_WCD -eq $null)) {
+	IF (!($LIC_BISF_CLI_WCD -eq $null) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
 		IF ("$returnTestPVSSoftware" -eq $true) {
 			$uniqueid_REG = GetUniqueIDreg
 			CheckWriteCacheDrive
 		}
 		ELSE {
-			Write-BISFLog -Msg "WriteCache Disk would not be checked or formatted, beacuse the Citrix Provisioning Services software is not installed on this system!" -Type W
+			Write-BISFLog -Msg "WriteCache Disk not  checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
 		}
 	}
 	ELSE {
-		Write-BISFLog -Msg "PVSWriteCacheDisk not configured with the ADMX, skip function to set uniqueID from persistent drive"
+		Write-BISFLog -Msg "PVS WriteCache is not configured or is set to 'NONE', skipping configuration"
 	}
 }
 

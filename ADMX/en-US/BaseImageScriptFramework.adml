@@ -427,7 +427,8 @@ Skip PVS master image creation:
 If you enable this policy setting, master image creation will be skipped even if Provisioning Services Target Device software is found.
 If you disable this policy setting, the master image creation will run (default).
 </string>
-      <string id="ITM_B">B:</string>
+      <string id="ITM_NONE">-NONE-</string>
+	  <string id="ITM_B">B:</string>
       <string id="ITM_C">C:</string>
       <string id="ITM_D">D:</string>
       <string id="ITM_E">E:</string>

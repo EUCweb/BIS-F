@@ -30,6 +30,7 @@ param(
 		10.01.2017 MS: BugFix 134: PrepareWriteCacheDisk: MBR disk with 8 characters to get the right uniqueID from Diskpart only, PVS does not support GPT disk, see https://support.citrix.com/article/CTX139478 thx to Jeremy Saunders
 		04.03.2017 MS: BugFix: DiskID is not language neutral, split string after ":" to read the right side only
 		29.07.2017 MS: Feature Request 192: support GPT WriteCacheDisk
+		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
 
 	.LINK
 		https://eucweb.com
@@ -67,7 +68,7 @@ Begin {
 		$DriveLetter = $PVSDiskDrive.substring(0, 1)
 		Write-BISFLog -Msg "use Diskpart, search Driveletter $DriveLetter"
 
-		$Searchvol = "list volume" | diskpart | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
+		$Searchvol = "list volume" | diskpart.exe | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
 		Write-BISFLog -Msg "$Searchvol"
 
 		$getvolNbr = $Searchvol.substring(11, 1)   # get Volumenumber from DiskLabel
@@ -77,7 +78,7 @@ Begin {
 		# Write Diskpart File
 		"select volume $getvolNbr" | Out-File -filepath $DiskpartFile -encoding Default
 		"uniqueid disk" | Out-File -filepath $DiskpartFile -encoding Default -append
-		$result = diskpart /s $DiskpartFile
+		$result = diskpart.exe /s $DiskpartFile
 		get-BISFLogContent -GetLogFile "$DiskpartFile"
 		$getid = $result | Select-String -pattern "ID" -casesensitive | Out-String
 		$getid = $getid.Split(":")  #split string on ":"
@@ -117,11 +118,16 @@ Begin {
 Process {
 
 	#### Main Program
-	IF ($returnTestPVSEnvVariable -eq "true") {
-		GetUniqueID
+	IF (!($LIC_BISF_CLI_WCD -eq "NONE")) {
+		IF ($returnTestPVSEnvVariable -eq "true") {
+			GetUniqueID
+		}
+		ELSE {
+			Write-BISFLog -Msg "PVS WriteCacheDisk environment variable not defined, skipping configuration"
+		}
 	}
-	ELSE {
-		Write-BISFLog -Msg "PVSWriteCacheDisk environment variable not defined, skip function to get uniqueID from persistent drive"
+ ELSE {
+		Write-BISFLog -Msg "PVS WriteCacheDisk is set to 'NONE', skipping configuration"
 	}
 	SetCDRom
 	SetRefSrv
