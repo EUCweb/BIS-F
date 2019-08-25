@@ -586,16 +586,27 @@ function Test-XDSoftware {
 		History:
 	  	dd.mm.yyyy MS: function created
 		07.09.2015 MS: add .SYNOPSIS to this function
+		25.08.2019 MS: ENH 126: detect MCSIO based on Borker Minimum Version
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "BrokerAgent" -ProductName "Citrix XenDesktop Virtual Desktop Agent (VDA)"
+
 	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
 		IF ($svc -eq $true) {
-			glbSVCImagePath
+			$Version = Get-BISFFileVersion $glbSVCImagePath
+			$BrokerVersion = $Version.Major + "." + $Version.Minor
+			IF ($BrokerVersion -ge "7.21"){
+				$Global:MCSIO = $true
+				Write-BISFLog "BrokerAgent version is $BrokerVersion or greater, support for MCS IO and persistent disk can be used"
+			} ELSE {
+				$Global:MCSIO = $false
+				Write-BISFLog "BrokerAgent version is $BrokerVersion. NO support for MCS IO and persistent disk !!"
+			}
 			$Global:ImageSW = $true
+
 		}
 	}
 	return $svc
