@@ -26,7 +26,7 @@
 		"files.encoding": "utf8bom",
 		"files.autoGuessEncoding": true,
 	},
-	"workbench.colorTheme": "GitHub Plus",
+	"workbench.colorTheme": "Visual Studio Light",
 	"files.defaultLanguage": "powershell",
 	"powershell.scriptAnalysis.enable": true,
 	"powershell.scriptAnalysis.settingsPath": "ScriptAnalyzerSettings.psd1",
