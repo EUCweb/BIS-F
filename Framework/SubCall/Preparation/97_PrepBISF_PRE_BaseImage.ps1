@@ -101,6 +101,7 @@ param(
 
 		17.08.2019 MS: ENH 54: ADMX: Configure BIS-F Desktop Shortcut
 		18.08.2019 MS: ENH 101: check sdelete Version 2.02 or newer, otherwise send out error
+		25.08.2019 MS: FRQ 134: Removing Disable Cortana
 	.LINK
 		https://eucweb.com
 #>
@@ -827,19 +828,6 @@ Begin {
 		}
 	}
 
-
-	function Disable-Cortana {
-		IF ($LIC_BISF_3RD_OPT -eq $false) {
-			Write-BISFLog -Msg  "Disabling Cortana..." -ShowConsole -Color DarkCyan -Submsg
-			New-Item -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\' -Name 'Windows Search' | Out-Null
-			New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' -Name 'AllowCortana' -PropertyType DWORD -Value '0' | Out-Null
-		}
-		ELSE {
-			Write-BISFLog -Msg "Disabling Cortana are not set from BIS-F, because 3rd Party Optimization is configured" -Type W -ShowConsole -SubMsg
-		}
-	}
-
-
 	function Clear-EventLog {
 		wevtutil el | ForEach-Object {
 			Write-BISFLog -Msg  "Clearing Event-Log $_" -ShowConsole -Color DarkCyan -Submsg
@@ -875,13 +863,11 @@ Begin {
 	}
 
 	function Pre-Win2016 {
-		Disable-Cortana
 		Optimize-BISFWinSxs
 
 	}
 
 	function Pre-Win10 {
-		Disable-Cortana
 		Optimize-BISFWinSxs
 	}
 
