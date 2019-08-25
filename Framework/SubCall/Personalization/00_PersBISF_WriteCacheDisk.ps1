@@ -46,6 +46,7 @@
 		14.09.2017 MS: after WriteCacheDisk would formatted, wait after reboot
 		22.09.2017 MS: change reboot command to use shutdown /r instead of restart-computer
 		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
+		25.08.2019 MS: HF 21 - endless Reboot with wrong count of Partitons
 	.LINK
 		https://eucweb.com
 #>
@@ -92,7 +93,11 @@ Process {
 			# Check for Cache on Device HardDrive Mode
 			if ((Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType -eq 4 -or (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType -eq 9) {
 				Write-BISFLog -Msg "vDisk is set to Cache on Device Hard Drive Mode"
-				If ((Get-CimInstance -ClassName Win32_volume).count -lt 3) {
+				#grab the numbers of Partitions from the BIS-F ADMX
+				Write-BISFLog -Msg "Number of Partitions from ADMX: $LIC_BISF_CLI_NumberOfPartitions"
+				$SystemPartitions = (Get-CimInstance -ClassName Win32_volume).count
+				Write-BISFLog -Msg "Number of Partitions on current System: $SystemPartitions"
+				If ($SystemPartitions -eq $LIC_BISF_CLI_NumberOfPartitions) {
 					# WriteCache Disk not Formatted
 					# Construct Diskpart File to Format Disk
 

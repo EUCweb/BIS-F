@@ -428,6 +428,16 @@ If you do not enable, the default arguments inside BIS-F will be used.
 Skip PVS master image creation:
 If you enable this policy setting, master image creation will be skipped even if Provisioning Services Target Device software is found.
 If you disable this policy setting, the master image creation will run (default).
+
+Number of Partitions:
+Enter the Number of Parttitons that you have on the Target Device, if you have no PVS Write Cache Disk you can ignore this setting.
+This is relevant to format the WriteCacheDisk only.
+
+-  If you have C Drive for OS (streamed vDisk) and a Write Cache Disk use 2 Paritions (default)
+ - If you have a System Reserved Partition, C drive for OS (streamed vDisk) and a Write Cache Disk use 3 Paritions
+
+Note: If you configure it wrong, a reboot loop is performed !!
+-
 </string>
       <string id="ITM_0"> NONE</string>
       <string id="ITM_B">B:</string>
@@ -645,6 +655,14 @@ Paths you want to have hydrated, seperated by a "|" (pipe) symbol. Paths are sea
 Extensions to hydrate:
 The file extensions you want to hydrate, seperated by a "," (comma) symbol. (default = *.exe,*.dll)
 </string>
+      <string id="ITM_3DC5C4AC_C83F_4008_B5AC_F7CCF7936DBF">3</string>
+      <string id="ITM_23F124F3_6F96_44E3_93A5_D958F7E90EB7">4</string>
+      <string id="ITM_3955416D_4222_48BE_8F98_2BACF625B744">5</string>
+      <string id="ITM_7BAB904B_CF5F_4D6B_892C_23EEF90FF40C">2</string>
+      <string id="ITM_Part2">2</string>
+	  <string id="ITM_Part3">3</string>
+      <string id="ITM_Part4">4</string>
+      <string id="ITM_Part5">5</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -803,6 +821,7 @@ The file extensions you want to hydrate, seperated by a "," (comma) symbol. (def
           <label>Custom arguments</label>
           <defaultValue>C:</defaultValue>
         </textBox>
+        <dropdownList refId="DST_CLI_NumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
       </presentation>
       <presentation id="POL_PersCfg">
         <dropdownList refId="DST_CLI_DM" defaultItem="0">Skip Personalization based on DiskMode</dropdownList>

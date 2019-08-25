@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.57F04873_D0F2_4C21_943B_E48C375F8FD1" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.6053355E_2999_4694_8454_E25DF3DB3D01" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -857,6 +857,28 @@
               <string>VHDX</string>
             </value>
           </item>
+        </enum>
+        <enum id="DST_CLI_NumberOfPartitions" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NumberOfPartitions">
+          <item displayName="$(string.ITM_Part2)">
+            <value>
+              <decimal value="2" />
+            </value>
+          </item>
+		  <item displayName="$(string.ITM_Part3)">
+            <value>
+              <decimal value="3" />
+            </value>
+          </item>
+          <item displayName="$(string.ITM_Part4)">
+            <value>
+              <decimal value="4" />
+            </value>
+          </item>
+          <item displayName="$(string.ITM_Part5)">
+            <value>
+              <decimal value="5" />
+            </value>
+	      </item>
         </enum>
       </elements>
     </policy>
