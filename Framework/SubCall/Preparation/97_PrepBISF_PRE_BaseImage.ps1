@@ -102,6 +102,7 @@ param(
 		17.08.2019 MS: ENH 54: ADMX: Configure BIS-F Desktop Shortcut
 		18.08.2019 MS: ENH 101: check sdelete Version 2.02 or newer, otherwise send out error
 		25.08.2019 MS: FRQ 134: Removing Disable Cortana
+		25.08.2019 MS: FRQ 133: Removing Disable scheduled Task
 	.LINK
 		https://eucweb.com
 #>
@@ -673,36 +674,6 @@ Begin {
 		Command = "Set-Service -Name wuauserv -StartupType Disabled -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
-	IF ($LIC_BISF_3RD_OPT -eq $false) {
-		## Disable useless scheduled tasks
-		IF (($OSVersion -like "6.3*") -or ($OSVersion -like "10*")) {
-			Write-BISFLog -Msg "Disable Scheduled Tasks" -ShowConsole -Color Cyan
-			$ScheduledTasksList = @("AitAgent", "ProgramDataUpdater", "StartupAppTask", "Proxy", "UninstallDeviceTask", "BthSQM", "Consolidator", "KernelCeipTask", "Uploader", "UsbCeip", "Scheduled", "Microsoft-Windows-DiskDiagnosticDataCollector", "Microsoft-Windows-DiskDiagnosticResolver", "WinSAT", "HotStart", "AnalyzeSystem", "RacTask", "MobilityManager", "RegIdleBackup", "FamilySafetyMonitor", "FamilySafetyRefresh", "AutoWake", "GadgetManager", "SessionAgent", "SystemDataProviders", "UPnPHostConfig", "ResolutionHost", "BfeOnServiceStartTypeChange", "UpdateLibrary", "ServerManager", "Proxy", "UninstallDeviceTask", "Scheduled", "Microsoft-Windows-DiskDiagnosticDataCollector", "Microsoft-Windows-DiskDiagnosticResolver", "WinSAT", "MapsToastTask", "MapsUpdateTask", "ProcessMemoryDiagnosticEvents", "RunFullMemoryDiagnostic", "MNO Metadata Parser", "AnalyzeSystem", "MobilityManager", "RegIdleBackup", "CleanupOfflineContent", "FamilySafetyMonitor", "FamilySafetyRefresh", "SR", "UPnPHostConfig", "ResolutionHost", "UpdateLibrary", "WIM-Hash-Management", "WIM-Hash-Validation", "ServerCeipAssistant")
-			ForEach ($ScheduledTaskList in $ScheduledTasksList) {
-				$task = Get-ScheduledTask -TaskName "$ScheduledTaskList" -ErrorAction SilentlyContinue
-				IF ($task) {
-					Write-BISFLog -Msg "Scheduled Task $ScheduledTaskList exists" -ShowConsole -SubMsg -Color DarkCyan
-					$TaskPathName = Get-ScheduledTask -TaskName "$ScheduledTaskList" | % { $_.TaskPath }
-					$PrepCommands += [pscustomobject]@{
-						Order = "$ordercnt";
-						Enabled = "$true";
-						showmessage = "N";
-						CLI = "";
-						Testpath = "";
-						Description = "Disable scheduled Task $ScheduledTaskList ";
-						Command = "Disable-ScheduledTask -Taskname '$ScheduledTaskList' -TaskPath '$TaskPathName' | Out-Null"
-					};
-					$ordercnt += 1
-				}
-				ELSE {
-					Write-BISFLog -Msg "Scheduled Task $ScheduledTaskList NOT exists"
-				}
-			}
-		}
-	}
-	ELSE {
-		Write-BISFLog -Msg "Schedule Task are not disabled from BIS-F, because 3rd Party Optimization is configured" -Type W -ShowConsole -SubMsg
-	}
 
 	$paths = @( "$env:windir\Temp", "$env:temp")
 
