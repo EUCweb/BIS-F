@@ -586,7 +586,7 @@ function Test-XDSoftware {
 		History:
 	  	dd.mm.yyyy MS: function created
 		07.09.2015 MS: add .SYNOPSIS to this function
-		25.08.2019 MS: ENH 126: detect MCSIO based on Borker Minimum Version
+		25.08.2019 MS: ENH 126: detect MCSIO based on Broker Minimum Version
 
 	.LINK
 		https://eucweb.com
