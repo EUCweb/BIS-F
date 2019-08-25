@@ -592,7 +592,12 @@ function Test-XDSoftware {
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "BrokerAgent" -ProductName "Citrix XenDesktop Virtual Desktop Agent (VDA)"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
+		IF ($svc -eq $true) {
+			glbSVCImagePath
+			$Global:ImageSW = $true
+		}
+	}
 	return $svc
 
 }
@@ -3515,13 +3520,16 @@ function Test-WVDSoftware {
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$OSName = (Get-WMIObject Win32_OperatingSystem).Name
 	$product = "Microsoft Windows 10 Enterprise for Virtual Desktops"
-	IF ($OSName -eq $product) {
-		Write-BISFlog -Msg "Product $product installed" -ShowConsole -Color Cyan
-		$Global:ImageSW = $true
-	} ELSE {
-		Write-BISFlog -Msg "Product $product NOT installed"
-		$Global:ImageSW = $false
+	IF ($OSName -eq $product) { $WVD = $true } ELSE { $WVD = $false }
+	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
+		IF ($WVD -eq $true) {
+			Write-BISFlog -Msg "Product $product installed" -ShowConsole -Color Cyan
+			$Global:ImageSW = $true
+		} ELSE {
+			Write-BISFlog -Msg "Product $product NOT installed"
+			$Global:ImageSW = $false
+		}
 	}
-	return $ImageSW
+	return $WVD
 
 }
