@@ -598,12 +598,13 @@ function Test-XDSoftware {
 		IF ($svc -eq $true) {
 			$Version = Get-BISFFileVersion $glbSVCImagePath
 			$BrokerVersion = $Version.Major + "." + $Version.Minor
-			IF ($BrokerVersion -ge "7.21"){
+			$CheckVersion = "7.21"
+			IF ($BrokerVersion -ge $CheckVersion){
 				$Global:MCSIO = $true
-				Write-BISFLog "BrokerAgent version is $BrokerVersion or greater, support for MCS IO and persistent disk can be used"
+				Write-BISFLog "BrokerAgent supports MCS IO and persistent disk"
 			} ELSE {
 				$Global:MCSIO = $false
-				Write-BISFLog "BrokerAgent version is $BrokerVersion. NO support for MCS IO and persistent disk !!"
+				Write-BISFLog "BrokerAgent version does NOT support MCS IO and persistent disk"
 			}
 			$Global:ImageSW = $true
 
