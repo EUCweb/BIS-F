@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <policyDefinitionResources revision="1.0" schemaVersion="1.0">
   <displayName>
   </displayName>
@@ -46,8 +45,7 @@ select your templates based on current operating system and build.
 
 
 </string>
-
-	  <string id="POL_SDelete">Run SDelete</string>
+      <string id="POL_SDelete">Run SDelete</string>
       <string id="POL_SDelete_Help">Run SDelete on PVS write cache disk if vDisk is in shared mode only
 
 If you enable this policy setting, SDelete will be executed on the PVS write cache disk in shared mode.
@@ -359,7 +357,6 @@ If you disable or do not configure this policy setting, RES ONE Automation Agent
 If you enable this policy setting, RES ONE Automation Agent Service will be disabled
 If you disable or do not configure this policy setting, RES ONE Automation Agent Service will not be disabled.
 </string>
-
       <string id="POL_RESWASdisableSeal">Disable RES ONE Automation Sealing</string>
       <string id="POL_RESWASdisableSeal_Help">This policy setting allows you to disable the RES ONE Automation Sealing completly and did non remove entries like CachedDispatchers, CommunicationID or others.
 
@@ -386,7 +383,12 @@ If you disable or do not configure this policy setting, logs will be written to 
 Log Retention (Default = 5):
 specify a value between 0 -20, means the number of log files being kept.
 
-0 = keep all log files</string>
+0 = keep all log files
+
+SCCM / MDT Logfile Redirection:
+if you enable this policy and BIS-F preparation is triggered from a SCCM or MDT Tasksequence, the BIS-F log is stored inside the Tasksequence logpath.
+this policy overwrites the values for a configured Log share.if configured.
+</string>
       <string id="POL_FldCfg">Configure Folders</string>
       <string id="POL_FldCfg_Help">If Citrix PVS Target Device Driver is installed, some folders must be redirected to the write cache disk. You can specified those folders here:
 
@@ -428,7 +430,7 @@ If you enable this policy setting, master image creation will be skipped even if
 If you disable this policy setting, the master image creation will run (default).
 </string>
       <string id="ITM_0"> NONE</string>
-	  <string id="ITM_B">B:</string>
+      <string id="ITM_B">B:</string>
       <string id="ITM_C">C:</string>
       <string id="ITM_D">D:</string>
       <string id="ITM_E">E:</string>
@@ -510,7 +512,7 @@ Note: If you have the device personalization configured to skip it on all disk m
 If you enable this policy setting, .NET Optimization is running during sealing
 If you disable this policy setting, .NET Optimization is disabled during sealing
 If you do not configure this policy setting, .NET Optimization is running during sealing</string>
-	  <string id="POL_WinSxS">WinSxS Optimization</string>
+      <string id="POL_WinSxS">WinSxS Optimization</string>
       <string id="POL_WinSxS_Help">Run WinSxS Optimization during sealing (preparation)
 
 If you enable this policy setting, WinSxS Optimization is running during sealing
@@ -592,7 +594,7 @@ If your Platform Layer is domain joined you can enable this setting and enter a 
 If you disable this policy setting or do not configure this policy setting, no different BIS-F shared configurations can be used.
 
 Note: Enter the name of the configurations file only, the path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
-<string id="POL_VDASSL">Configure SSL for the Citrix VDA</string>
+      <string id="POL_VDASSL">Configure SSL for the Citrix VDA</string>
       <string id="POL_VDASSL_Help">Configure SSL for the Citrix VDA
 
 If you enable this policy setting, you can set options for assigning an SSL to the Citrix VDA.
@@ -623,10 +625,10 @@ https://support.citrix.com/article/CTX220062
       <string id="ITM_TLS11">TLS_1.1</string>
       <string id="ITM_TLS12">TLS_1.2</string>
       <string id="ITM_SSL30">SSL_3.0</string>
-	  <string id="ITM_GOV">GOV</string>
+      <string id="ITM_GOV">GOV</string>
       <string id="ITM_COM">COM</string>
       <string id="ITM_ALL">ALL</string>
-	  <string id="POL_PVSHydration">Hydrate files on Citrix PVS servers</string>
+      <string id="POL_PVSHydration">Hydrate files on Citrix PVS servers</string>
       <string id="POL_PVSHydration_Help">Enables hydrating files on Citrix PVS Servers.
 
 If you enable this policy setting, you can set options for which files to hydrate on a Citrix PVS machine.
@@ -662,7 +664,7 @@ The file extensions you want to hydrate, seperated by a "," (comma) symbol. (def
           <label>Custom search folder</label>
           <defaultValue>C:\Program Files (x86)\CitrixOptimizer</defaultValue>
         </textBox>
-		<textBox refId="TXT_CTXOE_TemplatePreFix">
+        <textBox refId="TXT_CTXOE_TemplatePreFix">
           <label>(Optional) Templateprefix</label>
           <defaultValue>Citrix_Windows</defaultValue>
         </textBox>
@@ -772,6 +774,7 @@ The file extensions you want to hydrate, seperated by a "," (comma) symbol. (def
           <defaultValue>\\Server\Share</defaultValue>
         </textBox>
         <decimalTextBox refId="DXT_LogRetention" defaultValue="5">Log Retention</decimalTextBox>
+        <checkBox refId="CHK_CLI_TSLogRedirection">SCCM / MDT Logfile Redirection</checkBox>
       </presentation>
       <presentation id="POL_FldCfg">
         <checkBox refId="CHK_EVTb">Enable custom event log folder name</checkBox>
@@ -787,7 +790,7 @@ The file extensions you want to hydrate, seperated by a "," (comma) symbol. (def
       </presentation>
       <presentation id="POL_PVSCfg">
         <checkBox refId="CHK_P2V_SKIP_IMG">Skip PVS master image creation</checkBox>
-		<dropdownList refId="DST_WC_Driveletter" defaultItem="0">Write cache drive letter</dropdownList>
+        <dropdownList refId="DST_WC_Driveletter" defaultItem="0">Write cache drive letter</dropdownList>
         <dropdownList refId="DST_P2PVS_Tool" defaultItem="0">P2V Tool</dropdownList>
         <dropdownList refId="DST_VDISK_FORMAT" noSort="true" defaultItem="1">vDisk Format</dropdownList>
         <checkBox refId="CHK_P2VHDX">Enable P2V Custom UNC-Path</checkBox>
@@ -818,19 +821,20 @@ The file extensions you want to hydrate, seperated by a "," (comma) symbol. (def
         <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
         <decimalTextBox refId="DXT_CLI_CDSdelay" defaultValue="0" spinStep="5">Additional delay (seconds)</decimalTextBox>
       </presentation>
-	  <presentation id="POL_VDASSL">
+      <presentation id="POL_VDASSL">
         <textBox refId="TXT_VDASSL_CertThumbprint">
           <label>(Optional) Certificate Thumbprint:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
         <textBox refId="TXT_SSLPORT">
           <label>SSL Port:</label>
           <defaultValue>443</defaultValue>
         </textBox>
-		<dropdownList refId="DST_SSLMinVersion" defaultItem="1">Minimum SSL Version</dropdownList>
+        <dropdownList refId="DST_SSLMinVersion" defaultItem="1">Minimum SSL Version</dropdownList>
         <dropdownList refId="DST_SSLCipherSuite" defaultItem="0">SSL Cipher Suite</dropdownList>
       </presentation>
-	  <presentation id="POL_PVSHydration">
+      <presentation id="POL_PVSHydration">
         <textBox refId="TXT_PVSHydration_Paths">
           <label>Paths to hydrate:</label>
           <defaultValue>C:\Program Files|C:\Program Files (x86)</defaultValue>
@@ -847,7 +851,7 @@ The file extensions you want to hydrate, seperated by a "," (comma) symbol. (def
           <defaultValue>C:\Windows\System32</defaultValue>
         </textBox>
       </presentation>
-	  <presentation id="POL_WinSxS">
+      <presentation id="POL_WinSxS">
         <checkBox refId="CHK_WinSxSBaseImage">Execute WinSxS Optimization on BaseDisk only</checkBox>
         <decimalTextBox refId="DXT_WinSxSTimeout" defaultValue="240" spinStep="15">Maximum Execution Timeout (min)</decimalTextBox>
       </presentation>

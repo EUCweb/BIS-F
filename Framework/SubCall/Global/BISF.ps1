@@ -72,9 +72,10 @@ param()
 	  	11.11.2017 MS: Retry 30 times if Logshare on network path is not found with fallback after max. is reached
 		02.07.2018 MS: Bufix 50 - function Set-Logfile -> invoke-BISFLogShare   (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
 		20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
-		13.08.2019 MS: FRQ 97 - Nutanix Xi Frame Support
-		14.08.2019 MS: FRQ 6 - Parallels RAS Support
-		25.08.2019 MS: FRQ 132 - Windows 10 Enterprise for Virtual Desktops (WVD) Support
+		13.08.2019 MS: ENH 97 - Nutanix Xi Frame Support
+		14.08.2019 MS: ENH 6 - Parallels RAS Support
+		25.08.2019 MS: ENH 132 - Windows 10 Enterprise for Virtual Desktops (WVD) Support
+		25.08.2019 MS: FRQ 85 - Make SCCM / MDT Tasksequence Logfile redirection optional
 
       #>
 Begin {
@@ -286,22 +287,27 @@ Process {
 	Use-BISFPVSConfig -Verbose:$VerbosePreference  #27.07.2017 MS: new created
 
 	$TSenvExist = Get-BISFTaskSequence -Verbose:$VerbosePreference
-	IF($TSenvExist -eq "true") {
-		$tsenv = New-Object -COMObject Microsoft.SMS.TSEnvironment
-		$logPath = $tsenv.Value("LogPath")
-		Write-BISFLog -Msg "Set Log folder path to task sequence Log folder $logPath"
-		$LogFilePath = "$logPath"   # 02.06.2015 MS: changing to $logpath only (prev. $LogFilePath = "$logPath\$LogFolderName"), only files directly in the folder are preserved, not subfolders
-		$oldlogfile = $LogFile
-		$Global:Logfile = "$LogFilePath\$LogFileName"
+	IF ($TSenvExist -eq "true") {
+		IF ($LIC_BISF_CLI_TSLogRedirection -eq 1) {
+			$tsenv = New-Object -COMObject Microsoft.SMS.TSEnvironment
+			$logPath = $tsenv.Value("LogPath")
+			Write-BISFLog -Msg "Set Log folder path to task sequence Log folder $logPath"
+			$LogFilePath = "$logPath"   # 02.06.2015 MS: changing to $logpath only (prev. $LogFilePath = "$logPath\$LogFolderName"), only files directly in the folder are preserved, not subfolders
+			$oldlogfile = $LogFile
+			$Global:Logfile = "$LogFilePath\$LogFileName"
 
 
-		if (!(Test-Path -Path $LogFilePath)) {
-			New-Item -Path $LogFilePath -ItemType Directory -Force
+			if (!(Test-Path -Path $LogFilePath)) {
+				New-Item -Path $LogFilePath -ItemType Directory -Force
+			}
+
+			IF (Test-Path ($oldLogfile) -PathType Leaf ) {
+				Move-Item -Path "$OldLogfile" -Destination "$LogFile"
+				Write-BISFLog "LogFile $logfile" -ShowConsole -Color DarkCyan -SubMsg
+			}
 		}
-
-		IF (Test-Path ($oldLogfile) -PathType Leaf ) {
-			Move-Item -Path "$OldLogfile" -Destination "$LogFile"
-			Write-BISFLog "LogFile $logfile" -ShowConsole -Color DarkCyan -SubMsg
+		ELSE {
+			Write-BISFLog -Msg "SCCM/MDT Logfile Redirection is NOT enabled, using logpath $LogPath"
 		}
 	}
 
