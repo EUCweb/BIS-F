@@ -2396,6 +2396,7 @@ function Get-MacAddress {
 		History:
 	  	09.01.2017 MS: function created
 		20.02.2017 MS: fix empty space given back from $mac, thx to Valentino
+		18.09.2019 MS: HF 137 - generated GUID based on MAC-Address return in lowercase
 
 	.LINK
 		https://eucweb.com
@@ -2407,7 +2408,7 @@ function Get-MacAddress {
 	$wmi = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration
 	$mac = (($wmi | Where-Object { $_.IPAddress -eq $HostIP }).MACAddress)
 	$Delimiter = ":"
-	$mac = $mac -replace "$Delimiter", ""
+	$mac = ($mac -replace "$Delimiter", "").toLower()
 	Write-BISFLog -Msg "The MAC-Address for further use would be resolved: $mac"
 	return $mac
 }
