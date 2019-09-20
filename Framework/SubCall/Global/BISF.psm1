@@ -1509,6 +1509,7 @@ function Get-DiskMode {
 		15.08.2017 MS: get additional DiskMode with AppLayering back, like ReadWriteAppLayering, ReadOnlyAppLayering
 		29.10.2017 MS: get VDA back instead of MCS
 		13.08.2019 AS: ENH 46 - Make any PVS conversion work Optional
+		20.09.2019 MS: ENH 136 - detect PVS Private Image with Asynchronous IO
 		.LINK
 		https://eucweb.com
 #>
@@ -1517,7 +1518,7 @@ function Get-DiskMode {
 	try {
 		$WriteCacheMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType
 
-		if ($WriteCacheMode -eq "0") {
+		if (($WriteCacheMode -eq "0") -or ($WriteCacheMode -eq "10")) {
 			$returnValue = "ReadWrite"
 		}
 		else {
