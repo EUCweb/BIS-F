@@ -3559,3 +3559,37 @@ function Test-WVDSoftware {
 	return $WVD
 
 }
+
+function SET-LAPSExpirationTime{
+	<#
+	.SYNOPSIS
+		During Computerstartup the LAPS password expirationtime is resetted
+	.DESCRIPTION
+		Deploying Microsoft LAPS to a non-persistent VDI environment requires
+		a slightly difference approach to traditional machines, especially for those environments that force a reboot after user log off
+
+		use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		SET-BISFLAPSExpirationTime
+	.NOTES
+		Author: Matthias Schlimm / Martin Zugec
+
+		History:
+	  	21.09.2019 MS: function created
+
+	.LINK
+		https://eucweb.com
+#>
+	Write-BISFlog -Msg "Reset Computer LAPS password" -ShowConsole -Color Cyan
+	Write-BISFlog -Msg "Retrieve current machine account"
+	$filter = "(&(objectCategory=computer)(objectClass=computer)(cn=$env:COMPUTERNAME))"
+	$Object = ([adsisearcher]$filter).FindOne().GetDirectoryEntry()
+
+	Write-BISFlog -Msg "Reset the password expiration timer to 0"
+	$Object.psbase.InvokeSet("ms-Mcs-AdmPwdExpirationTime", 0)
+	Write-BISFlog -Msg "Save changes to Active Directory object"
+	$Object.SetInfo()
+
+
+}

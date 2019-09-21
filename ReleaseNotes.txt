@@ -1,3 +1,4 @@
+21.09.2019 MS: ENH 9 - LAPS Support for Non-Persistent VDI
 21.09.2019 MS: ENH 36 - Shared Configuration - JSON Export and Import
 20.09.2019 MS: ENH 136 - detect PVS Private Image with Asynchronous IO
 18.09.2019 MS: HF 137 - generated GUID based on MAC-Address return in lowercase

@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.6053355E_2999_4694_8454_E25DF3DB3D01" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.DD45EEFC_419E_4BFE_9C29_9A2E467C7D76" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -864,7 +864,7 @@
               <decimal value="2" />
             </value>
           </item>
-		  <item displayName="$(string.ITM_Part3)">
+          <item displayName="$(string.ITM_Part3)">
             <value>
               <decimal value="3" />
             </value>
@@ -878,7 +878,7 @@
             <value>
               <decimal value="5" />
             </value>
-	      </item>
+          </item>
         </enum>
       </elements>
     </policy>
@@ -1313,6 +1313,24 @@
         <text id="TXT_AppLayPltCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayPltCfg" />
         <text id="TXT_AppLayNoELM" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayNoELM" />
       </elements>
+    </policy>
+    <policy name="POL_LAPSExpirationTime" class="Machine" displayName="$(string.POL_LAPSExpirationTime)" explainText="$(string.POL_LAPSExpirationTime_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_LAPSExpirationTime">
+      <parentCategory ref="CAT_MS" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LAPSExpirationTime">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LAPSExpirationTime">
+          <value>
+            <delete />
+          </value>
+        </item>
+      </disabledList>
     </policy>
   </policies>
 </policyDefinitions>

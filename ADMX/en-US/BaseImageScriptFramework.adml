@@ -660,9 +660,17 @@ The file extensions you want to hydrate, seperated by a "," (comma) symbol. (def
       <string id="ITM_3955416D_4222_48BE_8F98_2BACF625B744">5</string>
       <string id="ITM_7BAB904B_CF5F_4D6B_892C_23EEF90FF40C">2</string>
       <string id="ITM_Part2">2</string>
-	  <string id="ITM_Part3">3</string>
+      <string id="ITM_Part3">3</string>
       <string id="ITM_Part4">4</string>
       <string id="ITM_Part5">5</string>
+      <string id="POL_LAPSExpirationTime">Reset LAPS Password</string>
+      <string id="POL_LAPSExpirationTime_Help">This policy setting allows you to reset the LAPS password on Computer Startup
+
+If you enable this policy setting, the LAPS password is reseted
+
+If you disable or do not configure  this policy setting, LAPS Password reset is skipped.
+
+Deploying Microsoft LAPS to a non-persistent VDI environment requires a slightly difference approach to traditional machines, especially for those environments that force a reboot after user log off, like PVS, MCS deployments.</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
