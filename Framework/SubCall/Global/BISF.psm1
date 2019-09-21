@@ -3560,7 +3560,7 @@ function Test-WVDSoftware {
 
 }
 
-function SET-LAPSExpirationTime{
+function Set-LAPSExpirationTime{
 	<#
 	.SYNOPSIS
 		During Computerstartup the LAPS password expirationtime is resetted

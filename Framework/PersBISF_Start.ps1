@@ -32,6 +32,7 @@
 		12.09.2017 MS: Using array $PersState = $TaskStates[0-4] to set the right State in the registry instead of hardcoded value
 		03.10.2017 MS: Bugfix 215: writing wrong PersState to registry, preparation does not run in that case
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
+		21.09.2019 MS: ENH 127 - Personalization is in Active State Override
 	.LINK
 		https://eucweb.com
 #>
@@ -88,7 +89,15 @@ Process {
 	# Initialize all variables used by BISF
 	Initialize-BISFConfiguration
 
-	$PersState = $TaskStates[2]
+	#Personalization is in Active State Override
+	IF ($LIC_BISF_CLI_PersonalizationOverride -eq 2 ) {
+		Write-BISFLog "Personlization Active State override is set to: Change and continue"
+		$PersState = $TaskStates[3]
+	}
+ ELSE {
+		Write-BISFLog "Personlization Active State override is set to: Do not change and wait"
+		$PersState = $TaskStates[2]
+	}
 	Write-BISFLog -Msg "Write PersState to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_PersState -Value: $PersState"
 	Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState" -value "$PersState" -Force #-ErrorAction SilentlyContinue
 

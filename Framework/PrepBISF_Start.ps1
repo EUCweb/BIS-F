@@ -70,6 +70,7 @@
 		12.07.2018 MS: Bugfix 40: PendingReboot - give a empty value back
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		21.09.2019 MS: ENH 127 - Personalization is in Active State Override
 	.LINK
 		https://eucweb.com
 #>
@@ -170,10 +171,31 @@ Process {
 	# Initialize all variables used by BISF
 	Initialize-BISFConfiguration
 
+
+	#ENH 127 - Personalization is in Active State Override
+	IF ($LIC_BISF_CLI_PersonalizationOverrideTimeOut -eq "") {
+		[int]$MaximumExecutionMinutes = 60
+		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
+	}
+ ELSE {
+		[int]$MaximumExecutionMinutes = $LIC_BISF_CLI_PersonalizationOverrideTimeOut
+		Write-BISFLog "Maximum execution time used the GPO value with $MaximumExecutionMinutes minutes"
+	}
+	$MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
+
 	#running loop if Personalization State is not finished
 	$a = 0
+
 	DO {
 		IF ($a -eq "99") { $a = 0 }
+		# ENH 127 - Personalization is in Active State Override
+		if ((Get-Date) -ge $MaximumExecutionTime) {
+			Write-BISFLog -Msg "The operation has exceeded the maximum execution time of $MaximumExecutionMinutes Minutes." -Type W
+			$PersState = $TaskStates[3]
+			Write-BISFLog -Msg "Write PersState to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_PersState -Value: $PersState"
+			Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState" -value "$PersState" -Force
+		}
+
 		$PersState = (Get-ItemProperty "HKLM:\SOFTWARE\Login Consultants\BISF" -Name "LIC_BISF_PersState").LIC_BISF_PersState
 		IF (($PersState -eq $($TaskStates[0])) -or ($PersState -eq $($TaskStates[3]))) {
 			$a = 100
