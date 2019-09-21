@@ -437,7 +437,7 @@ This is relevant to format the WriteCacheDisk only.
  - If you have a System Reserved Partition, C drive for OS (streamed vDisk) and a Write Cache Disk use 3 Paritions
 
 Note: If you configure it wrong, a reboot loop is performed !!
--
+
 </string>
       <string id="ITM_0"> NONE</string>
       <string id="ITM_B">B:</string>
@@ -661,10 +661,6 @@ Paths you want to have hydrated, seperated by a "|" (pipe) symbol. Paths are sea
 Extensions to hydrate:
 The file extensions you want to hydrate, seperated by a "," (comma) symbol. (default = *.exe,*.dll)
 </string>
-      <string id="ITM_3DC5C4AC_C83F_4008_B5AC_F7CCF7936DBF">3</string>
-      <string id="ITM_23F124F3_6F96_44E3_93A5_D958F7E90EB7">4</string>
-      <string id="ITM_3955416D_4222_48BE_8F98_2BACF625B744">5</string>
-      <string id="ITM_7BAB904B_CF5F_4D6B_892C_23EEF90FF40C">2</string>
       <string id="ITM_Part2">2</string>
       <string id="ITM_Part3">3</string>
       <string id="ITM_Part4">4</string>
@@ -680,10 +676,56 @@ Deploying Microsoft LAPS to a non-persistent VDI environment requires a slightly
       <string id="ITM_DM_All">All</string>
       <string id="ITM_DM_PrivateMode">Private Mode</string>
       <string id="ITM_DM_Never"> Never</string>
-      <string id="ITM_DD381FDB_F5FA_4E71_B2E1_C5A8DACEAC70"> Do not change and wait</string>
-      <string id="ITM_52D5DBE2_8058_4FDD_9CB7_5B00B6D4E130">Change and continue</string>
       <string id="ITM_PersOverride_1"> Do not change and wait</string>
       <string id="ITM_PersOverride_2">Change and continue</string>
+      <string id="POL_MCSCfg">Configure Citrix MCS Device</string>
+      <string id="ITM_MCSIO_0"> NONE</string>
+	  <string id="ITM_MCSIO_B">B:</string>
+      <string id="ITM_MCSIO_C">C:</string>
+      <string id="ITM_MCSIO_D">D:</string>
+      <string id="ITM_MCSIO_E">E:</string>
+      <string id="ITM_MCSIO_F">F:</string>
+      <string id="ITM_MCSIO_G">G:</string>
+      <string id="ITM_MCSIO_H">H:</string>
+      <string id="ITM_MCSIO_I">I:</string>
+      <string id="ITM_MCSIO_J">J:</string>
+      <string id="ITM_MCSIO_K">K:</string>
+      <string id="ITM_MCSIO_L">L:</string>
+      <string id="ITM_MCSIO_M">M:</string>
+      <string id="ITM_MCSIO_N">N:</string>
+      <string id="ITM_MCSIO_O">O:</string>
+      <string id="ITM_MCSIO_P">P:</string>
+      <string id="ITM_MCSIO_Q">Q:</string>
+      <string id="ITM_MCSIO_R">R:</string>
+      <string id="ITM_MCSIO_S">S:</string>
+      <string id="ITM_MCSIO_T">T:</string>
+      <string id="ITM_MCSIO_U">U:</string>
+      <string id="ITM_MCSIO_V">V:</string>
+      <string id="ITM_MCSIO_W">W:</string>
+      <string id="ITM_MCSIO_X">X:</string>
+      <string id="ITM_MCSIO_Y">Y:</string>
+      <string id="ITM_MCSIO_Z">Z:</string>
+      <string id="ITM_MCSIO_Part2">2</string>
+      <string id="ITM_MCSIO_Part3">3</string>
+      <string id="ITM_MCSIO_Part4">4</string>
+      <string id="ITM_MCSIO_Part5">5</string>
+      <string id="POL_MCSCfg_Help">MCSIO Disk Drive Letter:
+
+If you enable this policy setting, you must select the drive letter for the MCSIO persistent disk (minimum VDA 1903 or higher is required)
+If you disable or do not configure this policy setting, the MCSIO persistent drive is not used.
+
+Number of Partitions:
+Enter the Number of Parttitons that you have on the MCSDevice, if you have no MCSIO Disk you can ignore this setting.
+This is relevant to format the MCSIO Disk only.
+
+-  If you have C Drive for OS and a MCSIO Disk use 2 Paritions (default)
+ - If you have a System Reserved Partition, C drive for OS and a MCSIO Disk use 3 Paritions
+
+Note: If you configure it wrong, a reboot loop is performed !!
+
+Disable Redirection:
+With a configured MCSIO Disk the eventlogs and spool directory is redirected to the persistent drive. With this setting you can disable the redirection
+</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -930,6 +972,11 @@ Deploying Microsoft LAPS to a non-persistent VDI environment requires a slightly
           <label>Domain joined Platform Layer config file</label>
           <defaultValue>BISF_AppLay_Plt_config.xml</defaultValue>
         </textBox>
+      </presentation>
+      <presentation id="POL_MCSCfg">
+        <dropdownList refId="DST_MCSIODriveLetter" defaultItem="0">MCSIO Disk Drive Letter</dropdownList>
+        <dropdownList refId="DST_MCSIONumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
+        <checkBox refId="CHK_MCSIODisableRedirection">Disable Redirection</checkBox>
       </presentation>
     </presentationTable>
   </resources>

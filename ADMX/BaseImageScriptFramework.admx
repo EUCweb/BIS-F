@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.1183480A_CB5E_4797_80A4_E7BA8FF4903A" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.3970D7C0_A19B_4BF9_B2B3_AA7EDD619BE1" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1344,6 +1344,184 @@
           </value>
         </item>
       </disabledList>
+    </policy>
+    <policy name="POL_MCSCfg" class="Machine" displayName="$(string.POL_MCSCfg)" explainText="$(string.POL_MCSCfg_Help)" presentation="$(presentation.POL_MCSCfg)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_MCSCfg">
+      <parentCategory ref="CAT_CTX" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledList>
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSCfg">
+          <value>
+            <string>YES</string>
+          </value>
+        </item>
+      </enabledList>
+      <disabledList>
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSCfg">
+          <value>
+            <string>NO</string>
+          </value>
+        </item>
+      </disabledList>
+      <elements>
+        <enum id="DST_MCSIODriveLetter" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSIODriveLetter">
+              <item displayName="$(string.ITM_MCSIO_0)">
+            <value>
+              <string>NONE</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_B)">
+            <value>
+              <string>B:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_D)">
+            <value>
+              <string>D:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_E)">
+            <value>
+              <string>E:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_F)">
+            <value>
+              <string>F:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_G)">
+            <value>
+              <string>G:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_H)">
+            <value>
+              <string>H:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_I)">
+            <value>
+              <string>I:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_J)">
+            <value>
+              <string>J:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_K)">
+            <value>
+              <string>K:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_L)">
+            <value>
+              <string>L:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_M)">
+            <value>
+              <string>M:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_N)">
+            <value>
+              <string>N:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_O)">
+            <value>
+              <string>O:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_P)">
+            <value>
+              <string>P:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_Q)">
+            <value>
+              <string>Q:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_R)">
+            <value>
+              <string>R:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_S)">
+            <value>
+              <string>S:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_T)">
+            <value>
+              <string>T:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_U)">
+            <value>
+              <string>U:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_V)">
+            <value>
+              <string>V:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_W)">
+            <value>
+              <string>W:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_X)">
+            <value>
+              <string>X:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_Y)">
+            <value>
+              <string>Y:</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_Z)">
+            <value>
+              <string>Z:</string>
+            </value>
+          </item>
+		  
+        </enum>
+        <enum id="DST_MCSIONumberOfPartitions" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSIONumberOfPartitions">
+          <item displayName="$(string.ITM_MCSIO_Part2)">
+            <value>
+              <string>2</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_Part3)">
+            <value>
+              <decimal value="3" />
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_Part4)">
+            <value>
+              <decimal value="4" />
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSIO_Part5)">
+            <value>
+              <decimal value="5" />
+            </value>
+          </item>
+        </enum>
+        <boolean id="CHK_MCSIODisableRedirection" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSIODisableRedirection">
+          <trueValue>
+            <decimal value="1" />
+          </trueValue>
+          <falseValue>
+            <delete />
+          </falseValue>
+        </boolean>
+      </elements>
     </policy>
   </policies>
 </policyDefinitions>
