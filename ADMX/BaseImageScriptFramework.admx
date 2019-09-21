@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.DD45EEFC_419E_4BFE_9C29_9A2E467C7D76" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.1183480A_CB5E_4797_80A4_E7BA8FF4903A" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -917,6 +917,19 @@
             </value>
           </item>
         </enum>
+        <enum id="DST_CLI_PersonalizationOverride" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PersonalizationOverride">
+          <item displayName="$(string.ITM_PersOverride_1)">
+            <value>
+              <decimal value="1" />
+            </value>
+          </item>
+          <item displayName="$(string.ITM_PersOverride_2)">
+            <value>
+              <decimal value="2" />
+            </value>
+          </item>
+        </enum>
+        <decimal id="DXT_PersonalizationOverrideTimeOut" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PersonalizationOverrideTimeOut" minValue="15" maxValue="120" />
       </elements>
     </policy>
     <policy name="POL_ExpCfg" class="Machine" displayName="$(string.POL_ExpCfg)" explainText="$(string.POL_ExpCfg_Help)" presentation="$(presentation.POL_ExpCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_EX">

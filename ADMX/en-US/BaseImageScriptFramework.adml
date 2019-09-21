@@ -478,6 +478,15 @@ If you enable this policy setting, you can select a DiskMode to skip the Device 
  &gt; Private Mode - if the Image is in Private Mode (PVS or MCS) skip the Device Personalization
 
 If you disable or do not configure this policy settings, the Device Personalization would not being skipped.
+
+Active State Override (private Images only):
+During Startup the personalization is running, and on the MasterImage a new seal job is waiting until the personalization is finished.
+
+Do not change and wait: Wait until the personlization is finished or the MaxExecutionTime is reached to run the sealing process.
+Change and wait: Does not wait for the end of the personalization and starting immediately the sealing process. 
+
+Maximum Execution Timeout (private Images only):
+You can specifiy the maximum execution timeout for the personalization process. Default is set to 60 minutes, min. 15,  max 120. You can increase/decrease the value in steps of 5 minutes.If the value is reached the personalization is terminated and the sealing process can be started 
 </string>
       <string id="POL_ExpCfg">Shared Configuration</string>
       <string id="POL_ExpCfg_Help">This policy settings allows you to export the BISF CLI commands, that would be set from the complete BIS-F policy to an xml file. This can be used for computers that's running in Worker Groups (like Citrix AppLayering) or you have no access to modify the Active Directory Group Policies.
@@ -497,9 +506,6 @@ Note: mostly you need this one time, to create the xml files, after that you can
 You can also find the needed xml templates in the installation folder
 
 </string>
-      <string id="ITM_DM_All">All</string>
-      <string id="ITM_DM_PrivateMode">Private Mode</string>
-      <string id="ITM_DM_Never">Never</string>
       <string id="POL_VDACfg">VDA Configuration</string>
       <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
 
@@ -671,6 +677,13 @@ If you enable this policy setting, the LAPS password is reseted
 If you disable or do not configure  this policy setting, LAPS Password reset is skipped.
 
 Deploying Microsoft LAPS to a non-persistent VDI environment requires a slightly difference approach to traditional machines, especially for those environments that force a reboot after user log off, like PVS, MCS deployments.</string>
+      <string id="ITM_DM_All">All</string>
+      <string id="ITM_DM_PrivateMode">Private Mode</string>
+      <string id="ITM_DM_Never"> Never</string>
+      <string id="ITM_DD381FDB_F5FA_4E71_B2E1_C5A8DACEAC70"> Do not change and wait</string>
+      <string id="ITM_52D5DBE2_8058_4FDD_9CB7_5B00B6D4E130">Change and continue</string>
+      <string id="ITM_PersOverride_1"> Do not change and wait</string>
+      <string id="ITM_PersOverride_2">Change and continue</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -833,6 +846,10 @@ Deploying Microsoft LAPS to a non-persistent VDI environment requires a slightly
       </presentation>
       <presentation id="POL_PersCfg">
         <dropdownList refId="DST_CLI_DM" defaultItem="0">Skip Personalization based on DiskMode</dropdownList>
+        <dropdownList refId="DST_CLI_PersonalizationOverride" defaultItem="0">Active State Override</dropdownList>
+        <decimalTextBox refId="DXT_PersonalizationOverrideTimeOut" defaultValue="60" spinStep="5">Maximum Execution Timeout (min.)</decimalTextBox>
+        <text>
+        </text>
       </presentation>
       <presentation id="POL_ExpCfg">
         <text>
