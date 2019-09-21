@@ -76,6 +76,7 @@ param()
 		14.08.2019 MS: ENH 6 - Parallels RAS Support
 		25.08.2019 MS: ENH 132 - Windows 10 Enterprise for Virtual Desktops (WVD) Support
 		25.08.2019 MS: FRQ 85 - Make SCCM / MDT Tasksequence Logfile redirection optional
+		21.09.2019 MS: EHN 36 - Shared Configuration - JSON Export
 
       #>
 Begin {
@@ -247,16 +248,17 @@ Process {
 	Get-BISFOSinfo -Verbose:$VerbosePreference
 	IF ($ExportSharedConfiguration) {
 		#check switch ExportSharedConfiguration
+		# EHN 36 - Shared Configuration - JSON Export
 		IF ($LIC_BISF_CLI_EX_PT) {
 			#check Path in Registry if set
-			$XMLOSname = $OSName.replace(' ', '')
-			$XMLOSBitness = $OSBitness
-			$XMLExportFile = "$LIC_BISF_CLI_EX_PT" + "\BISFconfig_" + $XMLOSname + "_" + $XMLOSBitness + ".xml"
-			Write-BISFlog "Export Registry to $XMLExportFile" -ShowConsole -Color Cyan
-			Export-BISFRegistry "$Reg_LIC_Policies" -ExportType xml -exportpath "$XMLexportfile"
+			$CfgOSname = $OSName.replace(' ', '')
+			$CfgOSBitness = $OSBitness
+			$CfgExportFile = "$LIC_BISF_CLI_EX_PT" + "\BISFconfig_" + $CfgOSname + "_" + $CfgOSBitness + ".json"
+			Write-BISFlog "Export Registry to $CfgExportFile" -ShowConsole -Color Cyan
+			Export-BISFRegistry "$Reg_LIC_Policies" -ExportType json -exportpath "$CfgExportFile"
 		}
 		ELSE {
-			Write-BISFLog "Error: The custom path for the shared configuration is not configured in the ADMX !!" -Type E
+			Write-BISFLog "Error: The custom path for the shared configuration is not configured in the Policy !!" -Type E
 		}
 
 		Write-BISFLog "Press any key to exit ..." -ShowConsole -Color Red

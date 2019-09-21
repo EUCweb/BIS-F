@@ -2849,16 +2849,17 @@ Function Export-Registry {
 	.Parameter NoBinary
 	Do not export any binary registry values
    .Example
-	PS C:\> Export-BISFRegistry "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" -ExportType xml -exportpath c:\files\WinLogon.xml
+	Export-BISFRegistry "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" -ExportType json -exportpath c:\files\WinLogon.xml
 
    .Notes
 	NAME: Export-BISFRegistry
 	Author: Jeffery Hicks / Matthias Schlimm
-	Company: Login Consultants Germany GmbH
+
 
 	History:
-	14.08.2017 MS : import function into BIS-F
-	15.08.2017 MS : Writing the second XML File, these file must be copied to the BIS-F Root Installation folder
+	14.08.2017 MS: import function into BIS-F
+	15.08.2017 MS: Writing the second XML File, these file must be copied to the BIS-F Root Installation folder
+	21.09.2019 MS: EHN 36 - Shared Configuration - JSON Export
 
 #>
 
@@ -2873,7 +2874,7 @@ Function Export-Registry {
 		[string[]]$Path,
 
 		[Parameter()]
-		[ValidateSet("csv", "xml")]
+		[ValidateSet("json", "xml")]
 		[string]$ExportType,
 
 		[Parameter()]
@@ -2949,34 +2950,20 @@ Function Export-Registry {
 			if ($ExportType -AND $ExportPath) {
 				Write-BISFlog "Exporting $ExportType data to $ExportPath" -ShowConsole -Color DarkCyan -SubMsg
 				Switch ($exportType) {
-					"csv" { $data | Export-Csv -Path $ExportPath -noTypeInformation }
+					"json" { $data | ConvertTo-Json -Depth 10 | Out-File -FilePath $ExportPath }
 					"xml" { $data | Export-Clixml -Path $ExportPath }
 				} #switch
 
 
-				#Writing the second XML File, these file must be copied to the BIS-F Root Installation folder
+				#Writing the second json File, these file must be copied to the BIS-F Root Installation folder
 				# Set the File Name
-				$filePath = "$LIC_BISF_CLI_EX_PT" + "\BISFSharedConfig.xml "
+				$filePath = "$LIC_BISF_CLI_EX_PT" + "\BISFSharedConfig.json "
 				Write-BISFlog -Msg "Writing $filePath - copy this file to the BIS-F installation folder, like $InstallLocation on your destination computer (example: Citrix AppLayering in Workergroup)," -ShowConsole -Color DarkCyan -SubMsg
 				Write-BISFLog -Msg "to import the BIS-F configuration from $($ExportPath). If you run the Computer in Workgroup you must set the shared path NTFS Rights to ""Everyone read"" to get access without prompt."
 
-				# Create The Document
-				$XmlWriter = New-Object System.XMl.XmlTextWriter($filePath, $Null)
-
-				# Set The Formatting
-				$xmlWriter.Formatting = "Indented"
-				$xmlWriter.Indentation = "1"
-				# Write the XML Decleration
-				$xmlWriter.WriteStartDocument()
-				# Write Comment
-				$xmlWriter.WriteComment('Path to the BIS-F XML Configuration, if you run the Computer in Workgroup you must set the shared path NTFS Rights to "Everyone read" to get access without prompt.')
-				# Write Root Element
-				$xmlWriter.WriteStartElement("BISFconfig")
-				# Write the Document
-				$xmlWriter.WriteElementString("ConfigFile", "$ExportPath")
-				# Finish The Document
-				$xmlWriter.Finalize
-				$xmlWriter.Close()
+				(New-Object PSObject -Property @{
+					Configfile    = "$ExportPath"
+				}) | ConvertTo-Json -Depth 10 | Out-File -FilePath $filePath
 
 			} #if $exportType
 			elseif ( ($ExportType -AND (-not $ExportPath)) -OR ($ExportPath -AND (-not $ExportType)) ) {
@@ -3009,40 +2996,65 @@ function Import-SharedConfiguration {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
 
 		History:
-	  	15.08.2017 MS: function created
+		  15.08.2017 MS: function created
+		  21.09.2019 MS: EHN 36 - Shared Configuration - JSON Import
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
-	$XMLConfigFile = "$InstallLocation" + "BISFSharedConfig.xml"
-	IF (Test-Path $XMLConfigFile -PathType Leaf) {
-		Write-BISFlog "Reading Shared Configuration from file $XMLConfigFile" -ShowConsole -SubMsg -Color DarkCyan
-		[xml]$XmlDocument = Get-Content -Path "$XMLConfigFile"
-		$xmlfullname = $XmlDocument.GetType().FullName
-		$xmlSharedConfigFile = $XmlDocument.BISFconfig.ConfigFile
-		Write-BISFlog "Shared Configuration is stored in $xmlSharedConfigFile" -ShowConsole -SubMsg -Color DarkCyan
-		IF (Test-Path $xmlSharedConfigFile -PathType Leaf) {
+	# JSON Import
+	$JSONConfigFile = "$InstallLocation" + "BISFSharedConfig.json"
+	IF (Test-Path $JSONConfigFile -PathType Leaf) {
+		Write-BISFlog "Import JSON Shared Configuration " -ShowConsole -Color Cyan
+		Write-BISFlog "Reading Shared Configuration from file $JSONConfigFile" -ShowConsole -SubMsg -Color DarkCyan
+		$JsonFile = Get-Content $JSONConfigFile | Convertfrom-Json
+		$JSONSharedConfigFile = $JsonFile.ConfigFile
+		Write-BISFlog "Shared Configuration is stored in $JSONSharedConfigFile" -ShowConsole -SubMsg -Color DarkCyan
+		IF (Test-Path $JSONSharedConfigFile -PathType Leaf) {
 			IF (!(Test-Path $Reg_LIC_Policies)) {
 				New-Item -Path $hklm_sw_pol -Name $LIC -Force | Out-Null
 				New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
 				write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
 			}
 			Write-BISFlog "Import XML Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
-			$object = Import-Clixml "$xmlSharedConfigFile"
-			$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
+			$object = Get-Content $JSONSharedConfigFile | Convertfrom-Json
 
+		} ELSE {
+			Write-BISFlog "Error: Shared Configuration $JSONSharedConfigFile does not exists !!" -Type E
 		}
-		ELSE {
-			Write-BISFlog "Error: Shared Configuration $xmlSharedConfigFile does not exists !!" -Type E
+	} ELSE {
+		# Fallback to XML Import
+		Write-BISFlog "Shared Configuration does not exist in $JSONConfigFile"
+		$XMLConfigFile = "$InstallLocation" + "BISFSharedConfig.xml"
+		IF (Test-Path $XMLConfigFile -PathType Leaf) {
+			Write-BISFlog "Fallback to XML Shared Configuration " -ShowConsole -Color Cyan
+			Write-BISFlog "Reading Shared Configuration from file $XMLConfigFile" -ShowConsole -SubMsg -Color DarkCyan
+			[xml]$XmlDocument = Get-Content -Path "$XMLConfigFile"
+			$xmlfullname = $XmlDocument.GetType().FullName
+			$xmlSharedConfigFile = $XmlDocument.BISFconfig.ConfigFile
+			Write-BISFlog "Shared Configuration is stored in $xmlSharedConfigFile" -ShowConsole -SubMsg -Color DarkCyan
+			IF (Test-Path $xmlSharedConfigFile -PathType Leaf) {
+				IF (!(Test-Path $Reg_LIC_Policies)) {
+					New-Item -Path $hklm_sw_pol -Name $LIC -Force | Out-Null
+					New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
+					write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
+				}
+				Write-BISFlog "Import XML Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
+				$object = Import-Clixml "$xmlSharedConfigFile"
+				$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
+
+			}
+			ELSE {
+				Write-BISFlog "Error: Shared Configuration $xmlSharedConfigFile does not exists !!" -Type E
+			}
+		} ELSE {
+			Write-BISFlog "Shared Configuration does not exist in $XMLConfigFile"
 		}
 	}
-	ELSE {
-		Write-BISFlog "Shared Configuration does not exist in $ConfigFile"
-	}
+
 }
 
 function Remove-FolderAndContents {
