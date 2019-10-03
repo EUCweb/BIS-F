@@ -279,7 +279,7 @@ If you disable this policy setting, FSLogix rules will not be deleted.
 
 </string>
       <string id="POL_FSXRulesShare">Configure FSLogix central rules share</string>
-      <string id="POL_FSXRulesShare_Help">Copy FSLogix rules (*.frx) and assignments (*.fxa) from central share during Device Personalization on System Startup
+      <string id="POL_FSXRulesShare_Help">Copy FSLogix rules (*.frx) , assignments (*.fxa) and URL (*.xml)  from central share during Device Personalization on System Startup
 
 If you enable this policy setting, you must enter a valid central share location \\Server\Share.
 If you disable or do not configure this policy setting, a center share location will not be used.
@@ -301,10 +301,19 @@ Prerequisites: nvpsbind.exe must be installed on the Base Image first
 
 You can also enter an Custom search folder, e.g. C:\Windows\System32, if you do not configured or disable the Custom search folder option, the standard BIS-F Folders would be used.</string>
       <string id="POL_Sysprep">Run Sysprep</string>
-      <string id="POL_Sysprep_Help">If No Image Management software such as Citrix VDA, Citrix PVS Target Device Driver or VMware View Agent are detected, BIS-F will prompt to run Microsoft Sysprep at the end of the sealing process.
+      <string id="POL_Sysprep_Help">If No Image Management software such as Citrix VDA, Citrix PVS Target Device Driver, Microsoft WVD, VMware View Agent, Nutanix Frame,Parallels are detected, BIS-F can perform Microsoft Sysprep at the end of the sealing process.
 
 If you enable this policy setting, sysprep will be executed if no Image Management software is detected.
 If you disable or do not configure this policy setting, sysprep will not be executed.
+
+
+Defaultarguments to run sysprerp: /generalize /oobe /quiet /quit
+
+Enable Custom Sysprep Arguments:
+Override the default arguments
+
+Custom Sysprep Arguments:
+Enter your own sysprep arguments and override the default settings
 </string>
       <string id="POL_DelProf">Run DelProf2</string>
       <string id="POL_DelProf_Help">Run DelProf2.exe
@@ -995,6 +1004,14 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         <checkBox refId="CHK_AV_VIE_CusScanArgsb">Enable Custom Scan Arguements</checkBox>
         <textBox refId="TXT_AV_VIE_CusScanArgs">
           <label>Custom Scan Arguments</label>
+          <defaultValue>
+          </defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_Sysprep">
+        <checkBox refId="CHK_SP_CusArgsb">Enable Custom Sysprep Arguments</checkBox>
+        <textBox refId="TXT_SP_CusArgs">
+          <label>Custom Sysprep Arguments</label>
           <defaultValue>
           </defaultValue>
         </textBox>

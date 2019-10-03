@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.D82AF0D3_2C16_4618_9F72_1EDC02C8D64B" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.BC8724EE_ECEB_450A_A69B_D5B54B1FF61A" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -428,7 +428,7 @@
         <text id="TXT_V6_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6_SF_CUS" />
       </elements>
     </policy>
-    <policy name="POL_Sysprep" class="Machine" displayName="$(string.POL_Sysprep)" explainText="$(string.POL_Sysprep_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SP">
+    <policy name="POL_Sysprep" class="Machine" displayName="$(string.POL_Sysprep)" explainText="$(string.POL_Sysprep_Help)" presentation="$(presentation.POL_Sysprep)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SP">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -445,6 +445,10 @@
           </value>
         </item>
       </disabledList>
+      <elements>
+        <boolean id="CHK_SP_CusArgsb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SP_CusArgsb" />
+        <text id="TXT_SP_CusArgs" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SP_CusArgs" />
+      </elements>
     </policy>
     <policy name="POL_DelProf" class="Machine" displayName="$(string.POL_DelProf)" explainText="$(string.POL_DelProf_Help)" presentation="$(presentation.POL_DelProf)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DP">
       <parentCategory ref="CAT_3P" />

@@ -55,6 +55,7 @@ param(
 		01.11.2017 MS: check if Defrag Service is running, thx to Lejkin Dmitrij
 		02.11.2017 MS: Bugfix: if booting up in private Mode the vhdx and custom unc-path is configured, defrag runs on the UNC-Path and not on the BaseDisk itself.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		03.10.2019 MS: ENH 94 - Add sysprep command-line options to ADMX
 
 	.LINK
 		https://eucweb.com
@@ -214,82 +215,90 @@ Begin {
 	}
 }
 
-	Process {
+Process {
 
-		#### Main Program
-		Write-BISFLog -Msg "Write Sysprep status to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_RunSysPrep -Value: $RunSysPrep"
-		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_RunSysPrep" -value "$RunSysPrep" #-ErrorAction SilentlyContinue
+	#### Main Program
+	Write-BISFLog -Msg "Write Sysprep status to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_RunSysPrep -Value: $RunSysPrep"
+	Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_RunSysPrep" -value "$RunSysPrep" #-ErrorAction SilentlyContinue
 
-		IF ($returnTestPVSSoftware -eq $true) {
-			IF ($CTXAppLayeringSW) {
-				Write-BISFLog -Msg "Successfully build your Base Image with Citrix AppLayering - $CTXAppLayerName ..." -ShowConsole -Color DarkCyan -SubMsg
-				PostCommand
-			}
-			ELSE {
-				IF ($CheckP2PVSlog -eq $true) {
-					$CheckPVSLog = Test-BISFLog -CheckLogFile "$P2PVS_LOGFile" -SearchString "$P2PVS_LOGFile_search"
-					get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
-					IF ($CheckPVSLog -ne "") {
-						Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
-						Write-BISFLog -Msg "vDisk $P2PVS_LOGFile_search"
-						PostCommand
-					}
-					ELSE {
-						Write-BISFLog -Msg "vDisk operation NOT successfull, check $P2PVS_LOGFile for further details" -Type E
-					}
-				}
-				IF ($CheckP2PVSlog -eq $false) {
-					Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
-					PostCommand
-				}
-
-				IF ($CheckP2PVSlog -eq "ERROR") {
-					get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
-					Write-BISFLog -Msg "vDisk operation NOT successfull, check $LIC_PVS_LogPath for further details" -Type E
-				}
-			}
+	IF ($returnTestPVSSoftware -eq $true) {
+		IF ($CTXAppLayeringSW) {
+			Write-BISFLog -Msg "Successfully build your Base Image with Citrix AppLayering - $CTXAppLayerName ..." -ShowConsole -Color DarkCyan -SubMsg
+			PostCommand
 		}
 		ELSE {
-			IF ($ImageSW -eq $true) {
-				IF ($CTXAppLayeringSW)
-				{ $txt = "Successfully build your Base Image with Citrix AppLayering in $CTXAppLayerName ..." } ELSE { $txt = "Successfully build your Base Image.." }
-				Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
-				PostCommand
-			}
-			ELSE {
-				IF ($RunSysPrep -eq $true) {
-					Write-BISFLog -Msg "Running Sysprep to seal the Base Image" -ShowConsole -Color DarkCyan -SubMsg
-					$LIC_BIS_Sysprep_ServiceList = $LIC_BIS_Sysprep_ServiceList -join ","
-					Write-BISFLog -Msg "Write Sysprep ServiceList to registry location: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_SysPrep_ServiceList -Value: $LIC_BIS_Sysprep_ServiceList"
-					Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BIS_Sysprep_ServiceList" -value "$LIC_BIS_Sysprep_ServiceList" #-ErrorAction SilentlyContinue
-					$SysPrepLog = "C:\Windows\System32\sysprep\Panther\setuperr.log"
-
-					IF ((Test-Path ("$SysPrepLog") -PathType Leaf )) {
-						Write-BISFLog -Msg "Deleting old Sysprep log file $SysPrepLog" -ShowConsole -Color DarkCyan -SubMsg
-						Remove-Item $SysPrepLog -recurse -ErrorAction SilentlyContinue
-					}
-					Start-BISFProcWithProgBar -ProcPath "C:\Windows\System32\sysprep\sysprep.exe" -Args "/generalize /oobe /quiet /quit " -ActText "Sysprep is running..."
-					$CheckSysPrepLog = Test-BISFLog -CheckLogFile "$SysPrepLog" -SearchString "Error"
-					IF ($CheckSysPrepLog -eq $true) {
-						#syspreplog show errors
-						get-BISFLogContent -GetLogFile "$SysPrepLog"
-						Write-BISFLog -Msg "Sysprep encounter an error, check $SysPrepLog for further details" -Type E -SubMsg
-					}
-					ELSE {
-						Write-BISFLog -Msg "Sysprep run successfully" -ShowConsole -Color DarkCyan -SubMsg
-						PostCommand
-					}
+			IF ($CheckP2PVSlog -eq $true) {
+				$CheckPVSLog = Test-BISFLog -CheckLogFile "$P2PVS_LOGFile" -SearchString "$P2PVS_LOGFile_search"
+				get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
+				IF ($CheckPVSLog -ne "") {
+					Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
+					Write-BISFLog -Msg "vDisk $P2PVS_LOGFile_search"
+					PostCommand
 				}
 				ELSE {
-					Write-BISFLog -Msg "No Image Management Software detected [Citrix PVS Target Device Driver, XenDesktop VDA or VMware View Agent]" -Type W
-					Write-BISFLog -Msg "The system will not be shutdown by this script. Please run Sysprep or your prefered method manualy or install one of the software above and run the script again" -Type W
-					Start-Sleep -s 30
+					Write-BISFLog -Msg "vDisk operation NOT successfull, check $P2PVS_LOGFile for further details" -Type E
 				}
 			}
+			IF ($CheckP2PVSlog -eq $false) {
+				Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
+				PostCommand
+			}
+
+			IF ($CheckP2PVSlog -eq "ERROR") {
+				get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
+				Write-BISFLog -Msg "vDisk operation NOT successfull, check $LIC_PVS_LogPath for further details" -Type E
+			}
 		}
+	}
+	ELSE {
+		IF ($ImageSW -eq $true) {
+			IF ($CTXAppLayeringSW)
+			{ $txt = "Successfully build your Base Image with Citrix AppLayering in $CTXAppLayerName ..." } ELSE { $txt = "Successfully build your Base Image.." }
+			Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
+			PostCommand
+		}
+		ELSE {
+			IF ($RunSysPrep -eq $true) {
+				Write-BISFLog -Msg "Running Sysprep to seal the Base Image" -ShowConsole -Color DarkCyan -SubMsg
+				$LIC_BIS_Sysprep_ServiceList = $LIC_BIS_Sysprep_ServiceList -join ","
+				Write-BISFLog -Msg "Write Sysprep ServiceList to registry location: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_SysPrep_ServiceList -Value: $LIC_BIS_Sysprep_ServiceList"
+				Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BIS_Sysprep_ServiceList" -value "$LIC_BIS_Sysprep_ServiceList" #-ErrorAction SilentlyContinue
+				$SysPrepLog = "C:\Windows\System32\sysprep\Panther\setuperr.log"
 
+				IF ((Test-Path ("$SysPrepLog") -PathType Leaf )) {
+					Write-BISFLog -Msg "Deleting old Sysprep log file $SysPrepLog" -ShowConsole -Color DarkCyan -SubMsg
+					Remove-Item $SysPrepLog -recurse -ErrorAction SilentlyContinue
+				}
+				IF ($LIC_BISF_CLI_SP_CusArgsb) {
+					Write-BISFLog -Msg "Enable Custom Sysprep Arguments"
+					$args = $LIC_BISF_CLI_SP_CusArgs
+				}
+				ELSE {
+					$args = "/generalize /oobe /quiet /quit "
+				}
+				Write-BISFLog -Msg "Running Sysprep with arguments: $args"
+				Start-BISFProcWithProgBar -ProcPath "C:\Windows\System32\sysprep\sysprep.exe" -Args $args -ActText "Sysprep is running..."
+				$CheckSysPrepLog = Test-BISFLog -CheckLogFile "$SysPrepLog" -SearchString "Error"
+				IF ($CheckSysPrepLog -eq $true) {
+					#syspreplog show errors
+					get-BISFLogContent -GetLogFile "$SysPrepLog"
+					Write-BISFLog -Msg "Sysprep encounter an error, check $SysPrepLog for further details" -Type E -SubMsg
+				}
+				ELSE {
+					Write-BISFLog -Msg "Sysprep run successfully" -ShowConsole -Color DarkCyan -SubMsg
+					PostCommand
+				}
+			}
+			ELSE {
+				Write-BISFLog -Msg "No Image Management Software detected [Citrix PVS Target Device Driver, XenDesktop VDA or VMware View Agent]" -Type W
+				Write-BISFLog -Msg "The system will not be shutdown by this script. Please run Sysprep or your prefered method manualy or install one of the software above and run the script again" -Type W
+				Start-Sleep -s 30
+			}
+		}
 	}
 
-	End {
-		Add-BISFFinishLine
-	}
+}
+
+End {
+	Add-BISFFinishLine
+}
