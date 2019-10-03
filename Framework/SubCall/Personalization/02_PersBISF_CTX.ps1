@@ -19,9 +19,6 @@
 		10.11.2016 MS: Typo in Line 76, thx to Mikhail Zuskov - Write-BISFLog -Msg "Error changing access for NetworkService on the folder `"$LIC_BISF_CtxCache`". The output of the action is: $result" -Type W -SubMsg
 		18.01.2017 MS: Bug 127; fixed with new script from Citrix - https://docs.citrix.com/en-us/xenapp-and-xendesktop/7-12/whats-new/known-issues.html
 		18.04.2017 MS: reset Performance Counters with installed Citrix VDA only
-		29.07.2017 MS: Feature Request 174: on systemstartup with MCS/PVS and installed WEM Agent - refresh WEM Cache
-		24.08.2017 MS: Bugfix: after restart WEM Agentservice, Netlogon must be started also
-		11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
 		21.10.2028 MS: Bufix 47: MSMQ windows services will fail to start in App Layering
 		21.10.2028 MS: Bufix 18: XA/ XD 7.x Cache folder will be created
 
@@ -136,32 +133,73 @@ Process {
 	}
 
 	#Citrix Workspace Environment Management Agent
-	$product = "Citrix Workspace Environment Management (WEM) Agent"
-	$servicename = "Norskale Agent Host Service"
-	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$product"
-	IF ($svc -eq $true) {
-		Invoke-BISFService -ServiceName "$servicename" -Action Stop
-		Start-Sleep $Wait1
-		Invoke-BISFService -ServiceName "$servicename" -Action Start
-		Invoke-BISFService -ServiceName "Netlogon" -Action Start
+	<#
+	.SYNOPSIS
+		During personalizatition the WEM Agent is refresh the cache
+	.DESCRIPTION
 
-		#read WEM AgentAlternateCacheLocation from registry
-		$REG_WEMAgent = "HKLM:\SYSTEM\CurrentControlSet\Control\Norskale\Agent Host"
-		$WEMAgentLocation = (Get-ItemProperty $REG_WEMAgent).AgentLocation
-		Write-BISFLog -Msg "WEM Agent Location: $WEMAgentLocation"
+	.EXAMPLE
 
-		#read WEM Agent Host BrokerName from registry
-		$REG_WEMAgentHost = "HKLM:\SOFTWARE\Policies\Norskale\Agent Host"
-		$WEMAgentHostBrokerName = (Get-ItemProperty $REG_WEMAgentHost).BrokerSvcName
-		IF (!$WEMAgentHostBrokerName) { Write-BISFLog -Msg "WEM Agent BrokerName not specified through WEM ADMX" } ELSE { Write-BISFLog -Msg "WEM Agent BrokerName: $WEMAgentHostBrokerName" }
+	.NOTES
+		Author: Matthias Schlimm
 
-		$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
+		History:
+			29.07.2017 MS: ENH 174: on systemstartup with MCS/PVS and installed WEM Agent - refresh WEM Cache
+			24.08.2017 MS: HF: after restart WEM Agentservice, Netlogon must be started also
+			11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
+			03.10.2019 MS: ENH 139 - WEM 1909 detection (tx to citrixguyblog / chezzer64)
+
+	.LINK
+		https://eucweb.com
+#>
+
+	$services = "Norskale Agent Host Service", "WemAgentSvc"
+
+	foreach ($service in $services) {
+		if ($service -eq "Norskale Agent Host Service") {
+			$product = "Citrix Workspace Environment Management (WEM) Legacy Agent"
+		}
+
+		else { $product = "Citrix Workspace Environment Management (WEM) Agent" }
+
+		$svc = Test-BISFService -ServiceName "$service" -ProductName "$product"
+
+		IF ($svc -eq $true) {
+			$servicename = $service
+			Invoke-BISFService -ServiceName "$servicename" -Action Stop
+			Start-Sleep $Wait1
+			Invoke-BISFService -ServiceName "$servicename" -Action Start
+			Invoke-BISFService -ServiceName "Netlogon" -Action Start
+			Start-Sleep $Wait1
+
+			#read WEM AgentAlternateCacheLocation from registry
+			$REG_WEMAgent = "HKLM:\SYSTEM\CurrentControlSet\Control\Norskale\Agent Host"
+			$WEMAgentLocation = (Get-ItemProperty $REG_WEMAgent).AgentLocation
+			Write-BISFLog -Msg "WEM Agent Location: $WEMAgentLocation"
 
 
-		Write-BISFLog -Msg "Running Agent Cache Management Utility with $product BrokerName $WEMAgentHostBrokerName " -ShowConsole -Color DarkCyan -SubMsg
-		Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility" | Out-Null
+			#Read WEM Agent Host BrokerName from registry
+			#Check if WEM is installed On-Prem or in Cloud Mode
+			$REG_WEMAgentHost = "HKLM:\SOFTWARE\Policies\Norskale\Agent Host"
 
+			if (Get-ItemProperty $REG_WEMAgentHost -Name "BrokerSvcName") {
+				$WEMAgentHostBrokerName = (Get-ItemProperty $REG_WEMAgentHost).BrokerSvcName
+				IF (!$WEMAgentHostBrokerName) { Write-BISFLog -Msg "WEM Agent BrokerName not specified through WEM ADMX" } ELSE { Write-BISFLog -Msg "WEM Agent BrokerName: $WEMAgentHostBrokerName" }
+			}
+
+
+			if (Get-ItemProperty $REG_WEMAgentHost -Name "CloudConnectorList") {
+				$WEMAgentHostBrokerName = (Get-ItemProperty $REG_WEMAgentHost).CloudConnectorList
+				IF (!$WEMAgentHostBrokerName) { Write-BISFLog -Msg "WEM Agent CloudConnector not specified through WEM ADMX" } ELSE { Write-BISFLog -Msg "WEM Agent CloudConnector: $WEMAgentHostBrokerName" }
+			}
+
+			$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
+
+			Write-BISFLog -Msg "Running Agent Cache Management Utility with $product BrokerName $WEMAgentHostBrokerName " -ShowConsole -Color DarkCyan -SubMsg
+			Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility" | Out-Null
+		}
 	}
+
 }
 
 End {
