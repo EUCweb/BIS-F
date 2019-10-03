@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.DDBBD5AD_3AFC_404A_93D2_8166EB3155F2" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.DCB6AEFD_26C9_43F0_946D_124388956AC8" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1115,29 +1115,11 @@
         <decimal id="DXT_WinSxSTimeout" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxSTimeout" minValue="60" maxValue="480" />
       </elements>
     </policy>
-    <policy name="POL_WUSCCM" class="Machine" displayName="$(string.POL_WUSCCM)" explainText="$(string.POL_WUSCCM_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WUSCCM">
-      <parentCategory ref="CAT_MS" />
-      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
-      <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WUSCCM">
-          <value>
-            <string>YES</string>
-          </value>
-        </item>
-      </enabledList>
-      <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WUSCCM">
-          <value>
-            <string>NO</string>
-          </value>
-        </item>
-      </disabledList>
-    </policy>
     <policy name="POL_PAGEFILE" class="Machine" displayName="$(string.POL_PAGEFILE)" explainText="$(string.POL_PAGEFILE_Help)" presentation="$(presentation.POL_PAGEFILE)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_PAGEFILE">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
-        <enum id="PageFile_DriveLetter_Options" valueName="LIC_BISF_CLI_PAGEFILE_DRIVE">
+        <enum id="PageFile_DriveLetter_Options" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PAGEFILE_DRIVE">
           <item displayName="$(string.ITM_B)">
             <value>
               <string>B:</string>
@@ -1314,8 +1296,6 @@
     <policy name="POL_AppLayCfg" class="Machine" displayName="$(string.POL_AppLayCfg)" explainText="$(string.POL_AppLayCfg_Help)" presentation="$(presentation.POL_AppLayCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
-      <enabledValue />
-      <disabledValue />
       <enabledList>
         <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
           <value>

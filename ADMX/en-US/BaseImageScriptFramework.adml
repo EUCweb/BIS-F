@@ -576,12 +576,6 @@ The component store contains all the files that are required for a Windows insta
 If you enable this policy setting, Windows Update will be run and any detected updates will be applied.  You will need to set the "Windows Components/Windows Update/Specify intranet Microsoft update service location" group policy setting to enable this to operate with WSUS.
 If you disable this policy setting, Windows Update will not run.
 If you do not configure this policy setting, Windows Update will not run.</string>
-      <string id="POL_WUSCCM">Install Windows Updates using SCCM</string>
-      <string id="POL_WUSCCM_Help">Install Windows Update using SCCM
-
-If you enable this policy setting, SCCM will run Windows Update and any detected updates will be applied.
-If you disable this policy setting, SCCM will not run Windows Update.
-If you do not configure this policy setting, SCCM will not run Windows Update.</string>
       <string id="POL_PAGEFILE">Configure Page File</string>
       <string id="POL_PAGEFILE_Help">Configures the Windows page file to be statically configured in both size and drive letter.</string>
       <string id="PageFile_PVSWriteCacheDrive">PVS write cache drive</string>
