@@ -26,6 +26,7 @@
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		15.08.2019 MS: FRQ 88 - Supporting McAfee Endpoint Security (thanks to Wing2005)
 		15.08.2019 MS: Added .SYNOPSIS to all functions and using recommended POSH Verbs for functions too
+		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
 
 
 	.LINK
@@ -116,7 +117,7 @@ Process {
 		)
 		Invoke-BISFService -ServiceName "$ServiceName1" -Action Start
 		Write-BISFLog -Msg "Updating virus definitions...please wait"
-		switch($engine) {
+		switch ($engine) {
 			$Product {
 				Start-Process -FilePath "$Product_Path\mcupdate.exe" -ArgumentList "/update /quiet"
 				Show-BISFProgressBar -CheckProcess "mcupdate" -ActivityText "$engine is updating the virus definitions...please wait"
@@ -134,7 +135,7 @@ Process {
 	Function Start-AVScan {
 		<#
 		.SYNOPSIS
-		Starting a AV Full Scan on the system
+		Starting a AV Scan on the system
 
 		.DESCRIPTION
 		before image sealing it's vendor beste practices to start a full scan
@@ -149,6 +150,7 @@ Process {
 		History:
 			10.12.2014 MS: script created
 			14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+			03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
 
 		#>
 
@@ -160,16 +162,24 @@ Process {
 		}
 		Else {
 			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
-			$MPFullScan = "YES"
+			$AVScan = "YES"
 		}
-		If (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
-			Write-BISFLog -Msg "Running Full Scan...please wait"
-			Start-Process -FilePath "$Product_Path\Scan32.exe" -ArgumentList "c:\"
+		If (($AVScan -eq "YES" ) -or ($varCLI -eq "YES")) {
+			IF ($LIC_BISF_CLI_AV_VIE_CusScanArgsb -eq 1) {
+				Write-BISFLog -Msg "Enable Custom Scan Arguments"
+				$args = $LIC_BISF_CLI_AV_VIE_CusScanArgs
+			}
+			ELSE {
+				$args = "c:\"
+			}
+
+			Write-BISFLog -Msg "Running Scan with arguments: $args"
+			Start-Process -FilePath "$Product_Path\Scan32.exe" -ArgumentList $args
 			If ($OSBitness -eq "32-bit") { $ScanProcess = "Scan32" } Else { $ScanProcess = "Scan64" }
 			Show-BISFProgressBar -CheckProcess "$ScanProcess" -ActivityText "$Product is scanning the system...please wait"
 		}
 		Else {
-			Write-BISFLog -Msg "No Full Scan will be performed"
+			Write-BISFLog -Msg "No Scan will be performed"
 		}
 
 	}

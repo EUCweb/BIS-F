@@ -82,11 +82,24 @@ If you enable this policy setting, Microsoft Office rearm will be executed once 
 If you disable or do not configure this policy setting, Microsoft Office rearm will not be executed.
 
 </string>
-      <string id="POL_AVFullScan">Run AntiVirus full scan</string>
-      <string id="POL_AVFullScan_Help">Run AntiVirus full scan
+      <string id="POL_AVFullScan">Run AntiVirus Scan</string>
+      <string id="POL_AVFullScan_Help">Run AntiVirus Scan
 
-If you enable or do not configure this policy setting, an Antivirus full scan will be executed.
-If you disable this policy setting, an AntiVirus full scan will not be executed.
+If you enable or do not configure this policy setting, an Antivirus full scan will be executed during sealing the image.
+If you disable this policy setting, an AntiVirus scan will not be executed.
+
+Enable Custom Scan Arguements:
+The Cechkbox enables the custom scan arguments and disable the default full scan
+
+Custom Scan Arguments:
+Enter the arguments to run for the scan
+
+You need the arguemtns only, the executable is choosen from BIS-F itself depending
+on the detected AV-Solution.
+
+
+
+
 </string>
       <string id="POL_GhostDeviceRemoval">Ghost Devices: Operation mode</string>
       <string id="POL_GhostDeviceRemoval_Help">Defines how the ghost device feature will operate.
@@ -680,7 +693,7 @@ Deploying Microsoft LAPS to a non-persistent VDI environment requires a slightly
       <string id="ITM_PersOverride_2">Change and continue</string>
       <string id="POL_MCSCfg">Configure Citrix MCS Device</string>
       <string id="ITM_MCSIO_0"> NONE</string>
-	  <string id="ITM_MCSIO_B">B:</string>
+      <string id="ITM_MCSIO_B">B:</string>
       <string id="ITM_MCSIO_C">C:</string>
       <string id="ITM_MCSIO_D">D:</string>
       <string id="ITM_MCSIO_E">E:</string>
@@ -977,6 +990,14 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         <dropdownList refId="DST_MCSIODriveLetter" defaultItem="0">MCSIO Disk Drive Letter</dropdownList>
         <dropdownList refId="DST_MCSIONumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
         <checkBox refId="CHK_MCSIODisableRedirection">Disable Redirection</checkBox>
+      </presentation>
+      <presentation id="POL_AVFullScan">
+        <checkBox refId="CHK_AV_VIE_CusScanArgsb">Enable Custom Scan Arguements</checkBox>
+        <textBox refId="TXT_AV_VIE_CusScanArgs">
+          <label>Custom Scan Arguments</label>
+          <defaultValue>
+          </defaultValue>
+        </textBox>
       </presentation>
     </presentationTable>
   </resources>

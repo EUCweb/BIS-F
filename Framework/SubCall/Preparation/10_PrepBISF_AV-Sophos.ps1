@@ -12,6 +12,7 @@
 		20.02.2017 MS: fix typos to get the right servicename -> $ServiceNames[0]
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
 
 	.LINK
 		https://eucweb.com
@@ -52,16 +53,24 @@ Process {
 		}
 		ELSE {
 			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
-			$MPFullScan = "YES"
+			$AVScan = "YES"
 		}
-		if (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
-			Write-BISFLog -Msg "Running Fullscan... please Wait"
-			Start-Process -FilePath "$Inst_path\sav32cli.exe" -ArgumentList "-f"
+		if (($AVScan -eq "YES" ) -or ($varCLI -eq "YES")) {
+			IF ($LIC_BISF_CLI_AV_VIE_CusScanArgsb -eq 1) {
+				Write-BISFLog -Msg "Enable Custom Scan Arguments"
+				$args = $LIC_BISF_CLI_AV_VIE_CusScanArgs
+			}
+			ELSE {
+				$args = "-f"
+			}
+
+			Write-BISFLog -Msg "Running Scan with arguments: $args"
+			Start-Process -FilePath "$Inst_path\sav32cli.exe" -ArgumentList $args
 			IF ($OSBitness -eq "32-bit") { $ScanProcess = "sav32cli" } ELSE { $ScanProcess = "sav32cli" }
 			Show-BISFProgressBar -CheckProcess "$ScanProcess" -ActivityText "$Product is scanning the system...please wait"
 		}
 		ELSE {
-			Write-BISFLog -Msg "No Full Scan would be performed"
+			Write-BISFLog -Msg "No Scan would be performed"
 		}
 
 	}

@@ -24,6 +24,7 @@
 		08.09.2017 FF: Feature 182 - Windows Defender Signature will only be updated if Defender is enabled to run
 		20.10.2018 MS: Bugfix 55: Windows Defender -ArgumentList failing
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
 
 	.LINK
 		https://eucweb.com
@@ -53,20 +54,28 @@ Process {
 		}
 		Else {
 			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
-			$MPFullScan = "YES"
+			$AVScan = "YES"
 		}
 
-		If (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
+		If (($AVScan -eq "YES" ) -or ($varCLI -eq "YES")) {
 			Write-BISFLog -Msg "Updating virus signatures... please wait"
 			Start-Process -FilePath "$ProductPath\MpCMDrun.exe" -ArgumentList "-SignatureUpdate" -WindowStyle Hidden
 			Show-BISFProgressBar -CheckProcess "MpCMDrun" -ActivityText "$Product is updating the virus signatures...please wait"
 
-			Write-BISFLog -Msg "Running Full Scan...please wait"
-			Start-Process -FilePath "$ProductPath\MpCMDrun.exe" -ArgumentList "-scan -scantype 2" -WindowStyle Hidden
+			IF ($LIC_BISF_CLI_AV_VIE_CusScanArgsb -eq 1) {
+				Write-BISFLog -Msg "Enable Custom Scan Arguments"
+				$args = $LIC_BISF_CLI_AV_VIE_CusScanArgs
+			}
+			ELSE {
+				$args = "-scan -scantype 2"
+			}
+
+			Write-BISFLog -Msg "Running Scan with arguments: $args"
+			Start-Process -FilePath "$ProductPath\MpCMDrun.exe" -ArgumentList $args -WindowStyle Hidden
 			Show-BISFProgressBar -CheckProcess "MpCMDrun" -ActivityText "$Product is scanning the system...please wait"
 		}
 		Else {
-			Write-BISFLog -Msg "No Full Scan will be performed"
+			Write-BISFLog -Msg "No Scan will be performed"
 		}
 	}
 

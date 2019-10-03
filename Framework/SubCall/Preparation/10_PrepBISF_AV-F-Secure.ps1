@@ -10,6 +10,7 @@
 		History:
 		  29.07.2017 MS: Script created
 		  14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		  03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
 
 	.LINK
         https://eucweb.com
@@ -42,17 +43,27 @@ Process {
 		}
 		ELSE {
 			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg
-			$MPFullScan = "YES"
+			$AVScan = "YES"
 		}
-		if (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
-			Write-BISFLog -Msg "Running Fullscan... please Wait"
-			Start-Process -FilePath "$Inst_path\fsav.exe" -ArgumentList "c:\ /REPORT=C:\Windows\Logs\fsavlog.txt"
+		if (($AVScan -eq "YES" ) -or ($varCLI -eq "YES")) {
+			IF ($LIC_BISF_CLI_AV_VIE_CusScanArgsb -eq 1) {
+				Write-BISFLog -Msg "Enable Custom Scan Arguments"
+				$args = $LIC_BISF_CLI_AV_VIE_CusScanArgs
+			}
+			ELSE {
+				$args = "c:\ /REPORT=C:\Windows\Logs\fsavlog.txt"
+			}
+
+			Write-BISFLog -Msg "Running Scan with arguments: $args"
+			Start-Process -FilePath "$Inst_path\fsav.exe" -ArgumentList $args
 			Show-BISFProgressBar -CheckProcess "$ScanProcess" -ActivityText "$Product is scanning the system...please wait"
-			Get-BISFLogContent -GetLogFile "C:\Windows\Logs\fsavlog.txt"
-			Remove-Item -Path "C:\Windows\Logs\fsavlog.txt" -Force
+			IF (Test-Path "C:\Windows\Logs\fsavlog.txt") {
+				Get-BISFLogContent -GetLogFile "C:\Windows\Logs\fsavlog.txt"
+				Remove-Item -Path "C:\Windows\Logs\fsavlog.txt" -Force
+			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "No Full Scan would be performed"
+			Write-BISFLog -Msg "No Scan would be performed"
 		}
 
 	}

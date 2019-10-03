@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.3970D7C0_A19B_4BF9_B2B3_AA7EDD619BE1" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.D82AF0D3_2C16_4618_9F72_1EDC02C8D64B" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -134,7 +134,7 @@
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_AVFullScan" class="Machine" displayName="$(string.POL_AVFullScan)" explainText="$(string.POL_AVFullScan_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AV">
+    <policy name="POL_AVFullScan" class="Machine" displayName="$(string.POL_AVFullScan)" explainText="$(string.POL_AVFullScan_Help)" presentation="$(presentation.POL_AVFullScan)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AV">
       <parentCategory ref="CAT_AV" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -151,6 +151,10 @@
           </value>
         </item>
       </disabledList>
+      <elements>
+        <boolean id="CHK_AV_VIE_CusScanArgsb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AV_VIE_CusScanArgsb" />
+        <text id="TXT_AV_VIE_CusScanArgs" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AV_VIE_CusScanArgs" />
+      </elements>
     </policy>
     <policy name="POL_GhostDeviceRemoval" class="Machine" displayName="$(string.POL_GhostDeviceRemoval)" explainText="$(string.POL_GhostDeviceRemoval_Help)" presentation="$(presentation.POL_GhostDeviceRemoval)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_GD">
       <parentCategory ref="CAT_MS" />
@@ -1364,7 +1368,7 @@
       </disabledList>
       <elements>
         <enum id="DST_MCSIODriveLetter" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSIODriveLetter">
-              <item displayName="$(string.ITM_MCSIO_0)">
+          <item displayName="$(string.ITM_MCSIO_0)">
             <value>
               <string>NONE</string>
             </value>
@@ -1489,7 +1493,6 @@
               <string>Z:</string>
             </value>
           </item>
-		  
         </enum>
         <enum id="DST_MCSIONumberOfPartitions" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSIONumberOfPartitions">
           <item displayName="$(string.ITM_MCSIO_Part2)">

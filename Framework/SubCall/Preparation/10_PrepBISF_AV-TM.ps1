@@ -58,9 +58,9 @@ Process {
 		}
 		ELSE {
 			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
-			$MPFullScan = "YES"
+			$AVScan = "YES"
 		}
-		if (($MPFullScan -eq "YES" ) -or ($varCLI -eq "YES")) {
+		if (($AVScan -eq "YES" ) -or ($varCLI -eq "YES")) {
 			Write-BISFLog -Msg "Running Fullscan... please Wait"
 			#TrendMicro does support SysClen to scan system fromm CLI, but the needed an current patternfile in the same folder as sysclean
 		}
