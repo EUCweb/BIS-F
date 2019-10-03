@@ -13,6 +13,7 @@
 		17.08.2015 MS: The fslogix rules are copied from the central share but not applied, in thefslogix personalization script, the copy must be performed after starting the fslogix service, to resolve this issue
 		21.08.2015 MS: Do not checked PVS or MCS DiskMode, Service is already running or would be start if stopped
 		01.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
+		03.10.2019 MS: ENH 141 - FSLogix App Masking URL Rule Files
 
 	.LINK
 		https://eucweb.com
@@ -27,7 +28,7 @@ Begin {
 	$product_path = "${env:ProgramFiles}\FSLogix\Apps"
 	$servicename = "FSLogix Apps Services"
 	$FSXrulesDest = "$product_path\Rules"
-	$FSXfiles2Copy = @("*.fxr", "*.fxa")
+	$FSXfiles2Copy = @("*.fxr", "*.fxa", "*.xml")
 }
 
 Process {
