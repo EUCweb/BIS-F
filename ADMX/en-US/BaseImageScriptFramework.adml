@@ -43,6 +43,9 @@ If you would like to use your own templates with auto-select, you can override t
 For example if your template is called "EUCweb_Windows_10_1809.xml", use TemplatePrefix "EUCweb_Windows" to automatically
 select your templates based on current operating system and build.
 
+Delete Optimizer LogFile:
+The Optimizer Logfile is included in the BIS-F logfile, with this option you can delete  it on the system itself.
+
 
 </string>
       <string id="POL_SDelete">Run SDelete</string>
@@ -771,6 +774,7 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
           <label>(Optional) Templateprefix</label>
           <defaultValue>Citrix_Windows</defaultValue>
         </textBox>
+        <checkBox refId="CHK_CTXOE_LogDelete">Delete Optimizer LogFile</checkBox>
       </presentation>
       <presentation id="POL_FSXRulesShare">
         <textBox refId="TXT_RulesShare">

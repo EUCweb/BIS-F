@@ -63,6 +63,7 @@ param(
 		12.07.2019 MS: ENH 112: CTX optimizer: Multiple Templates with AutoSelect for OS Template
 		26.07.2019 MS: ENH 122: Citrix Optimizer Templateprefix support
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		03.10.2019 MS: ENH 65 - ADMX Extension to delete the log files for Citrix Optimizer
 
 
 	.Link
@@ -343,240 +344,245 @@ Begin {
 
 			}
 		}
+	}
 
 
-		# Citrix System Optimizer Engine (CTXOE)
-		function Start-CTXOE {
-			Write-BISFLog -Msg "Executing Citrix Optimizer (CTXO)..."
+	# Citrix System Optimizer Engine (CTXOE)
+	function Start-CTXOE {
+		Write-BISFLog -Msg "Executing Citrix Optimizer (CTXO)..."
 
-			IF ($LIC_BISF_CLI_CTXOE_SF -eq "1") {
-				$SearchFolders = $LIC_BISF_CLI_CTXOE_SF_CUS
-			}
-			ELSE {
-				$SearchFolders = @("C:\Program Files", "C:\Program Files (x86)", "C:\Windows\system32")
-			}
+		IF ($LIC_BISF_CLI_CTXOE_SF -eq "1") {
+			$SearchFolders = $LIC_BISF_CLI_CTXOE_SF_CUS
+		}
+		ELSE {
+			$SearchFolders = @("C:\Program Files", "C:\Program Files (x86)", "C:\Windows\system32")
+		}
 
-			$AppName = "Citrix Optimizer (CTXO)"
-			$found = $false
-			$tmpPS1 = "C:\Windows\temp\runCTXOE.ps1"
+		$AppName = "Citrix Optimizer (CTXO)"
+		$found = $false
+		$tmpPS1 = "C:\Windows\temp\runCTXOE.ps1"
 
-			$varCLI = $LIC_BISF_CLI_CTXOE
-			IF (!($varCLI -eq "NO")) {
-				Write-BISFLog -Msg "Searching for $AppName on local System" -ShowConsole -Color Cyan
-				#Write-BISFLog -Msg "This can run a long time based on the size of your root drive, you can skip this in the ADMX configuration (Citrix)" -ShowConsole -Color DarkCyan -SubMsg
-				ForEach ($SearchFolder in $SearchFolders) {
-					If ($found -eq $false) {
-						Write-BISFLog -Msg "Looking in $SearchFolder"
-						$FileExists = Get-ChildItem -Path "$SearchFolder" -filter "CtxOptimizerEngine.ps1" -Recurse -ErrorAction SilentlyContinue | % { $_.FullName }
-						$CTXOTemplatePath = (Get-ChildItem -Path "$SearchFolder" -filter "CtxOptimizerEngine.ps1" -Recurse -ErrorAction SilentlyContinue | % { $_.DirectoryName }) + "\Templates"
+		$varCLI = $LIC_BISF_CLI_CTXOE
+		IF (!($varCLI -eq "NO")) {
+			Write-BISFLog -Msg "Searching for $AppName on local System" -ShowConsole -Color Cyan
+			#Write-BISFLog -Msg "This can run a long time based on the size of your root drive, you can skip this in the ADMX configuration (Citrix)" -ShowConsole -Color DarkCyan -SubMsg
+			ForEach ($SearchFolder in $SearchFolders) {
+				If ($found -eq $false) {
+					Write-BISFLog -Msg "Looking in $SearchFolder"
+					$FileExists = Get-ChildItem -Path "$SearchFolder" -filter "CtxOptimizerEngine.ps1" -Recurse -ErrorAction SilentlyContinue | % { $_.FullName }
+					$CTXOTemplatePath = (Get-ChildItem -Path "$SearchFolder" -filter "CtxOptimizerEngine.ps1" -Recurse -ErrorAction SilentlyContinue | % { $_.DirectoryName }) + "\Templates"
 
-						IF (($FileExists -ne $null) -and ($found -ne $true)) {
+					IF (($FileExists -ne $null) -and ($found -ne $true)) {
 
-							Write-BISFLog -Msg "Product $($AppName) installed" -ShowConsole -Color Cyan
-							$found = $true
+						Write-BISFLog -Msg "Product $($AppName) installed" -ShowConsole -Color Cyan
+						$found = $true
 
-							Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
+						Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 
-							IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-								Write-BISFLog -Msg "GPO Valuedata: $varCLI"
+						IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
+							Write-BISFLog -Msg "GPO Valuedata: $varCLI"
+						}
+						ELSE {
+							Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+							$CTXOE = "NO"
+						}
+
+						If (($CTXOE -eq "YES" ) -or ($varCLI -eq "YES")) {
+							Write-BISFLog -Msg "Running $AppName... please Wait"
+
+							#Template
+							if (($LIC_BISF_CLI_CTXOE_TP -eq "") -or ($LIC_BISF_CLI_CTXOE_TP -eq $null)) {
+								$templates = "AutoSelect"
+								Write-BISFLog -Msg "No Template for $AppName is configured by GPO, using $templates"
+							}
+							else {
+								$templates = $LIC_BISF_CLI_CTXOE_TP
+								Write-BISFLog -Msg "Template(s) for $AppName is configured by GPO: $templates"
+							}
+
+							#Templateprefix
+							IF (($LIC_BISF_CLI_CTXOE_TP_PREFIX -eq "") -or ($null -eq $LIC_BISF_CLI_CTXOE_TP_PREFIX)) {
+								$templatePrefix = $null
+
 							}
 							ELSE {
-								Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
-								$CTXOE = "NO"
+								$templatePrefix = $LIC_BISF_CLI_CTXOE_TP_PREFIX
+								Write-BISFLog -Msg "Using Templateprefix: $templatePrefix" -ShowConsole -SubMsg -Color DarkCyan
 							}
 
-							If (($CTXOE -eq "YES" ) -or ($varCLI -eq "YES")) {
-								Write-BISFLog -Msg "Running $AppName... please Wait"
 
-								#Template
-								if (($LIC_BISF_CLI_CTXOE_TP -eq "") -or ($LIC_BISF_CLI_CTXOE_TP -eq $null)) {
-									$templates = "AutoSelect"
-									Write-BISFLog -Msg "No Template for $AppName is configured by GPO, using $templates"
+							#Groups
+							if (($LIC_BISF_CLI_CTXOE_GROUPS -eq "") -or ($LIC_BISF_CLI_CTXOE_GROUPS -eq $null)) {
+								Write-BISFLog -Msg "No groups for $AppName are configured by GPO. We will execute all available groups"
+								$groups = ""
+							}
+							else {
+								Write-BISFLog -Msg "Groups for $AppName configured by GPO: $LIC_BISF_CLI_CTXOE_GROUPS"
+								$groups_reg = ($LIC_BISF_CLI_CTXOE_GROUPS).Split(',')
+								$groups = $null
+								foreach ($entry in $groups_reg) {
+									$groups += """$entry"","
 								}
-								else {
-									$templates = $LIC_BISF_CLI_CTXOE_TP
-									Write-BISFLog -Msg "Template(s) for $AppName is configured by GPO: $templates"
-								}
+								$groups = $groups.Substring(0, ($groups.Length - 1))
+								$groups = " -Groups $groups "
+							}
 
-								#Templateprefix
-								IF (($LIC_BISF_CLI_CTXOE_TP_PREFIX -eq "") -or ($null -eq $LIC_BISF_CLI_CTXOE_TP_PREFIX)) {
-									$templatePrefix = $null
+							#Mode
+							if ($LIC_BISF_CLI_CTXOE_Analyze -ne "true") {
+								$mode = "execute"
+							}
+							else {
+								$mode = "analyze"
+							}
 
+							#Commandline
+							ForEach ($template in $templates.split(",")) {
+								Write-BISFLog "Processing Template $template" -ShowConsole -SubMsg -Color DarkCyan
+								IF ($template -eq "AutoSelect") {
+									$CTXAutoSelect = $true
 								}
-								ELSE {
-									$templatePrefix = $LIC_BISF_CLI_CTXOE_TP_PREFIX
-									Write-BISFLog -Msg "Using Templateprefix: $templatePrefix" -ShowConsole -SubMsg -Color DarkCyan
-								}
-
-
-								#Groups
-								if (($LIC_BISF_CLI_CTXOE_GROUPS -eq "") -or ($LIC_BISF_CLI_CTXOE_GROUPS -eq $null)) {
-									Write-BISFLog -Msg "No groups for $AppName are configured by GPO. We will execute all available groups"
-									$groups = ""
-								}
-								else {
-									Write-BISFLog -Msg "Groups for $AppName configured by GPO: $LIC_BISF_CLI_CTXOE_GROUPS"
-									$groups_reg = ($LIC_BISF_CLI_CTXOE_GROUPS).Split(',')
-									$groups = $null
-									foreach ($entry in $groups_reg) {
-										$groups += """$entry"","
-									}
-									$groups = $groups.Substring(0, ($groups.Length - 1))
-									$groups = " -Groups $groups "
+								Else {
+									$CTXAutoSelect = $false
 								}
 
-								#Mode
-								if ($LIC_BISF_CLI_CTXOE_Analyze -ne "true") {
-									$mode = "execute"
-								}
-								else {
-									$mode = "analyze"
-								}
+								Write-BISFLog -Msg "Create temporary CMD-File ($tmpPS1) to run $AppName from them"
+								$logfolder_bisf = (Get-Item -Path $logfile | Select-Object -ExpandProperty Directory).FullName
+								$timestamp = Get-Date -Format yyyyMMdd-HHmmss
+								$XMLtemplate = $template.split(".")[0]
+								$output_XML = "$logfolder_bisf\Prep_BIS_CTXO_$($computer)_$($XMLtemplate)_$timestamp.xml"
 
-								#Commandline
-								ForEach ($template in $templates.split(",")) {
-									Write-BISFLog "Processing Template $template" -ShowConsole -SubMsg -Color DarkCyan
-									IF ($template -eq "AutoSelect") {
-										$CTXAutoSelect = $true
-									}
-									Else {
-										$CTXAutoSelect = $false
-									}
-
-									Write-BISFLog -Msg "Create temporary CMD-File ($tmpPS1) to run $AppName from them"
-									$logfolder_bisf = (Get-Item -Path $logfile | Select-Object -ExpandProperty Directory).FullName
-									$timestamp = Get-Date -Format yyyyMMdd-HHmmss
-									$XMLtemplate = $template.split(".")[0]
-									$output_XML = "$logfolder_bisf\Prep_BIS_CTXO_$($computer)_$($XMLtemplate)_$timestamp.xml"
-
-									IF ((Test-Path "$CTXOTemplatePath\$template") -or ($CTXAutoSelect -eq $true)) {
-										IF ($CTXAutoSelect -eq $true) {
-											IF ($null -eq $templateprefix) {
-												Write-BISFLog "Using AutoSelect for OS Optimization " -ShowConsole -SubMsg -Color DarkCyan
-												"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
-											}
-											ELSE {
-												Write-BISFLog "Using AutoSelect for OS Optimization with Templateprefix" -ShowConsole -SubMsg -Color DarkCyan
-												"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml"" -Templateprefix ""$templateprefix""" | Out-File $tmpPS1 -Encoding default
-											}
+								IF ((Test-Path "$CTXOTemplatePath\$template") -or ($CTXAutoSelect -eq $true)) {
+									IF ($CTXAutoSelect -eq $true) {
+										IF ($null -eq $templateprefix) {
+											Write-BISFLog "Using AutoSelect for OS Optimization " -ShowConsole -SubMsg -Color DarkCyan
+											"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
 										}
 										ELSE {
-											Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template with Tem" -ShowConsole -SubMsg -Color DarkCyan
-											"& ""$fileExists"" -Source ""$template""$groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
+											Write-BISFLog "Using AutoSelect for OS Optimization with Templateprefix" -ShowConsole -SubMsg -Color DarkCyan
+											"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml"" -Templateprefix ""$templateprefix""" | Out-File $tmpPS1 -Encoding default
 										}
-
-
-										$Global:LIC_BISF_3RD_OPT = $true # BIS-F own optimization will be disabled, if 3rd Party Optimization is true
-										$ctxoe_proc = Start-Process -FilePath powershell.exe -ArgumentList "-file $tmpPS1" -WindowStyle Hidden -PassThru
-										Show-BISFProgressBar -CheckProcessId $ctxoe_proc.Id -ActivityText "Running $AppName...please wait"
-										Remove-Item $tmpPS1 -Force
-
-										#CTXOE Logfile
-										$scriptfolder = (Get-Item -Path $FileExists | Select-Object -ExpandProperty Directory).FullName
-										$logfolder = "$scriptfolder\Logs"
-										$logfile_path = Get-ChildItem -Path "$logfolder" -filter "Log_Debug_CTXOE.log" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Select-Object -Last 1
-										Write-BISFLog -Msg "Add $AppName logfile from $logfile_path to BIS-F logfile"
-										Get-BISFLogContent -GetLogFile $logfile_path
 									}
 									ELSE {
-										Write-BISFLog -Msg "ERROR: Citrix Optimizer Template $CTXOTemplatePath\$template NOT exists !!" -Type E -SubMsg
+										Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template with Tem" -ShowConsole -SubMsg -Color DarkCyan
+										"& ""$fileExists"" -Source ""$template""$groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
+									}
+
+
+									$Global:LIC_BISF_3RD_OPT = $true # BIS-F own optimization will be disabled, if 3rd Party Optimization is true
+									$ctxoe_proc = Start-Process -FilePath powershell.exe -ArgumentList "-file $tmpPS1" -WindowStyle Hidden -PassThru
+									Show-BISFProgressBar -CheckProcessId $ctxoe_proc.Id -ActivityText "Running $AppName...please wait"
+									Remove-Item $tmpPS1 -Force
+
+									#CTXOE Logfile
+									$scriptfolder = (Get-Item -Path $FileExists | Select-Object -ExpandProperty Directory).FullName
+									$logfolder = "$scriptfolder\Logs"
+									$logfile_path = Get-ChildItem -Path "$logfolder" -filter "Log_Debug_CTXOE.log" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Select-Object -Last 1
+									Write-BISFLog -Msg "Add $AppName logfile from $logfile_path to BIS-F logfile"
+									Get-BISFLogContent -GetLogFile $logfile_path
+									IF ($LIC_BISF_CLI_CTXOE_LogDelete -eq 1) {
+										Write-BISFLog -Msg "Removing $AppName Logfile $logfile_path "
+										Remove-Item $logfile_path -Force
 									}
 								}
+								ELSE {
+									Write-BISFLog -Msg "ERROR: Citrix Optimizer Template $CTXOTemplatePath\$template NOT exists !!" -Type E -SubMsg
+								}
 							}
-							ELSE {
-								Write-BISFLog -Msg "No optimization by $AppName"
-							}
+						}
+						ELSE {
+							Write-BISFLog -Msg "No optimization by $AppName"
 						}
 					}
 				}
 			}
-			ELSE {
-				Write-BISFLog -Msg "Skip searching and running $AppName"
-			}
 		}
+		ELSE {
+			Write-BISFLog -Msg "Skip searching and running $AppName"
+		}
+	}
 
-		#Citrix Applayering
-		function Start-AppLayering {
-			IF (!($CTXAppLayerName -eq "No-ELM")) {
-				IF ($CTXAppLayeringSW) {
-					$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
-					Write-BISFLog -Msg "Prepare Citrix AppLayering" -ShowConsole -Color Cyan
-					$txt = "Prepare AppLayering - List and remove unused network devices"
-					Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
-					$ctxAppLay1 = Start-Process -FilePath "${env:ProgramFiles}\Unidesk\Uniservice\Uniservice.exe" -ArgumentList "-G" -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
-					Show-BISFProgressBar -CheckProcessId $ctxAppLay1.Id -ActivityText "$txt"
-					Get-BISFLogContent -GetLogFile "$tmpLogFile"
-					Remove-Item -Path "$tmpLogFile" -Force | Out-Null
+	#Citrix Applayering
+	function Start-AppLayering {
+		IF (!($CTXAppLayerName -eq "No-ELM")) {
+			IF ($CTXAppLayeringSW) {
+				$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
+				Write-BISFLog -Msg "Prepare Citrix AppLayering" -ShowConsole -Color Cyan
+				$txt = "Prepare AppLayering - List and remove unused network devices"
+				Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
+				$ctxAppLay1 = Start-Process -FilePath "${env:ProgramFiles}\Unidesk\Uniservice\Uniservice.exe" -ArgumentList "-G" -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
+				Show-BISFProgressBar -CheckProcessId $ctxAppLay1.Id -ActivityText "$txt"
+				Get-BISFLogContent -GetLogFile "$tmpLogFile"
+				Remove-Item -Path "$tmpLogFile" -Force | Out-Null
 
-					$txt = "Prepare AppLayering - Check System Layer integrity"
-					Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
-					$ctxAppLay2 = Start-Process -FilePath "${env:ProgramFiles}\Unidesk\Uniservice\Uniservice.exe" -ArgumentList "-L" -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
-					Show-BISFProgressBar -CheckProcessId $ctxAppLay2.Id -ActivityText "$txt"
-					Get-BISFLogContent -GetLogFile "$tmpLogFile"
-					$ctxAppLay2log = Test-BISFLog -CheckLogFile "$tmpLogFile" -SearchString "allowed"
-					Remove-Item -Path "$tmpLogFile" -Force | Out-Null
-					IF ($ctxAppLay2log -eq $true) {
-						Write-BISFLog -Msg "Layer finalize is allowed" -ShowConsole -Color DarkCyan -SubMsg
-					}
-					ELSE {
-						Write-BISFLog -Msg "Layer finalize is NOT allowed, this issue is sending out from AppLayering and not BIS-F, please check the BIS-F log for further informations" -SubMsg -Type E
-					}
-
+				$txt = "Prepare AppLayering - Check System Layer integrity"
+				Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
+				$ctxAppLay2 = Start-Process -FilePath "${env:ProgramFiles}\Unidesk\Uniservice\Uniservice.exe" -ArgumentList "-L" -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
+				Show-BISFProgressBar -CheckProcessId $ctxAppLay2.Id -ActivityText "$txt"
+				Get-BISFLogContent -GetLogFile "$tmpLogFile"
+				$ctxAppLay2log = Test-BISFLog -CheckLogFile "$tmpLogFile" -SearchString "allowed"
+				Remove-Item -Path "$tmpLogFile" -Force | Out-Null
+				IF ($ctxAppLay2log -eq $true) {
+					Write-BISFLog -Msg "Layer finalize is allowed" -ShowConsole -Color DarkCyan -SubMsg
 				}
-			}
-			ELSE {
-				Write-BISFLog -Msg "AppLayering is running $($CTXAppLayerName), UniService must not optimized" -ShowConsole -Color Cyan
+				ELSE {
+					Write-BISFLog -Msg "Layer finalize is NOT allowed, this issue is sending out from AppLayering and not BIS-F, please check the BIS-F log for further informations" -SubMsg -Type E
+				}
+
 			}
 		}
-
-		function Invoke-CDS {
-			$servicename = "BrokerAgent"
-			IF ($LIC_BISF_CLI_CDS -eq "1") {
-				Write-BISFLog -Msg "The $servicename would configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
-				Invoke-BISFService -ServiceName "$servicename" -StartType disabled -Action stop
-			}
-			ELSE {
-				Write-BISFLog -Msg "The $servicename would not configured through ADMX.. normal operation state"
-				Invoke-BISFService -ServiceName "$servicename" -StartType Automatic -Action start
-			}
-
+		ELSE {
+			Write-BISFLog -Msg "AppLayering is running $($CTXAppLayerName), UniService must not optimized" -ShowConsole -Color Cyan
 		}
-
-
-
-		####################################################################
 	}
 
-	Process {
-
-		#### Main Program
-		$returnXenAppPrep = XenAppPrep
-
-		IF ($returnXenAppPrep -eq "true") {
-			#XenApp Installation
-			SetSTA
-			RedirectLicFile
-			CleanUpRadeCache
-			CleanUpCTXPolCache
-			CleanUpProfileManagement
-			CleanUpEdgeSight
-
+	function Invoke-CDS {
+		$servicename = "BrokerAgent"
+		IF ($LIC_BISF_CLI_CDS -eq "1") {
+			Write-BISFLog -Msg "The $servicename would configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
+			Invoke-BISFService -ServiceName "$servicename" -StartType disabled -Action stop
+		}
+		ELSE {
+			Write-BISFLog -Msg "The $servicename would not configured through ADMX.. normal operation state"
+			Invoke-BISFService -ServiceName "$servicename" -StartType Automatic -Action start
 		}
 
-		IF (($returnTestXDSoftware -eq "true") -or ($returnTestPVSSoftware -eq "true")) {
-			#Citrix PVS or Citrix VDA installed
-			Test-MSMQ
-			Set-WEMAgent
+	}
 
-			IF ($returnTestXDSoftware -eq "true") {
-				# Citrix VDA only
-				Invoke-CDS
-			}
 
+
+	####################################################################
+}
+
+Process {
+
+	#### Main Program
+	$returnXenAppPrep = XenAppPrep
+
+	IF ($returnXenAppPrep -eq "true") {
+		#XenApp Installation
+		SetSTA
+		RedirectLicFile
+		CleanUpRadeCache
+		CleanUpCTXPolCache
+		CleanUpProfileManagement
+		CleanUpEdgeSight
+
+	}
+
+	IF (($returnTestXDSoftware -eq "true") -or ($returnTestPVSSoftware -eq "true")) {
+		#Citrix PVS or Citrix VDA installed
+		Test-MSMQ
+		Set-WEMAgent
+
+		IF ($returnTestXDSoftware -eq "true") {
+			# Citrix VDA only
+			Invoke-CDS
 		}
-		Start-AppLayering
-		Start-CTXOE
+
 	}
-	End {
-		Add-BISFFinishLine
-	}
+	Start-AppLayering
+	Start-CTXOE
+}
+End {
+	Add-BISFFinishLine
+}

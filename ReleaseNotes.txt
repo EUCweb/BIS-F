@@ -1,11 +1,12 @@
+03.10.2019 MS: ENH 65 - ADMX Extension to delete the log files for Citrix Optimizer
 03.10.2019 MS: ENH 94 - Add sysprep command-line options to ADMX
 03.10.2019 MS: ENH 28 - Check if there's enough disk space on P2V Custom UNC-Path
 03.10.2019 MS: ENH 101 - Test sdelete64.exe or sdelete.exe during preparation if exists
 03.10.2019 MS: ENH 102 - Use CCleaner64.exe on x64 system
 03.10.2019 MS: ENH 139 - WEM 1909 detection
-03.10.2019 MS: HF 138 - UberAgent - din't change the startuptype to automatic
-03.10.2019 MS: ENH 140 - cleanup redirected CloudCache empty directories on startup
-03.10.2019 MS: ENH 141 - Add FSLogix App Masking URL Rule Files for personalization
+03.10.2019 MS: HF 138 - UberAgent: didn't change the startuptype to automatic
+03.10.2019 MS: ENH 140 - FSlogix: cleanup redirected CloudCache empty directories on startup
+03.10.2019 MS: ENH 141 - FSLogix: Add App Masking URL Rule Files for personalization
 03.10.2019 MS: ENH 84 - Azure Activation for all Office 365 users and during personlization Displays the device join status
 03.10.2019 MS: ENH 126 - MCSIO with persistent CacheDisk
 21.09.2019 MS: ENH 127 - Personalization is in Active State Override
