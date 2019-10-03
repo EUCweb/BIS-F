@@ -8,7 +8,7 @@
 		./10_PrepBISF_SCCM.ps1
 	.NOTES
 		Author: Matthias Schlimm
-		Company: Login Consultants Germany GmbH
+		Company:  EUCWeb.com
 
 		History:
 		26.03.2014 MS: Script created for SCCM 2012 R2

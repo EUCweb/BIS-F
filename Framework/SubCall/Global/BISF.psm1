@@ -118,7 +118,7 @@ function Get-Adaptername {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -162,7 +162,7 @@ function Show-MessageBox {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -238,7 +238,7 @@ function Write-Log {
 		write-BISFLog -Msg "External log contenct" -Type L
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -354,7 +354,7 @@ function Test-WriteCacheDiskDriveLetter {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -470,7 +470,7 @@ function Get-Version {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -486,8 +486,8 @@ function Get-Version {
 	$rootfolder = Split-Path -Path $Main_Folder -Parent
 	IF ($mainmodulename -ne $null) {
 		$ver = (Get-Module $mainmodulename).Version.ToString()
-		$Global:BISFversion = "$ver build $LIC_BISF_BuildNumber"
-		IF ($ExportSharedConfiguration) { $Host.UI.RawUI.WindowTitle = "$BISFtitle [2018 - $BISFversion] - ExportSharedConfiguration" } ELSE { $Host.UI.RawUI.WindowTitle = "$BISFtitle [2018 - $BISFversion]" }
+		$Global:BISFversion = "$ver"
+		IF ($ExportSharedConfiguration) { $Host.UI.RawUI.WindowTitle = "$BISFtitle [2020 - $BISFversion] - ExportSharedConfiguration" } ELSE { $Host.UI.RawUI.WindowTitle = "$BISFtitle [2020 - $BISFversion]" }
 
 	}
 	ELSE {
@@ -572,7 +572,7 @@ function Test-PVSSoftware {
 		Test-BISFPVSSoftware
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -600,7 +600,7 @@ function Test-XDSoftware {
 		Test-XDSoftware
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -684,7 +684,7 @@ function Show-ProgressBar {
 		Show-BISFProgressbar
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -1323,7 +1323,7 @@ function Get-vDiskDrive {
 		Get-BISFvDiskDrive
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	31.07.2017 MS: add Microsoft SYNPOSIS to this function
@@ -1471,7 +1471,7 @@ function Get-CLIcmd {
 		get-BISFCLIcmd
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	10.03.2016 MS: function created
@@ -1580,7 +1580,7 @@ function Show-CustomInputBox([string] $title, [string] $message, [string] $defau
 		Show-BISFCustomInputBox -title "Windows title" -message "your message" -defaultText "this text would be used, in the input boy as default text"
 	.NOTES
 		Author: Matthias Schlimm
-		Company: Login Consultants Germany GmbH
+		Company:  EUCWeb.com
 
 		History:
 	  	dd.mm.yyyy MS: function created
@@ -1608,7 +1608,7 @@ function Test-RegistryValue {
 		returns false if the value not exist
 	.NOTES
 		Author: Matthias Schlimm
-		Company: Login Consultants Germany GmbH
+		Company:  EUCWeb.com
 
 		History:
 	  	01.09.2015 MS: added function
@@ -1707,7 +1707,7 @@ function Test-Service {
 		Test-BISFService -ServiceName CcmExec -ProductName "Microsoft SCCM Agent"
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	02.09.2015 MS: function created
@@ -1782,7 +1782,7 @@ function Invoke-Service {
 		 Invoke-BISFService -ServiceName wuauserv -Action Start -CheckDiskMode RO
 	.NOTES
 		Author: Matthias Schlimm, Florian Frank
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	02.09.2015 MS: function created
@@ -1898,7 +1898,7 @@ function Get-AdapterGUID {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	25.11.2015 MS: function created
@@ -1991,7 +1991,7 @@ function Test-VMwareHorizonViewSoftware {
 		Test-BISFVMwareHorizonViewSoftware
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	07.01.2016 MS: function created
@@ -2017,7 +2017,7 @@ Function Get-OSCSessionType {
 		Get-BISFOSCSessionType
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	21.01.2016 MS: function created, get POSH from https://gallery.technet.microsoft.com/scriptcenter/Determines-the-Terminal-a0a454a4
@@ -2079,7 +2079,7 @@ function Request-Sysprep {
 		Request-BISFSysprep
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	28.01.2016 MS: function created
@@ -2136,7 +2136,7 @@ function Set-PostSysprep {
 		Set-BISFPostSysprep
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	02.02.2016 MS: function created
@@ -2170,7 +2170,7 @@ function Start-ProcWithProgBar {
 		 Start-BISFProcWithProgBar -ProcPath "C:\SCRIPTS\BISF_SCRIPTS\10_SubCall\10_LIB\Tools\deplprof2.exe" -Args "/u /r" -ActText "Delprof2 is running"
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	10.03.2016 MS: function created
@@ -2207,7 +2207,7 @@ function Invoke-LogRotate {
 		Invoke-BISFLogRotate -Versions 5 -LogFileName "Prep*" -Directory "D:\BISFLogs"
 	.NOTES
 		Author: Benjamin Ruoff
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	15.03.2016 BR: function created
@@ -2313,7 +2313,7 @@ function Test-AccessRights {
 		Test-BISFAccessRights
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	16.03.2016 MS: function created
@@ -2354,7 +2354,7 @@ Function Write-FunctionName2Log {
 		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name}) -EntryPoint End
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	21.03.2016 MS: function created
@@ -2387,7 +2387,7 @@ function Set-LastRun {
 		Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | % {$_.Name}) -EntryPoint End
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	07.12.2016 MS: function created
@@ -2412,7 +2412,7 @@ function Get-MacAddress {
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	09.01.2017 MS: function created
@@ -2446,7 +2446,7 @@ function Test-AppLayeringSoftware {
 		Test-AppLayeringSoftware
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	25.07.2017 MS: function created
@@ -2545,7 +2545,7 @@ function Use-PVSConfig {
 		Use-BISFPVSConfig
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	27.07.2017 MS: function created
@@ -2869,7 +2869,7 @@ function Get-BootMode {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	03.08.2017 MS: function created
@@ -3158,7 +3158,7 @@ function Remove-FolderAndContents {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	22.08.2017 MS: function created
@@ -3195,7 +3195,7 @@ function Start-CDS {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	10.09.2017 MS: function created

@@ -9,7 +9,7 @@ param(
 	.NOTES
 		Author: Matthias Schlimm
 		Editor: Mike Bijl (Rewritten variable names and script format)
-		Company: Login Consultants Germany GmbH
+		Company:  EUCWeb.com
 
 		History:
 		28.02.2013 MS: Script created

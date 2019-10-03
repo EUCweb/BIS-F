@@ -6,7 +6,7 @@
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-		Company: Login Consultants Germany GmbH
+		Company:  EUCWeb.com
 
 		History:
 		15.12.2015 MS: Initial script development

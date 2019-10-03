@@ -6,7 +6,7 @@
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-		Company: Login Consultants Germany GmbH
+		Company:  EUCWeb.com
 
 		History:
 		11.08.2014 MS: Script created

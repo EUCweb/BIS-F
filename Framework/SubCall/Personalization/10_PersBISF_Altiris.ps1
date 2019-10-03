@@ -7,7 +7,7 @@
 	.EXAMPLE
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+	  	Company:  EUCWeb.com
 
 		History:
 	  	14.10.2014 MS: function created

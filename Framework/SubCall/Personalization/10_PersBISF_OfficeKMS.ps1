@@ -5,7 +5,7 @@
     .EXAMPLE
     .NOTES
 		Author: Benjamin Ruoff
-      	Company: Login Consultants Germany GmbH
+      	Company:  EUCWeb.com
 
 		History:
       	13.01.2015 BR: Script created for Office 2010 and Office 2013

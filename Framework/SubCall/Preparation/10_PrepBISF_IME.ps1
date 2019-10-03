@@ -8,7 +8,7 @@ param(
 	.EXAMPLE
 	.NOTES
 		Author: Benjamin Ruoff
-		Company: Login Consultants Germany GmbH
+		Company:  EUCWeb.com
 
 		History
 		26.10.2015 MS: Script created

@@ -6,7 +6,7 @@
 	.EXAMPLE
 	.NOTES
 		Author: Benjamin Ruoff
-		Company: Login Consultants Germany GmbH
+		Company:  EUCWeb.com
 
 		History:
 		14.04.2016 BR: Script created
