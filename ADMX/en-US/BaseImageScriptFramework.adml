@@ -634,7 +634,7 @@ If your Platform Layer is domain joined you can enable this setting and enter a 
 
 If you disable this policy setting or do not configure this policy setting, no different BIS-F shared configurations can be used.
 
-Note: Enter the name of the configurations file only, the path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
+Note: Enter the name of the configurations file only without extension, the path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
       <string id="POL_VDASSL">Configure SSL for the Citrix VDA</string>
       <string id="POL_VDASSL_Help">Configure SSL for the Citrix VDA
 
@@ -981,15 +981,15 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
       <presentation id="POL_AppLayCfg">
         <textBox refId="TXT_AppLayOSCfg">
           <label>OS Layer config file</label>
-          <defaultValue>BISF_AppLay_OS_config.xml</defaultValue>
+          <defaultValue>BISF_AppLay_OS_config</defaultValue>
         </textBox>
         <textBox refId="TXT_AppLayAppPltCfg">
           <label>App-/Platform Layer config file</label>
-          <defaultValue>BISF_AppLay_AppPlt_config.xml</defaultValue>
+          <defaultValue>BISF_AppLay_AppPlt_config</defaultValue>
         </textBox>
         <textBox refId="TXT_AppLayNoELM">
           <label>Outside ELM config file</label>
-          <defaultValue>BISF_AppLay_NoELM_config.xml</defaultValue>
+          <defaultValue>BISF_AppLay_NoELM_config</defaultValue>
         </textBox>
         <checkBox refId="CHK_AppLayPltCfgb">Enable domain joined Platform Layer</checkBox>
         <text>

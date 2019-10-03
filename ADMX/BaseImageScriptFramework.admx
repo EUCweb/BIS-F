@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.411722B7_BDB3_4C2E_A327_D796B8461E0C" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.DDBBD5AD_3AFC_404A_93D2_8166EB3155F2" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1314,6 +1314,8 @@
     <policy name="POL_AppLayCfg" class="Machine" displayName="$(string.POL_AppLayCfg)" explainText="$(string.POL_AppLayCfg_Help)" presentation="$(presentation.POL_AppLayCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <enabledValue />
+      <disabledValue />
       <enabledList>
         <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
           <value>
