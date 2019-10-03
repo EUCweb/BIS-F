@@ -9,7 +9,6 @@
 	Initialize-BISFConfiguration
 .NOTES
 	Author: Matthias Schlimm
-	Company: Login Consultants Germany GmbH
 
 	History:
 	07.09.2015 MS: Added .SYNOPSIS to this function
@@ -27,11 +26,8 @@
 	09.01.2017 MS: Created function Get-MacAddress
 	19.01.2017 JP: Line 1898; Added -Wait parameter for Start-Process
 	12.03.2017 MS: add $Global:Wait1= "10"  #global time in seconds
-	05.09.2017 TT: added "MaximumExecutionTime" to Show-ProgressBar
 	11.09.2017 MS: add $TaskStates to control the Preparation is running after Personlization first
-	14.09.2017 TT: Added "Get-FileVersion" function
-	14.09.2017 JP: Fixed error at line 3240
-	14.05.2019 JP: Improved Get-PendingReboot function, removed wmi commands
+	03.10.2019 MS: ENH 126 - MCSI for persistent to set $Global:PVSDiskDrive = LIC_BISF_CLI_MCSIODriveLetter
 .LINK
 	https://eucweb.com
 #>
@@ -51,8 +47,8 @@
 	$Global:LogFolderName = "BISFLogs"
 	$Global:FirstRun = $true
 	$Global:hklm_software_LIC_CTX_BISF_SCRIPTS = "$hklm_software\$LIC\$CTX_BISF_SCRIPTS"
-	$Global:FrameworkName = "Base Image Script Framework ($CTX_BISF_SCRIPTS)"
-	$Global:BISFtitle = "$FrameworkName @ $LIC and EUCweb.com"
+	$Global:FrameworkName = "Base Image Script Framework (BIS-F)"
+	$Global:BISFtitle = "$FrameworkName @ EUCweb.com"
 	$Host.UI.RawUI.WindowTitle = "$BISFtitle"
 	$Global:Wait1 = "10"  #global time in seconds
 	$Global:Reg_LIC_Policies = "$hklm_sw_pol\$LIC\$CTX_BISF_SCRIPTS"
@@ -63,7 +59,14 @@
 	Write-Log -Msg "Install location ""$InstallLocation"" " -ShowConsole -Color DarkCyan -SubMsg
 	Import-BISFSharedConfiguration -Verbose:$VerbosePreference
 	Get-BISFCLIcmd -Verbose:$VerbosePreference #must be running before the $Global:PVSDiskDrive = $LIC_BISF_CLI_WCD is set
-	$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
+
+	IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
+		$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
+	} ESLE {
+		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
+	}
+
+
 	$Global:TaskStates = @("AfterInst", "AfterPrep", "Active", "Finished")
 }
 
@@ -78,6 +81,7 @@ function Get-RegistryValues($key) {
 }
 
 function Get-FileVersion ($PathToFile) {
+
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$File = (Get-Item $PathToFile).VersionInfo
 	$Version = New-Object System.Version -ArgumentList @(
@@ -341,9 +345,9 @@ Function Invoke-FolderScripts {
 function Test-WriteCacheDiskDriveLetter {
 	<#
 	.SYNOPSIS
-		Test if the PVS WriteCacheDisk driveletter is configured
+		Test if the WriteCacheDisk driveletter is configured
 	.DESCRIPTION
-	  	Test if the PVS WriteCacheDisk driveletter is configured via ADMX
+	  	Test if the WriteCacheDisk driveletter is configured via ADMX
 		use get-help <functionname> -full to see full help
 	.EXAMPLE
 
@@ -356,25 +360,33 @@ function Test-WriteCacheDiskDriveLetter {
 	  	dd.mm.yyyy MS: function created
 		12.03.2017 MS: add .SYNOPSIS to this function
 		12.03.2017 MS: configure WriteCacheDisk driveletter with ADMX or show error if PVS Target Device Driver is installed
+		03.10.2019 MS: ENH 126 - added MCSIO
+		03.10.2019 MS: FRQ 3 - Remove Messagebox
 
 	.LINK
 		https://eucweb.com
 #>
 
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
-
-	IF ($LIC_BISF_CLI_WCD -eq $null) {
-		$title = "Fatal Error !!!"
-		$text = "PVSWriteCacheDisk not configured with ADMX, configure it and run this script again..!! "
-		Show-MessageBox -Title $title -Msg $text -Critical
-		write-BISFlog -Msg $Text -Type E -SubMsg
-		return $false
-		break
+	IF ($returnTestPVSSoftware) {
+		IF ($LIC_BISF_CLI_WCD -eq $null) {
+			write-BISFlog -Msg "PVSWriteCacheDisk not configured with ADMX, configure it and run this script again..!! " -Type E -SubMsg
+			return $false
+			break
+		}
+		ELSE {
+			$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
+			write-BISFlog -Msg "PVSWriteCacheDisk configured: $PVSDiskDrive" -ShowConsole -Color DarkCyan -SubMsg
+			return $true
+		}
 	}
-	ELSE {
-		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
-		write-BISFlog -Msg "PVSWriteCacheDisk configured: $PVSDiskDrive" -ShowConsole -Color DarkCyan -SubMsg
+
+	# IF $MCSIO can be used with VDA 1903 and later and the BIS-F MCSIO ADMX is configured as well
+	IF (($MCSIO) -and ($LIC_BISF_POL_MCSCfg -eq "YES")) {
+		$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
+		write-BISFlog -Msg "MCSIO persistent Disk is configured: $PVSDiskDrive" -ShowConsole -Color DarkCyan -SubMsg
 		return $true
+
 	}
 }
 
@@ -413,22 +425,29 @@ function Test-WriteCacheDisk {
 
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
+
 
 		History:
 	  	dd.mm.yyyy MS: function created
 		12.03.2017 MS: add .SYNOPSIS to this function
+		03.10.2019 MS: ENH 126 - added MCSIO persistent drive
+		03.10.2019 MS: FRQ 3 - Remove Messagebox
+
 	.LINK
 		https://eucweb.com
 #>
-	$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
+	IF ($returnTestPVSSoftware) {
+		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
+	} ELSE {
+		IF (($MCSIO) -and ($LIC_BISF_POL_MCSCfg -eq "YES")) {
+			$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
+		}
+	}
+
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$CacheDisk = Get-CimInstance -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
 	IF ($CacheDisk -eq $null) {
-		$title = "Fatal Error !!!"
-		$text = "Disk $PVSDiskDrive not exist. Please create a local new harddrive with enough space, assign driveletter $PVSDiskDrive and run this script again..!!"
-		Show-MessageBox -Title $title -Msg $text -Critical
-		write-BISFlog -Msg $Text -Type E -SubMsg
+		write-BISFlog -Msg "Disk $PVSDiskDrive not exist. Please create a local new harddrive with enough space, assign driveletter $PVSDiskDrive and run this script again..!!" -Type E -SubMsg
 		return $false
 	}
 	ELSE {
@@ -851,6 +870,7 @@ Function Get-PendingReboot {
 	  History
 	  dd.mm.yyy MS: script created
 	  27.05.2018 MS: Hotfix 40: new Script to get pending reboot state
+	  14.05.2019 JP: Improved Get-PendingReboot function, removed wmi commands
 #>
 
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
@@ -2603,23 +2623,90 @@ function Use-PVSConfig {
 	}
 }
 
+function Use-MCSConfig {
+	<#
+	.SYNOPSIS
+		Redirect Files to the MCS CacheDisk
+	.DESCRIPTION
+	  	IF Citrix VDA 1903 or higher is installed, BIS-F can  redirect the eventlogs, spool and other is necasaary
+		use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		Use-BISFMCSConfig
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+	  	03.10.2019 MS: EHN 126 - function created (coopy from Use-PVSConfig function and modifed for MCS)
+
+	.LINK
+		https://eucweb.com
+#>
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	IF ($MCSIO) {
+		$Global:Redirection = $false
+		Write-BISFLog -Msg "Check if redirection of Files to MCSIO CacheDisk is possible" -ShowConsole -Color Cyan
+		#enable redirection
+		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Preparation")) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Prep" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-BI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-AppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+		#disable redirection
+		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Preparation")) { $Global:Redirection = $false; $Global:RedirectionCode = "MCS-AppLay-Prep" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Preparation") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $false; $Global:RedirectionCode = "MCS-AppLay-Prep-BI" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Personalization") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $false; $Global:RedirectionCode = "MCS-AppLay-Pers-BI" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+		IF ($LIC_BISF_CLI_MCSIODriveLetter -eq "NONE") {Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-No-WCD" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+		IF ($LIC_BISF_CLI_MCSIODisableRedirection -eq 1) {Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+		IF ($Redirection -eq $true) {
+			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configure it now" -ShowConsole -SubMsg -Color DarkCyan
+
+			#Check redirection
+			$Global:returnTestPVSEnvVariable = Test-BISFWriteCacheDiskDriveLetter -Verbose:$VerbosePreference
+			IF ($State -eq "Preparation") {
+				IF ($DiskMode -eq "VDAShared") { Write-BISFLog -Msg "Mode $DiskMode - Image is in shared Mode , read access only!" -Type E -SubMsg }
+
+				$Global:returnTestPVSDriveLetter = Test-BISFWriteCacheDisk -Verbose:$VerbosePreference
+			}
+
+			# test if custom spool folder is enabled
+			IF ($LIC_BISF_CLI_SPb -eq "1") { $Global:LIC_BISF_SpoolPath = "$PVSDiskDrive\$LIC_BISF_CLI_SpoolFolder" }
+			#redirect Spool directory
+
+			# create redirected Spool directory
+			Write-BISFLog -Msg "Redirect Spool directory to $LIC_BISF_SpoolPath" -ShowConsole -Color DarkCyan -SubMsg
+			if (!(Test-Path -Path $LIC_BISF_SpoolPath)) {
+				Write-BISFLog -Msg "Create redirected Spool directory"
+				New-Item -Path $LIC_BISF_SpoolPath -ItemType Directory -Force
+			}
+			$strRegPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Print\Printers"
+			Write-BISFLog -Msg "Configure redirected Spool directory in registry $strRegPath"
+			Set-ItemProperty -Path $strRegPath  -Name "DefaultSpoolDirectory" -Value $LIC_BISF_SpoolPath
+			Set-BISFACLrights -path $LIC_BISF_SpoolPath
+
+			# redirected eventlogs
+			Move-BISFEvtLogs
+		}
+		ELSE {
+			Write-BISFLog -Msg "Redirection is disabled with Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan
+		}
+	}
+	ELSE {
+		$Global:Redirection = $false; $Global:RedirectionCode = "NoMCSIO" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan
+	}
+}
+
 function Move-EvtLogs {
 	<#
 	.Synopsis
 	   Enable all Eventlog and move Eventlogs to E:\Eventlogs
 	.DESCRIPTION
 
-	.EXAMPLE
-	   Example of how to use this cmdlet
-	.EXAMPLE
-	   Another example of how to use this cmdlet
-	.INPUTS
-	   Inputs to this cmdlet (if any)
-	.OUTPUTS
-	   Output from this cmdlet (if any)
 	.NOTES
 		Author: Matthias Schlimm
-	  	Company: Login Consultants Germany GmbH
 
 		History:
 	  	29.07.2017 MS: function created, thx to Bernd Braun
@@ -2627,19 +2714,20 @@ function Move-EvtLogs {
 		02.08.2017 MS: change to new ADMX structure to get custom EventLog foldername
 		11.11.2017 MS: Bugfix, show the right Eventlog during move to the WCD
 		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
-	.COMPONENT
-	   The component this cmdlet belongs to
-	.ROLE
-	   The role this cmdlet belongs to
+		03.10.2019 MS: EHN 126 - added MCSIO redirection
+
 	.FUNCTIONALITY
-	   Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig  #>
+		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
+			or
+		Enable all Eventlog and move Eventlogs to the MCSIO CacheDisk if Redirection is enabled function Use-BISFMCSConfig
+
 
 	#>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	# test if custom searchfolder is enabled
 	IF ($LIC_BISF_CLI_EVTb -eq "1") { $Global:LIC_BISF_EvtPath = "$PVSDiskDrive\$LIC_BISF_CLI_EvtFolder" }
 
-	Write-BISFLog -Msg "Move Eventlogs to the PVS WriteCacheDisk" -ShowConsole -Color Cyan
+	Write-BISFLog -Msg "Move Eventlogs to the CacheDisk" -ShowConsole -Color Cyan
 	If (!(Test-Path -Path $LIC_BISF_EvtPath)) {
 		Write-BISFLog -Msg "Create Eventlog directory $LIC_BISF_EvtPath"
 		New-Item -Path $LIC_BISF_EvtPath -ItemType Directory -Force

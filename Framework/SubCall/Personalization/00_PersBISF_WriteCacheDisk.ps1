@@ -47,6 +47,7 @@
 		22.09.2017 MS: change reboot command to use shutdown /r instead of restart-computer
 		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
 		25.08.2019 MS: HF 21 - endless Reboot with wrong count of Partitons
+		03.10.2019 MS: ENH 126 - MCSIO with persistent drive
 	.LINK
 		https://eucweb.com
 #>
@@ -60,7 +61,7 @@ Begin {
 	$PSScriptName = [System.IO.Path]::GetFileName($PSScriptFullName)
 	$hklm_bnistack_pvsagent = "$hklm_system\CurrentControlSet\services\bnistack\PvsAgent"
 	$reg_value_WriteCacheDrive = "WriteCacheDrive"
-	$PVSDiskLabel = "WriteCache"
+	$DiskLabel = "CacheDisk"
 	$PVSCheckFile = "$PVSDiskDrive\$computer-$PSScriptName.txt"
 	$DiskpartFile = "$TEMP\$computer-DiskpartFile.txt"
 	$PVSPersonality = "$SysDrive\Personality.ini"
@@ -110,7 +111,7 @@ Process {
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"create partition primary" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
-					"Format FS=NTFS LABEL=$PVSDiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
 					get-LogContent -GetLogFile "$DiskpartFile"
 					diskpart.exe /s $DiskpartFile
 					Write-BISFLog -Msg "WriteCache partition is now formatted and the drive letter $PVSDiskDrive assigned"
@@ -135,9 +136,6 @@ Process {
 					Set-CimInstance -InputObject $WriteCache  -Arguments @{DriveLetter = "$PVSDiskDrive" }
 
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-					#$Searchvol = "list volume" | diskpart | select-string -pattern $PVSDiskLabel | out-string
-					#$getvolNbr = $Searchvol.substring(11,1)   # get Volumenumber from DiskLabel
-					#"select volume $getvolNbr" | out-file -filepath $DiskpartFile -encoding Default
 					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
 					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
@@ -164,6 +162,74 @@ Process {
 		}
 		else {
 			Write-BISFLog -Msg "WriteCache partition is properly configured"
+		}
+	}
+
+	function Test-MCSIOCacheDisk {
+		# Check for BIS-F Log Folder on CacheDisk Partition
+		if ((Test-Path -Path "$LIC_BISF_LogPath") -eq $false) {
+			Write-BISFLog -Msg "LogFolder $LIC_BISF_LogPath does not exist"
+			#grab the numbers of Partitions from the BIS-F ADMX
+			Write-BISFLog -Msg "Number of Partitions from ADMX: $LIC_BISF_CLI_MCSIONumberOfPartitions"
+			$SystemPartitions = (Get-CimInstance -ClassName Win32_volume).count
+			Write-BISFLog -Msg "Number of Partitions on current System: $SystemPartitions"
+			If ($SystemPartitions -eq $LIC_BISF_CLI_MCSIONumberOfPartitions) {
+				# WriteCache Disk not Formatted
+				# Construct Diskpart File to Format Disk
+
+				Write-BISFLog -Msg "WriteCache partition is not formatted"
+
+				If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
+				"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
+				"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
+				"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
+				"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
+				"create partition primary" | Out-File -filepath $DiskpartFile -encoding Default -append
+				"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
+				"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
+				get-LogContent -GetLogFile "$DiskpartFile"
+				diskpart.exe /s $DiskpartFile
+				Write-BISFLog -Msg "CacheDisk partition is now formatted and the drive letter $PVSDiskDrive assigned"
+
+				# Get CacheDisk Volume and Restore Unique ID
+				If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
+				"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
+				"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
+				get-LogContent -GetLogFile "$DiskpartFile"
+				diskpart.exe /s $DiskpartFile
+				Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
+			}
+			else {
+				# WriteCache Formatted, but No or Wrong Drive Letter Assigned
+				Write-BISFLog -Msg "CacheDisk is formatted, but no or the wrong drive letter is assigned"  -Type W -SubMsg
+
+				Write-BISFLog -Msg "Fixing drive letter assignemnt on CacheDisk"
+				$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
+				Set-CimInstance -InputObject $WriteCache  -Arguments @{DriveLetter = "$PVSDiskDrive" }
+
+				If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
+				"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
+				"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
+				"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
+				"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
+				"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
+				get-LogContent -GetLogFile "$DiskpartFile"
+				$result = diskpart.exe /s $DiskpartFile
+				Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
+			}
+
+			IF (!($SkipReboot -eq "TRUE")) {
+				Write-BISFLog -Msg "Wait 60 seconds before system restart" -Type W
+				Write-BISFLog -Msg "Reboot needed for config changes"
+				Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare CacheDisk - reboot in 60 seconds.."" " -Wait
+				Start-Sleep 120
+			}
+			ELSE {
+				Write-BISFLog -Msg "SkipReboot is set to $SkipReboot on this computer $computer"
+			}
+		}
+		else {
+			Write-BISFLog -Msg "CacheDisk partition is properly configured"
 		}
 	}
 
@@ -198,11 +264,26 @@ Process {
 			CheckWriteCacheDrive
 		}
 		ELSE {
-			Write-BISFLog -Msg "WriteCache Disk not  checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
+			Write-BISFLog -Msg "WriteCache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
 		}
 	}
 	ELSE {
 		Write-BISFLog -Msg "PVS WriteCache is not configured or is set to 'NONE', skipping configuration"
+	}
+
+	IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
+		IF (!($LIC_BISF_CLI_MCSIODriveLetter -eq $null) -or (!($LIC_BISF_CLI_MCSIODriveLetter -eq "NONE")) ) {
+			IF ($MCSIO -eq $true) {
+				$uniqueid_REG = GetUniqueIDreg
+				Test-MCSIOCacheDisk
+			}
+			ELSE {
+				Write-BISFLog -Msg "Citrix MCSIO with persistent Drive can't be used on this system!" -Type W
+			}
+		}
+		ELSE {
+			Write-BISFLog -Msg "MCSIO CacheDisk is not configured or is set to 'NONE', skipping configuration"
+		}
 	}
 }
 

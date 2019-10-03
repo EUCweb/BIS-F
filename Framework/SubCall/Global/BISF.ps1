@@ -77,6 +77,7 @@ param()
 		25.08.2019 MS: ENH 132 - Windows 10 Enterprise for Virtual Desktops (WVD) Support
 		25.08.2019 MS: FRQ 85 - Make SCCM / MDT Tasksequence Logfile redirection optional
 		21.09.2019 MS: EHN 36 - Shared Configuration - JSON Export
+		03.10.2019 MS: ENH 126 - MCSIO persistent drive
 
       #>
 Begin {
@@ -104,7 +105,7 @@ Begin {
 
 
 	# initialize script array
-	If (($PVSDiskDrive -eq $null) -or ($PVSDiskDrive -eq "")) { $PVSDiskDrive = "C:\Windows\Logs" }
+	If (($PVSDiskDrive -eq $null) -or ($PVSDiskDrive -eq "") -or ($PVSDiskDrive -eq "NONE")) { $PVSDiskDrive = "C:\Windows\Logs" }
 
 	# Predefined BISF configuration values
 	[array]$BISFconfiguration = @(
@@ -286,7 +287,13 @@ Process {
 	# Create Powershell variables from the BISFConfiguration items.
 	ForEach ($BISFconfig in $BISFconfiguration) { New-BISFGlobalVariable -Name $BISFconfig.value -Value $BISFconfig.data }
 
-	Use-BISFPVSConfig -Verbose:$VerbosePreference  #27.07.2017 MS: new created
+	# 03.10.2019 MS: ENH 126 - depend on the new MCSIO redirection the calling of the differetn functions must be different now
+	IF ($returnTestPVSSoftware) {
+		Use-BISFPVSConfig -Verbose:$VerbosePreference  #27.07.2017 MS: new created
+	}
+	ELSE {
+		Use-BISFMCSConfig -Verbose:$VerbosePreference  #03.10.2019 MS: new created
+	}
 
 	$TSenvExist = Get-BISFTaskSequence -Verbose:$VerbosePreference
 	IF ($TSenvExist -eq "true") {
