@@ -14,7 +14,7 @@
 		01.11.2017 MS: get Office activation state and License state back to the BIS-F log
 		22.03.2018 MS: Feature 15 - support for Office 365 ClicktoRun
 		28.03.2019 MS: FRQ 86 - Office 2019 support
-
+		03.10.2019 MS: ENH 84 - if hosting on azure, Displays the device join status
 	.LINK
         https://eucweb.com
 #>
@@ -109,6 +109,16 @@ Process {
 		Write-BISFLog -msg "Office 365 is installed" -ShowConsole -Color Cyan
 		Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\cscript.exe" -Args "//NoLogo ""$($Office365InstallRoot)OSPP.VBS"" /act" -ActText "Start triggering activation"
 		Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\cscript.exe" -Args "//NoLogo ""$($Office365InstallRoot)OSPP.VBS"" /dstatus" -ActText "Get Office Licensing state"
+
+		$O365onAzure = Test-BISFAzureVM
+		IF ($O365onAzure -eq $true) {
+			Write-BISFLog -Msg "Office 365 is hosting on Microsoft Azure" -ShowConsole -Color DarkCyan -SubMsg
+			Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/status" -ActText "Office - Displays the device join status"
+		}
+		ELSE {
+			Write-BISFLog -Msg "Office 365 is NOT hosting on Microsoft Azure" -Color DarkCyan -SubMsg
+		}
+
 	}
  ELSE {
 		Write-BISFLog -msg "Office 365 is NOT installed"

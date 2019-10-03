@@ -41,6 +41,7 @@ param(
 		22.03.2018 MS: Feature 15 - support for Office 365 ClicktoRun
 		28.03.2019 MS: FRQ 86 - Office 2019 support
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		03.10.2019 MS: ENH 84 - Azure Activation for all Office 365 users
 
 	.LINK
 		https://eucweb.com
@@ -206,6 +207,17 @@ Begin {
 		IF ($Office365InstallRoot -is [System.Object]) {
 			$OSPPREARM = $Office365InstallRoot + "OSPPREARM.EXE"
 			Write-BISFLog -Msg "Checking Office 365 rearm status" -ShowConsole -Color Cyan
+
+			$O365onAzure = Test-BISFAzureVM
+			IF ($O365onAzure -eq $true) {
+				Write-BISFLog -Msg "Office 365 is hosting on Microsoft Azure" -ShowConsole -Color DarkCyan -SubMsg
+				Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/leave" -ActText "Office - Performs Hybrid Unjoin"
+				Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/status" -ActText "Office - Displays the device join status"
+			}
+			ELSE {
+				Write-BISFLog -Msg "Office 365 is NOT hosting on Microsoft Azure" -Color DarkCyan -SubMsg
+			}
+
 
 		}
 		ELSE {
