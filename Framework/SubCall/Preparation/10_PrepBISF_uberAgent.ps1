@@ -14,6 +14,7 @@
 		12.01.2017 MS: Added IF (Test-Path $reg_Product_Key) before continue
 		18.01.2017 JP: Fixed typo in product variable
 		28.01.2017 MS: typo in $PSScriptName = [System.IO.Path]::GetFileName($PSScriptFullName)
+		03.10.2019 MS: HF 138 - din't change the startuptype to automatic
 
 	.LINK
 		https://eucweb.com
@@ -33,7 +34,7 @@ Process {
 
 	$svc = Test-BISFService -ServiceName $servicename -ProductName $product
 	IF ($svc) {
-		Invoke-BISFService -ServiceName $servicename -Action Stop -StartType automatic
+		Invoke-BISFService -ServiceName $servicename -Action Stop #-StartType automatic # -> HF 138 comment out
 		Write-BISFLog -Msg Clear $Product config
 		IF (Test-Path $reg_Product_Key) {
 			& Remove-Item '$reg_Product_Key' -Recurse -Force

@@ -1,3 +1,4 @@
+03.10.2019 MS: HF 138 - UberAgent - din't change the startuptype to automatic
 03.10.2019 MS: ENH 140 - cleanup redirected CloudCache empty directories on startup
 03.10.2019 MS: ENH 141 - Add FSLogix App Masking URL Rule Files for personalization
 03.10.2019 MS: ENH 84 - Azure Activation for all Office 365 users and during personlization Displays the device join status
