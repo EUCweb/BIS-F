@@ -4,7 +4,7 @@
 	.DESCRIPTION
 	.EXAMPLE
 	.NOTES
-		Author: Benjamin Ruoff
+		Author: Matthias Schlimm
 
 		History:
 	  	11.08.2015 BR: Script created

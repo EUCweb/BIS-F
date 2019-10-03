@@ -104,6 +104,7 @@ param(
 		25.08.2019 MS: FRQ 134: Removing Disable Cortana
 		25.08.2019 MS: FRQ 133: Removing Disable scheduled Task
 		03.10.2019 MS: ENH 102 - Use CCleaner64.exe on x64 system
+		03.10.2019 MS: ENH 101 - Use sdelete64.exe on x64 system
 	.LINK
 		https://eucweb.com
 #>
@@ -409,15 +410,29 @@ Begin {
 			};
 			$ordercnt += 1
 		}
-		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
-			showmessage = "Y";
-			CLI         = "LIC_BISF_CLI_SD";
-			TestPath    = "$($SearchFoldersSD)\sdelete.exe";
-			Description = "Run SDelete to Zero-Out free space on PVS WriteCacheDisk on each PVS Target Device at system startup ?";
-			Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$true'"
-		};
+		# ENH 101 - Use sdelete64.exe on x64 system
+		IF ($OSBitness -eq "32-bit") {
+			$PrepCommands += [pscustomobject]@{
+				Order       = "$ordercnt";
+				Enabled     = "$true";
+				showmessage = "Y";
+				CLI         = "LIC_BISF_CLI_SD";
+				TestPath    = "$($SearchFoldersSD)\sdelete.exe";
+				Description = "Run SDelete to Zero-Out free space on PVS WriteCacheDisk on each PVS Target Device at system startup ?";
+				Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$true'"
+			};
+		}
+		ELSE {
+			$PrepCommands += [pscustomobject]@{
+				Order       = "$ordercnt";
+				Enabled     = "$true";
+				showmessage = "Y";
+				CLI         = "LIC_BISF_CLI_SD";
+				TestPath    = "$($SearchFoldersSD)\sdelete64.exe";
+				Description = "Run SDelete to Zero-Out free space on PVS WriteCacheDisk on each PVS Target Device at system startup ?";
+				Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$true'"
+			};
+		}
 		$ordercnt += 1
 	}
 	ELSE {
