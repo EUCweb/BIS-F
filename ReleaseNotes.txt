@@ -9,6 +9,7 @@
 21.09.2019 MS: ENH 36 - Shared Configuration - JSON Export and Import
 20.09.2019 MS: ENH 136 - detect PVS Private Image with Asynchronous IO
 18.09.2019 MS: HF 137 - generated GUID based on MAC-Address return in lowercase
+03.10.2019 MS: ENH 102 - Use CCleaner64.exe on x64 system
 25.08.2019 MS: HF 21 - endless Reboot with wrong count of Partitons
 25.08.2019 MS: FRQ 133: Removing Disable scheduled Task
 25.08.2019 MS: FRQ 134: Removing Disable Cortana
