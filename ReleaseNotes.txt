@@ -7,7 +7,7 @@
 03.10.2019 MS: HF 138 - UberAgent: didn't change the startuptype to automatic
 03.10.2019 MS: ENH 140 - FSlogix: cleanup redirected CloudCache empty directories on startup
 03.10.2019 MS: ENH 141 - FSLogix: Add App Masking URL Rule Files for personalization
-03.10.2019 MS: ENH 84 - Azure Activation for all Office 365 users and during personlization Displays the device join status
+03.10.2019 MS: ENH 84 - Azure Activation for all Office 365 users and during personalization Displays the device join status
 03.10.2019 MS: ENH 126 - MCSIO with persistent CacheDisk
 21.09.2019 MS: ENH 127 - Personalization is in Active State Override
 21.09.2019 MS: ENH 9 - LAPS Support for Non-Persistent VDI
