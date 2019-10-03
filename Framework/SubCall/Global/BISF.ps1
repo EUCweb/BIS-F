@@ -78,6 +78,7 @@ param()
 		25.08.2019 MS: FRQ 85 - Make SCCM / MDT Tasksequence Logfile redirection optional
 		21.09.2019 MS: EHN 36 - Shared Configuration - JSON Export
 		03.10.2019 MS: ENH 126 - MCSIO persistent drive
+		03.10.2019 MS: ENH 28 - Check if there's enough disk space on P2V Custom UNC-Path
 
       #>
 Begin {
@@ -287,8 +288,20 @@ Process {
 	# Create Powershell variables from the BISFConfiguration items.
 	ForEach ($BISFconfig in $BISFconfiguration) { New-BISFGlobalVariable -Name $BISFconfig.value -Value $BISFconfig.data }
 
-	# 03.10.2019 MS: ENH 126 - depend on the new MCSIO redirection the calling of the differetn functions must be different now
+	# 03.10.2019 MS: ENH 126 - depend on the new MCSIO redirection the calling of the functions must be different now
 	IF ($returnTestPVSSoftware) {
+		IF ((State -eq "Preparation") -and ($LIC_BISF_CLI_P2V_PT -eq "1")) {
+			Write-BISFLog -Msg "Check if there enough free Diskspace on the Custom UNC-Path available before proceed" -ShowConsole -Color Cyan
+			$FreeSpace = Get-BISFSpace -path "$LIC_BISF_CLI_P2V_PT_CUS" -FreeSpace
+			$UsedSpace = Get-BISFSpace -path $env:SystemDrive
+			IF (FreeSpace -le $UsedSpace) {
+				Write-BISFLog -Msg "STOP: There is NOT enough Free Space on the Custom UNC path to store the vDisk " -ShowConsole -Type E -SubMsg
+			}
+			ELSE {
+				Write-BISFLog -Msg "Custom UNC Path has $FreeSpace GB left to convert to SystemDrive with $UsedSpace GB" -ShowConsole -Color DarkCyan -SubMsg
+			}
+
+		}
 		Use-BISFPVSConfig -Verbose:$VerbosePreference  #27.07.2017 MS: new created
 	}
 	ELSE {

@@ -62,7 +62,7 @@
 
 	IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
-	} ESLE {
+	} ELSE {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
 	}
 
@@ -3670,6 +3670,8 @@ function Set-LAPSExpirationTime{
 	.LINK
 		https://eucweb.com
 #>
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+
 	Write-BISFlog -Msg "Reset Computer LAPS password" -ShowConsole -Color Cyan
 	Write-BISFlog -Msg "Retrieve current machine account"
 	$filter = "(&(objectCategory=computer)(objectClass=computer)(cn=$env:COMPUTERNAME))"
@@ -3683,7 +3685,7 @@ function Set-LAPSExpirationTime{
 
 }
 
-Test-AzureVM {
+function Test-AzureVM {
 
 		<#
 	.SYNOPSIS
@@ -3920,6 +3922,7 @@ namespace Microsoft.WindowsAzure.Internal
 "@
 
 Add-Type -TypeDefinition $source
+Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 
 
@@ -3944,4 +3947,70 @@ Add-Type -TypeDefinition $source
 		}
 	}
 	return $detected
+}
+
+Function Get-Space {
+	<#
+	.SYNOPSIS
+		Get the space back in GB of the entered path
+
+	.DESCRIPTION
+		use get-help <functionname> -full to see full help
+
+	.PARAMETER FreeSpace
+		get the FreeSpace in GB back
+
+	.EXAMPLE
+		Get the used space in GB back
+		Get-BISFSpace -path C:
+
+	.EXAMPLE
+		get the free sapce in gb back
+		Get-BISFSpace -path \\PVS01\vDiskstore -FreeSpace
+
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+		  03.10.2019 MS: function created
+		  03.10.2019 MS: required for ENH 28 - Check if there's enough disk space on P2V Custom UNC-Path
+
+	.LINK
+		https://eucweb.com
+#>
+	param (
+		[parameter(Mandatory=$true)][string]$path,
+		[parameter(Mandatory=$false)][switch]$FreeSpace
+	)
+
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+
+	IF ($path -eq $env:SystemDrive) {
+		$localSpace = Get-WmiObject Win32_Volume -Filter 'DriveLetter="C:"'| select Capacity,FreeSpace
+
+		IF ($FreeSpace) {
+			$space = "{0:N2}" -f  (($localSpace.FreeSpace) / 1GB)
+			Write-Log -Msg "Free space for $path is $space GB"
+		} ELSE {
+			$usedspace = $localSpace.Capacity - $localSpace.FreeSpace
+			$space = "{0:N2}" -f ($usedspace / 1GB)
+			Write-Log -Msg "Used space for $path is $space GB"
+		}
+	} ELSE {
+		IF ($FreeSpace) {
+			$FreeDrive =  ls function:[d-z]: -n | ?{ !(test-path $_) } | random
+			$nwobj = new-object -comobject WScript.Network
+			$status = $nwobj.mapnetworkdrive($FreeDrive,$share)
+			$Driveletter = $FreeDrive.Substring(0,1)
+			$drive = get-psdrive $Driveletter
+			$space = "{0:N2}" -f (($drive.free) / 1GB)
+			$null = $nwobj.removenetworkdrive($FreeDrive)
+			Write-Log -Msg "Free space for $path is $space GB"
+		} ELSE {
+			$objFSO = New-Object -com Scripting.FileSystemObject
+			$space = "{0:N2}" -f (($objFSO.GetFolder($path).Size) / 1GB)
+			Write-Log -Msg "Used space for $path is $space GB"
+		}
+	}
+	return $space
 }
