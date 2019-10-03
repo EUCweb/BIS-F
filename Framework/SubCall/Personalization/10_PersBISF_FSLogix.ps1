@@ -14,6 +14,7 @@
 		21.08.2015 MS: Do not checked PVS or MCS DiskMode, Service is already running or would be start if stopped
 		01.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		03.10.2019 MS: ENH 141 - FSLogix App Masking URL Rule Files
+		03.10.2019 MS: ENH 140 - cleanup redirected CloudCache empty directories
 
 	.LINK
 		https://eucweb.com
@@ -56,11 +57,31 @@ Process {
 		}
 	}
 
+	Function Clear-RedirectedCloudCache {
+		Write-Log -Msg "Processing FXLogix CloudCache" -ShowConsole -Color Cyan
+
+		$FRXCacheDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).CacheDirectory
+		$FRXProxyDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).ProxyDirectory
+		$FRXWriteCacheDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).WriteCacheDirectory
+		$FRXDirectories = @("$FRXCacheDirectory", "$FRXProxyDirectory", "$FRXWriteCacheDirectory")
+		ForEach ($FRXDir in $FRXDirectories) {
+			Write-Log -Msg "Processing $FRXDir" -ShowConsole -Color DarkCyan -SubMsg
+			$FRXDrive = $FRXDir.substring(0, 2)
+			IF ($FRXDrive -ne $env:SystemDrive) {
+				Write-Log -Msg "Drive is different from Systemdrive, cleanup now" -ShowConsole -Color DarkCyan -SubMsg
+				Remove-Item "$FRXDir\*" -recurse
+			}
+			ELSE {
+				Write-Log -Msg "Drive is NOT different from Systemdrive, skipping" -ShowConsole -Color DarkCyan -SubMsg
+			}
+		}
+	}
 
 
 	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$product"
 	IF ($svc) {
 		Copy-FSXRules
+		Clear-RedirectedCloudCache
 	}
 }
 End {
