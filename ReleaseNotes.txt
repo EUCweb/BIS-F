@@ -1,3 +1,4 @@
+04.10.2019 MS: ENH 11 ADMX extension: Configure WEM Cache to persistent drive (PVS and MCSIO)
 03.10.2019 MS: ENH 65 - ADMX Extension to delete the log files for Citrix Optimizer
 03.10.2019 MS: ENH 94 - Add sysprep command-line options to ADMX
 03.10.2019 MS: ENH 28 - Check if there's enough disk space on P2V Custom UNC-Path

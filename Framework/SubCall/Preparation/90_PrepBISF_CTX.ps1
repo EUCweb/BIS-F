@@ -264,6 +264,7 @@ Begin {
 			20.02.2017 MS: Removing configure WEMBrokerName with BIS-F, must be configured with WEM ADMX or AMD from Citrix, not here !!
 			11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
 			03.10.2019 MS: ENH 139 - WEM 1909 detection (tx to citrixguyblog / chezzer64)
+			04.10.2019 MS: ENH 11 - ADMX extension: Configure WEM Cache to persistent drive
 
 	.LINK
 		https://eucweb.com
@@ -315,9 +316,16 @@ Begin {
 
 
 
-				IF ($returnTestPVSSoftware -eq "true") {
+				IF (($Redirection -eq $true) -and ($LIC_BISF_CLI_WEMCache -eq 1)) {
 					IF ($PVSDiskDrive -ne $WEMAgentCacheDrive) {
-						$NewWEMAgentCacheLocation = "$LIC_BISF_CtxPath\$AgentCacheFolder"
+						IF ($LIC_BISF_CLI_WEMb -eq 1) {
+							Write-BISFLog -Msg "Use custom WEM Cache Folder"
+							$NewWEMAgentCacheLocation = "$LIC_BISF_CtxPath\" + $LIC_BISF_CLI_WEMFolder
+						}
+						ELSE {
+							$NewWEMAgentCacheLocation = "$LIC_BISF_CtxPath\$AgentCacheFolder"
+						}
+
 						Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is not equal to the PVS WriteCache disk ($PVSDiskDrive)" -Type W -SubMsg
 						Write-BISFLog -Msg "The AgentCacheAlternateLocation value must be reconfigured now to $NewWEMAgentCacheLocation" -Type W -SubMsg
 
@@ -334,11 +342,26 @@ Begin {
 						$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
 					}
 					ELSE {
-						Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is equal to the PVS WriteCache disk ($PVSDiskDrive) and must not be reconfigured" -ShowConsole -SubMsg -Color DarkCyan
+						Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is equal to the PVS or MCSIO CacheDisk ($PVSDiskDrive) and must not be reconfigured" -ShowConsole -SubMsg -Color DarkCyan
 					}
 
 					Write-BISFLog -Msg "Running Agent Cache Management Utility with $product" -ShowConsole -Color DarkCyan -SubMsg
-					Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility" | Out-Null
+					Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility"
+				}
+				ELSE {
+					IF ($PVSDiskDrive -eq $WEMAgentCacheDrive) {
+						Write-BISFLog -Msg "Redirection is disabled, configure the WEM Cache back to the origin path" -ShowConsole -Color DarkCyan -SubMsg
+						$WEMAgentLclDb = "$WEMAgentLocation" + "Local Databases"
+						Write-BISFLog -Msg "Origin path is set to $WEMAgentLclDb" -ShowConsole -Color DarkCyan -SubMsg
+						Set-ItemProperty -Path "$REG_WEMAgent" -Name "AgentCacheAlternateLocation" -Value $WEMAgentLclDb
+						Remove-ItemProperty -Path "$REG_WEMAgent" -Name "AgentServiceUseNonPersistentCompliantHistory"
+						$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
+						Write-BISFLog -Msg "Running Agent Cache Management Utility with $product" -ShowConsole -Color DarkCyan -SubMsg
+						Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility"
+						Write-BISFLog -Msg "Removing old path $WEMAgentCacheLocation" -ShowConsole -Color DarkCyan -SubMsg
+						Remove-Item "$WEMAgentCacheLocation" -Recurse -Force
+
+					}
 				}
 
 
