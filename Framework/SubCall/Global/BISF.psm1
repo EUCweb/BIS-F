@@ -606,7 +606,7 @@ function Test-XDSoftware {
 		History:
 	  	dd.mm.yyyy MS: function created
 		07.09.2015 MS: add .SYNOPSIS to this function
-		25.08.2019 MS: ENH 126: detect MCSIO based on Broker Minimum Version
+		25.08.2019 MS: ENH 126: detect MCSIO based on VDA Minimum Version
 
 	.LINK
 		https://eucweb.com
@@ -617,14 +617,14 @@ function Test-XDSoftware {
 	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
 		IF ($svc -eq $true) {
 			$Version = Get-BISFFileVersion $glbSVCImagePath
-			$BrokerVersion = $Version.Major + "." + $Version.Minor
+			$Global:VDAVersion = $Version.Major + "." + $Version.Minor
 			$CheckVersion = "7.21"
-			IF ($BrokerVersion -ge $CheckVersion){
+			IF ($VDAVersion -ge $CheckVersion){
 				$Global:MCSIO = $true
-				Write-BISFLog "BrokerAgent supports MCS IO and persistent disk"
+				Write-BISFLog "VDA Version $VDAVersion supports MCS IO and persistent disk"
 			} ELSE {
 				$Global:MCSIO = $false
-				Write-BISFLog "BrokerAgent version does NOT support MCS IO and persistent disk"
+				Write-BISFLog "VDA version $VDAVersion does NOT support MCS IO and persistent disk"
 			}
 			$Global:ImageSW = $true
 

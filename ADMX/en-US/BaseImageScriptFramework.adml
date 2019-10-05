@@ -551,7 +551,33 @@ Additional delay (default 0)
 You can enter additional time in seconds, to start the Citrix Desktop Service after this delay. This time you entered here will be count in addition after the BIS-F personalization is finished.
 Max seconds: 1800
 
-Note: If you have the device personalization configured to skip it on all disk modes or on Private Mode only, the Citrix Desktop Service would also be started. </string>
+Note: If you have the device personalization configured to skip it on all disk modes or on Private Mode only, the Citrix Desktop Service would also be started. 
+
+Enable Nvidia GRID:
+If the nVIDIA Diplay Driver Service is detected, BIS-F will trigger the right command on the Base Image only as follows:
+
+XenDesktop 7.11 or lower:
+If you install NVIDIA drivers after you install a VDA with HDX 3D Pro, NVIDIA GRID is disabled. Enable NVIDIA GRID by using the Montereyenable tool provided by NVIDIA.
+To disable NVIDIA GRID, run the following command and then restart the VDA: Montereyenable.exe -disable -noreset
+
+XenDesktop 7.12 and higer:
+If you install NVIDIA drivers after you install a VDA with HDX 3D Pro, NVIDIA GRID is disabled. Enable NVIDIA GRID by using the NVFBCEnable tool provided by NVIDIA.
+To disable NVIDIA GRID, run the following command and then restart the VDA: NVFBCEnable.exe -disable -noreset
+
+Note: If you disable the checkbox, NVIDIA GRID is not disabled from BIS-F.
+
+Enable Intel Graphics Driver:
+BIS-F will trigger the right command on the Base Image only as follows:
+You can install the Intel graphics drivers before installing the VDA. The following step is required if you install Intel drivers after you install a VDA with HDX 3D Pro. The step is also required if the Intel driver has been updated.
+
+To enable the Intel drivers required for multi-monitor support, run the following command using the IntelVirtualDisplayTool.exe, then restart the VDA: IntelVirtualDisplayTool.exe -vd enable
+IntelVirtualDisplayTool.exe is included with the VDA installer. The IntelVirtualDisplayTool.exe is in C:\Program Files\Citrix\ICAServices.
+
+Note: If you disable the checkbox, Intel Graphics Driver  is not disabled from BIS-F.
+
+If you enable both NVIDIA and INTEL, BIS-F will stop the sealing process and send out an error !.
+
+</string>
       <string id="ITM_VDISK_VHD">VHD</string>
       <string id="ITM_VDISK_VHDX">VHDX</string>
       <string id="POL_DotNET">Run .NET Optimization</string>
@@ -820,13 +846,13 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         </textBox>
         <text>
         </text>
-		 <text>Select SDelete to run during sealing (preparation)</text>
+		<text>Run SDelete during sealing (preparation)</text>
 		<checkBox refId="CHK_SD_runBI">During sealing on the BaseImage</checkBox>
         <checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (avhd/ avhdx)</checkBox>
         <checkBox refId="CHK_SD_runOutsideELM">During sealing with Citrix AppLayering outside ELM</checkBox>
         <text>
         </text>
-		<text>Select SDelete to run during computer startup (personlization)</text>
+        <text>Run SDelete during computer startup (personalization)</text>
         <checkBox refId="CHK_SD_runPVSCacheDisk">Citrix PVS Image on the persistent Cache Disk if the image is in shared image mode</checkBox>
         <checkBox refId="CHK_SD_runMCSIO">Citrix MCSIO on persistent Cache Disk if the image is in shared image mode</checkBox>
         <checkBox refId="CHK_SD_runMCS">Citrix MCS on Systemdrive f the image is in shared image mode</checkBox>
@@ -943,6 +969,8 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
       <presentation id="POL_VDACfg">
         <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
         <decimalTextBox refId="DXT_CLI_CDSdelay" defaultValue="0" spinStep="5">Additional delay (seconds)</decimalTextBox>
+        <checkBox refId="CHK_VDA_NVDIAGRID">Enable Nvidia GRID</checkBox>
+        <checkBox refId="CHK_VDA_INTELGRFX">Enable Intel Graphics Driver</checkBox>
       </presentation>
       <presentation id="POL_VDASSL">
         <textBox refId="TXT_VDASSL_CertThumbprint">

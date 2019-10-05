@@ -107,6 +107,8 @@ param(
 		05.10.2019 MS: ENH 12 - Configure sDelete for different environments
 		05.10.2019 MS: ENH 142 - Remove DirtyShutdown Flag
 		05.10.2019 MS: HF 77 - Remvoing Wsus ClientSide Targeting and reset it during every sealing process
+		05.10.2019 MS: ENH 16 - Add NVIDIA GRID Support for Citrix VDA
+		05.10.2019 MS: ENH 143 - Add Intel Graphics Support for Citrix VDA
 
 	.LINK
 		https://eucweb.com
@@ -735,6 +737,60 @@ Begin {
 		Command     = "Remove-ItemProperty -Path '$REG_HKLM_MS_CU' -Name 'DirtyShutdown' -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
+
+	IF (($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) -and ($LIC_BISF_CLI_VDA_INTELGRFX -eq 1)) {
+		Write-BISFLog -Msg "NVIDIA GRID and Intel Graphic can be enabled at the same time, please check the ADMX configuration !!" -ShowConsole -Type E
+		Start-Sleep -Seconds 20
+	}
+ ELSE {
+		IF ($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) {
+			$svc = Test-BISFService -ServiceName "nvsvc" -ProductName "nVIDIA Diplay Driver Service"
+			IF ($svc -eq $true) {
+				Write-BISFLog -Msg "VDA Version $VDAVersion" -ShowConsole
+				IF ($VDAVersion -le "7.11") {
+					$cmd = "$glbSVCImagePath\bin\Montereyenable.exe" # $glbSVCImagePath is getting from Test-BISFService
+					$args = "-enable -noreset"
+				}
+
+				IF ($VDAVersion -ge "7.12") {
+					$cmd = "$glbSVCImagePath\bin\NVFBCEnable.exe" # $glbSVCImagePath is getting from Test-BISFService
+					$args = "-enable -noreset"
+				}
+
+				$PrepCommands += [pscustomobject]@{
+					Order       = "$ordercnt";
+					Enabled     = "$true";
+					showmessage = "N";
+					CLI         = "";
+					TestPath    = "$cmd";
+					Description = "Enable NVIDIA GRID with command $cmd $args";
+					Command     = "Start-BISFProcWithProgBar -ProcPath '$cmd' -Args '$args' -ActText 'Enable NVIDIA GRID for VDA Version $VDAVersion'"
+				};
+				$ordercnt += 1
+
+
+			}
+			ELSE {
+				Write-BISFLog -Msg "NVIDIA Display Driver is not installed and can't be enabled" -ShowConsole -Type W
+			}
+		}
+
+		IF ($LIC_BISF_CLI_VDA_INTELGRFX -eq 1) {
+			$cmd = "$env:ProgramFiles\Citrix\ICAServices\IntelVirtualDisplayTool.exe"
+			$args = "-vd enable"
+
+			$PrepCommands += [pscustomobject]@{
+				Order       = "$ordercnt";
+				Enabled     = "$true";
+				showmessage = "N";
+				CLI         = "";
+				TestPath    = "$cmd";
+				Description = "Enable Intel graphics with command $cmd $args";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$cmd' -Args '$args' -ActText 'Enable Intel graphics  for VDA Version $VDAVersion'"
+			};
+			$ordercnt += 1
+		}
+	}
 
 	####################################################################
 
