@@ -98,7 +98,6 @@ param(
 		31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
 		21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-
 		17.08.2019 MS: ENH 54: ADMX: Configure BIS-F Desktop Shortcut
 		18.08.2019 MS: ENH 101: check sdelete Version 2.02 or newer, otherwise send out error
 		25.08.2019 MS: FRQ 134: Removing Disable Cortana
@@ -107,6 +106,7 @@ param(
 		03.10.2019 MS: ENH 101 - Use sdelete64.exe on x64 system
 		05.10.2019 MS: ENH 12 - Configure sDelete for different environments
 		05.10.2019 MS: ENH 142 - Remove DirtyShutdown Flag
+		05.10.2019 MS: HF 77 - Remvoing Wsus ClientSide Targeting and reset it during every sealing process
 
 	.LINK
 		https://eucweb.com
@@ -140,7 +140,6 @@ Begin {
 	$REG_HKLM_MS_CU = "$hklm_software\Microsoft\Windows\CurrentVersion"
 	$REG_hklm_Pol_WSUS = "$hklm_software\Policies\Microsoft\Windows\WindowsUpdate"
 	$REG_hku_HP = "$hku_software\Hewlett-Packard\"
-	$WSUS_TargetGroupEnabled = (Get-ItemProperty "$REG_hklm_Pol_WSUS" -Name "TargetGroupEnabled").TargetGroupEnabled
 	$Dir_SwDistriPath = "C:\Windows\SoftwareDistribution\Download\*"
 	$File_WindowsUpdateLog = "C:\Windows\WindowsUpdate.log"
 	$Dir_AllUsersStartMenu = "C:\ProgramData\Microsoft\Windows\Start Menu\*"
@@ -675,32 +674,30 @@ Begin {
 
 	}
 
-	## WSUS client-side targeting
+	## Rmove WSUS ID
 
-	IF ($WSUS_TargetGroupEnabled -eq 1) {
-		Write-BISFLog -Msg "WSUS client-side targeting detected"
-		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
-			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
-			Description = "Delete WSUS - SusClientId in $REG_hklm_WSUS";
-			Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientId' -ErrorAction SilentlyContinue"
-		};
-		$ordercnt += 1
+	$PrepCommands += [pscustomobject]@{
+		Order       = "$ordercnt";
+		Enabled     = "$true";
+		showmessage = "N";
+		CLI         = "";
+		TestPath    = "";
+		Description = "Delete WSUS - SusClientId in $REG_hklm_WSUS";
+		Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientId' -ErrorAction SilentlyContinue"
+	};
+	$ordercnt += 1
 
-		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
-			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
-			Description = "Delete WSUS - SusClientIdValidation in $REG_hklm_WSUS";
-			Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientIdValidation' -ErrorAction SilentlyContinue"
-		};
-		$ordercnt += 1
-	}
+	$PrepCommands += [pscustomobject]@{
+		Order       = "$ordercnt";
+		Enabled     = "$true";
+		showmessage = "N";
+		CLI         = "";
+		TestPath    = "";
+		Description = "Delete WSUS - SusClientIdValidation in $REG_hklm_WSUS";
+		Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientIdValidation' -ErrorAction SilentlyContinue"
+	};
+	$ordercnt += 1
+
 
 	$PrepCommands += [pscustomobject]@{
 		Order       = "$ordercnt";

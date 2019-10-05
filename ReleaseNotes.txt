@@ -1,3 +1,4 @@
+05.10.2019 MS: HF 77 - Remvoing Wsus ClientSide Targeting and reset it during every sealing process
 05.10.2019 MS: HF 69 - If WriteCache disk on master is GPT-partiton then uniqueid doesn't match
 05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only to prevent reboot loop
 05.10.2019 MS: ENH 142 - Remove DirtyShutdown Flag
