@@ -1,3 +1,5 @@
+05.10.2019 MS: ENH 142 - Remove DirtyShutdown Flag
+05.10.2019 MS: ENH 43 - sihclient.exe consumes CPU load with disabled WSUS Service (function invoke-sihTask)
 05.10.2019 MS: ENH 12 - Configure sDelete for different environments
 04.10.2019 MS: ENH 11 ADMX extension: Configure WEM Cache to persistent drive (PVS and MCSIO)
 03.10.2019 MS: ENH 65 - ADMX Extension to delete the log files for Citrix Optimizer

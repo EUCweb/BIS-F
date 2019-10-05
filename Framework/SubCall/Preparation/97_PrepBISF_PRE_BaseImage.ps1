@@ -106,6 +106,7 @@ param(
 		03.10.2019 MS: ENH 102 - Use CCleaner64.exe on x64 system
 		03.10.2019 MS: ENH 101 - Use sdelete64.exe on x64 system
 		05.10.2019 MS: ENH 12 - Configure sDelete for different environments
+		05.10.2019 MS: ENH 142 - Remove DirtyShutdown Flag
 
 	.LINK
 		https://eucweb.com
@@ -136,6 +137,7 @@ Begin {
 	$PreCLI = @()
 	$CTX_SYS32_CACHE_PATH = "C:\Program Files (x86)\Citrix\System32\Cache\*"
 	$REG_hklm_WSUS = "$hklm_software\Microsoft\Windows\CurrentVersion\WindowsUpdate"
+	$REG_HKLM_MS_CU = "$hklm_software\Microsoft\Windows\CurrentVersion"
 	$REG_hklm_Pol_WSUS = "$hklm_software\Policies\Microsoft\Windows\WindowsUpdate"
 	$REG_hku_HP = "$hku_software\Hewlett-Packard\"
 	$WSUS_TargetGroupEnabled = (Get-ItemProperty "$REG_hklm_Pol_WSUS" -Name "TargetGroupEnabled").TargetGroupEnabled
@@ -699,6 +701,7 @@ Begin {
 		};
 		$ordercnt += 1
 	}
+
 	$PrepCommands += [pscustomobject]@{
 		Order       = "$ordercnt";
 		Enabled     = "$true";
@@ -724,6 +727,17 @@ Begin {
 		};
 		$ordercnt += 1
 	}
+
+	$PrepCommands += [pscustomobject]@{
+		Order       = "$ordercnt";
+		Enabled     = "$true";
+		showmessage = "N";
+		CLI         = "";
+		TestPath    = "";
+		Description = "Remove DirtyShutdown to prevent not coorect shutdown after reboot";
+		Command     = "Remove-ItemProperty -Path '$REG_HKLM_MS_CU' -Name 'DirtyShutdown' -ErrorAction SilentlyContinue"
+	};
+	$ordercnt += 1
 
 	####################################################################
 

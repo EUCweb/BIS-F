@@ -18,6 +18,7 @@
 		20.10.2018 MS: Bugfix 73: MCS Image in Private Mode does not start the Windows Update Service
 		18.08.2019 MS: ENH 101: Use sdelete64.exe on x64 system
 		05.10.2019 MS: ENH 12 - Configure sDelete for different environments
+		05.10.2019 MS: ENH 43 - sihclient.exe consumes CPU load with disabled WSUS Service (function invoke-sihTask)
 
 	.LINK
 		https://eucweb.com
@@ -86,6 +87,36 @@ Process {
 		Invoke-BISFService -ServiceName wuauserv -Action Start -StartType Automatic
 	}
 
+	function Invoke-sihTask {
+
+		param (
+			[parameter(Mandatory = $true)][string]$Mode
+		)
+
+		$task = Get-ScheduledTask -TaskName "sih" -ErrorAction SilentlyContinue
+		IF ($task) {
+			Write-BISFLog -Msg "Scheduled Task $task exists" -ShowConsole -Color Cyan
+			$TaskPathName = Get-ScheduledTask -TaskName $task | % { $_.TaskPath }
+			Switch ($Mode) {
+				Disable {
+					Write-BISFLog -Msg "Disable Scheduled Task $task" -ShowConsole -SubMsg -Color DarkCyan
+					Disable-ScheduledTask -Taskname $ScheduledTaskList -TaskPath $TaskPathName | Out-Null
+				}
+				Enable {
+					Write-BISFLog -Msg "Enable Scheduled Task $task" -ShowConsole -SubMsg -Color DarkCyan
+					Enable-ScheduledTask -Taskname $ScheduledTaskList -TaskPath $TaskPathName | Out-Null
+				}
+
+				Default {
+					Write-BISFLog -Msg "Default Action selected, doing nothing" -ShowConsole -Color DarkCy
+				}
+			}
+		}
+		ELSE {
+			Write-BISFLog -Msg "Scheduled Task $task NOT exists" -ShowConsole -SubMsg -Color DarkCyan
+		}
+	}
+
 	#endregion
 
 	Write-BISFLog -Msg "Running system startup actions if needed..." -ShowConsole -Color Cyan
@@ -94,37 +125,56 @@ Process {
 		ReadWrite {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
 			start-WUAserv
+			Invoke-sihTask -Mode Enable
 		}
 		ReadOnly {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
+			Invoke-sihTask -Mode Disable
 			start-sdelete
 		}
-		Unmanaged { }
+		Unmanaged {
+			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
+		}
 		VDAPrivate {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
 			start-WUAserv
+			Invoke-sihTask -Mode Enable
 		}
 		VDAShared {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
+			Invoke-sihTask -Mode Disable
 			start-sdelete
 		}
 		ReadWriteAppLayering {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
-			IF ($CTXAppLayerName -eq "OS-Layer") { start-WUAserv }
+			IF ($CTXAppLayerName -eq "OS-Layer") {
+				start-WUAserv
+				Invoke-sihTask -Mode Enable
+			}
 		}
 		ReadOnlyAppLayering {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
+			Invoke-sihTask -Mode Disable
 			start-sdelete
 		}
 		UnmanagedAppLayering {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
-			IF ($CTXAppLayerName -eq "OS-Layer") { start-WUAserv }
+			IF ($CTXAppLayerName -eq "OS-Layer") {
+				start-WUAserv
+				Invoke-sihTask -Mode Enable
+			}
 		}
 		VDAPrivateAppLayering {
 			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
-			IF ($CTXAppLayerName -eq "OS-Layer") { start-WUAserv }
+			IF ($CTXAppLayerName -eq "OS-Layer") {
+				start-WUAserv
+				Invoke-sihTask -Mode Enable
+			}
 		}
-		VDASharedAppLayering { }
+		VDASharedAppLayering {
+			Write-BISFLog -Msg "Running Actions for $Diskmode DiskMode" -ShowConsole -Color DarkCyan -SubMsg
+			Invoke-sihTask -Mode Disable
+		}
 
 		Default { Write-BISFLog -Msg "Default Action selected, doing nothing" -ShowConsole -Color DarkCyan }
 
