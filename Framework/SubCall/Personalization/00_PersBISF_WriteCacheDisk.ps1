@@ -104,6 +104,7 @@ Process {
 					# Construct Diskpart File to Format Disk
 
 					Write-BISFLog -Msg "WriteCache partition is not formatted"
+					Write-BISFLog -Msg "BootDisk DiskID  $BootDiskID - CacheDisk DiskID $CachDiskID (Reporting only, not functional !)""
 
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
@@ -119,7 +120,7 @@ Process {
 
 					# Get WriteCache Volume and Restore Unique ID
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-					#$Searchvol = "list volume" | diskpart | select-string -pattern "Volume" | select-string -pattern "$PVSDiskDrive.substring(0,1)" -casesensitive | select-string -pattern NTFS | out-string
+					#$Searchvol = "list volume" | diskpart | select-string -pattern "Volume" | select-string -pattern "$PVSDiskDrive.substring(0, 1)" -casesensitive | select-string -pattern NTFS | out-string
 					#$getvolNbr    = $Searchvol.substring(11,1)   # get Volumenumber from DiskLabel
 					#"select volume $getvolNbr" | out-file -filepath $DiskpartFile -encoding Default
 					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
@@ -179,6 +180,7 @@ Process {
 				# Construct Diskpart File to Format Disk
 
 				Write-BISFLog -Msg "WriteCache partition is not formatted"
+				Write-BISFLog -Msg "BootDisk DiskID  $BootDiskID - CacheDisk DiskID $CachDiskID (Reporting only, not functional !)"
 
 				If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 				"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default

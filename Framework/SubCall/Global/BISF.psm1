@@ -4026,8 +4026,8 @@ Function Get-CacheDiskID {
 
 	.EXAMPLE
 		$DiskID = Get-BISFCacheDiskID
-		$DiskID[0] = BootDiskID
-		$DiskIF[1] = CachDiskID
+		$BootDiskID = $DiskID[0]
+		$CachDiskID = $DiskID[1]
 
 	.NOTES
 		Author: Matthias Schlimm

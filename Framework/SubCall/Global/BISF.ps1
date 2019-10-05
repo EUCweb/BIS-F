@@ -273,7 +273,7 @@ Process {
 
 	Get-BISFPSVersion -Verbose:$VerbosePreference
 	Test-BISFRegHive -Verbose:$VerbosePreference
-	$DiskID = Get-BISFCacheDiskID Verbose:$VerbosePreference
+	$Global:DiskID = Get-BISFCacheDiskID Verbose:$VerbosePreference
 	$Global:returnGetHypervisor = Get-BISFHypervisor -Verbose:$VerbosePreference
 	$Global:returnTestAppLayeringSoftware = Test-BISFAppLayeringSoftware -Verbose:$VerbosePreference
 	$Global:returnTestXDSoftware = Test-BISFXDSoftware -Verbose:$VerbosePreference
@@ -339,17 +339,16 @@ Process {
 	}
 
 	$TSenvExist = Get-BISFTaskSequence -Verbose:$VerbosePreference
-	IF ($TSenvExist -eq "true") {
+	IF ($TSenvExist -eq $true) {
 		IF ($LIC_BISF_CLI_TSLogRedirection -eq 1) {
 			$tsenv = New-Object -COMObject Microsoft.SMS.TSEnvironment
 			$logPath = $tsenv.Value("LogPath")
 			Write-BISFLog -Msg "Set Log folder path to task sequence Log folder $logPath"
-			$LogFilePath = "$logPath"   # 02.06.2015 MS: changing to $logpath only (prev. $LogFilePath = "$logPath\$LogFolderName"), only files directly in the folder are preserved, not subfolders
+			$LogFilePath = "$logPath"
 			$oldlogfile = $LogFile
 			$Global:Logfile = "$LogFilePath\$LogFileName"
 
-
-			if (!(Test-Path -Path $LogFilePath)) {
+			If (!(Test-Path -Path $LogFilePath)) {
 				New-Item -Path $LogFilePath -ItemType Directory -Force
 			}
 
