@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.C0E7661C_10B9_4454_95D3_B01A9680AD92" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.7A43D783_BB3D_44E7_8E71_5EAB7847B01A" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -673,6 +673,7 @@
         <text id="TXT_LogCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LS" />
         <decimal id="DXT_LogRetention" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LF_RT" maxValue="20" />
         <boolean id="CHK_CLI_TSLogRedirection" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_TSLogRedirection" />
+        <boolean id="CHK_LOG_WPT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LOG_WPT" />
       </elements>
     </policy>
     <policy name="POL_FldCfg" class="Machine" displayName="$(string.POL_FldCfg)" explainText="$(string.POL_FldCfg_Help)" presentation="$(presentation.POL_FldCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_FldCfg">

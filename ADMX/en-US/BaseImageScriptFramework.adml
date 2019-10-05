@@ -420,6 +420,14 @@ specify a value between 0 -20, means the number of log files being kept.
 SCCM / MDT Logfile Redirection:
 if you enable this policy and BIS-F preparation is triggered from a SCCM or MDT Tasksequence, the BIS-F log is stored inside the Tasksequence logpath.
 this policy overwrites the values for a configured Log share.if configured.
+
+Enable Windows Powershell Transcript:
+For more debugging a Windows Powershell Transcript is created in C:\Windows\Logs every time and the configuration of the Log share has no impact to
+this configuration item.
+
+During sealing a file will be created:  C:\Windows\Logs\PREP_BISF_WPT_%Computername%.log
+During personlization afile will be created:  C:\Windows\Logs\PERS_BISF_WPT_%Computername%.log
+ 
 </string>
       <string id="POL_FldCfg">Configure Folders</string>
       <string id="POL_FldCfg_Help">If Citrix PVS Target Device Driver is installed, some folders must be redirected to the write cache disk. You can specified those folders here:
@@ -846,7 +854,7 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         </textBox>
         <text>
         </text>
-		<text>Run SDelete during sealing (preparation)</text>
+        <text>Run SDelete during sealing (preparation)</text>
 		<checkBox refId="CHK_SD_runBI">During sealing on the BaseImage</checkBox>
         <checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (avhd/ avhdx)</checkBox>
         <checkBox refId="CHK_SD_runOutsideELM">During sealing with Citrix AppLayering outside ELM</checkBox>
@@ -919,6 +927,7 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         </textBox>
         <decimalTextBox refId="DXT_LogRetention" defaultValue="5">Log Retention</decimalTextBox>
         <checkBox refId="CHK_CLI_TSLogRedirection">SCCM / MDT Logfile Redirection</checkBox>
+        <checkBox refId="CHK_LOG_WPT">Enable Windows Powershell Transcript</checkBox>
       </presentation>
       <presentation id="POL_FldCfg">
         <checkBox refId="CHK_EVTb">Enable custom event log folder name</checkBox>
