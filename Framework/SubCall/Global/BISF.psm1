@@ -4014,3 +4014,47 @@ Function Get-Space {
 	}
 	return $space
 }
+
+Function Get-CacheDiskID {
+	<#
+	.SYNOPSIS
+		Get DiskID of the CacheDisk
+
+	.DESCRIPTION
+	it returns the BootDiskID,CachDiskID
+	use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		$DiskID = Get-BISFCacheDiskID
+		$DiskID[0] = BootDiskID
+		$DiskIF[1] = CachDiskID
+
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+		  05.10.2019 MS: function created
+		  05.10.2019 MS: HF 22 - Endless Reboot with VMware Paravirtual SCSI disk need to get the DiskID
+
+	.LINK
+		https://eucweb.com
+#>
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	Write-BISFLog -Msg "Retrieve Disk ID's" -ShowConsole -Color Cyan
+	[string]$BootDisk = Get-WmiObject Win32_DiskPartition |Where-Object {$.BootPartition -eq "true"} | % {$.DeviceID}
+	$BootDisk = $BootDisk.split(",");$BootDisk = $BootDisk[0];$BootDisk = $BootDisk.Length -1
+	Write-BISFLog -Msg "BootDisk has Disk ID $BootDisk assigned" -ShowConsole -Color DarkCyan -SubMSg
+
+	$disks = "list disk" | diskpart | where {$_ -match "online"}
+	$i=0
+	ForEach ($disk in $disks) {
+		$i++
+		$onlinedisk = $onlinedisk + $i
+		$onlinedisk = $disk.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)
+		$getID = $($onlinedisk+$i)[1]
+		IF (!($getID -eq $BootDisk)) {
+			Write-BISFLog -Msg "CacheDisk has DiskID $getID"  -ShowConsole -Color DarkCyan -SubMSg
+		}
+	}
+	return $BootDisk,$getID
+}
