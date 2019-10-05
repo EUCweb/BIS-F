@@ -31,6 +31,7 @@ param(
 		04.03.2017 MS: BugFix: DiskID is not language neutral, split string after ":" to read the right side only
 		29.07.2017 MS: Feature Request 192: support GPT WriteCacheDisk
 		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
+		05.10.2019 MS: HF 69 - If WriteCache disk on master is GPT-partiton then uniqueid doesn't match
 
 	.LINK
 		https://eucweb.com
@@ -91,7 +92,8 @@ Begin {
 		}
 		ELSE {
 			Write-BISFLog -Msg "GPT Disk with $start characters identfied"
-
+			$getid = $getid -replace '[{}]'
+			Write-BISFLog -Msg "Reformatting uniqueID for GPT - removing brackets"
 		}
 		Write-BISFLog -Msg "UniqueID Disk: $getid"
 		Write-BISFLog -Msg "Set uniqueID $getid for volume $getvolNbr / Driveletter $DriveLetter to Registry $hklm_software_LIC_CTX_BISF_SCRIPTS"

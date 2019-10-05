@@ -1,3 +1,4 @@
+05.10.2019 MS: HF 69 - If WriteCache disk on master is GPT-partiton then uniqueid doesn't match
 05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only to prevent reboot loop
 05.10.2019 MS: ENH 142 - Remove DirtyShutdown Flag
 05.10.2019 MS: ENH 43 - sihclient.exe consumes CPU load with disabled WSUS Service (function invoke-sihTask)
