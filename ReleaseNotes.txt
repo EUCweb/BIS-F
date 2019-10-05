@@ -1,3 +1,4 @@
+05.10.2019 MS: ENH 144 - ADMX Extension: Enable Powershell Transcript
 05.10.2019 MS: ENH 22 - Get DiskID's of the system - for monitoring only ->  for later use to fix 'Endless Reboot with VMware Paravirtual SCSI disk'
 05.10.2019 MS: ENH 143 - Add Intel Graphics Support for Citrix VDA
 05.10.2019 MS: ENH 16 - Add NVIDIA GRID Support for Citrix VDA

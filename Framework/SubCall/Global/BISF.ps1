@@ -81,6 +81,7 @@ param()
 		03.10.2019 MS: ENH 28 - Check if there's enough disk space on P2V Custom UNC-Path
 		05.10.2019 MS: ENH 12 - AMDX Extension: Configure sDelete
 		05.10.2019 MS: ENH 22 - Get DiskID's of the system - for monitoring only ->  for later use to fix 'Endless Reboot with VMware Paravirtual SCSI disk'
+		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 
       #>
 Begin {
@@ -270,7 +271,9 @@ Process {
 		$Global:TerminateScript = $true; Exit
 
 	}
-
+	IF ($LIC_BISF_CLI_LOG_WPT -eq 1) {
+		Write-BISFLog -Msg "Windows Powershell Transcript enabled: $WPTLog" -ShowConsole -Color Cyan
+	}
 	Get-BISFPSVersion -Verbose:$VerbosePreference
 	Test-BISFRegHive -Verbose:$VerbosePreference
 	$Global:DiskID = Get-BISFCacheDiskID Verbose:$VerbosePreference

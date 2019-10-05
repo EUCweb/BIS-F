@@ -71,6 +71,7 @@
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		21.09.2019 MS: ENH 127 - Personalization is in Active State Override
+		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 	.LINK
 		https://eucweb.com
 #>
@@ -88,6 +89,19 @@ Begin {
 	Clear-Host
 	$computer = gc env:computername
 	$timestamp = Get-Date -Format yyyyMMdd-HHmmss
+
+	## ENH 144 - Powershell Transcript
+	$WPTEnabled = (Get-ItemProperty "HKLM:\SOFTWARE\Policies\Login Consultants\BISF" -Name "LIC_BISF_CLI_LOG_WPT").LIC_BISF_CLI_LOG_WPT
+	IF ($WPTEnabled -eq 1) {
+		$Global:WPTlog = "C:\Windows\Logs\PREP_BISF_WPT_$($computer).log"
+		IF (Test-Path $WPTlog -PathType Leaf) {
+			$NewName = $WPTlog.split(".")[0] + "_old.log"
+			IF (Test-Path $NewName -PathType Leaf) { Remove-Item $newName -Force }
+			Rename-Item $WPTlog -NewName $NewName
+		}
+		Start-Transcript $WPTLog
+	}
+
 	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version.
 	If ($($host.name) -like "* ISE *") {
 		# Running script from Windows Powershell ISE
@@ -107,7 +121,7 @@ Begin {
 	$Global:Main_Folder = $PSScriptRoot
 	$Global:SubCall_Folder = $PSScriptRoot + "\SubCall\"
 	$Global:LIB_Folder = $SubCall_Folder + "Global\"
-	$Global:LogFileName = "Prep_BIS_$($computer)_$timestamp.log"
+	$Global:LogFileName = "PREP_BISF_$($computer)_$timestamp.log"
 	$Global:LOGFile = "C:\Windows\Logs\$LogFileName"
 	$Global:LOG = $LOGFile
 	$Global:ExportSharedConfiguration = $ExportSharedConfiguration
@@ -280,4 +294,5 @@ End {
 		Throw "An error occured while unloading modules. The error is:`r`n$_"
 		Exit 1
 	}
+	IF ($WPTEnabled -eq 1) { Stop-Transcript }
 }
