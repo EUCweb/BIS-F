@@ -49,9 +49,16 @@ The Optimizer Logfile is included in the BIS-F logfile, with this option you can
 
 </string>
       <string id="POL_SDelete">Run SDelete</string>
-      <string id="POL_SDelete_Help">Run SDelete on PVS write cache disk if vDisk is in shared mode only
+      <string id="POL_SDelete_Help">Run SDelete depeneding on your environment:
 
-If you enable this policy setting, SDelete will be executed on the PVS write cache disk in shared mode.
+- During sealing on the BaseImage 
+- During sealing on the Citrix PVS parent Disk (avhd or avhdx)
+- During sealing with Citrix AppLayering outside ELM
+- Citrix PVS Image on the WriteCache Disk if the image is in shared image mode
+- Citrix MCSIO on persistent CacheDisk if the image is in shared image mode
+- Citrix MCS on Systemdrive f the image is in shared image mode
+
+If you enable this policy setting, SDelete will be executed on the selected environments only.
 If you disable or do not configure this policy setting, SDelete will not be executed.
 
 Prerequisites: SDelete must be installed on the Base Image first
@@ -813,6 +820,16 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         </textBox>
         <text>
         </text>
+		 <text>Select SDelete to run during sealing (preparation)</text>
+		<checkBox refId="CHK_SD_runBI">During sealing on the BaseImage</checkBox>
+        <checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (avhd/ avhdx)</checkBox>
+        <checkBox refId="CHK_SD_runOutsideELM">During sealing with Citrix AppLayering outside ELM</checkBox>
+        <text>
+        </text>
+		<text>Select SDelete to run during computer startup (personlization)</text>
+        <checkBox refId="CHK_SD_runPVSCacheDisk">Citrix PVS Image on the persistent Cache Disk if the image is in shared image mode</checkBox>
+        <checkBox refId="CHK_SD_runMCSIO">Citrix MCSIO on persistent Cache Disk if the image is in shared image mode</checkBox>
+        <checkBox refId="CHK_SD_runMCS">Citrix MCS on Systemdrive f the image is in shared image mode</checkBox>
       </presentation>
       <presentation id="POL_PAGEFILE">
         <dropdownList refId="PageFile_DriveLetter_Options" defaultItem="0">Page file drive</dropdownList>

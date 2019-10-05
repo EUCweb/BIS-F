@@ -79,6 +79,7 @@ param()
 		21.09.2019 MS: EHN 36 - Shared Configuration - JSON Export
 		03.10.2019 MS: ENH 126 - MCSIO persistent drive
 		03.10.2019 MS: ENH 28 - Check if there's enough disk space on P2V Custom UNC-Path
+		05.10.2019 MS: ENH 12 - AMDX Extension: Configure sDelete
 
       #>
 Begin {
@@ -283,6 +284,33 @@ Process {
 	$Global:DiskMode = Get-BISFDiskMode -Verbose:$VerbosePreference
 	$Global:BootMode = Get-BISFBootMode
 
+	#ENH 12: Set sDelete global Value
+	IF ($State -eq "Preparation") {
+		Write-BISFLog -Msg "Check SDelete $State config" -ShowConsole -Color Cyan
+		IF (($LIC_BISF_CLI_SD_runBI -ne 1) -and ($LIC_BISF_CLI_SD_runPVSparentDisk -ne 1) -and ($LIC_BISF_CLI_SD_runOutsideELM -ne 1) -or ($LIC_BISF_CLI_SD -ne "YES")) {
+			$Global:RunPrepSdelete = $false
+			Write-BISFLog -Msg "SDelete is NOT configured to run during $State" -ShowConsole -Color DarkCyan -SubMsg
+		}
+		ElSE {
+			$Global:RunPrepSdelete = $true
+			Write-BISFLog -Msg "SDelete is configured to run during $State" -ShowConsole -Color DarkCyan -SubMsg
+		}
+	}
+
+	IF ($State -eq "Personalization") {
+		Write-BISFLog -Msg "Check SDelete $State config" -ShowConsole -Color Cyan
+		IF (($LIC_BISF_CLI_SD_runPVSCacheDisk -ne 1) -and ($LIC_BISF_CLI_SD_runMCSIO -ne 1) -and ($LIC_BISF_CLI_SD_runMCS -ne 1) -or ($LIC_BISF_CLI_SD -ne "YES")) {
+			$Global:RunPersSdelete = $false
+			Write-BISFLog -Msg "SDelete is NOT configured to run during $State" -ShowConsole -Color DarkCyan -SubMsg
+		}
+		ElSE {
+			$Global:RunPersSdelete = $true
+			Write-BISFLog -Msg "SDelete is configured to run during $State" -ShowConsole -Color DarkCyan -SubMsg
+		}
+	}
+
+
+
 	Get-ActualConfig -Verbose:$VerbosePreference # Update the $BISFconfiguration with possible registry values
 
 	# Create Powershell variables from the BISFConfiguration items.
@@ -334,6 +362,7 @@ Process {
 	}
 
 }
+
 End {
 	Add-BISFFinishLine
 }

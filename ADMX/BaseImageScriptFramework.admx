@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.DCB6AEFD_26C9_43F0_946D_124388956AC8" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.257CA146_DF40_41FB_8828_8CD5569C7F5D" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -79,6 +79,12 @@
       <elements>
         <boolean id="CHK_SD_SF" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_SF" />
         <text id="TXT_CLI_SD_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_SF_CUS" />
+        <boolean id="CHK_SD_runBI" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runBI" />
+        <boolean id="CHK_SD_runPVSCacheDisk" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runPVSCacheDisk" />
+        <boolean id="CHK_SD_runMCSIO" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runMCSIO" />
+        <boolean id="CHK_SD_runMCS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runMCS" />
+        <boolean id="CHK_SD_runOutsideELM" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runOutsideELM" />
+        <boolean id="CHK_SD_runPVSparentDisk" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runPVSparentDisk" />
       </elements>
     </policy>
     <policy name="POL_Defrag" class="Machine" displayName="$(string.POL_Defrag)" explainText="$(string.POL_Defrag_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DF">

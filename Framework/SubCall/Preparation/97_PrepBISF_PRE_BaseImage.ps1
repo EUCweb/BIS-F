@@ -105,6 +105,8 @@ param(
 		25.08.2019 MS: FRQ 133: Removing Disable scheduled Task
 		03.10.2019 MS: ENH 102 - Use CCleaner64.exe on x64 system
 		03.10.2019 MS: ENH 101 - Use sdelete64.exe on x64 system
+		05.10.2019 MS: ENH 12 - Configure sDelete for different environments
+
 	.LINK
 		https://eucweb.com
 #>
@@ -396,59 +398,62 @@ Begin {
 	};
 	$ordercnt += 1
 
-	# recommended: Running SDelete on PVS WriteCacheDisk on each PVS Target Devices only
-	IF ($returnTestPVSSoftware -eq "true") {
-		IF (($LIC_BISF_CLI_SD -ne $null) -or ($LIC_BISF_CLI_SD -ne "")) {
+	# ENH 12: Running SDelete during preparation
+	IF ($RunPrepSdelete -eq $true) {
+		IF ($OSBitness -eq "32-bit") { $sdeleteversion = "sdelete.exe" } ELSE { $sdeleteversion = "sdelete64.exe" }
+		IF ($LIC_BISF_CLI_SD_SF -eq "1") {
+			$SDeletePath = "$($LIC_BISF_CLI_SD_SF_CUS)\$sdeleteversion"
+		}
+		ELSE {
+			$SDeletePath = "C:\Windows\system32\$sdeleteversion"
+		}
+		$DiskType = Get-BISFDiskNameExtension
+
+		#During sealing on the BaseImage
+		IF ( ($LIC_BISF_CLI_SD_runBI -eq 1) -and ($CTXAppLayerName -ne "No-ELM") -and ($DiskType -eq "BaseDisk") -or ($DiskType -eq "NoVirtualDisk") ) {
 			$PrepCommands += [pscustomobject]@{
 				Order       = "$ordercnt";
 				Enabled     = "$true";
 				showmessage = "N";
 				CLI         = "";
-				TestPath    = "";
-				Description = "Reset value LIC_BISF_SDeleteRun in registry ?";
-				Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$false'"
+				TestPath    = "$SDeletePath";
+				Description = "SDelete is running to Zero Out Free Space on the Base Image";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$SDeletePath' -Args '-accepteula -z C:' -ActText 'SDelete is running to Zero Out Free Space on the Base Image'"
 			};
 			$ordercnt += 1
 		}
-		# ENH 101 - Use sdelete64.exe on x64 system
-		IF ($OSBitness -eq "32-bit") {
+
+		#During sealing on the PVS parent Disk (avhd or avhdx)
+		IF ( ($LIC_BISF_CLI_SD_runPVSparentDisk -eq 1) -and ($DiskType -eq "ParentDisk") ) {
 			$PrepCommands += [pscustomobject]@{
 				Order       = "$ordercnt";
 				Enabled     = "$true";
-				showmessage = "Y";
-				CLI         = "LIC_BISF_CLI_SD";
-				TestPath    = "$($SearchFoldersSD)\sdelete.exe";
-				Description = "Run SDelete to Zero-Out free space on PVS WriteCacheDisk on each PVS Target Device at system startup ?";
-				Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$true'"
+				showmessage = "N";
+				cli         = "";
+				TestPath    = "$SDeletePath";
+				Description = "SDelete is running to Zero Out Free Space on the PVS parent Disk";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$SDeletePath' -Args '-accepteula -z C:' -ActText 'SDelete is running to Zero Out Free Space on the PVS parent Disk'"
 			};
+			$ordercnt += 1
 		}
-		ELSE {
+
+		#During sealing with Citrix AppLayering outside ELM IF (!($CTXAppLayerName -eq "No-ELM")) {
+		IF ( ($LIC_BISF_CLI_SD_runOutsideELM -eq 1) -and ($CTXAppLayerName -eq "No-ELM") ) {
 			$PrepCommands += [pscustomobject]@{
 				Order       = "$ordercnt";
 				Enabled     = "$true";
-				showmessage = "Y";
-				CLI         = "LIC_BISF_CLI_SD";
-				TestPath    = "$($SearchFoldersSD)\sdelete64.exe";
-				Description = "Run SDelete to Zero-Out free space on PVS WriteCacheDisk on each PVS Target Device at system startup ?";
-				Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$true'"
+				showmessage = "N";
+				cli         = "";
+				TestPath    = "$SDeletePath";
+				Description = "SDelete is running to Zero Out Free Space with AppLayering Outside ELM";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$SDeletePath' -Args '-accepteula -z C:' -ActText 'SDelete is running to Zero Out Free Space with AppLayering Outside ELM'"
 			};
+			$ordercnt += 1
 		}
-		$ordercnt += 1
-	}
-	ELSE {
-		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
-			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
-			Description = "Reset value LIC_BISF_SDeleteRun in registry ?";
-			Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$false'"
-		};
-		$ordercnt += 1
 	}
 
-	if (!($LIC_BISF_CLI_DotNet -eq "NO")) {
+
+	IF (!($LIC_BISF_CLI_DotNet -eq "NO")) {
 
 		### Executing all queued .NET compilation jobs - Precompiling assemblies with Ngen.exe can improve the startup time for some applications.
 		$NgenPath = Get-ChildItem -Path 'C:\Windows\Microsoft.NET' -Recurse "ngen.exe" | % { $_.FullName }
