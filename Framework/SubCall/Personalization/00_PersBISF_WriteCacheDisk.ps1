@@ -48,6 +48,7 @@
 		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
 		25.08.2019 MS: HF 21 - endless Reboot with wrong count of Partitons
 		03.10.2019 MS: ENH 126 - MCSIO with persistent drive
+		05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only to prevent reboot loop
 	.LINK
 		https://eucweb.com
 #>
@@ -258,32 +259,39 @@ Process {
 	$SkipReboot = GetRefSrv
 	CheckCDRom
 
-	IF (!($LIC_BISF_CLI_WCD -eq $null) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
-		IF ("$returnTestPVSSoftware" -eq $true) {
-			$uniqueid_REG = GetUniqueIDreg
-			CheckWriteCacheDrive
-		}
-		ELSE {
-			Write-BISFLog -Msg "WriteCache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
-		}
-	}
-	ELSE {
-		Write-BISFLog -Msg "PVS WriteCache is not configured or is set to 'NONE', skipping configuration"
-	}
-
-	IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
-		IF (!($LIC_BISF_CLI_MCSIODriveLetter -eq $null) -or (!($LIC_BISF_CLI_MCSIODriveLetter -eq "NONE")) ) {
-			IF ($MCSIO -eq $true) {
+	$DiskMode = Get-BISFDiskMode
+	IF ( ($DisMode -eq "ReadOnly") -or ($DisMode -eq "VDAShared") -or ($DisMode -eq "ReadOnlyAppLayering") -or ($DisMode -eq "VDASharedAppLayering") ) {
+		Write-BISFLog -Msg "CacheDisk would be configured now for DiskMode $DiskMode"
+		IF (!($LIC_BISF_CLI_WCD -eq $null) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
+			IF ("$returnTestPVSSoftware" -eq $true) {
 				$uniqueid_REG = GetUniqueIDreg
-				Test-MCSIOCacheDisk
+				CheckWriteCacheDrive
 			}
 			ELSE {
-				Write-BISFLog -Msg "Citrix MCSIO with persistent Drive can't be used on this system!" -Type W
+				Write-BISFLog -Msg "WriteCache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "MCSIO CacheDisk is not configured or is set to 'NONE', skipping configuration"
+			Write-BISFLog -Msg "PVS WriteCache is not configured or is set to 'NONE', skipping configuration"
 		}
+
+		IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
+			IF (!($LIC_BISF_CLI_MCSIODriveLetter -eq $null) -or (!($LIC_BISF_CLI_MCSIODriveLetter -eq "NONE")) ) {
+				IF ($MCSIO -eq $true) {
+					$uniqueid_REG = GetUniqueIDreg
+					Test-MCSIOCacheDisk
+				}
+				ELSE {
+					Write-BISFLog -Msg "Citrix MCSIO with persistent Drive can't be used on this system!" -Type W
+				}
+			}
+			ELSE {
+				Write-BISFLog -Msg "MCSIO CacheDisk is not configured or is set to 'NONE', skipping configuration"
+			}
+		}
+	}
+ ELSE {
+		Write-BISFLog -Msg "CacheDisk are NOT configured for DiskMode $DiskMode" -Type W
 	}
 }
 
