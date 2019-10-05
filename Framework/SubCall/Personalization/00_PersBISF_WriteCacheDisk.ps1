@@ -48,7 +48,7 @@
 		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
 		25.08.2019 MS: HF 21 - endless Reboot with wrong count of Partitons
 		03.10.2019 MS: ENH 126 - MCSIO with persistent drive
-		05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only to prevent reboot loop
+		05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only, to prevent reboot loop on priavte images
 	.LINK
 		https://eucweb.com
 #>
