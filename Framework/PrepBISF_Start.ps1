@@ -93,12 +93,7 @@ Begin {
 	## ENH 144 - Powershell Transcript
 	$WPTEnabled = (Get-ItemProperty "HKLM:\SOFTWARE\Policies\Login Consultants\BISF" -Name "LIC_BISF_CLI_LOG_WPT").LIC_BISF_CLI_LOG_WPT
 	IF ($WPTEnabled -eq 1) {
-		$Global:WPTlog = "C:\Windows\Logs\PREP_BISF_WPT_$($computer).log"
-		IF (Test-Path $WPTlog -PathType Leaf) {
-			$NewName = $WPTlog.split(".")[0] + "_old.log"
-			IF (Test-Path $NewName -PathType Leaf) { Remove-Item $newName -Force }
-			Rename-Item $WPTlog -NewName $NewName
-		}
+		$Global:WPTlog = "C:\Windows\Logs\PREP_BISF_WPT_$($computer)_$timestamp.log"
 		Start-Transcript $WPTLog
 	}
 

@@ -82,6 +82,7 @@ param()
 		05.10.2019 MS: ENH 12 - AMDX Extension: Configure sDelete
 		05.10.2019 MS: ENH 22 - Get DiskID's of the system - for monitoring only ->  for later use to fix 'Endless Reboot with VMware Paravirtual SCSI disk'
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
+		05.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
 
       #>
 Begin {
@@ -256,16 +257,60 @@ Process {
 		# EHN 36 - Shared Configuration - JSON Export
 		IF ($LIC_BISF_CLI_EX_PT) {
 			#check Path in Registry if set
-			$CfgOSname = $OSName.replace(' ', '')
-			$CfgOSBitness = $OSBitness
-			$CfgExportFile = "$LIC_BISF_CLI_EX_PT" + "\BISFconfig_" + $CfgOSname + "_" + $CfgOSBitness + ".json"
-			Write-BISFlog "Export Registry to $CfgExportFile" -ShowConsole -Color Cyan
-			Export-BISFRegistry "$Reg_LIC_Policies" -ExportType json -exportpath "$CfgExportFile"
+			IF ($LIC_BISF_POL_AppLayCfg -eq 1) {
+				#check if Citrix AppLayering is configured
+				Write-BISFlog "Running Export Shared Configuration for Citrix AppLayering" -ShowConsole -Color Cyan
+
+				Write-Host "Select the Citrix AppLayering Layer to export the current configuration" -ForegroundColor Green
+				Write-Host " "
+				#create dynamic menu based on ADMX configuration
+				[array]$menuitem = @()
+				[array]$menucfg = @()
+				IF ($LIC_BISF_CLI_AppLayOSCfg -eq 1) { [array]$menuitem += "OS Layer"; [array]$menucfg = $AppLayOSCfg }
+				IF ($LIC_BISF_CLI_AppLayAppPltCfg -eq 1) { [array]$menuitem += "App-/Platform Layer"; [array]$menucfg = $AppLayAppPltCfg }
+				IF ($LIC_BISF_CLI_AppLayPltCfg -eq 1) { [array]$menuitem += "Platform Layer"; [array]$menucfg = $AppLayPltCfg }
+				IF ($LIC_BISF_CLI_AppLayNoELM -eq 1) { [array]$menuitem += "Outside ELM"; [array]$menucfg = $AppLayNoELMCfg }
+
+				$i = 0
+				ForEach ($item in $MenuItem) {
+					Write-Host "     $($i): " + $menuitem[$i]
+					$i ++
+				}
+
+				Write-Host "     99: exit menu"
+				Write-Host " "
+
+				[int]$ans = 0
+				do {
+					try {
+						$numOk = $true
+						IF ($ans -eq 99) { exit }
+						[int]$ans = Read-Host "Enter the Number of the Layer: (0 - $i)"
+					} # end try
+					catch { $numOK = $false; }
+				} # end do
+				until (($ans -ge 0 -and $ans -le $i) -and $numOK)
+				$CfgExportFile = "$LIC_BISF_CLI_EX_PT" + "\" + $menucfg[$ans]
+				Write-BISFlog "Export Registry for $(menuitem[$ans]) to $CfgExportFile" -ShowConsole -Color Cyan
+				Export-BISFRegistry "$Reg_LIC_Policies" -ExportType json -exportpath "$CfgExportFile"
+
+			}
+			ELSE {
+
+				$CfgOSname = $OSName.replace(' ', '')
+				$CfgOSBitness = $OSBitness
+				$CfgExportFile = "$LIC_BISF_CLI_EX_PT" + "\BISFconfig_" + $CfgOSname + "_" + $CfgOSBitness + ".json"
+				Write-BISFlog "Export Registry to $CfgExportFile" -ShowConsole -Color Cyan
+				Export-BISFRegistry "$Reg_LIC_Policies" -ExportType json -exportpath "$CfgExportFile"
+
+			}
+
+
 		}
 		ELSE {
 			Write-BISFLog "Error: The custom path for the shared configuration is not configured in the Policy !!" -Type E
 		}
-
+		Stop-Transcript -ErrorAction SilentlyContinue
 		Write-BISFLog "Press any key to exit ..." -ShowConsole -Color Red
 		$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 		$Global:TerminateScript = $true; Exit
@@ -273,6 +318,7 @@ Process {
 	}
 	IF ($LIC_BISF_CLI_LOG_WPT -eq 1) {
 		Write-BISFLog -Msg "Windows Powershell Transcript enabled: $WPTLog" -ShowConsole -Color Cyan
+		Invoke-BISFLogRotate -Versions 5 -Directory "C:\Windows\Logs" -Verbose:$VerbosePreference
 	}
 	Get-BISFPSVersion -Verbose:$VerbosePreference
 	Test-BISFRegHive -Verbose:$VerbosePreference

@@ -57,6 +57,10 @@
 	$Global:HKLM_Full_Uninsstall = "$HKLM_Uninstall\$AppGuid"
 	$Global:InstallLocation = (Get-ItemProperty "$HKLM_Full_Uninsstall" -Name "InstallLocation").InstallLocation
 	Write-Log -Msg "Install location ""$InstallLocation"" " -ShowConsole -Color DarkCyan -SubMsg
+	$Global:AppLayOSCfg = "BISFconfig_AppLay_OS.json"
+	$Global:AppLayAppPltCfg = "BISFconfig_AppLay_AppPlt.json"
+	$Global:AppLayPltCfg = "BISFconfig_AppLay_Plt.json"
+	$Global:AppLayNoELMCfg = "BISFconfig_AppLay_NoELM.json"
 	Import-BISFSharedConfiguration -Verbose:$VerbosePreference
 	Get-BISFCLIcmd -Verbose:$VerbosePreference #must be running before the $Global:PVSDiskDrive = $LIC_BISF_CLI_WCD is set
 
@@ -2949,6 +2953,7 @@ Function Export-Registry {
 	14.08.2017 MS: import function into BIS-F
 	15.08.2017 MS: Writing the second XML File, these file must be copied to the BIS-F Root Installation folder
 	21.09.2019 MS: EHN 36 - Shared Configuration - JSON Export
+	05.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
 
 #>
 
@@ -3050,9 +3055,49 @@ Function Export-Registry {
 				Write-BISFlog -Msg "Writing $filePath - copy this file to the BIS-F installation folder, like $InstallLocation on your destination computer (example: Citrix AppLayering in Workergroup)," -ShowConsole -Color DarkCyan -SubMsg
 				Write-BISFLog -Msg "to import the BIS-F configuration from $($ExportPath). If you run the Computer in Workgroup you must set the shared path NTFS Rights to ""Everyone read"" to get access without prompt."
 
-				(New-Object PSObject -Property @{
-					Configfile    = "$ExportPath"
-				}) | ConvertTo-Json -Depth 10 | Out-File -FilePath $filePath
+				IF ($LIC_BISF_POL_AppLayCfg -eq 1) {
+					Write-BISFLog -Msg "Citrix AppLayering export running.." -ShowConsole -Color DarkCyan -SubMsg
+					IF ($LIC_BISF_CLI_AppLayOSCfg -eq 1) {
+						$AppLayOSFilePath = $LIC_BISF_CLI_EX_PT + "\" +  $AppLayOSCfg
+						$ExportPath = $null
+					} ELSE {
+						$AppLayOSFilePath = $null
+					}
+
+					IF ($LIC_BISF_CLI_AppLayAppPltCfg -eq 1) {
+						$AppLayAppPltFilePath = $LIC_BISF_CLI_EX_PT + "\" + $AppLayAppPltCfg
+						$ExportPath = $null
+					} ELSE {
+						$AppLayAppPltFilePath = $null
+					}
+
+					IF ($LIC_BISF_CLI_AppLayPltCfg -eq 1) {
+						$AppLayPltFilePath = $LIC_BISF_CLI_EX_PT + "\" +  $AppLayPltCfg
+						$ExportPath = $null
+					} ELSE {
+						$AppLayPltFilePath = $null
+					}
+
+					IF ($LIC_BISF_CLI_AppLayNoELM -eq 1) {
+						$AppLayNoELMFilePath = $LIC_BISF_CLI_EX_PT + "\" +  $AppLayNoELMCfg
+						$ExportPath = $null
+					} ELSE {
+						$AppLayNoELMFilePath = $null
+					}
+
+					(New-Object PSObject -Property @{
+						Configfile 		= "$ExportPath"
+						AppLayerOS		= "$AppLayOSFilePath"
+						AppLayerAppPlt	= "$AppLayAppPltFilePath"
+						AppLayerPlt 	= "$AppLayPltFilePath"
+						AppLayerNoELM	= "$AppLayNoELMFilePath"
+					}) | ConvertTo-Json -Depth 10 | Out-File -FilePath $filePath
+
+				} ELSE {
+					(New-Object PSObject -Property @{
+						Configfile 		= "$ExportPath"
+					}) | ConvertTo-Json -Depth 10 | Out-File -FilePath $filePath
+				}
 
 			} #if $exportType
 			elseif ( ($ExportType -AND (-not $ExportPath)) -OR ($ExportPath -AND (-not $ExportType)) ) {
@@ -4036,7 +4081,7 @@ Function Get-CacheDiskID {
 		  05.10.2019 MS: function created
 		  05.10.2019 MS: HF 22 - Endless Reboot with VMware Paravirtual SCSI disk need to get the DiskID
 
-	.LINK 
+	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function

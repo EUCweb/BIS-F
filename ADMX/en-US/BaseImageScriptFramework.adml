@@ -655,16 +655,16 @@ NOTE: Please specify the Name of the folder only, without any drive letter !!
 If you enable this policy setting, you can enable different Shared Configurations
 
 Enable OS Layer config file:
-Configuration from BISF_SC_AppLay_OS.json is used 
+Configuration from BISFconfig_AppLay_OS.json is used 
 
 Enable Platform Layer config file:
-If your Platform Layer is domain joined you can enable this setting,  Configuration from BISF_SC_AppLay_Plt.json is used 
+If your Platform Layer is domain joined you can enable this setting,  Configuration from BISFconfig_AppLay_Plt.json is used 
 
 Enable App-/Platform Layer config file: 
-Configuration from BISF_SC_AppLay_AppPlt.json is used 
+Configuration from BISFconfig_AppLay_AppPlt.json is used 
 
 Enable outside ELM config file: 
-Configuration from BISF_SC_AppLay_NoELM.json is used, if you seal the Image outside ELM (reference to https://support.citrix.com/article/CTX226062) with PVS.
+Configuration from BISFconfig_AppLay_NoELM.json is used, if you seal the Image outside ELM (reference to https://support.citrix.com/article/CTX226062) with PVS.
 
 
 NOTE: The enabled Layers only, can be exported during SharedConfiguration
