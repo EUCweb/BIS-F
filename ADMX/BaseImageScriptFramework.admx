@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.7A43D783_BB3D_44E7_8E71_5EAB7847B01A" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.96328411_4FC2_46CA_B65A_5699146CFC10" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1320,11 +1320,10 @@
         </item>
       </disabledList>
       <elements>
-        <text id="TXT_AppLayOSCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayOSCfg" />
-        <text id="TXT_AppLayAppPltCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayAppPltCfg" />
-        <boolean id="CHK_AppLayPltCfgb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayPltCfgb" />
-        <text id="TXT_AppLayPltCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayPltCfg" />
-        <text id="TXT_AppLayNoELM" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayNoELM" />
+        <boolean id="CHK_AppLayAppPltcfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayAppPltcfg" />
+        <boolean id="CHK_AppLayOScfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayOScfg" />
+        <boolean id="CHK_AppLayNoELMcfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayNoELMcfg" />
+        <boolean id="CHK_AppLayPltCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayPltCfg" />
       </elements>
     </policy>
     <policy name="POL_LAPSExpirationTime" class="Machine" displayName="$(string.POL_LAPSExpirationTime)" explainText="$(string.POL_LAPSExpirationTime_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_LAPSExpirationTime">

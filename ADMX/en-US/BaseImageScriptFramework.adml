@@ -422,7 +422,7 @@ if you enable this policy and BIS-F preparation is triggered from a SCCM or MDT 
 this policy overwrites the values for a configured Log share.if configured.
 
 Enable Windows Powershell Transcript:
-For more debugging a Windows Powershell Transcript is created in C:\Windows\Logs every time and the configuration of the Log share has no impact to
+For more debugging e Windows Powershell Transcript is created. This will created in C:\Windows\Logs every time and the configured of the Log share has no impact to
 this configuration item.
 
 During sealing a file will be created:  C:\Windows\Logs\PREP_BISF_WPT_%Computername%.log
@@ -652,24 +652,26 @@ NOTE: Please specify the Name of the folder only, without any drive letter !!
       <string id="POL_AppLayCfg">Configure Citrix App Layering</string>
       <string id="POL_AppLayCfg_Help">This policy settings allows you to manage Citrix App Layering and inject different BIS-F shared configurations based on Layers
 
-If you enable this policy setting, you must enter a valid BIS-F shared configuration file for each Layer
+If you enable this policy setting, you can enable different Shared Configurations
 
-OS Layer config file:
-The file you're entered here is  applied if the OS Layer is detected.
+Enable OS Layer config file:
+Configuration from BISF_SC_AppLay_OS.json is used 
 
-App-/Platform Layer config file:
-The file you're entered here is  applied if the App-/Platform Layer is detected.
+Enable Platform Layer config file:
+If your Platform Layer is domain joined you can enable this setting,  Configuration from BISF_SC_AppLay_Plt.json is used 
 
-Outside ELM config file:
-The file you're entered here is applied if you seal the Image outside ELM (reference to https://support.citrix.com/article/CTX226062) with PVS.
+Enable App-/Platform Layer config file: 
+Configuration from BISF_SC_AppLay_AppPlt.json is used 
 
-Enable domain joined Platform Layer:
-If your Platform Layer is domain joined you can enable this setting and enter a valid Platform Lyer config file, this will be applied if the Platform Layer is detected.
+Enable outside ELM config file: 
+Configuration from BISF_SC_AppLay_NoELM.json is used, if you seal the Image outside ELM (reference to https://support.citrix.com/article/CTX226062) with PVS.
 
+
+NOTE: The enabled Layers only, can be exported during SharedConfiguration
 
 If you disable this policy setting or do not configure this policy setting, no different BIS-F shared configurations can be used.
 
-Note: Enter the name of the configurations file only without extension, the path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
+Note:  The Path is defined in the ADMX &gt; Global &gt; Shared Configuration</string>
       <string id="POL_VDASSL">Configure SSL for the Citrix VDA</string>
       <string id="POL_VDASSL_Help">Configure SSL for the Citrix VDA
 
@@ -856,14 +858,14 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         </text>
         <text>Run SDelete during sealing (preparation)</text>
 		<checkBox refId="CHK_SD_runBI">During sealing on the BaseImage</checkBox>
-        <checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (avhd/ avhdx)</checkBox>
-        <checkBox refId="CHK_SD_runOutsideELM">During sealing with Citrix AppLayering outside ELM</checkBox>
-        <text>
-        </text>
-        <text>Run SDelete during computer startup (personalization)</text>
-        <checkBox refId="CHK_SD_runPVSCacheDisk">Citrix PVS Image on the persistent Cache Disk if the image is in shared image mode</checkBox>
-        <checkBox refId="CHK_SD_runMCSIO">Citrix MCSIO on persistent Cache Disk if the image is in shared image mode</checkBox>
-        <checkBox refId="CHK_SD_runMCS">Citrix MCS on Systemdrive f the image is in shared image mode</checkBox>
+		<checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (avhd/ avhdx)</checkBox>
+		<checkBox refId="CHK_SD_runOutsideELM">During sealing with Citrix AppLayering outside ELM</checkBox>
+		<text>
+		</text>
+		<text>Run SDelete during computer startup (personalization)</text>
+		<checkBox refId="CHK_SD_runPVSCacheDisk">Citrix PVS Image on the persistent Cache Disk if the image is in shared image mode</checkBox>
+		<checkBox refId="CHK_SD_runMCSIO">Citrix MCSIO on persistent Cache Disk if the image is in shared image mode</checkBox>
+		<checkBox refId="CHK_SD_runMCS">Citrix MCS on Systemdrive if the image is in shared image mode</checkBox>
       </presentation>
       <presentation id="POL_PAGEFILE">
         <dropdownList refId="PageFile_DriveLetter_Options" defaultItem="0">Page file drive</dropdownList>
@@ -1027,25 +1029,10 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         </textBox>
       </presentation>
       <presentation id="POL_AppLayCfg">
-        <textBox refId="TXT_AppLayOSCfg">
-          <label>OS Layer config file</label>
-          <defaultValue>BISF_AppLay_OS_config</defaultValue>
-        </textBox>
-        <textBox refId="TXT_AppLayAppPltCfg">
-          <label>App-/Platform Layer config file</label>
-          <defaultValue>BISF_AppLay_AppPlt_config</defaultValue>
-        </textBox>
-        <textBox refId="TXT_AppLayNoELM">
-          <label>Outside ELM config file</label>
-          <defaultValue>BISF_AppLay_NoELM_config</defaultValue>
-        </textBox>
-        <checkBox refId="CHK_AppLayPltCfgb">Enable domain joined Platform Layer</checkBox>
-        <text>
-        </text>
-        <textBox refId="TXT_AppLayPltCfg">
-          <label>Domain joined Platform Layer config file</label>
-          <defaultValue>BISF_AppLay_Plt_config.xml</defaultValue>
-        </textBox>
+		<checkBox refId="CHK_AppLayOScfg">Enable OS Layer config file</checkBox>
+        <checkBox refId="CHK_AppLayPltCfg">Enable Platform Layer config file</checkBox>
+        <checkBox refId="CHK_AppLayAppPltcfg">Enable App-/Platform Layer config file</checkBox>
+        <checkBox refId="CHK_AppLayNoELMcfg">Enable outside ELM config file</checkBox>
       </presentation>
       <presentation id="POL_MCSCfg">
         <dropdownList refId="DST_MCSIODriveLetter" defaultItem="0">MCSIO Disk Drive Letter</dropdownList>
