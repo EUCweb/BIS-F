@@ -290,5 +290,5 @@ End {
 		Throw "An error occured while unloading modules. The error is:`r`n$_"
 		Exit 1
 	}
-	IF ($WPTEnabled -eq 1) { Stop-Transcript }
+	IF ($WPTEnabled -eq 1) { Stop-Transcript -ErrorAction SilentlyContinue | Out-Null }
 }

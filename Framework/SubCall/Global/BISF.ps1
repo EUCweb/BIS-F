@@ -267,7 +267,7 @@ Process {
 				IF ($LIC_BISF_CLI_AppLayOSCfg -eq 1) { [array]$menuitem += "OS Layer"; [array]$menucfg += $AppLayOSCfg }
 				IF ($LIC_BISF_CLI_AppLayAppPltCfg -eq 1) { [array]$menuitem += "App-/Platform Layer"; [array]$menucfg += $AppLayAppPltCfg }
 				IF ($LIC_BISF_CLI_AppLayPltCfg -eq 1) { [array]$menuitem += "Platform Layer"; [array]$menucfg += $AppLayPltCfg }
-				IF ($LIC_BISF_CLI_AppLayNoELM -eq 1) { [array]$menuitem += "Outside ELM"; [array]$menucfg += $AppLayNoELMCfg }
+				IF ($LIC_BISF_CLI_AppLayNoELMcfg -eq 1) { [array]$menuitem += "Outside ELM"; [array]$menucfg += $AppLayNoELMCfg }
 
 				$i = 0
 				ForEach ($item in $MenuItem) {
@@ -308,7 +308,6 @@ Process {
 		ELSE {
 			Write-BISFLog "Error: The custom path for the shared configuration is not configured in the Policy !!" -Type E
 		}
-		Stop-Transcript -ErrorAction SilentlyContinue
 		Write-BISFLog "Press any key to exit ..." -ShowConsole -Color Red
 		$x = $host.UI.RawUI.ReadKey("NoEcho, IncludeKeyDown")
 		$Global:TerminateScript = $true; Exit
