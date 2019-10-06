@@ -2467,7 +2467,7 @@ function Test-AppLayeringSoftware {
 		01.07.2018 MS: Bugfix 48: Using RunMode to detect the right AppLayer, persistent between AppLayering updates
 		09.07.2018 MS: Bugfix 48 - Part II: get DiskMode, to handle App Layering different
 		09.07.2018 MS: Bugfix 48 - Part III: using DiskMode in RunMode 4 to diff between App- or Platform Layer
-		21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalzed is blocked with MCS - Booting Layered Image
+		21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalized is blocked with MCS - Booting Layered Image
 	.LINK
 		https://eucweb.com
 #>
@@ -3122,9 +3122,9 @@ Function Export-Registry {
 function Import-SharedConfiguration {
 	<#
 	.SYNOPSIS
-		Import Shared Configuration from XML file
+		Import Shared Configuration from json file with fallback to the xml file
 	.DESCRIPTION
-	  	if the BISFSharedConfiguration.xml does exist in the root of the BIS-F installation folder, read the XML and get the path to the SharedConfiguration
+	  	if the BISFSharedConfiguration.json does exist in the root of the BIS-F installation folder, read the json and get the path to the SharedConfiguration, fallback to the xml file for legacy support
 
 		use get-help <functionname> -full to see full help
 	.EXAMPLE
@@ -3136,6 +3136,7 @@ function Import-SharedConfiguration {
 		History:
 		  15.08.2017 MS: function created
 		  21.09.2019 MS: EHN 36 - Shared Configuration - JSON Import
+		  06.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
 
 	.LINK
 		https://eucweb.com
@@ -3148,6 +3149,34 @@ function Import-SharedConfiguration {
 		Write-BISFlog "Reading Shared Configuration from file $JSONConfigFile" -ShowConsole -SubMsg -Color DarkCyan
 		$JsonFile = Get-Content $JSONConfigFile | Convertfrom-Json
 		$JSONSharedConfigFile = $JsonFile.ConfigFile
+		IF ($JSONSharedConfigFile -eq "") {
+
+			Write-BISFlog "Using Citrix AppLayering Shared Configuration" -ShowConsole -SubMsg -Color DarkCyan
+			$null = Test-BISFAppLayeringSoftware
+
+			switch ($CTXAppLayerName) {
+				"OS-Layer" {
+					Write-BISFlog "Layer $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
+					$JSONSharedConfigFile = $JsonFile.AppLayerOS
+				}
+				"Platform-Layer" {
+					Write-BISFlog "Layer $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
+					$JSONSharedConfigFile = $JsonFile.AppLayerPlt
+				}
+				"Application-Layer" {
+					Write-BISFlog "Layer $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
+					$JSONSharedConfigFile = $JsonFile.AppLayerAppPlt
+				}
+				"No-ELM" {
+					Write-BISFlog "Layer $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
+					$JSONSharedConfigFile = $JsonFile.AppLayerNoELM
+				}
+				default {
+					Write-BISFlog "AppLayer can't retrieved, fallback to OS-Layer configuration" ShowConsole -Type W -SubMsg
+					$JSONSharedConfigFile = $JsonFile.AppLayerOS
+				}
+			}
+		}
 		Write-BISFlog "Shared Configuration is stored in $JSONSharedConfigFile" -ShowConsole -SubMsg -Color DarkCyan
 		IF (Test-Path $JSONSharedConfigFile -PathType Leaf) {
 			IF (!(Test-Path $Reg_LIC_Policies)) {
@@ -3155,7 +3184,7 @@ function Import-SharedConfiguration {
 				New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
 				write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
 			}
-			Write-BISFlog "Import XML Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFlog "Import Json Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
 			$object = Get-Content $JSONSharedConfigFile | Convertfrom-Json
 
 		} ELSE {
@@ -3166,7 +3195,7 @@ function Import-SharedConfiguration {
 		Write-BISFlog "Shared Configuration does not exist in $JSONConfigFile"
 		$XMLConfigFile = "$InstallLocation" + "BISFSharedConfig.xml"
 		IF (Test-Path $XMLConfigFile -PathType Leaf) {
-			Write-BISFlog "Fallback to XML Shared Configuration " -ShowConsole -Color Cyan
+			Write-BISFlog "Fallback to Legacy XML Shared Configuration " -ShowConsole -Color Cyan
 			Write-BISFlog "Reading Shared Configuration from file $XMLConfigFile" -ShowConsole -SubMsg -Color DarkCyan
 			[xml]$XmlDocument = Get-Content -Path "$XMLConfigFile"
 			$xmlfullname = $XmlDocument.GetType().FullName
@@ -3187,7 +3216,7 @@ function Import-SharedConfiguration {
 				Write-BISFlog "Error: Shared Configuration $xmlSharedConfigFile does not exists !!" -Type E
 			}
 		} ELSE {
-			Write-BISFlog "Shared Configuration does not exist in $XMLConfigFile"
+			Write-BISFlog "Legacy Shared Configuration does not exist in $XMLConfigFile"
 		}
 	}
 
