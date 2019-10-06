@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.96328411_4FC2_46CA_B65A_5699146CFC10" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.AE307DBF_2C6B_4C79_9639_8BB5CA28D13E" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -896,6 +896,7 @@
             </value>
           </item>
         </enum>
+        <boolean id="CHK_PVSDisableRedirection" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PVSDisableRedirection" />
       </elements>
     </policy>
     <policy name="POL_PersCfg" class="Machine" displayName="$(string.POL_PersCfg)" explainText="$(string.POL_PersCfg_Help)" presentation="$(presentation.POL_PersCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_PersCfg">
@@ -1306,14 +1307,14 @@
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayCfg">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayCfg">
           <value>
             <string>NO</string>
           </value>

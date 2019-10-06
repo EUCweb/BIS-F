@@ -478,6 +478,9 @@ This is relevant to format the WriteCacheDisk only.
 
 Note: If you configure it wrong, a reboot loop is performed !!
 
+Disable Redirection:
+With a configured Cache Disk the eventlogs and spool directory is redirected to the persistent drive. With this setting you can disable the redirection.
+
 </string>
       <string id="ITM_0"> NONE</string>
       <string id="ITM_B">B:</string>
@@ -857,15 +860,15 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         <text>
         </text>
         <text>Run SDelete during sealing (preparation)</text>
-		<checkBox refId="CHK_SD_runBI">During sealing on the BaseImage</checkBox>
-		<checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (avhd/ avhdx)</checkBox>
-		<checkBox refId="CHK_SD_runOutsideELM">During sealing with Citrix AppLayering outside ELM</checkBox>
-		<text>
-		</text>
-		<text>Run SDelete during computer startup (personalization)</text>
-		<checkBox refId="CHK_SD_runPVSCacheDisk">Citrix PVS Image on the persistent Cache Disk if the image is in shared image mode</checkBox>
-		<checkBox refId="CHK_SD_runMCSIO">Citrix MCSIO on persistent Cache Disk if the image is in shared image mode</checkBox>
-		<checkBox refId="CHK_SD_runMCS">Citrix MCS on Systemdrive if the image is in shared image mode</checkBox>
+        <checkBox refId="CHK_SD_runBI">During sealing on the BaseImage</checkBox>
+        <checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (avhd/ avhdx)</checkBox>
+        <checkBox refId="CHK_SD_runOutsideELM">During sealing with Citrix AppLayering outside ELM</checkBox>
+        <text>
+        </text>
+        <text>Run SDelete during computer startup (personalization)</text>
+        <checkBox refId="CHK_SD_runPVSCacheDisk">Citrix PVS Image on the persistent Cache Disk if the image is in shared image mode</checkBox>
+        <checkBox refId="CHK_SD_runMCSIO">Citrix MCSIO on persistent Cache Disk if the image is in shared image mode</checkBox>
+        <checkBox refId="CHK_SD_runMCS">Citrix MCS on Systemdrive if the image is in shared image mode</checkBox>
       </presentation>
       <presentation id="POL_PAGEFILE">
         <dropdownList refId="PageFile_DriveLetter_Options" defaultItem="0">Page file drive</dropdownList>
@@ -959,6 +962,7 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
           <defaultValue>C:</defaultValue>
         </textBox>
         <dropdownList refId="DST_CLI_NumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
+        <checkBox refId="CHK_PVSDisableRedirection">Disable Redirection</checkBox>
       </presentation>
       <presentation id="POL_PersCfg">
         <dropdownList refId="DST_CLI_DM" defaultItem="0">Skip Personalization based on DiskMode</dropdownList>
@@ -1029,7 +1033,7 @@ With a configured MCSIO Disk the eventlogs and spool directory is redirected to 
         </textBox>
       </presentation>
       <presentation id="POL_AppLayCfg">
-		<checkBox refId="CHK_AppLayOScfg">Enable OS Layer config file</checkBox>
+        <checkBox refId="CHK_AppLayOScfg">Enable OS Layer config file</checkBox>
         <checkBox refId="CHK_AppLayPltCfg">Enable Platform Layer config file</checkBox>
         <checkBox refId="CHK_AppLayAppPltcfg">Enable App-/Platform Layer config file</checkBox>
         <checkBox refId="CHK_AppLayNoELMcfg">Enable outside ELM config file</checkBox>
