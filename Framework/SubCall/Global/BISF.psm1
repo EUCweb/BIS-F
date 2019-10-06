@@ -331,7 +331,7 @@ Function Invoke-FolderScripts {
 				break
 			}
 			ELSE {
-				Write-BISFLog -Msg "=========================== $($item.name) ===========================" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "=========================== $($item.name) ===========================" -ShowConsole -Color DarkGreen
 			}
 			$rescode = . $item.FullName
 			if ($Errorhandling) {

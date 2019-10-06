@@ -250,6 +250,10 @@ Process {
 	Invoke-BISFLogRotate -Versions 5 -Directory "$LogFilePath" -Verbose:$VerbosePreference
 	Invoke-BISFLogShare -Verbose:$VerbosePreference
 	Get-BISFOSinfo -Verbose:$VerbosePreference
+	IF ($LIC_BISF_CLI_LOG_WPT -eq 1) {
+		Write-BISFLog -Msg "Windows Powershell Transcript enabled: $WPTLog" -ShowConsole -Color Cyan
+		Invoke-BISFLogRotate -Versions 5 -Directory "C:\Windows\Logs" -Verbose:$VerbosePreference
+	}
 	IF ($ExportSharedConfiguration) {
 		#check switch ExportSharedConfiguration
 		# EHN 36 - Shared Configuration - JSON Export
@@ -282,8 +286,12 @@ Process {
 				do {
 					try {
 						$numOk = $true
-						IF ($ans -eq 99) { exit }
-						[int]$ans = Read-Host "Enter the Number of the Layer: (0 - $($i - 1) )"
+						IF ($ans -eq 99) {
+							Write-BISFLog "Press any key to exit ..." -ShowConsole -Color Red
+							$x = $host.UI.RawUI.ReadKey("NoEcho, IncludeKeyDown")
+							$Global:TerminateScript = $true; Exit
+						}
+						[int]$ans = Read-Host "Enter the Number of the Layer: (0 - $($i - 1) ) / 99 exit"
 					} # end try
 					catch { $numOK = $false; }
 				} # end do
@@ -313,10 +321,7 @@ Process {
 		$Global:TerminateScript = $true; Exit
 
 	}
-	IF ($LIC_BISF_CLI_LOG_WPT -eq 1) {
-		Write-BISFLog -Msg "Windows Powershell Transcript enabled: $WPTLog" -ShowConsole -Color Cyan
-		Invoke-BISFLogRotate -Versions 5 -Directory "C:\Windows\Logs" -Verbose:$VerbosePreference
-	}
+
 	Get-BISFPSVersion -Verbose:$VerbosePreference
 	Test-BISFRegHive -Verbose:$VerbosePreference
 	$Global:DiskID = Get-BISFCacheDiskID Verbose:$VerbosePreference
