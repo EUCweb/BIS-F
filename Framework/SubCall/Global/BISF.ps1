@@ -150,7 +150,7 @@ Begin {
 		Try {
 			#Try to Create BISFLogsFolder
 			$LogPath = "$PVSDiskDrive\$LogFolderName"
-			IF ($LIC_BISF_LogShare) {
+			IF ($LIC_BISF_CLI_LSb -eq 1) {
 				Invoke-BISFLogShare -Verbose:$VerbosePreference
 				for ($i = 0; $i -le 30; $i++) {
 					IF (!(Test-Path $LIC_BISF_LogShare)) {
@@ -192,7 +192,6 @@ Begin {
 		Finally {
 
 			$ErrorActionPreference = "Continue"
-			#IF ($LIC_BISF_LogShare -and $state -eq "Personalization") {
 			Write-BISFLog -Msg "Move BIS-F log to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
 			Get-ChildItem -Path "C:\Windows\Logs\*" -include "*.bis", "*.xml" | Move-Item -Destination $LogPath -Force
 			IF (($NewLogPath) -and ($NewLogPath -ne $LogPath)) {
@@ -200,7 +199,6 @@ Begin {
 				Get-ChildItem -Path "$($NewLogPath)\*" -include "*.bis", "*.xml" | Move-Item -Destination $LogPath -Force
 			}
 
-			#}
 			$Global:Logfile = "$LogPath\$LogFileName"
 			$Global:LogFilePath = $LogPath
 			$Global:NewLogPath = $LogPath
@@ -266,14 +264,14 @@ Process {
 				#create dynamic menu based on ADMX configuration
 				[array]$menuitem = @()
 				[array]$menucfg = @()
-				IF ($LIC_BISF_CLI_AppLayOSCfg -eq 1) { [array]$menuitem += "OS Layer"; [array]$menucfg = $AppLayOSCfg }
-				IF ($LIC_BISF_CLI_AppLayAppPltCfg -eq 1) { [array]$menuitem += "App-/Platform Layer"; [array]$menucfg = $AppLayAppPltCfg }
-				IF ($LIC_BISF_CLI_AppLayPltCfg -eq 1) { [array]$menuitem += "Platform Layer"; [array]$menucfg = $AppLayPltCfg }
-				IF ($LIC_BISF_CLI_AppLayNoELM -eq 1) { [array]$menuitem += "Outside ELM"; [array]$menucfg = $AppLayNoELMCfg }
+				IF ($LIC_BISF_CLI_AppLayOSCfg -eq 1) { [array]$menuitem += "OS Layer"; [array]$menucfg += $AppLayOSCfg }
+				IF ($LIC_BISF_CLI_AppLayAppPltCfg -eq 1) { [array]$menuitem += "App-/Platform Layer"; [array]$menucfg += $AppLayAppPltCfg }
+				IF ($LIC_BISF_CLI_AppLayPltCfg -eq 1) { [array]$menuitem += "Platform Layer"; [array]$menucfg += $AppLayPltCfg }
+				IF ($LIC_BISF_CLI_AppLayNoELM -eq 1) { [array]$menuitem += "Outside ELM"; [array]$menucfg += $AppLayNoELMCfg }
 
 				$i = 0
 				ForEach ($item in $MenuItem) {
-					Write-Host "     $($i): " + $menuitem[$i]
+					Write-Host "     $($i): "$menuitem[$i]
 					$i ++
 				}
 
@@ -285,13 +283,13 @@ Process {
 					try {
 						$numOk = $true
 						IF ($ans -eq 99) { exit }
-						[int]$ans = Read-Host "Enter the Number of the Layer: (0 - $i)"
+						[int]$ans = Read-Host "Enter the Number of the Layer: (0 - $($i - 1) )"
 					} # end try
 					catch { $numOK = $false; }
 				} # end do
-				until (($ans -ge 0 -and $ans -le $i) -and $numOK)
-				$CfgExportFile = "$LIC_BISF_CLI_EX_PT" + "\" + $menucfg[$ans]
-				Write-BISFlog "Export Registry for $(menuitem[$ans]) to $CfgExportFile" -ShowConsole -Color Cyan
+				until (($ans -ge 0 -and $ans -lt $i) -and $numOK)
+				$CfgExportFile = "$LIC_BISF_CLI_EX_PT" + "\" + $($menucfg[$ans])
+				Write-BISFlog "Export Registry for $($menuitem[$ans]) to $CfgExportFile" -ShowConsole -Color Cyan
 				Export-BISFRegistry "$Reg_LIC_Policies" -ExportType json -exportpath "$CfgExportFile"
 
 			}
@@ -312,7 +310,7 @@ Process {
 		}
 		Stop-Transcript -ErrorAction SilentlyContinue
 		Write-BISFLog "Press any key to exit ..." -ShowConsole -Color Red
-		$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+		$x = $host.UI.RawUI.ReadKey("NoEcho, IncludeKeyDown")
 		$Global:TerminateScript = $true; Exit
 
 	}

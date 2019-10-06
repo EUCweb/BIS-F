@@ -46,11 +46,17 @@ Begin {
 	$timestamp = Get-Date -Format yyyyMMdd-HHmmss
 
 	## ENH 144 - Powershell Transcript
-	$WPTEnabled = (Get-ItemProperty "HKLM:\SOFTWARE\Policies\Login Consultants\BISF" -Name "LIC_BISF_CLI_LOG_WPT").LIC_BISF_CLI_LOG_WPT
+	$ERRORACTIONPREFERENCE = "STOP"
+	try {
+		$WPTEnabled = (Get-ItemProperty "HKLM:\SOFTWARE\Policies\Login Consultants\BISF" -Name "LIC_BISF_CLI_LOG_WPT").LIC_BISF_CLI_LOG_WPT
+	}
+	catch { }
+
 	IF ($WPTEnabled -eq 1) {
 		$Global:WPTlog = "C:\Windows\Logs\PERS_BISF_WPT_$($computer)_$timestamp.log.log"
-		Start-Transcript $WPTLog
+		Start-Transcript $WPTLog | Out-Null
 	}
+	$ERRORACTIONPREFERENCE = "Continue"
 
 	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version.
 	If ($($host.name) -like "* ISE *") {

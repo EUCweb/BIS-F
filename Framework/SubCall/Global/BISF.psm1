@@ -1369,8 +1369,10 @@ function Get-vDiskDrive {
 }
 
 function Get-ScriptExecutionPath {
+	# 06.10.2019 MS: no longer needed, since the BIS-F installer is used
 	# 05.05.2015 MS: running BIS-F from local drives only
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	Write-Host "MainFolder: $Main_Folder"
 	$scriptdrive = $Main_Folder.Substring(0, 2)
 	$locadrives = Get-CimInstance -ClassName Win32_Volume | Where-Object { $_.DriveType -eq 3 } | Where-Object { $_.Driveletter }
 	Foreach ($localdrive in $locadrives) {

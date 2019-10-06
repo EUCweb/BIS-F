@@ -72,6 +72,8 @@
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		21.09.2019 MS: ENH 127 - Personalization is in Active State Override
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
+		06.10.2019 MS: Removing call to Get-BISFScriptExecutionPath
+
 	.LINK
 		https://eucweb.com
 #>
@@ -91,11 +93,17 @@ Begin {
 	$timestamp = Get-Date -Format yyyyMMdd-HHmmss
 
 	## ENH 144 - Powershell Transcript
-	$WPTEnabled = (Get-ItemProperty "HKLM:\SOFTWARE\Policies\Login Consultants\BISF" -Name "LIC_BISF_CLI_LOG_WPT").LIC_BISF_CLI_LOG_WPT
+	$ERRORACTIONPREFERENCE = "STOP"
+	try {
+		$WPTEnabled = (Get-ItemProperty "HKLM:\SOFTWARE\Policies\Login Consultants\BISF" -Name "LIC_BISF_CLI_LOG_WPT").LIC_BISF_CLI_LOG_WPT
+	}
+	catch { }
+
 	IF ($WPTEnabled -eq 1) {
 		$Global:WPTlog = "C:\Windows\Logs\PREP_BISF_WPT_$($computer)_$timestamp.log"
-		Start-Transcript $WPTLog
+		Start-Transcript $WPTLog | Out-Null
 	}
+	$ERRORACTIONPREFERENCE = "Continue"
 
 	# Setting default variables ($PSScriptroot/$logfile/$PSCommand,$PSScriptFullname/$scriptlibrary/LogFileName) independent on running script from console or ISE and the powershell version.
 	If ($($host.name) -like "* ISE *") {
@@ -220,13 +228,6 @@ Process {
 		}
 		Start-Sleep -seconds 1
 	} While ($a -ne 100)
-
-
-	#check script execution path (added 05.05.2015)
-	$checkScriptExecutionPath = get-BISFScriptExecutionPath
-	IF (!($checkScriptExecutionPath -eq $true)) {
-		Write-BISFLog -Msg "Script must be running from local drive, no UNC path or mapped drive allowed ! Please copy the script to a local drive and run it again" -Type E -SubMsg
-	}
 
 	#Migrate Settings from older BISF versions
 	Convert-BISFSettings
