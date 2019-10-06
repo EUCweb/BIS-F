@@ -190,7 +190,7 @@ Process {
 
 
 	#ENH 127 - Personalization is in Active State Override
-	IF ($LIC_BISF_CLI_PersonalizationOverrideTimeOut -eq "") {
+	IF ($LIC_BISF_CLI_PersonalizationOverrideTimeOut -eq $null) {
 		[int]$MaximumExecutionMinutes = 60
 		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
 	}
