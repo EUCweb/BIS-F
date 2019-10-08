@@ -2564,6 +2564,7 @@ function Use-PVSConfig {
 		13.08.2019 AS: ENH 46 - Make any PVS conversion work Optional
 		14.08.2019 MS: ENH 108 - set NTFS Rights for spool directory
 		25.08.2019 MS: ENH 128 - Disable redirection if WriteCacheDisk is set to NONE
+		08.10.2019 MS: ENH 145 - ADMX: Disable Redirection for Citrix PVS Target
 	.LINK
 		https://eucweb.com
 #>
@@ -2584,6 +2585,7 @@ function Use-PVSConfig {
 
 		IF ($LIC_BISF_CLI_WCD -eq "NONE") {Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-No-WCD" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
+		IF ($LIC_BISF_CLI_PVSDisableRedirection -eq 1) { Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configure it now" -ShowConsole -SubMsg -Color DarkCyan

@@ -1,3 +1,4 @@
+08.10.2019 MS: ENH 145 - ADMX: Disable Redirection for Citrix PVS Target
 06.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
 05.10.2019 MS: ENH 144 - ADMX Extension: Enable Powershell Transcript
 05.10.2019 MS: ENH 22 - Get DiskID's of the system - for monitoring only ->  for later use to fix 'Endless Reboot with VMware Paravirtual SCSI disk'
