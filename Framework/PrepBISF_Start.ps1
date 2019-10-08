@@ -73,6 +73,7 @@
 		21.09.2019 MS: ENH 127 - Personalization is in Active State Override
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 		06.10.2019 MS: Removing call to Get-BISFScriptExecutionPath
+		08.10.2019 MS: ENH 146 - Removing Test for Fet-PendingReboot out of this script and included into BISF.ps1 to an eralier state
 
 	.LINK
 		https://eucweb.com
@@ -243,23 +244,7 @@ Process {
 	$psfolder = $LIB_Folder
 	Invoke-BISFFolderScripts -Path "$psfolder" -Verbose:$VerbosePreference
 
-	#Check pending reboot before continue
-	$CheckPndReboot = Get-BISFPendingReboot
-	IF (($CheckPndReboot -eq $true) -and (!($LIC_BISF_CLI_EX)) ) {
-		IF (($LIC_BISF_CLI_SR -eq "NO") -or !($LIC_BISF_CLI_SR)) {
-			$title = "Pending Reboot"
-			$text = "A pending system reboot was detected, please reboot and run the script again !!!"
-			Write-BISFLog -Msg $Text -Type E
-			return $false
-			break
-		}
-		ELSE {
-			Write-BISFLog -Msg "A pending reboot was detected, but suppressed from GPO configuration !!!" -Type W
-		}
-	}
-	ELSE {
-		Write-BISFLog -Msg "Pending system reboot is $CheckPndReboot"
-	}
+
 	Add-BISFFinishLine
 
 	#Load custom scripts

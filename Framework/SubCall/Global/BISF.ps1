@@ -83,6 +83,7 @@ param()
 		05.10.2019 MS: ENH 22 - Get DiskID's of the system - for monitoring only ->  for later use to fix 'Endless Reboot with VMware Paravirtual SCSI disk'
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 		05.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
+		08.10.2019 MS: ENH 146 - Move Get-PendingReboot to earlier phase of preparation
 
       #>
 Begin {
@@ -320,6 +321,27 @@ Process {
 		$x = $host.UI.RawUI.ReadKey("NoEcho, IncludeKeyDown")
 		$Global:TerminateScript = $true; Exit
 
+	}
+
+	# ENH 146: move Get-PendingReboot to earlier phase of preparation
+	IF ($State -eq "Preparation") {
+		#Check pending reboot before continue
+		$CheckPndReboot = Get-BISFPendingReboot
+		IF (($CheckPndReboot -eq $true) -and (!($LIC_BISF_CLI_EX)) ) {
+			IF (($LIC_BISF_CLI_SR -eq "NO") -or !($LIC_BISF_CLI_SR)) {
+				$title = "Pending Reboot"
+				$text = "A pending system reboot was detected, please reboot and run the script again !!!"
+				Write-BISFLog -Msg $Text -Type E
+				return $false
+				break
+			}
+			ELSE {
+				Write-BISFLog -Msg "A pending reboot was detected, but suppressed from GPO configuration !!!" -Type W
+			}
+		}
+		ELSE {
+			Write-BISFLog -Msg "Pending system reboot is $CheckPndReboot"
+		}
 	}
 
 	Get-BISFPSVersion -Verbose:$VerbosePreference
