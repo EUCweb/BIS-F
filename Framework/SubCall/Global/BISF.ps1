@@ -330,7 +330,7 @@ Process {
 		IF (($CheckPndReboot -eq $true) -and (!($LIC_BISF_CLI_EX)) ) {
 			IF (($LIC_BISF_CLI_SR -eq "NO") -or !($LIC_BISF_CLI_SR)) {
 				$title = "Pending Reboot"
-				$text = "A pending system reboot was detected, please reboot and run the script again !!!"
+				$text = "A pending system reboot was detected, please reboot the system and run the script again !!!"
 				Write-BISFLog -Msg $Text -Type E
 				return $false
 				break
