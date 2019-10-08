@@ -4136,3 +4136,37 @@ Function Get-CacheDiskID {
 	}
 	return $BootDisk,$getID
 }
+
+function Test-CitrixCloudConnector {
+	<#
+	.SYNOPSIS
+		detect the Serivces of the Citrix CLoud Connector like a Delivery Controller
+
+	.DESCRIPTION
+	BIS-F must prevent to run on a Citrix CLoud Connector
+	use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		Test-BISFCitrixCloudConnector
+
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+		  08.10.2019 MS: function created
+		  08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run
+
+	.LINK
+		https://eucweb.com
+#>
+	$services = @("CitrixHighAvailabilityService","CitrixConfigSyncService","CitrixWorkspaceCloudADProvider")
+
+	ForEach ($service in $services) {
+		$svc = Test-Service -ServiceName $service
+		IF ($svc) {
+			Write-BISFLog -Msg "BIS-F can't run on a Machine like Citrix Cloud Connector or Citrix Delivery Controller as a aprt of the Vendor Best Practices, check out https://docs.citrix.com/en-us/citrix-cloud/citrix-cloud-resource-locations/citrix-cloud-connector/installation.html for more informations" -Type E
+		}
+
+	}
+
+}

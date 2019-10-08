@@ -73,7 +73,7 @@
 		21.09.2019 MS: ENH 127 - Personalization is in Active State Override
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 		06.10.2019 MS: Removing call to Get-BISFScriptExecutionPath
-		08.10.2019 MS: ENH 146 - Removing Test for Fet-PendingReboot out of this script and included into BISF.ps1 to an eralier state
+		08.10.2019 MS: ENH 146 - Removing Test for Get-PendingReboot out of this script and included into BISF.ps1 to an eralier state
 
 	.LINK
 		https://eucweb.com

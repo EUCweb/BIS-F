@@ -84,6 +84,7 @@ param()
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 		05.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
 		08.10.2019 MS: ENH 146 - Move Get-PendingReboot to earlier phase of preparation
+		08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run
 
       #>
 Begin {
@@ -342,6 +343,7 @@ Process {
 		ELSE {
 			Write-BISFLog -Msg "Pending system reboot is $CheckPndReboot"
 		}
+		$null = Test-BISFCitrixCloudConnector
 	}
 
 	Get-BISFPSVersion -Verbose:$VerbosePreference

@@ -1,3 +1,4 @@
+08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run
 08.10.2019 MS: ENH 146 - Move Get-PendingReboot to earlier phase of preparation
 08.10.2019 MS: ENH 145 - ADMX: Disable Redirection for Citrix PVS Target
 06.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
