@@ -4170,3 +4170,118 @@ function Test-CitrixCloudConnector {
 	}
 
 }
+
+function Show-SplashScreen {
+	<#
+	.SYNOPSIS
+		Loading the BISF SplashScreen at the Strt of the Framework
+
+	.DESCRIPTION
+		Showing a more professional grafical Splashscreen on the BIS-F Start
+		use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		Load-BISFSplashScreen
+
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+		  10.10.2019 MS: function created
+
+	.LINK
+		https://eucweb.com
+#>
+	$ImageBase64 = "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"
+
+	#region Import the Assemblies
+	Add-Type -AssemblyName presentationframework, presentationcore, System.Drawing, System.Windows.Forms, WindowsFormsIntegration
+	[reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
+	[reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
+
+	# Mahapps Library required for SplashScreen
+	[System.Reflection.Assembly]::LoadFrom($LIB_Folder + "\assembly\MahApps.Metro.dll") | out-null
+	[System.Reflection.Assembly]::LoadFrom($LIB_Folder + "\assembly\System.Windows.Interactivity.dll") | out-null
+
+	#endregion
+
+	IF ($mainmodulename -ne $null) {$Version = (Get-Module $mainmodulename).Version.ToString()}
+
+
+	#region SplashScreen
+
+	$Image = New-Object System.Windows.Media.Imaging.BitmapImage
+	$Image.BeginInit()
+	$Image.StreamSource = [System.IO.MemoryStream][System.Convert]::FromBase64String($ImageBase64) #
+	$Image.EndInit() #Signals the end of the BitmapImage initialization.
+	$Image.Freeze() #Makes the current object unmodifiable and sets its IsFrozen property to true.
+
+	$hash = [hashtable]::Synchronized(@{})
+	$runspace = [runspacefactory]::CreateRunspace()
+	$runspace.ApartmentState = "STA"
+	$Runspace.ThreadOptions = "ReuseThread"
+	$runspace.Open()
+	$runspace.SessionStateProxy.SetVariable("hash",$hash)
+	$runspace.SessionStateProxy.SetVariable("version",$Version)
+	$runspace.SessionStateProxy.SetVariable("script_dir",$script_dir)
+	$runspace.SessionStateProxy.SetVariable("Logo",$Image)
+	$Pwshell = [PowerShell]::Create()
+
+	$Pwshell.AddScript({
+		$xml = [xml]@"
+		<Window
+	xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Name="WindowSplash" Title="SplashScreen" WindowStyle="None" WindowStartupLocation="CenterScreen"
+	Background="DarkGray" ShowInTaskbar ="false"
+	Width="600" Height="350" ResizeMode = "NoResize" >
+
+	<Grid>
+		<Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+		<Grid Grid.Row="0" x:Name="Header" >
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="20,10,0,0">
+				<Image x:Name="Logo" RenderOptions.BitmapScalingMode="Fant" HorizontalAlignment="Left" Margin="0,0,0,0" Width="60" Height="60" VerticalAlignment="Top" />
+			    <Label x:Name="Title" Margin="5,0,0,0" Foreground="White" Height="50"  FontSize="22"/>
+			</StackPanel>
+		</Grid>
+        <Grid Grid.Row="1" >
+		 	<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5">
+				<Label x:Name = "LoadingLabel" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Margin = "0,0,0,0"/>
+				<Controls:MetroProgressBar IsIndeterminate="True" Foreground="White" HorizontalAlignment="Center" Width="350" Height="20"/>
+			</StackPanel>
+        </Grid>
+	</Grid>
+
+</Window>
+"@
+
+	$reader = New-Object System.Xml.XmlNodeReader $xml
+	$hash.window = [Windows.Markup.XamlReader]::Load($reader)
+	$hash.LoadingLabel = $hash.window.FindName("LoadingLabel")
+	$hash.Logo = $hash.window.FindName("Logo")
+	$hash.Title = $hash.window.FindName("Title")
+	$hash.Logo.Source = $logo
+	$hash.Title.Content = "Base Image Script Framework (BIS-F) - $version"
+	$hash.LoadingLabel.Content= "Loading - please wait"
+	$hash.window.ShowDialog()
+
+}) | Out-Null
+
+	#endregion
+
+	# open splash-screen
+
+	$Pwshell.Runspace = $runspace
+	$script:handle = $Pwshell.BeginInvoke()
+
+	sleep -Seconds 5
+
+	# close splash-screen
+	$hash.window.Dispatcher.Invoke("Normal",[action]{ $hash.window.close() })
+	#Pwshell.EndInvoke($handle) | Out-Null
+}
