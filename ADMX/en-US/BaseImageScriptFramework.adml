@@ -415,8 +415,10 @@ this policy overwrites the values for a configured Log share if configured.
 Enable Windows Powershell Transcript:
 For more debugging a Windows Powershell Transcript is created. This will be created in C:\Windows\Logs every run. The configuration of the BIS-F Log share has no impact to this configuration item.
 
-During sealing a log file will be created:  C:\Windows\Logs\PREP_BISF_WPT_%Computername%.log
-During personlization a log file will be created:  C:\Windows\Logs\PERS_BISF_WPT_%Computername%.log
+During sealing a log file will be created:  C:\Windows\Logs\PREP_BISF_WPT_%Computername%_DateTime.log
+During personlization a log file will be created:  C:\Windows\Logs\PERS_BISF_WPT_%Computername%_DateTime.log
+
+The log rotation for the Windows Powershell Transcript is hardcoded set to 5, so yyou will have a maximum of 5 WPT logs.
  
 </string>
       <string id="POL_FldCfg">Configure Folders</string>
