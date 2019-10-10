@@ -4174,7 +4174,7 @@ function Test-CitrixCloudConnector {
 function Show-SplashScreen {
 	<#
 	.SYNOPSIS
-		Loading the BISF SplashScreen at the Strt of the Framework
+		Loading the BISF SplashScreen at the Start of the Framework
 
 	.DESCRIPTION
 		Showing a more professional grafical Splashscreen on the BIS-F Start
