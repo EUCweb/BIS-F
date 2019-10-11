@@ -59,7 +59,7 @@ Process {
 
 	Function Clear-RedirectedCloudCache {
 		Write-Log -Msg "Processing FXLogix CloudCache" -ShowConsole -Color Cyan
-
+		$frxreg = "HKLM:\SYSTEM\CurrentControlSet\Services\frxccds\Parameters"
 		$FRXCacheDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).CacheDirectory
 		$FRXProxyDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).ProxyDirectory
 		$FRXWriteCacheDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).WriteCacheDirectory

@@ -93,17 +93,18 @@ Process {
 			[parameter(Mandatory = $true)][string]$Mode
 		)
 
-		$task = Get-ScheduledTask -TaskName "sih" -ErrorAction SilentlyContinue
+		$TaskName = "sih"
+		$task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
 		IF ($task) {
-			Write-BISFLog -Msg "Scheduled Task $task exists" -ShowConsole -Color Cyan
+			Write-BISFLog -Msg "Scheduled Task $TaskNameexists" -ShowConsole -Color Cyan
 			$TaskPathName = Get-ScheduledTask -TaskName $task | % { $_.TaskPath }
 			Switch ($Mode) {
 				Disable {
-					Write-BISFLog -Msg "Disable Scheduled Task $task" -ShowConsole -SubMsg -Color DarkCyan
+					Write-BISFLog -Msg "Disable Scheduled Task $TaskName" -ShowConsole -SubMsg -Color DarkCyan
 					Disable-ScheduledTask -Taskname $ScheduledTaskList -TaskPath $TaskPathName | Out-Null
 				}
 				Enable {
-					Write-BISFLog -Msg "Enable Scheduled Task $task" -ShowConsole -SubMsg -Color DarkCyan
+					Write-BISFLog -Msg "Enable Scheduled Task $TaskName" -ShowConsole -SubMsg -Color DarkCyan
 					Enable-ScheduledTask -Taskname $ScheduledTaskList -TaskPath $TaskPathName | Out-Null
 				}
 
@@ -113,7 +114,7 @@ Process {
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "Scheduled Task $task NOT exists" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFLog -Msg "Scheduled Task $TaskName NOT exists" -ShowConsole -SubMsg -Color DarkCyan
 		}
 	}
 
