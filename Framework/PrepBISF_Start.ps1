@@ -92,11 +92,12 @@ Begin {
 	Clear-Host
 	$computer = gc env:computername
 	$timestamp = Get-Date -Format yyyyMMdd-HHmmss
+	$Regpath = "HKLM:\SOFTWARE\Policies\Login Consultants\BISF"
 
 	## ENH 144 - Powershell Transcript
 	$ERRORACTIONPREFERENCE = "STOP"
 	try {
-		$WPTEnabled = (Get-ItemProperty "HKLM:\SOFTWARE\Policies\Login Consultants\BISF" -Name "LIC_BISF_CLI_LOG_WPT").LIC_BISF_CLI_LOG_WPT
+		$WPTEnabled = (Get-ItemProperty $Regpath -Name "LIC_BISF_CLI_LOG_WPT").LIC_BISF_CLI_LOG_WPT
 	}
 	catch { }
 
@@ -186,6 +187,9 @@ Process {
 		Exit 1
 	}
 
+	# 10.10.2019 Show Splashscreen
+	Show-BISFSplashScreen
+
 	# Initialize all variables used by BISF
 	Initialize-BISFConfiguration
 
@@ -214,7 +218,7 @@ Process {
 			Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState" -value "$PersState" -Force
 		}
 
-		$PersState = (Get-ItemProperty "HKLM:\SOFTWARE\Login Consultants\BISF" -Name "LIC_BISF_PersState").LIC_BISF_PersState
+		$PersState = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState").LIC_BISF_PersState
 		IF (($PersState -eq $($TaskStates[0])) -or ($PersState -eq $($TaskStates[3]))) {
 			$a = 100
 			Write-Progress -Activity "Personlization is in current ""$PersState"" state, go ahead the preparation task in 5 seconds" -PercentComplete $a -Status "Finish."

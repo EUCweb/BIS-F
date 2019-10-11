@@ -354,7 +354,7 @@ Process {
 	$Global:returnTestXDSoftware = Test-BISFXDSoftware -Verbose:$VerbosePreference
 	$Global:returnTestPVSSoftware = Test-BISFPVSSoftware -Verbose:$VerbosePreference
 	$Global:returnTestVMHVSoftware = Test-BISFVMwareHorizonViewSoftware -Verbose:$VerbosePreference
-	$Global:returnTestXiFrameSoftware = Test-BISFXiFrameSoftware -Verbose:$VerbosePreference
+	$Global:returnTestXiFrameSoftware = Test-BISFNutanixFrameSoftware -Verbose:$VerbosePreference
 	$Global:returnTestParallelsRASSoftware = Test-BISFParallelsRASSoftware -Verbose:$VerbosePreference
 	$Global:returnTestWVDSoftware = Test-WVDSoftware -Verbose:$VerbosePreference
 	$Global:returnRequestSysprep = Request-BISFSysprep -Verbose:$VerbosePreference
@@ -395,7 +395,7 @@ Process {
 
 	# 03.10.2019 MS: ENH 126 - depend on the new MCSIO redirection the calling of the functions must be different now
 	IF ($returnTestPVSSoftware) {
-		IF ((State -eq "Preparation") -and ($LIC_BISF_CLI_P2V_PT -eq "1")) {
+		IF (($State -eq "Preparation") -and ($LIC_BISF_CLI_P2V_PT -eq "1")) {
 			Write-BISFLog -Msg "Check if there enough free Diskspace on the Custom UNC-Path available before proceed" -ShowConsole -Color Cyan
 			$FreeSpace = Get-BISFSpace -path "$LIC_BISF_CLI_P2V_PT_CUS" -FreeSpace
 			$UsedSpace = Get-BISFSpace -path $env:SystemDrive

@@ -49,6 +49,7 @@
 		11.04.2019 MS: HF 87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
+		11.10.2019 MS: fix typo in SearchProvOrder
 
 	.LINK
 		https://eucweb.com
@@ -266,7 +267,7 @@ Process {
 		Rename-SEPFiles
 		Configure-SepService
 		deleteSEPData
-		Set-BISFNetworkProviderOrder -SaerchProvOrder "SnacNp"
+		Set-BISFNetworkProviderOrder -SearchProvOrder "SnacNp"
 		Write-BISFLog -Msg "Write GpNetworkStartTimeoutPolicyValue to registry from http://www.symantec.com/business/support/index?page=content&id=TECH200321"
 		New-ItemProperty -Path "$hklm_sw\Microsoft\Windows NT\CurrentVersion\Winlogon"-Name "GpNetworkStartTimeoutPolicyValue" -PropertyType DWORD -value 60 -ErrorAction SilentlyContinue | Out-Null
 	}

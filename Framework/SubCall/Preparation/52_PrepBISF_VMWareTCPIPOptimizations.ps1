@@ -27,6 +27,8 @@
 	  2017.08.05 TT: Tested with 2008 R2
 	  2017.08.29 TT: Updated with NUMA detection
 	  19.08.2019 MS: ENH 8: VMWare RSS and TCPIP Optimizations integrated into BIS-F
+      11.10.2019 MS: Running Optimizations on VMWare Hypervisor only
+
 	  .Link
     #>
 
@@ -261,9 +263,10 @@ Process {
 			}
 		}
 	}
-	Write-BISFLog -Msg "Starting VMWare TCPIP Optimizations" -ShowConsole -Color Cyan
+    IF ($returnGetHypervisor -contains "VMWare") {
+	    Write-BISFLog -Msg "Starting VMWare TCPIP Optimizations" -ShowConsole -Color Cyan
 
-	if ($OS -like "*2008 R2*") {
+	                                                                                        if ($OS -like "*2008 R2*") {
 		<# Configure RSS for 2008R2 #>
 		$tcpGlobalParameters = netsh interface tcp show global
 		$netParameters = @()
@@ -285,7 +288,7 @@ Process {
 		}
 		Enable-RSSForVMXNet3
 	}
-	else {
+	                                                                                                                                                                                                                                                                                                                                                                                                            else {
 		#for server 2012 R2 and 2016 this should apply
 		$NetAdapters = Get-NetAdapter | sort -Property InterfaceDescription
 		#check if RSC is enabled globally.  If not, enable on specific vmxnet3 NIC's
@@ -314,7 +317,7 @@ Process {
 		#if RSS is not configured for all NIC's we'll enable
 		$NICNeedConfiguring = $false
 		foreach ($netAdapter in $netAdapters) {
-			if (($netAdapter | get-netadapterrss).Enabled -eq $false) {
+			if (($netAdapter | Get-NetAdapter).Enabled -eq $false) {
 				$setRSS = $true
 				break
 			}
@@ -406,22 +409,25 @@ Process {
 		}
 	}
 
-	$tcpAckConfigured = $false
-	Write-BISFLog -Msg "Configuring TCPAckFrequency..." -ShowConsole -Color DarkCyan -SubMsg
-	$strGUIDS = [array](Get-WmiObject win32_networkadapter -filter "netconnectionstatus = 2" )
-	foreach ($strGUID in $strGUIDS) {
-		if (-not(((Get-ItemProperty  -path HKLM:\System\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$($strGUID.GUID)).TcpAckFrequency) -eq 1)) {
-			Write-BISFLog -Msg "Configuring TCPAckFrequency on the Network Adapters : $($strGUID.Name)" -ShowConsole -Color DarkCyan -SubMsg
-			New-ItemProperty -path HKLM:\System\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$($strGUID.GUID) -propertytype DWORD -name TcpAckFrequency -value 1 | Out-Null
-			$tcpAckConfigured = $true
-		}
-	}
-	if ($tcpAckConfigured -eq $true) {
-		Write-BISFLog -Msg "TCPAckFrequency was configured." -ShowConsole -Color DarkCyan -SubMsg
-	}
- else {
-		Write-BISFLog -Msg "TCPAckFrequency was already set." -ShowConsole -Color DarkCyan -SubMsg
-	}
+	    $tcpAckConfigured = $false
+	    Write-BISFLog -Msg "Configuring TCPAckFrequency..." -ShowConsole -Color DarkCyan -SubMsg
+	    $strGUIDS = [array](Get-WmiObject win32_networkadapter -filter "netconnectionstatus = 2" )
+	    foreach ($strGUID in $strGUIDS) {
+		    if (-not(((Get-ItemProperty  -path HKLM:\System\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$($strGUID.GUID)).TcpAckFrequency) -eq 1)) {
+			    Write-BISFLog -Msg "Configuring TCPAckFrequency on the Network Adapters : $($strGUID.Name)" -ShowConsole -Color DarkCyan -SubMsg
+			    New-ItemProperty -path HKLM:\System\CurrentControlSet\services\Tcpip\Parameters\Interfaces\$($strGUID.GUID) -propertytype DWORD -name TcpAckFrequency -value 1 | Out-Null
+			    $tcpAckConfigured = $true
+		    }
+	    }
+	    if ($tcpAckConfigured -eq $true) {
+		    Write-BISFLog -Msg "TCPAckFrequency was configured." -ShowConsole -Color DarkCyan -SubMsg
+	    }
+     else {
+		    Write-BISFLog -Msg "TCPAckFrequency was already set." -ShowConsole -Color DarkCyan -SubMsg
+	    }
+    } ELSE {
+         Write-BISFLog -Msg "NO VMWare Hypervisor detected for starting VMWare TCPIP Optimizations"
+    }
 }
 
 
