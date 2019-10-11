@@ -194,17 +194,17 @@ Begin {
 				ELSE {
 					Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
 					$DefaultValue = "No"
-
-
-					if (($varCLI -eq "YES") -or ($DefaultValue -eq "YES")) {
-
-						Write-BISFLog -Msg "Running Command $($PostCommand.Command)"
-						Invoke-Expression $($PostCommand.Command)
-					}
-					ELSE {
-						Write-BISFLog -Msg " Skipping Commannd $($prepCommand.Description)" -ShowConsole -Color DarkCyan -SubMsg
-					}
 				}
+
+				If (($varCLI -eq "YES") -or ($DefaultValue -eq "YES")) {
+
+					Write-BISFLog -Msg "Running Command $($PostCommand.Command)"
+					Invoke-Expression $($PostCommand.Command)
+				}
+				ELSE {
+					Write-BISFLog -Msg " Skipping Commannd $($prepCommand.Description)" -ShowConsole -Color DarkCyan -SubMsg
+				}
+
 				# these 2 variables must be cleared after each step, to not store the value in the variable and use them in the next $PostCommand
 				$varCLI = @()
 				$PreMsgBox = @()
