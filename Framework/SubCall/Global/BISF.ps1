@@ -356,7 +356,7 @@ Process {
 	$Global:returnTestVMHVSoftware = Test-BISFVMwareHorizonViewSoftware -Verbose:$VerbosePreference
 	$Global:returnTestXiFrameSoftware = Test-BISFNutanixFrameSoftware -Verbose:$VerbosePreference
 	$Global:returnTestParallelsRASSoftware = Test-BISFParallelsRASSoftware -Verbose:$VerbosePreference
-	$Global:returnTestWVDSoftware = Test-WVDSoftware -Verbose:$VerbosePreference
+	$Global:returnTestWVDSoftware = Test-BISFWVDSoftware -Verbose:$VerbosePreference
 	$Global:returnRequestSysprep = Request-BISFSysprep -Verbose:$VerbosePreference
 	$Global:DiskMode = Get-BISFDiskMode -Verbose:$VerbosePreference
 	$Global:BootMode = Get-BISFBootMode
