@@ -494,7 +494,7 @@ function Get-Version {
 	IF ($mainmodulename -ne $null) {
 		$ver = (Get-Module $mainmodulename).Version.ToString()
 		$Global:BISFversion = "$ver"
-		IF ($ExportSharedConfiguration) { $Host.UI.RawUI.WindowTitle = "$BISFtitle [2020 - $BISFversion] - ExportSharedConfiguration" } ELSE { $Host.UI.RawUI.WindowTitle = "$BISFtitle [2020 - $BISFversion]" }
+		IF ($ExportSharedConfiguration) { $Host.UI.RawUI.WindowTitle = "$BISFtitle [$BISFversion] - ExportSharedConfiguration" } ELSE { $Host.UI.RawUI.WindowTitle = "$BISFtitle [$BISFversion]" }
 
 	}
 	ELSE {
