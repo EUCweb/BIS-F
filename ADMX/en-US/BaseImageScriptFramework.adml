@@ -253,7 +253,6 @@ You can also enter a custom search  folder, e.g. C:\Windows\System32, if you do 
 If you enable or do not configure this policy setting, Performance Counters will be rebuilt.
 If you disable this policy setting, Performance Counters will not be rebuilt.
 </string>
-
       <string id="POL_Shutdown">Shutdown Base Image after sealing</string>
       <string id="POL_Shutdown_Help">Shutdown Base Image after successfully sealing. When running from an MDT or SCCM Task Sequence the Base Image will not shutdown.
 
@@ -525,7 +524,7 @@ You can specify the maximum execution timeout for the personalization process. D
       <string id="POL_ExpCfg">Shared Configuration</string>
       <string id="POL_ExpCfg_Help">This policy setting allows you to export the BISF CLI commands that are set from a complete BIS-F policy to an XML file. This can be used for computers that are running in Worker Groups (like Citrix AppLayering) or you have no access to modify the Active Directory Group Policies.
 
-If you enable this policy setting, you can enter an UNC-Path or local path, that can be accessed from the computer (if it's running in workgroup mode and you have entered an UNC-Path, please set NTFS Rights to Everyone “Read” to retrieve the XML file without being prompted)
+If you enable this policy setting, you can enter an UNC-Path or local path, that can be accessed from the computer (if it's running in workgroup mode and you have entered an UNC-Path, please set NTFS Rights to Everyone ???????Read??????? to retrieve the XML file without being prompted)
 
 1. Running Powershell with Administrative privileges
 2. cd &lt;BIS-F Installation folder&gt;\Framework

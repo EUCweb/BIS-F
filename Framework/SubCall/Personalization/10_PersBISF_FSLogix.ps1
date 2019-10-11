@@ -60,16 +60,20 @@ Process {
 	Function Clear-RedirectedCloudCache {
 		Write-Log -Msg "Processing FXLogix CloudCache" -ShowConsole -Color Cyan
 		$frxreg = "HKLM:\SYSTEM\CurrentControlSet\Services\frxccds\Parameters"
-		$FRXCacheDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).CacheDirectory
 		$FRXProxyDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).ProxyDirectory
 		$FRXWriteCacheDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).WriteCacheDirectory
-		$FRXDirectories = @("$FRXCacheDirectory", "$FRXProxyDirectory", "$FRXWriteCacheDirectory")
+		$FRXDirectories = @("$FRXProxyDirectory", "$FRXWriteCacheDirectory")
 		ForEach ($FRXDir in $FRXDirectories) {
 			Write-Log -Msg "Processing $FRXDir" -ShowConsole -Color DarkCyan -SubMsg
-			$FRXDrive = $FRXDir.substring(0, 2)
-			IF ($FRXDrive -ne $env:SystemDrive) {
-				Write-Log -Msg "Drive is different from Systemdrive, cleanup now" -ShowConsole -Color DarkCyan -SubMsg
-				Remove-Item "$FRXDir\*" -recurse
+			IF (Test-Path $FRXDir -PathType Leaf) {
+				$FRXDrive = $FRXDir.substring(0, 2)
+				IF ($FRXDrive -ne $env:SystemDrive) {
+					Write-Log -Msg "Drive is different from Systemdrive, cleanup now" -ShowConsole -Color DarkCyan -SubMsg
+					Remove-Item "$FRXDir\*" -recurse
+				}
+			}
+			ELSE {
+				Write-Log -Msg "Directory $FRXDir NOT exits"
 			}
 			ELSE {
 				Write-Log -Msg "Drive is NOT different from Systemdrive, skipping" -ShowConsole -Color DarkCyan -SubMsg

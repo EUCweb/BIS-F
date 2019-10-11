@@ -249,7 +249,7 @@ function Write-Log {
 		07.09.2015 MS: add .SYNOPSIS to this function
 		29.09.2015 MS: add switch -SubMSg to define PreMsg string on each console line
 		21.11.2017 MS: if Error appears, exit script with Exit 1
-        11.10.2029 MS: Show Scriptname in logfile 
+        11.10.2029 MS: Show Scriptname in logfile
 
 	.LINK
 		https://eucweb.com
@@ -887,7 +887,7 @@ Function Get-PendingReboot {
 	If (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) { return $true }
 	If (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name PendingFileRenameOperations -EA Ignore) { return $true }
 	try {
-		$RebootPending = Invoke-CimMethod -Namespace root\ccm\ClientSDK -ClassName CCM_ClientUtilities -Name DetermineIfRebootPending -ErrorAction SilentlyContinue | Select-Object "RebootPending" 
+		$RebootPending = Invoke-CimMethod -Namespace root\ccm\ClientSDK -ClassName CCM_ClientUtilities -Name DetermineIfRebootPending -ErrorAction SilentlyContinue | Select-Object "RebootPending"
 		$IsHardRebootPending = Invoke-CimMethod -Namespace root\ccm\ClientSDK -ClassName CCM_ClientUtilities -Name DetermineIfRebootPending -ErrorAction SilentlyContinue | Select-Object "IsHardRebootPending"
 		If (($RebootPending -eq $true) -or ($IsHardRebootPending -eq $true)) { return $true }
 	}
@@ -3550,7 +3550,7 @@ Function Get-Hypervisor {
 
 	$HV = Get-WmiObject -query 'select * from Win32_ComputerSystem' | Select-Object Manufacturer, Model
 	$Platform = $HV.Manufacturer + " " + $HV.Model
-	Write-BISFLog -Msg "Your Computer is running on $Platform Platform" -Color Cyan -ShowConsole
+	Write-BISFLog -Msg "Computer is running on $Platform Platform" -Color Cyan -ShowConsole
 	return $Platform
 
 
@@ -4116,20 +4116,20 @@ Function Get-CacheDiskID {
 		History:
 		  05.10.2019 MS: function created
 		  05.10.2019 MS: HF 22 - Endless Reboot with VMware Paravirtual SCSI disk need to get the DiskID
-          10.10.2019 MS: fixing errorhandling  
+          10.10.2019 MS: fixing errorhandling
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	Write-BISFLog -Msg "Retrieve Disk ID's" -ShowConsole -Color Cyan
-    try {	
+    try {
         [string]$BootDisk = (Get-WmiObject Win32_DiskPartition |Where-Object {$_.BootPartition -eq "true"}).DiskID
     }
     catch {
         Write-BISFLog "BootDisk can't retrieve from System !!" -ShowConsole -Type W
-    }	
-    
+    }
+
     IF (($BootDisk -ne "") -or ($null -ne $BootDisk)) {
         $BootDisk = $BootDisk.split(",");$BootDisk = $BootDisk[0];$BootDisk = $BootDisk.Length -1
 	    Write-BISFLog -Msg "BootDisk has Disk ID $BootDisk assigned" -ShowConsole -Color DarkCyan -SubMSg
@@ -4149,7 +4149,7 @@ Function Get-CacheDiskID {
     } ELSE {
         return $false,$false
     }
-    
+
 }
 
 function Test-CitrixCloudConnector {
