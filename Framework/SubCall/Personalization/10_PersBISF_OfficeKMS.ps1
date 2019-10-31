@@ -62,7 +62,7 @@ Process {
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office365InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\ClickToRun -Name InstallPath -ErrorAction SilentlyContinue).Path
 	}
-	If ($Office365InstallRoot -isnot [system.object]) { $Office2016InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\ClickToRun -Name InstallPath -ErrorAction SilentlyContinue).Path }
+	If ($Office365InstallRoot -isnot [system.object]) { $Office365InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\ClickToRun -Name InstallPath -ErrorAction SilentlyContinue).Path }
 
 
 
