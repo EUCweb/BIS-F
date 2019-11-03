@@ -522,21 +522,21 @@ Maximum Execution Timeout (private Images only):
 You can specify the maximum execution timeout for the personalization process. Default is set to 60 minutes, min. 15, max 120. You can increase/decrease the value in increments of 5 minutes. If the value is reached the personalization phase is terminated and the sealing process (preparation phase)can be started 
 </string>
       <string id="POL_ExpCfg">Shared Configuration</string>
-      <string id="POL_ExpCfg_Help">This policy setting allows you to export the BISF CLI commands that are set from a complete BIS-F policy to an XML file. This can be used for computers that are running in Worker Groups (like Citrix AppLayering) or you have no access to modify the Active Directory Group Policies.
+      <string id="POL_ExpCfg_Help">This policy setting allows you to export the BISF CLI commands that are set from a complete BIS-F policy to an JSON file. This can be used for computers that are running in Worker Groups (like Citrix AppLayering) or you have no access to modify the Active Directory Group Policies.
 
-If you enable this policy setting, you can enter an UNC-Path or local path, that can be accessed from the computer (if it's running in workgroup mode and you have entered an UNC-Path, please set NTFS Rights to Everyone ???????Read??????? to retrieve the XML file without being prompted)
+If you enable this policy setting, you must enter a valid path (recommended: BIS-F Installationpath)
 
 1. Running Powershell with Administrative privileges
 2. cd &lt;BIS-F Installation folder&gt;\Framework
 3. .\PrepBISF_Start.ps1 -ExportSharedConfiguration
-4. The XML files will be created, in the path that you've entered in this policy
-5. Copy BISFSharedConfig.xml to the &lt;BIS-F Installation folder&gt;
-6. If BIS-F is running, it reads the XML BISFSharedConfig.xml and retrieves the path to the shared configuration, imports these settings into the local policy and loads the values into BIS-F.
+4. The JSON files will be created, in the path that you've entered in this policy
+5. Copy BISFSharedConfig.json to the &lt;BIS-F Installation folder&gt;
+6. If BIS-F is running, it reads the Configuration from BISFSharedConfig.json and retrieves the path to the shared configuration, imports these settings into the local policy and loads the values into BIS-F.
 
 If you disable do not configure this policy setting, the export wont be run.
 
 Note: For the most part you only need to action the export once after which you can edit the export manually
-You can also find the required XML templates in the BIS-F installation folder
+
 </string>
       <string id="POL_VDACfg">VDA Configuration</string>
       <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
