@@ -73,7 +73,8 @@ Process {
 		}
 	}
 
-	If (Test-BISFService -ServiceName $appService -eq $True) {
+	$svc = Test-BISFService -ServiceName $appService
+	IF ($svc -eq $true) {
 		Remove-CCMCache # 01.09.2015 MS: Remove-CCMCache must be run before stopping the service
 		Invoke-BISFService -ServiceName $appService -Action Stop
 		Remove-CCMData
