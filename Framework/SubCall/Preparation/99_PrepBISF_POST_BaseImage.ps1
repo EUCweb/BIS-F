@@ -84,6 +84,11 @@ Begin {
 	$PostMD = @()
 	$PostCLI = @()
 	$vDiskDriveLetter = get-BISFvDiskDrive
+	$shutdownFlag = "/s"
+
+	# Specific to Citrix Application Layering -ge 1911
+	$CEDir = "$env:SYSTEMDRIVE\CitrixCE" # -> Citrix Compositing Engine introduced in CAL 1911, only available when compositing offloading is enabled.
+	$bootIdPath = "$CEDir\bootid" # -> Boot Order information.
 
 	IF ($LIC_BISF_CLI_DF -eq "YES") {
 		Write-BISFLog -Msg "Defrag is enabled in ADMX, check Defrag Service is running"
@@ -173,7 +178,7 @@ Begin {
 	}
 	$PersState = $TaskStates[1]
 	$PostCommands += [pscustomobject]@{Order = "998"; Enabled = "$true"; showmessage = "N"; CLI = ""; Description = "Set Personalization State in Registry, to control Preparation is running after Personalization first"; Command = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_PersState' -value '$PersState' -force " }
-	$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, shutdown System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/s /t 30 /d p:2:4 /c ""BIS-F shutdown finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for shutdown in 30 seconds'" }
+	$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, shutdown System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '$shutdownFlag /t 30 /d p:2:4 /c ""BIS-F shutdown finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for shutdown in 30 seconds'" }
 
 	####################################################################
 	# Post Command after succesfull build vDisk
@@ -224,6 +229,12 @@ Process {
 	IF ($returnTestPVSSoftware -eq $true) {
 		IF ($CTXAppLayeringSW) {
 			Write-BISFLog -Msg "Successfully build your Base Image with Citrix AppLayering - $CTXAppLayerName ..." -ShowConsole -Color DarkCyan -SubMsg
+			if (Test-Path $bootIdPath) {
+				$bootId = Get-Content -Path $bootIdPath
+				& bcdedit /bootsequence $bootId
+				$shutdownFlag = "/r"
+				Write-BISFLog -Msg "Machine will be restarted to allow layer finalize ..." -ShowConsole -Color DarkCyan -SubMsg
+			}
 			PostCommand
 		}
 		ELSE {
@@ -252,8 +263,18 @@ Process {
 	}
 	ELSE {
 		IF ($ImageSW -eq $true) {
-			IF ($CTXAppLayeringSW)
-			{ $txt = "Successfully build your Base Image with Citrix AppLayering in $CTXAppLayerName ..." } ELSE { $txt = "Successfully build your Base Image.." }
+			IF ($CTXAppLayeringSW) {
+				$txt = "Successfully build your Base Image with Citrix AppLayering in $CTXAppLayerName ..."
+				if (Test-Path $bootIdPath) {
+					$bootId = Get-Content -Path $bootIdPath
+					& bcdedit /bootsequence $bootId
+					$shutdownFlag = "/r"
+					Write-BISFLog -Msg "Machine will be restarted to allow layer finalize ..." -ShowConsole -Color DarkCyan -SubMsg
+				}
+			}
+			ELSE {
+				$txt = "Successfully build your Base Image.."
+			}
 			Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
 			PostCommand
 		}
