@@ -84,7 +84,6 @@ Begin {
 	$PostMD = @()
 	$PostCLI = @()
 	$vDiskDriveLetter = get-BISFvDiskDrive
-	$shutdownFlag = "/s"
 
 	# Specific to Citrix Application Layering -ge 1911
 	$CEDir = "$env:SYSTEMDRIVE\CitrixCE" # -> Citrix Compositing Engine introduced in CAL 1911, only available when compositing offloading is enabled.
@@ -178,7 +177,7 @@ Begin {
 	}
 	$PersState = $TaskStates[1]
 	$PostCommands += [pscustomobject]@{Order = "998"; Enabled = "$true"; showmessage = "N"; CLI = ""; Description = "Set Personalization State in Registry, to control Preparation is running after Personalization first"; Command = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_PersState' -value '$PersState' -force " }
-	$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, shutdown System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '$shutdownFlag /t 30 /d p:2:4 /c ""BIS-F shutdown finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for shutdown in 30 seconds'" }
+	$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, shutdown System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/s /t 30 /d p:2:4 /c ""BIS-F shutdown finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for shutdown in 30 seconds'" }
 
 	####################################################################
 	# Post Command after succesfull build vDisk
@@ -232,7 +231,8 @@ Process {
 			if (Test-Path $bootIdPath) {
 				$bootId = Get-Content -Path $bootIdPath
 				& bcdedit /bootsequence $bootId
-				$shutdownFlag = "/r"
+				$PostCommands = $PostCommands | where { $_.order -ne "999" }
+				$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, restart System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
 				Write-BISFLog -Msg "Machine will be restarted to allow layer finalize ..." -ShowConsole -Color DarkCyan -SubMsg
 			}
 			PostCommand
@@ -268,7 +268,8 @@ Process {
 				if (Test-Path $bootIdPath) {
 					$bootId = Get-Content -Path $bootIdPath
 					& bcdedit /bootsequence $bootId
-					$shutdownFlag = "/r"
+					$PostCommands = $PostCommands | where { $_.order -ne "999" }
+					$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, restart System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
 					Write-BISFLog -Msg "Machine will be restarted to allow layer finalize ..." -ShowConsole -Color DarkCyan -SubMsg
 				}
 			}
