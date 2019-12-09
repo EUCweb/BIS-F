@@ -21,10 +21,14 @@
 		03.04.2017 MS: BugFix - RES Workspace: delete not all folders in the CachePath
 		12.07.2017 FF: BugFix for Redirecting RES Cache (Setting Cache Path to WCD)
 		21.09.2017 MS: Feature: RES Automation Agent Service could be controlled from ADMX
+<<<<<<< HEAD
 		04.05.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 
 		17.08.2019 MS: ENH 78: Sealing for Ivanti Automation agent can be disabled in ADMX
+=======
+		21.06.2019 MS: BugFix 82 - RES ONE Automation Agent - Action is missing
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 	.LINK
 		https://eucweb.com
 #>

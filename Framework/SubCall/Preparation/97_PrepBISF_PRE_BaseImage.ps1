@@ -97,6 +97,7 @@ param(
 		31.05.2019 MS: FRQ 92: Server 2019 Support
 		31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
 		21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
+<<<<<<< HEAD
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		17.08.2019 MS: ENH 54: ADMX: Configure BIS-F Desktop Shortcut
 		18.08.2019 MS: ENH 101: check sdelete Version 2.02 or newer, otherwise send out error
@@ -110,6 +111,8 @@ param(
 		05.10.2019 MS: ENH 16 - Add NVIDIA GRID Support for Citrix VDA
 		05.10.2019 MS: ENH 143 - Add Intel Graphics Support for Citrix VDA
 
+=======
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 	.LINK
 		https://eucweb.com
 #>
@@ -918,15 +921,136 @@ Begin {
 	}
 
 	function Pre-Win7 {
-
+		<#
+		IF (Test-Path "$env:WinDir\System32\cleanmgr.exe" -PathType Leaf )
+		{
+			Write-BISFLog -Msg "Perform a disk cleanup" -ShowConsole -Color DarkCyan -SubMsg
+			# Automate by creating the reg checks corresponding to "cleanmgr /sageset:100" so we can use "sagerun:100"
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Active Setup Temp Folders' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\BranchCache' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Downloaded Program Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameNewsFiles' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameStatisticsFiles' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameUpdateFiles' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Internet Cache Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Memory Dump Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Offline Pages Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Old ChkDsk Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Previous Installations' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Recycle Bin' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Service Pack Cleanup' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Setup Log Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error memory dump files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error minidump files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Setup Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Sync Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Update Cleanup' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Upgrade Discarded Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\User file versions' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Defender' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Archive Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Queue Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Archive Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Queue Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows ESD installation files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Upgrade Log Files' -Type DWord -Value 0x00000002
+			# Perform a disk cleanup
+			Start-Process 'cleanmgr.exe' -Verb runAs -ArgumentList '/sagerun:100 | Out-Null' -Wait
+			Show-BISFProgressBar -CheckProcess "cleanmgr" -ActivityText "Running Disk Cleanup..."
+		}
+		ELSE
+		{
+			Write-BISFLog -Msg "Disk Cleanup is NOT installed" -ShowConsole -Color DarkCyan -SubMsg
+		}
+		#>
 	}
 
+<<<<<<< HEAD
 	function Pre-Win2008R2 {
 
+=======
+   	function Pre-Win2008R2 {
+		<#
+		IF (Test-Path "$env:WinDir\System32\cleanmgr.exe" -PathType Leaf )
+		{
+			Write-BISFLog -Msg "Perform a disk cleanup" -ShowConsole -Color DarkCyan -SubMsg
+			# Automate by creating the reg checks corresponding to "cleanmgr /sageset:100" so we can use "sagerun:100"
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Active Setup Temp Folders' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\BranchCache' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Downloaded Program Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameNewsFiles' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameStatisticsFiles' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameUpdateFiles' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Internet Cache Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Memory Dump Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Offline Pages Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Old ChkDsk Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Previous Installations' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Recycle Bin' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Service Pack Cleanup' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Setup Log Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error memory dump files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error minidump files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Setup Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Sync Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Update Cleanup' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Upgrade Discarded Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\User file versions' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Defender' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Archive Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Queue Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Archive Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Queue Files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows ESD installation files' -Type DWord -Value 0x00000002
+			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Upgrade Log Files' -Type DWord -Value 0x00000002
+			# Perform a disk cleanup
+			Start-Process 'cleanmgr.exe' -Verb runAs -ArgumentList '/sagerun:100 | Out-Null' -Wait
+			Show-BISFProgressBar -CheckProcess "cleanmgr" -ActivityText "Running Disk Cleanup..."
+		}
+		ELSE
+		{
+			Write-BISFLog -Msg "Disk Cleanup is NOT installed" -ShowConsole -Color DarkCyan -SubMsg
+			# Install Disk Cleanup (without Desktop Experience feature)
+			#Copy-Item -Path "$env:WinDir\winsxs\amd64_microsoft-windows-cleanmgr_31bf3856ad364e35_6.1.7600.16385_none_c9392808773cd7da\cleanmgr.exe" -Destination "$env:WinDir\System32\"  -Force |Out-Null
+			#Depends on Windows Language!
+			#Copy-Item -Path "$env:WinDir\winsxs\amd64_microsoft-windows-cleanmgr.resources_31bf3856ad364e35_6.1.7600.16385_en-us_b9cb6194b257cc63\cleanmgr.exe.mui" -Destination "$env:WinDir\System32\en-US\"  -Force |Out-Null
+		}
+		#>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 	}
 
 	function Pre-Win8 {
-
+		<#
+		Write-BISFLog -Msg "Perform a disk cleanup" -ShowConsole -Color DarkCyan -SubMsg
+		# Automate by creating the reg checks corresponding to "cleanmgr /sageset:100" so we can use "sagerun:100"
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Active Setup Temp Folders' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Downloaded Program Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Internet Cache Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Memory Dump Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Offline Pages Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Old ChkDsk Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Previous Installations' -Type DWord -Value 0x00000000
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Recycle Bin' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Setup Log Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error memory dump files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error minidump files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Setup Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Upgrade Discarded Files' -Type DWord -Value 0x00000000
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Archive Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Queue Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Archive Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Queue Files' -Type DWord -Value 0x00000002
+		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Upgrade Log Files' -Type DWord -Value 0x00000002
+		# Perform a disk cleanup
+		Start-Process 'cleanmgr.exe' -Verb runAs -ArgumentList '/sagerun:100 | Out-Null' -Wait
+		Show-BISFProgressBar -CheckProcess "cleanmgr" -ActivityText "Running Disk Cleanup..."
+		#>
 		Optimize-BISFWinSxs
 	}
 

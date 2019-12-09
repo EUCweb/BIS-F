@@ -1,9 +1,24 @@
+<<<<<<< HEAD
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
     <target prefix="fullarmor" namespace="FullArmor.Policies.AE307DBF_2C6B_4C79_9639_8BB5CA28D13E" />
+=======
+<policyDefinitions revision="1.1" schemaVersion="1.0">
+  <policyNamespaces>
+<<<<<<< HEAD
+    <target prefix="fullarmor" namespace="FullArmor.Policies.00A67A1B_4BB1_409C_8EC4_41A73C859E16" />
+=======
+    <target prefix="fullarmor" namespace="FullArmor.Policies.5441262D_5B02_4FBE_B8EA_F18FAA72BE7B" />
+>>>>>>> release/6.1.3
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
+  <supportedOn>
+    <definitions>
+      <definition name="SUPPORTED_WindowsVista" displayName="$(string.SUPPORTED_WindowsVista)" />
+    </definitions>
+  </supportedOn>
   <categories>
     <category name="CAT_BISF" displayName="$(string.CAT_BISF)" />
     <category name="CAT_3P" displayName="$(string.CAT_3P)">
@@ -13,6 +28,9 @@
       <parentCategory ref="CAT_BISF" />
     </category>
     <category name="CAT_CTX" displayName="$(string.CAT_CTX)">
+      <parentCategory ref="CAT_BISF" />
+    </category>
+    <category name="CAT_FSX" displayName="$(string.CAT_FSX)">
       <parentCategory ref="CAT_BISF" />
     </category>
     <category name="CAT_Global" displayName="$(string.CAT_Global)">
@@ -32,7 +50,7 @@
     </category>
   </categories>
   <policies>
-    <policy name="POL_CTXOE" class="Machine" displayName="$(string.POL_CTXOE)" explainText="$(string.POL_CTXOE_Help)" presentation="$(presentation.POL_CTXOE)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_CTXOE">
+    <policy name="POL_CTXOE" class="Machine" displayName="$(string.POL_CTXOE)" explainText="$(string.POL_CTXOE_Help)" presentation="$(presentation.POL_CTXOE)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_CTXOE">
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="SUPPORTED_WindowsVista" />
       <enabledList>
@@ -50,6 +68,7 @@
         </item>
       </disabledList>
       <elements>
+<<<<<<< HEAD
         <text id="TXT_CTXOE_Groups" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_GROUPS" />
         <text id="TXT_CTXOE_TemplatePath" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_TP" />
         <boolean id="CHK_CTXOE_Analyze" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_Analyze" />
@@ -57,9 +76,17 @@
         <text id="TXT_CTXOE_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF_CUS" />
         <text id="TXT_CTXOE_TemplatePreFix" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_TP_PREFIX" />
         <boolean id="CHK_CTXOE_LogDelete" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_LogDelete" />
+=======
+        <text id="TXT_CTXOE_Groups" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_GROUPS" />
+        <text id="TXT_CTXOE_TemplatePath" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_TP" />
+        <boolean id="CB_CTXOE_Analyze" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_Analyze" />
+        <boolean id="CHK_CTXOE_SF" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF" />
+        <text id="TXT_CTXOE_SF_CUS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_SF_CUS" />
+        <text id="TXT_CTXOE_TemplatePreFix" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CTXOE_TP_PREFIX" />
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       </elements>
     </policy>
-    <policy name="POL_SDelete" class="Machine" displayName="$(string.POL_SDelete)" explainText="$(string.POL_SDelete_Help)" presentation="$(presentation.POL_SDelete)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SD">
+    <policy name="POL_SDelete" class="Machine" displayName="$(string.POL_SDelete)" explainText="$(string.POL_SDelete_Help)" presentation="$(presentation.POL_SDelete)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SD">
       <parentCategory ref="CAT_3P" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -77,6 +104,7 @@
         </item>
       </disabledList>
       <elements>
+<<<<<<< HEAD
         <boolean id="CHK_SD_SF" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_SF" />
         <text id="TXT_CLI_SD_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_SF_CUS" />
         <boolean id="CHK_SD_runBI" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runBI" />
@@ -85,6 +113,10 @@
         <boolean id="CHK_SD_runMCS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runMCS" />
         <boolean id="CHK_SD_runOutsideELM" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runOutsideELM" />
         <boolean id="CHK_SD_runPVSparentDisk" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_runPVSparentDisk" />
+=======
+        <boolean id="CHK_SD_SF" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_SF" />
+        <text id="TXT_CLI_SD_SF_CUS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SD_SF_CUS" />
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       </elements>
     </policy>
     <policy name="POL_Defrag" class="Machine" displayName="$(string.POL_Defrag)" explainText="$(string.POL_Defrag_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DF">
@@ -163,22 +195,22 @@
         <text id="TXT_AV_VIE_CusScanArgs" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AV_VIE_CusScanArgs" />
       </elements>
     </policy>
-    <policy name="POL_GhostDeviceRemoval" class="Machine" displayName="$(string.POL_GhostDeviceRemoval)" explainText="$(string.POL_GhostDeviceRemoval_Help)" presentation="$(presentation.POL_GhostDeviceRemoval)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_GD">
+    <policy name="GhostDeviceRemoval" class="Machine" displayName="$(string.GhostDeviceRemoval)" explainText="$(string.GhostDeviceRemoval_Help)" presentation="$(presentation.GhostDeviceRemoval)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_GD">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
-        <enum id="DST_GhostDeviceOption" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD" required="true">
-          <item displayName="$(string.ITM_GhostDeviceRemovalOption)">
+        <enum id="GhostDeviceOption" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD" required="true">
+          <item displayName="$(string.GhostDeviceRemovalOption)">
             <value>
               <string>Remove</string>
             </value>
           </item>
-          <item displayName="$(string.ITM_GhostDeviceListAll)">
+          <item displayName="$(string.GhostDeviceListAll)">
             <value>
               <string>ListAllDevices</string>
             </value>
           </item>
-          <item displayName="$(string.ITM_GhostDeviceListOnly)">
+          <item displayName="$(string.GhostDeviceListOnly)">
             <value>
               <string>ListOnlyGhostDevices</string>
             </value>
@@ -186,18 +218,18 @@
         </enum>
       </elements>
     </policy>
-    <policy name="POL_GhostDeviceClass" class="Machine" displayName="$(string.POL_GhostDeviceClass)" explainText="$(string.POL_GhostDeviceClass_Help)" presentation="$(presentation.POL_GhostDeviceClass)" key="SOFTWARE\Policies\Login Consultants\BISF">
+    <policy name="GhostDeviceClass" class="Machine" displayName="$(string.GhostDeviceClass)" explainText="$(string.GhostDeviceClass_Help)" presentation="$(presentation.GhostDeviceClass)" key="SOFTWARE\Policies\Login Consultants\BISF">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
-        <text id="TXT_GhostDeviceClassBox" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD_ExCL" />
+        <text id="GhostDeviceClassBox" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD_ExCL" />
       </elements>
     </policy>
-    <policy name="POL_GhostDeviceFriendlyName" class="Machine" displayName="$(string.POL_GhostDeviceFriendlyName)" explainText="$(string.POL_GhostDeviceFriendlyName_Help)" presentation="$(presentation.POL_GhostDeviceFriendlyName)" key="SOFTWARE\Policies\Login Consultants\BISF">
+    <policy name="GhostDeviceFriendlyName" class="Machine" displayName="$(string.GhostDeviceFriendlyName)" explainText="$(string.GhostDeviceFriendlyName_Help)" presentation="$(presentation.GhostDeviceFriendlyName)" key="SOFTWARE\Policies\Login Consultants\BISF">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
-        <text id="TXT_GhostDeviceFriendlyNameBox" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD_ExFN" />
+        <text id="GhostDeviceFriendlyNameBox" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_GD_ExFN" />
       </elements>
     </policy>
     <policy name="POL_VieScan" class="Machine" displayName="$(string.POL_VieScan)" explainText="$(string.POL_VieScan_Help)" presentation="$(presentation.POL_VieScan)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AV_VIE">
@@ -356,97 +388,101 @@
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_FSXdelRules" class="Machine" displayName="$(string.POL_FSXdelRules)" explainText="$(string.POL_FSXdelRules_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_FS">
-      <parentCategory ref="CAT_MS" />
+    <policy name="POL_FSXdelRules" class="Machine" displayName="$(string.POL_FSXdelRules)" explainText="$(string.POL_FSXdelRules_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_FS">
+      <parentCategory ref="CAT_FSX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_FS">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_FS">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_FS">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_FS">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_FSXRulesShare" class="Machine" displayName="$(string.POL_FSXRulesShare)" explainText="$(string.POL_FSXRulesShare_Help)" presentation="$(presentation.POL_FSXRulesShare)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RSb">
-      <parentCategory ref="CAT_MS" />
+    <policy name="POL_FSXRulesShare" class="Machine" displayName="$(string.POL_FSXRulesShare)" explainText="$(string.POL_FSXRulesShare_Help)" presentation="$(presentation.POL_FSXRulesShare)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RSb">
+      <parentCategory ref="CAT_FSX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RSb">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RSb">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RSb">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RSb">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
       <elements>
-        <text id="TXT_RulesShare" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RS" required="true" />
+        <text id="TXT_RulesShare" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RS" required="true" />
       </elements>
     </policy>
-    <policy name="POL_delAllUsersStartMenu" class="Machine" displayName="$(string.POL_delAllUsersStartMenu)" explainText="$(string.POL_delAllUsersStartMenu_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SM">
+    <policy name="POL_delAllUsersStartMenu" class="Machine" displayName="$(string.POL_delAllUsersStartMenu)" explainText="$(string.POL_delAllUsersStartMenu_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SM">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SM">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SM">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SM">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SM">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_IPv6" class="Machine" displayName="$(string.POL_IPv6)" explainText="$(string.POL_IPv6_Help)" presentation="$(presentation.POL_IPv6)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_V6">
+    <policy name="POL_IPv6" class="Machine" displayName="$(string.POL_IPv6)" explainText="$(string.POL_IPv6_Help)" presentation="$(presentation.POL_IPv6)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_V6">
       <parentCategory ref="CAT_3P" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
       <elements>
-        <boolean id="CHK_V6_SF" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6_SF" />
-        <text id="TXT_V6_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6_SF_CUS" />
+        <boolean id="CHK_V6_SF" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6_SF" />
+        <text id="TXT_V6_SF_CUS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_V6_SF_CUS" />
       </elements>
     </policy>
+<<<<<<< HEAD
     <policy name="POL_Sysprep" class="Machine" displayName="$(string.POL_Sysprep)" explainText="$(string.POL_Sysprep_Help)" presentation="$(presentation.POL_Sysprep)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SP">
+=======
+    <policy name="POL_Sysprep" class="Machine" displayName="$(string.POL_Sysprep)" explainText="$(string.POL_Sysprep_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_SP">
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SP">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SP">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SP">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SP">
           <value>
             <string>NO</string>
           </value>
@@ -457,155 +493,155 @@
         <text id="TXT_SP_CusArgs" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_SP_CusArgs" />
       </elements>
     </policy>
-    <policy name="POL_DelProf" class="Machine" displayName="$(string.POL_DelProf)" explainText="$(string.POL_DelProf_Help)" presentation="$(presentation.POL_DelProf)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DP">
+    <policy name="POL_DelProf" class="Machine" displayName="$(string.POL_DelProf)" explainText="$(string.POL_DelProf_Help)" presentation="$(presentation.POL_DelProf)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DP">
       <parentCategory ref="CAT_3P" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
       <elements>
-        <boolean id="CHK_DP_SF" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP_SF" />
-        <text id="TXT_DP_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP_SF_CUS" />
-        <boolean id="CHK_DP_Args" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP_Args" />
-        <text id="TXT_DP_ARGS_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP_ARGS_CUS" />
+        <boolean id="CHK_DP_SF" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP_SF" />
+        <text id="TXT_DP_SF_CUS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP_SF_CUS" />
+        <boolean id="CHK_DP_Args" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP_Args" />
+        <text id="TXT_DP_ARGS_CUS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DP_ARGS_CUS" />
       </elements>
     </policy>
-    <policy name="POL_DisableConsoleCheck" class="Machine" displayName="$(string.POL_DisableConsoleCheck)" explainText="$(string.POL_DisableConsoleCheck_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_ST">
+    <policy name="POL_DisableConsoleCheck" class="Machine" displayName="$(string.POL_DisableConsoleCheck)" explainText="$(string.POL_DisableConsoleCheck_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_ST">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_ST">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_ST">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_ST">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_ST">
           <value>
             <delete />
           </value>
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_TurboUpdate" class="Machine" displayName="$(string.POL_TurboUpdate)" explainText="$(string.POL_TurboUpdate_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_TB">
+    <policy name="POL_TurboUpdate" class="Machine" displayName="$(string.POL_TurboUpdate)" explainText="$(string.POL_TurboUpdate_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_TB">
       <parentCategory ref="CAT_TBN" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_TB">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_TB">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_TB">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_TB">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_vmOSOT" class="Machine" displayName="$(string.POL_vmOSOT)" explainText="$(string.POL_vmOSOT_Help)" presentation="$(presentation.POL_vmOSOT)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_OT">
+    <policy name="POL_vmOSOT" class="Machine" displayName="$(string.POL_vmOSOT)" explainText="$(string.POL_vmOSOT_Help)" presentation="$(presentation.POL_vmOSOT)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_OT">
       <parentCategory ref="CAT_3P" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
       <elements>
-        <boolean id="CHK_vmOSOT_SF" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT_SF" />
-        <text id="TXT_vmOSOT_SF_CUS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT_SF_CUS" />
-        <text id="TXT_vmOSOT_Templ" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT_Templ" />
+        <boolean id="CHK_OT_SF" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT_SF" />
+        <text id="TXT_OT_SF_CUS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT_SF_CUS" />
+        <text id="TXT_OT_Templ" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_OT_Templ" />
       </elements>
     </policy>
-    <policy name="POL_XAImagePrepRemoval" class="Machine" displayName="$(string.POL_XAImagePrepRemoval)" explainText="$(string.POL_XAImagePrepRemoval_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RM">
+    <policy name="POL_XAImagePrepRemoval" class="Machine" displayName="$(string.POL_XAImagePrepRemoval)" explainText="$(string.POL_XAImagePrepRemoval_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RM">
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RM">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RM">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RM">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RM">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_AppVPckRemoval" class="Machine" displayName="$(string.POL_AppVPckRemoval)" explainText="$(string.POL_AppVPckRemoval_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AR">
+    <policy name="POL_AppVPckRemoval" class="Machine" displayName="$(string.POL_AppVPckRemoval)" explainText="$(string.POL_AppVPckRemoval_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AR">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AR">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AR">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AR">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AR">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_RESWASdisableBaseImage" class="Machine" displayName="$(string.POL_RESWASdisableBaseImage)" explainText="$(string.POL_RESWASdisableBaseImage_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA">
+    <policy name="POL_RESWASdisableBaseImage" class="Machine" displayName="$(string.POL_RESWASdisableBaseImage)" explainText="$(string.POL_RESWASdisableBaseImage_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA">
       <parentCategory ref="CAT_RES" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
     </policy>
-    <policy name="POL_RESWASdisableSvc" class="Machine" displayName="$(string.POL_RESWASdisableSvc)" explainText="$(string.POL_RESWASdisableSvc_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA_SVC">
+    <policy name="POL_RESWASdisableSvc" class="Machine" displayName="$(string.POL_RESWASdisableSvc)" explainText="$(string.POL_RESWASdisableSvc_Help)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_RA_SVC">
       <parentCategory ref="CAT_RES" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA_SVC">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA_SVC">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA_SVC">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_RA_SVC">
           <value>
             <string>NO</string>
           </value>
@@ -670,7 +706,7 @@
       </disabledList>
       <elements>
         <boolean id="CHK_CLI_LogCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LSb" />
-        <text id="TXT_LogCfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LS" />
+        <text id="TXT_301FB559_F663_4697_9602_6EDB78401441" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LS" />
         <decimal id="DXT_LogRetention" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LF_RT" maxValue="20" />
         <boolean id="CHK_CLI_TSLogRedirection" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_TSLogRedirection" />
         <boolean id="CHK_LOG_WPT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_LOG_WPT" />
@@ -918,17 +954,17 @@
       </disabledList>
       <elements>
         <enum id="DST_CLI_DM" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DM">
-          <item displayName="$(string.ITM_DM_All)">
+          <item displayName="$(string.ITM_DM_1)">
             <value>
               <string>All</string>
             </value>
           </item>
-          <item displayName="$(string.ITM_DM_PrivateMode)">
+          <item displayName="$(string.ITM_DM_2)">
             <value>
               <string>ReadWrite</string>
             </value>
           </item>
-          <item displayName="$(string.ITM_DM_Never)">
+          <item displayName="$(string.ITM_DM_3)">
             <value>
               <string>Never</string>
             </value>
@@ -971,6 +1007,7 @@
         <text id="TXT_EX_PT" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_EX_PT" />
       </elements>
     </policy>
+<<<<<<< HEAD
     <policy name="POL_VDASSL" class="Machine" displayName="$(string.POL_VDASSL)" explainText="$(string.POL_VDASSL_Help)" presentation="$(presentation.POL_VDASSL)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_VDASSL">
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
@@ -1055,24 +1092,27 @@
       </elements>
     </policy>
     <policy name="POL_VDACfg" class="Machine" displayName="$(string.POL_VDACfg)" explainText="$(string.POL_VDACfg_Help)" presentation="$(presentation.POL_VDACfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_VDACfg">
+=======
+    <policy name="POL_VDACfg" class="Machine" displayName="$(string.POL_VDACfg)" explainText="$(string.POL_VDACfg_Help)" presentation="$(presentation.POL_VDACfg)" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_VDACfg">
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       <parentCategory ref="CAT_CTX" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDACfg">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDACfg">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDACfg">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDACfg">
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
       <elements>
-        <boolean id="CHK_CLI_CDS" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CDS">
+        <boolean id="CHK_CLI_CDS" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CDS">
           <trueValue>
             <decimal value="1" />
           </trueValue>
@@ -1080,23 +1120,26 @@
             <delete />
           </falseValue>
         </boolean>
+<<<<<<< HEAD
         <decimal id="DXT_CLI_CDSdelay" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_CDSdelay" maxValue="1800" />
         <boolean id="CHK_VDA_NVDIAGRID" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDA_NVDIAGRID" />
         <boolean id="CHK_VDA_INTELGRFX" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDA_INTELGRFX" />
+=======
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       </elements>
     </policy>
     <policy name="POL_DotNET" class="Machine" displayName="$(string.POL_DotNET)" explainText="$(string.POL_DotNET_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DotNET">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DotNet">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DotNet">
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
-        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DotNet">
+        <item key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_DotNet">
           <value>
             <string>NO</string>
           </value>
@@ -1108,6 +1151,7 @@
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
         <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxS">
+<<<<<<< HEAD
           <value>
             <string>YES</string>
           </value>
@@ -1308,19 +1352,26 @@
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
         <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayCfg">
+=======
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
           <value>
             <string>YES</string>
           </value>
         </item>
       </enabledList>
       <disabledList>
+<<<<<<< HEAD
         <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayCfg">
+=======
+        <item key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxS">
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
           <value>
             <string>NO</string>
           </value>
         </item>
       </disabledList>
       <elements>
+<<<<<<< HEAD
         <boolean id="CHK_AppLayAppPltcfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayAppPltcfg" />
         <boolean id="CHK_AppLayOScfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayOScfg" />
         <boolean id="CHK_AppLayNoELMcfg" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_AppLayNoELMcfg" />
@@ -1520,6 +1571,10 @@
             <delete />
           </falseValue>
         </boolean>
+=======
+        <boolean id="CHK_WinSxSBaseImage" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxSBaseImage" />
+        <decimal id="DXT_WinSxSTimeout" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WinSxSTimeout" minValue="60" maxValue="480" />
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       </elements>
     </policy>
   </policies>

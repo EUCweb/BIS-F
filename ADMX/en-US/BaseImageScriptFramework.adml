@@ -2,21 +2,28 @@
   <displayName>
   </displayName>
   <description>Base Image Script Framework (BIS-F helps you to seal and personalize your Base Image for Citrix, VMWare View and Microsoft environments. With this Group Policy you can configure the CLI commands to fully automate BIS-F and runs the sealing process without any needed interaction.)
-@Login Consultants 2019</description>
+@Login Consultants 2017</description>
   <resources>
     <stringTable>
-      <string id="CAT_3P">3rd Party Tools</string>
-      <string id="CAT_AV">Anti-Virus</string>
       <string id="CAT_BISF">Base Image Script Framework (BIS-F)</string>
-      <string id="CAT_CTX">Citrix</string>
+      <string id="CAT_SilentConfig">Silent Configuration</string>
       <string id="CAT_Global">Global</string>
+      <string id="CAT_3P">3rd Party Tools</string>
       <string id="CAT_MS">Microsoft</string>
+      <string id="CAT_CTX">Citrix</string>
       <string id="CAT_Misc">Miscellaneous</string>
       <string id="CAT_NV">Novell</string>
+<<<<<<< HEAD
       <string id="CAT_RES">Ivanti</string>
+=======
+      <string id="CAT_AV">Anti-Virus</string>
+      <string id="CAT_FSX">FSLogix</string>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       <string id="CAT_TBN">Turbo.net</string>
-      <string id="LIST_CTXOE_Groups">Enter the Groups that should be executed:</string>
+      <string id="CAT_RES">Ivanti</string>
+      <string id="SUPPORTED_WindowsVista">At least Microsoft Windows Vista</string>
       <string id="POL_CTXOE">Configure Citrix Optimizer</string>
+      <string id="LIST_CTXOE_Groups">Enter the Groups that should be executed:</string>
       <string id="POL_CTXOE_Help">Run Citrix Optimizer
 
 If you enable this policy setting, Citrix Optimizer (CtxOptimizerEngine.ps1) will be executed. Optional you can define the name of a template that should be used during execution. If there is no template specified, BIS-F will search for an OS-specific default template. If there is no appropriate template available, the execution of Citrix Optimizer will be skipped.
@@ -25,6 +32,7 @@ To run Citrix Optimizer in analyze-only mode, check "Mode: Analyze only".
 
 If you disable or do not configure this policy setting, Citrix Optimizer will not be executed.
 
+<<<<<<< HEAD
 Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define a custom search  folder within this policy. Example: Copy the complete extracted folder of the Citrix Optimizer download to C:\Program Files (x86)\CitrixOptimizer
 
 (Optional) Template:
@@ -57,6 +65,46 @@ The Optimizer Logfile is included in the BIS-F logfile, with this option you can
 - Citrix PVS Image on the WriteCache Disk if the image is in shared image mode
 - Citrix MCSIO on persistent CacheDisk if the image is in shared image mode
 - Citrix MCS on Systemdrive if the image is in shared image mode
+=======
+Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define an Custom search folder within this policy. Example: Copy the complete extracted Folder of the Citrix Optimizer Download to C:\Program Files (x86)\Citrix Optimizer 
+
+<<<<<<< HEAD
+(Optional) Template:
+since BIS-F 6.1.1 you can enter multiuple templates with comma-separated and no space, like:
+PVS_Optimization.xml,3rd_Party.xml
+
+since BIS-F 6.1.2 AutoSelect for multiple Templates should work too:
+For Autoselection of the OS Template in combination with multiple Templates please use:
+AutoSelect,PVS_Optimization.xml,3rd_Party.xml
+
+AutoSelect is hardcoded and must be used, BIS-F will trigger the right OS template for Citrix Optimzer</string>
+=======
+(Optional) Template [BIS-F 6.1.1 or higer] :
+ you can enter multiuple templates with comma-separated and no space, like:
+PVS_Optimization.xml,3rd_Party.xml
+
+AutoSelect with Multiple Templates [BIS-F 6.1.2 or higer] : 
+For Autoselection of the OS Template in combination with multiple Templates please use:
+AutoSelect,PVS_Optimization.xml,3rd_Party.xml
+
+AutoSelect is a hardcoded string and must be used in the GPO, BIS-F will trigger the right OS template for Citrix Optimzer
+
+(Optional) Templateprefix [BIS-F 6.1.3 or higer] :
+By default, Citrix Optimizer is looking for templates that start with "Citrix_Windows" and are provided by Citrix as part of default Optimizer build. 
+If you would like to use your own templates with auto-select, you can override the default templates prefix. 
+For example if your template is called "EUCweb_Windows_10_1809.xml", use TemplatePrefix "EUCweb_Windows" to automatically 
+select your templates based on current operating system and build.
+
+
+</string>
+>>>>>>> release/6.1.3
+      <string id="POL_SDelete">Run SDelete</string>
+      <string id="POL_SDelete_Help">Run SDelete on PVS WriteCacheDisk if vDisk is in shared mode only 
+
+If you enable this policy setting, SDelete will be executed. for the PVS WriteCache disk in shared mode.
+If you disable this policy setting, SDelete will not be executed.
+If you do not configure this policy setting, you'll be prompted during the sealing process.
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 If you enable this policy setting, SDelete will be executed on the selected environments only.
 If you disable or do not configure this policy setting, SDelete will not be executed.
@@ -74,7 +122,7 @@ If you enable this policy setting, Defrag will be executed.
 
 If you disable or do not configure this policy setting, Defrag will not be executed.
 
-Note: This setting affects the system drive only. It does not affect the write cache disk.</string>
+Note: This setting affects the system drive only. It does not affect the write cache drive.</string>
       <string id="POL_OSrearm">Rearm Microsoft Windows once</string>
       <string id="POL_OSrearm_Help">Run Microsoft Windows rearm if needed
 
@@ -96,6 +144,7 @@ If you disable or do not configure this policy setting, Microsoft Office rearm w
 If you enable or do not configure this policy setting, an Antivirus full scan will be executed during sealing of the image.
 If you disable this policy setting, an AntiVirus scan will not be executed.
 
+<<<<<<< HEAD
 Enable Custom Scan Arguments:
 The checkbox enables the custom scan arguments and disables the default full scan
 
@@ -107,6 +156,13 @@ on the detected AV-Solution.
 </string>
       <string id="POL_GhostDeviceRemoval">Ghost Devices: Operation mode</string>
       <string id="POL_GhostDeviceRemoval_Help">Defines how the ghost device feature will operate.
+=======
+If you enable this policy setting, an Antivirus full scan will be executed.
+If you disable this policy setting, an AntiVirus full scan will not be executed.
+If you do not configure this policy setting, you'll be prompted during the sealing process.</string>
+      <string id="GhostDeviceRemoval">Ghost Devices: Operation mode</string>
+      <string id="GhostDeviceRemoval_Help">Defines how the ghost device feature will operate.
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 This policy has three operation modes:
 
@@ -120,12 +176,12 @@ List all devices without removal:
 This option will output all devices detected into the log without removing any devices.
 List only ghost devices without removal:
 This option will output ghost devices detected into the log without removing any devices.
-
+	  
 If you enable this policy setting you must select a mode of operation.
 If you disable or do not configure this policy setting then Ghost Device Removal will not be executed.
 </string>
-      <string id="POL_GhostDeviceClass">Ghost Devices: Classes to exclude from removal</string>
-      <string id="POL_GhostDeviceClass_Help">Specifies the classes to be excluded from being removed by the ghost device removal tool.
+      <string id="GhostDeviceClass">Ghost Devices: Classes to exclude from removal</string>
+      <string id="GhostDeviceClass_Help">Specifies the classes to be excluded from being removed by the ghost device removal tool.
 
 To use this policy setting, click Enabled and enter the classes you want to be excluded, separated by a semicolon ";". For example: LegacyDriver;Net;SCSIAdapter.
 
@@ -196,10 +252,16 @@ Important: Text is case sensitive.
 
 This policy requires the Ghost device removal policy to be enabled in order to function.
 
+<<<<<<< HEAD
 If you disable this policy setting, or if you do not configure this policy setting, then the Ghost device removal will not filter by classes.
 </string>
       <string id="POL_GhostDeviceFriendlyName">Ghost Devices: Friendly named devices to exclude from removal</string>
       <string id="POL_GhostDeviceFriendlyName_Help">This policy allows you to specify devices by their friendly name to be excluded from being removed by the ghost device removal tool.
+=======
+If you disable this policy setting, or if you do not configure this policy setting, then the Ghost device removal will not filter by classes.</string>
+      <string id="GhostDeviceFriendlyName">Ghost Devices: Friendly named devices to exclude from removal</string>
+      <string id="GhostDeviceFriendlyName_Help">This policy allows you to specify devices by their friendly name to be excluded from being removed by the ghost device removal tool.
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 To use this policy setting, click Enabled and enter the friendly name of the devices you want to be excluded, separated by a semicolon ";". For example: Citrix;Intel(R) HD Graphics 5500;Generic USB Hub.
 
@@ -255,6 +317,7 @@ If you disable this policy setting, Performance Counters will not be rebuilt.
 </string>
       <string id="POL_Shutdown">Shutdown Base Image after sealing</string>
       <string id="POL_Shutdown_Help">Shutdown Base Image after successfully sealing. When running from an MDT or SCCM Task Sequence the Base Image will not shutdown.
+<<<<<<< HEAD
 
 If you enable this policy setting, the Base Image will be shut down after the sealing process (preparation phase).
 If you disable this policy setting, the Base Image will not be shut down after the sealing process (preparation phase).
@@ -273,11 +336,35 @@ If you do not configure this policy setting and a pending reboot exist, the scri
 If you enable this policy setting, a BIS-F Desktop Shortcut in C:\users\%username%\desktop is created.
 If you disable this policy setting, an existing BIS-F Desktop Shortcut in C:\users\%username%\desktop is removed.
 If you do not configure this policy setting, the configuration is skipped.
+=======
+ 
+If you enable this policy setting, the Base Image will be shutdown after the sealing process.
+If you disable this policy setting, the Base Image will not be shutdown after the sealing process.
+If you do not configure this policy setting, the Base Image will be shutdown after the sealing process.
 </string>
-      <string id="POL_FSXdelRules">Delete FSLogix rules</string>
+      <string id="POL_PndReboot">Suppress Pending Reboot</string>
+      <string id="POL_PndReboot_Help">Suppress Pending Reboot
+ 
+If you enable this policy setting, pending reboot will be suppressed.
+If you disable this policy setting, pending reboot will not be suppressed.
+If you do not configure this policy setting and a pending reboot exist, the scripts will stop working!</string>
+      <string id="POL_CfgVerySilent">Configure VerySilent</string>
+      <string id="POL_CfgVerySilent_Help">Configure VerySilent to suppress any BIS-F message boxes
+ 
+If you enable this policy setting, BIS-F message boxes will be suppressed.
+If you disable this policy setting, BIS-F message boxes will not be suppressed.
+If you do not configure this policy setting, BIS-F message boxes will not be suppressed.
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
+</string>
+      <string id="POL_FSXdelRules">Delete rules on Base Image</string>
       <string id="POL_FSXdelRules_Help">Delete FSLogix rules
+<<<<<<< HEAD
 
 If you enable or do not configure this policy setting, FSLogix rules will be deleted.
+=======
+ 
+If you enable this policy setting, FSLogix rules will be deleted.
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 If you disable this policy setting, FSLogix rules will not be deleted.
 </string>
       <string id="POL_FSXRulesShare">Configure FSLogix central rules share</string>
@@ -288,10 +375,17 @@ If you disable or do not configure this policy setting, a central share location
 </string>
       <string id="POL_delAllUsersStartMenu">Delete AllUsersStartMenu content</string>
       <string id="POL_delAllUsersStartMenu_Help">Delete AllUsersStartMenu content
+<<<<<<< HEAD
 
 If you enable this policy setting, the AllUsersStartMenu content will be deleted.
 If you disable or do not configure this policy setting, the AllUsersStartMenu content will not be deleted.
 </string>
+=======
+ 
+If you enable this policy setting, AllUsersStartMenu content will be deleted.
+If you disable this policy setting, AllUsersStartMenu content will not be deleted.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       <string id="POL_IPv6">Disable IPv6</string>
       <string id="POL_IPv6_Help">Disable IPv6 in registry and on network adapter
 
@@ -325,8 +419,13 @@ Prerequisites: delprof2.exe must be installed on the Base Image first
 
 You can also enter a custom search folder, e.g. C:\Windows\System32, if you do not configure or disable the custom search folder option, the standard BIS-F folders will be used.
 
+<<<<<<< HEAD
 Custom arguments:
 You can specify custom arguments for delprof2.exe.
+=======
+Custom Arguments:
+You can specify custom arguments for delprof.
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 If you enable this policy setting, you can specify your own arguments.
 If you do not configure this policy setting, delprof2 will execute with default arguments /u /r</string>
@@ -343,7 +442,7 @@ If you enable this policy setting, Turbo update will be executed. on System Star
 If you disable or do not configure this policy setting, Turbo update will not be executed. on System Startup.
 </string>
       <string id="POL_vmOSOT">VMware OS Optimization Tool</string>
-      <string id="POL_vmOSOT_Help">Run VMware OS Optimization Tool
+      <string id="POL_vmOSOT_Help">Run VMware OS Optimization Tool 
 
 If you enable this policy setting, the VMware OS Optimization Tool will be executed. with the default OS template.
 If you disable or do not configure this policy setting, the VMware OS Optimization Tool will not be executed.
@@ -359,6 +458,7 @@ Template Name: Enter the complete path to the Template that will be used during 
       <string id="POL_XAImagePrepRemoval_Help">XA 6.x only: During XenApp preparation for PVS you can remove the current server from the Farm and clear the local database information
 
 If you enable this policy setting, the current XenApp server will be removed from the Farm and the local database information will be cleared.
+<<<<<<< HEAD
 If you disable or do not configure this policy setting, the current XenApp server will not be removed from the Farm and the local database information will not be cleared.
 </string>
       <string id="POL_AppVPckRemoval">Remove App-V cached packages</string>
@@ -367,6 +467,16 @@ If you disable or do not configure this policy setting, the current XenApp serve
 If you enable this policy setting, App-V Pre-Cached packages will be removed.
 If you disable or do not configure this policy setting, App-V Pre-Cached packages will not be removed.
 </string>
+=======
+If you disable this policy setting, the current XenApp server will not be removed from the Farm and the local database information will not be cleared.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+      <string id="POL_AppVPckRemoval">Remove App-V packages</string>
+      <string id="POL_AppVPckRemoval_Help">Delete AppV Pre-Cached packages on the Base Image
+
+If you enable this policy setting, App-V Pre-Cached packages will be deleted .
+If you disable this policy setting, App-V Pre-Cached packages will not be deleted.
+If you do not configure this policy setting, you will be prompted during the sealing process.</string>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       <string id="POL_RESWASdisableBaseImage">Disable RES ONE Automation Agent</string>
       <string id="POL_RESWASdisableBaseImage_Help">This policy setting allows you to disable the RES ONE Automation Agent on the Base Image only to prevent RES ONE license usage.
 
@@ -386,21 +496,26 @@ If you enable this policy setting, RES ONE Automation sealing is not running and
 If you disable or do not configure this policy, RES ONE Automation Agent sealing is performed and removes all necessary items.</string>
       <string id="POL_ZCM">Configure Novell ZCM Agent web based URL</string>
       <string id="POL_ZCM_Help">Configure Novell ZCM Agent web based URL
-Enter the URL in the following format:
-reg https://ZCM-Server.domain.com -k CTX-XA65 -u XAuser -p XAuserPassword
+Enter the URL in the following format: 
+reg https://ZCM-Server.domain.net -k CTX-XA65 -u XAuser -p XAuserPassword
 
 If you enable this policy setting and the cloned device is starting, it will use the configured registration URL to get the configuration.
 If you disable or do not configure this policy setting, the client device does not get their ZCM configuration.
 </string>
-      <string id="ITM_GhostDeviceRemovalOption">Remove ghost devices</string>
-      <string id="ITM_GhostDeviceListAll">List all devices without removal</string>
-      <string id="ITM_GhostDeviceListOnly">List only ghost devices without removal</string>
+      <string id="GhostDeviceRemovalOption">Remove ghost devices</string>
+      <string id="GhostDeviceListAll">List all devices without removal</string>
+      <string id="GhostDeviceListOnly">List only ghost devices without removal</string>
       <string id="POL_LogCfg">Configure Logging</string>
       <string id="POL_LogCfg_Help">Log Share:
 Configure a central log share during Device Personalization on System Startup. Authenticated Users must have read/write access to this folder
 
 If you enable this policy setting, you must enter a valid log share location \\Server\Share.
+<<<<<<< HEAD
 If you disable or do not configure this policy setting, logs will be written to the write cache disk.
+=======
+If you disable this policy setting, logs will be written to the Write Cache disk and you will not be prompted during the sealing process.
+If you do not configure this policy setting, you will be prompted during the sealing process.
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 Log Retention (Default = 5):
 specify a value between 0 -20, means the number of log files being kept.
@@ -421,7 +536,11 @@ The log rotation for the Windows Powershell Transcript is hardcoded set to 5, so
  
 </string>
       <string id="POL_FldCfg">Configure Folders</string>
+<<<<<<< HEAD
       <string id="POL_FldCfg_Help">If Citrix PVS Target Device Driver is installed, some folders should be redirected to the write cache disk. You can specify those folders here:
+=======
+      <string id="POL_FldCfg_Help">If Citrix PVS Target Device Driver is installed, some folders must be redirected to the WriteCacheDisk. You can specified those folders here:
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 Event logs:
 If you enable this policy setting, you must enter a custom event viewer log folder name, e.g. "EventLogs"
@@ -437,7 +556,7 @@ NOTE: Please specify the name of the folder only, without any drive letter !!</s
       <string id="POL_PVSCfg">Configure Citrix PVS Target Device</string>
       <string id="POL_PVSCfg_Help">WriteCacheDisk drive letter
 
-If you enable this policy setting, you must select the drive letter for the PVS write cache disk
+If you enable this policy setting, you must select the drive letter for the PVS WriteCacheDisk
 If you disable or do not configure this policy setting and have PVS Target Device Driver installed, an error during BIS-F execution occurs.
 
 P2V Tool:
@@ -451,6 +570,7 @@ If you enable this policy, you must enter a valid UNC path. The user account, wh
 
 The vDisk will be created in the VHDX Format with the name %ComputerName%-DateTime.vhdx, for example VM-XA7MASTER01-020817-1045.vhdx
 
+<<<<<<< HEAD
 Custom arguments:
 If you enable this policy, depending on the above configuration you can enter custom arguments, like C: only, for example. 
 Note: If you entered incorrect arguments, the conversion of the PVS vDisk might fail!
@@ -473,8 +593,13 @@ Disable Redirection:
 With a configured Cache Disk the eventlogs and spool directory is redirected to the persistent drive. With this setting, you can disable the redirection.
 </string>
       <string id="ITM_0"> NONE</string>
+=======
+Custom Arguments:
+If you enable this policy you, depends on the above configuration you can enter custom arguments, like C: only, example. if you choosing P2PVS the default arguments would be set to C: /Autofit /L, with the custom arguments you overwritten the arguments.
+Note: If you entered incorrect arguments, the conversion of the PVS vDisk might be failed !
+If you do not enable, the default arguments inside BIS-F will be used.</string>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       <string id="ITM_B">B:</string>
-      <string id="ITM_C">C:</string>
       <string id="ITM_D">D:</string>
       <string id="ITM_E">E:</string>
       <string id="ITM_F">F:</string>
@@ -498,14 +623,29 @@ With a configured Cache Disk the eventlogs and spool directory is redirected to 
       <string id="ITM_X">X:</string>
       <string id="ITM_Y">Y:</string>
       <string id="ITM_Z">Z:</string>
+      <string id="ITM_450904EC_DB6A_4638_8B35_E60AC8004EC0">ImagingWizard</string>
+      <string id="ITM_59F24F14_D7D5_4228_9B4A_9C309CC65916">P2PVS</string>
       <string id="ITM_ImgWzd">ImagingWizard</string>
       <string id="ITM_P2PVS">P2PVS</string>
       <string id="POL_PersCfg">Configure Personalization</string>
+      <string id="ITM_E5119B02_1193_446A_A77F_606196FEF75D">None</string>
+      <string id="ITM_B25B2F31_399B_47F7_8140_A5CB4C12ACF4">Private Mode</string>
+      <string id="ITM_07EC22F8_89D2_44B4_82E6_8D323FF25178">Everytime !!</string>
+      <string id="ITM_DM_None">Everytime !!</string>
+      <string id="ITM_DM_PM">Private Mode</string>
+      <string id="ITM_DM_ET">None</string>
       <string id="POL_PersCfg_Help">Configure the Device Personalization
 
 
+<<<<<<< HEAD
 Skip BIS-F personalization based on DiskMode
 If you enable this policy setting, you can select a DiskMode to skip the Device Personalization on computer startup (BIS-F Scheduled Task)
+=======
+Skip Personalization based on DiskMode
+If you enable this policy setting, you can select a DiskMode to skip the Device Personalization on computer startup.
+ &gt; None - never skip the Device Personalization 
+ &gt; ReadWrite - if the Image is in Private Mode (PVS or MCS) skip the Device Personalization 
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
  &gt; All - ignore all DiskMode's and skip the Device Personalization
  &gt; Never - never skip the Device Personalization (recommended)
  &gt; Private Mode - if the Image is in Private Mode (PVS or MCS) skip the Device Personalization
@@ -535,9 +675,19 @@ If you enable this policy setting, you must enter a valid path (recommended: BIS
 
 If you disable do not configure this policy setting, the export wont be run.
 
+<<<<<<< HEAD
 Note: For the most part you only need to action the export once after which you can edit the export manually
 
 </string>
+=======
+Note: mostly you need this one time, to create the xml files, after that you can edit it manually !! 
+You can also find the needed xml templates in the installation folder
+
+</string>
+      <string id="ITM_DM_1">All</string>
+      <string id="ITM_DM_2">Private Mode</string>
+      <string id="ITM_DM_3">Never</string>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       <string id="POL_VDACfg">VDA Configuration</string>
       <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
 
@@ -547,6 +697,7 @@ If you disable or do not configure this policy setting, the vda configuration wi
 Delay Citrix Desktop Service:
 The Citrix Desktop Service controls the registration state against the Citrix Controller. In some circumstances, this service has successfully registered the VM and the user can be logged on through Receiver/StoreFront before the machine is ready to accept workloads. For example you may have some dependant actions or solutionssuch as Workspace Environment Agent, Group Policies, App-V Client custom tasks you wish to run before the machine accepts user sessions. If you enable this policy the Citrix Desktop Service will be started only after the BIS-F personalization phase is finished.
 
+<<<<<<< HEAD
 Additional delay (default 0)
 You can enter additional time in seconds, to start the Citrix Desktop Service after this delay. This time you entered here will be addition to the BIS-F personalization phase finishing.
 Max seconds: 1800
@@ -577,11 +728,18 @@ Note: If you disable the checkbox, the Intel Graphics Driver is not disabled fro
 
 If you enable both NVIDIA and INTEL, BIS-F will stop the sealing process (preparation phase) and respond with an error!.
 </string>
+=======
+Note: If you has the Device personalization configured to skip it on all DiskModes or on private Mode only, the Citrix Desktop Service would also be started. </string>
+      <string id="ITM_5D01BF99_CC34_443E_A4A7_82489EE3159B">.VHD</string>
+      <string id="ITM_654E2264_F168_4BC8_A209_009DFADFF86F">.VHDX</string>
+      <string id="ITM_VDISK_VHDX1">VHDX</string>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       <string id="ITM_VDISK_VHD">VHD</string>
       <string id="ITM_VDISK_VHDX">VHDX</string>
-      <string id="POL_DotNET">Run .NET Optimization</string>
+      <string id="POL_DotNET">.NET Optimization</string>
       <string id="POL_DotNET_Help">Run .NET Optimization during sealing (preparation)
 
+<<<<<<< HEAD
 If you enable this policy setting, .NET Optimization is run during sealing (Preparation phase)
 If you disable this policy setting, .NET Optimization is disabled during sealing (Preparation phase)
 If you do not configure this policy setting, .NET Optimization is run during sealing(Preparation phase)
@@ -625,8 +783,28 @@ NOTE: If you configure the MaxExecution time to a low value, and the timeout is 
 </string>
       <string id="POL_WEMCfg">Configure Citrix Workspace Environment Agent (WEM)</string>
       <string id="POL_WEMCfg_Help"> This policy settings allows you to manage the Citrix Workspace Environment Agent Settings (WEM)
+=======
+If you enable this policy setting, .NET Optimization is running during sealing
+If you disable this policy setting, .NET Optimization is disabled during sealing
+If you do not configure this policy setting, .NET Optimization is running during sealing</string>
+      <string id="POL_WinSxS">WinSxS Optimization</string>
+      <string id="POL_WinSxS_Help">Run WinSxS Optimization during sealing (preparation)
 
+If you enable this policy setting, WinSxS Optimization is running during sealing
+If you disable this policy setting, WinSxS Optimization is disabled during sealing
+If you do not configure this policy setting, WinSxS Optimization is running during sealing
 
+execute WinSxS Optimization on BaseDisk only:
+If you using Citrix PVS or MCS the WinSxS Optimization is running on the BaseDisk only, during a parent disk seal process the WinSxS Optimization is skipped.
+
+Maximum Execution Timeout:
+You can specifiy the maximum executio timeout for the WinSxS Optimization. default is det to 240 minutes, min. 60, max 480. you can increase/decrease the value in steps of 15 minutes. if this value is reached during the WinSxS Optimization the DISM Process is terminated.
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
+
+About WinSxS:
+The Windows component store (C:\Windows\winsxs) directory is used during servicing operations within Windows installations. Servicing operations include, but are not limited to, Windows Update, service pack, and hotfix installations. 
+
+<<<<<<< HEAD
 If you enable this policy setting, you can configure the WEM Agent settings
 If you disable or do not configure this policy setting, the WEM Agent settings will not be changed.
 
@@ -783,6 +961,9 @@ Note: If you configure it wrong, a reboot loop occurs!
 Disable Redirection:
 With a configured MCSIO Disk the event logs and spool directory is redirected to the persistent drive. With this setting you can disable the redirection
 </string>
+=======
+The component store contains all the files that are required for a Windows installation. And, any updates to those files are also held within the component store as the updates are installed. This causes the component store to grow over time as more updates, features, or roles are added to the installation. The component store uses NTFS hard links between itself and other Windows directories to increase the robustness of the Windows platform. </string>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -794,7 +975,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
           <label>(Optional) List of enabled Groups:</label>
           <defaultValue></defaultValue>
         </textBox>
-        <checkBox refId="CHK_CTXOE_Analyze">Mode: Analyze only</checkBox>
+        <checkBox refId="CB_CTXOE_Analyze">Mode: Analyze only</checkBox>
         <checkBox refId="CHK_CTXOE_SF">Enable custom search folder</checkBox>
         <textBox refId="TXT_CTXOE_SF_CUS">
           <label>Custom search folder</label>
@@ -804,18 +985,21 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
           <label>(Optional) Templateprefix</label>
           <defaultValue>Citrix_Windows</defaultValue>
         </textBox>
+<<<<<<< HEAD
         <checkBox refId="CHK_CTXOE_LogDelete">Delete Optimizer LogFile</checkBox>
+=======
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       </presentation>
       <presentation id="POL_FSXRulesShare">
         <textBox refId="TXT_RulesShare">
-          <label>FSLogix Rules Share UNC Path</label>
+          <label>FS Logix Rules Share</label>
           <defaultValue>\\Server\Share</defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_ZCM">
         <textBox refId="TXT_ZCM_URL">
           <label>ZCM Registration URL</label>
-          <defaultValue>reg https://ZCM-Server.domain.com -k CTX-XA65 -u XAuser -p XAuserPassword</defaultValue>
+          <defaultValue>reg https://ZCM-Server.domain.net -k CTX-XA65 -u XAuser -p XAuserPassword</defaultValue>
         </textBox>
         <text>
         </text>
@@ -824,20 +1008,20 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         <text>
         </text>
       </presentation>
-      <presentation id="POL_GhostDeviceClass">
-        <textBox refId="TXT_GhostDeviceClassBox">
+      <presentation id="GhostDeviceClass">
+        <textBox refId="GhostDeviceClassBox">
           <label>Classes:</label>
           <defaultValue></defaultValue>
         </textBox>
       </presentation>
-      <presentation id="POL_GhostDeviceFriendlyName">
-        <textBox refId="TXT_GhostDeviceFriendlyNameBox">
+      <presentation id="GhostDeviceFriendlyName">
+        <textBox refId="GhostDeviceFriendlyNameBox">
           <label>Devices:</label>
           <defaultValue></defaultValue>
         </textBox>
       </presentation>
-      <presentation id="POL_GhostDeviceRemoval">
-        <dropdownList refId="DST_GhostDeviceOption" noSort="true" defaultItem="0">Operation</dropdownList>
+      <presentation id="GhostDeviceRemoval">
+        <dropdownList refId="GhostDeviceOption" noSort="true" defaultItem="0">Operation</dropdownList>
       </presentation>
       <presentation id="POL_SDelete">
         <checkBox refId="CHK_SD_SF">Enable custom search folder</checkBox>
@@ -858,13 +1042,6 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         <checkBox refId="CHK_SD_runMCSIO">Citrix MCSIO on persistent Cache Disk if the image is in shared image mode</checkBox>
         <checkBox refId="CHK_SD_runMCS">Citrix MCS on Systemdrive if the image is in shared image mode</checkBox>
       </presentation>
-      <presentation id="POL_PAGEFILE">
-        <dropdownList refId="PageFile_DriveLetter_Options" defaultItem="0">Page file drive</dropdownList>
-        <textBox refId="TXT_PAGEFILE_SIZE">
-          <label>Page file size (GB)</label>
-          <defaultValue>4</defaultValue>
-        </textBox>
-      </presentation>
       <presentation id="POL_IPv6">
         <checkBox refId="CHK_V6_SF">Enable custom search folder</checkBox>
         <textBox refId="TXT_V6_SF_CUS">
@@ -880,19 +1057,19 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         </textBox>
         <checkBox refId="CHK_DP_Args">Enable custom arguments</checkBox>
         <textBox refId="TXT_DP_ARGS_CUS">
-          <label>Custom arguments</label>
+          <label>Custom Arguments</label>
           <defaultValue>/u /r</defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_vmOSOT">
-        <checkBox refId="CHK_vmOSOT_SF">Enable custom search folder</checkBox>
-        <textBox refId="TXT_vmOSOT_SF_CUS">
+        <checkBox refId="CHK_OT_SF">Enable custom search folder</checkBox>
+        <textBox refId="TXT_OT_SF_CUS">
           <label>Custom search folder</label>
           <defaultValue>C:\Program Files (x86)\vmOSOT</defaultValue>
         </textBox>
         <text>
         </text>
-        <textBox refId="TXT_vmOSOT_Templ">
+        <textBox refId="TXT_OT_Templ">
           <label>Template Name</label>
           <defaultValue></defaultValue>
         </textBox>
@@ -901,7 +1078,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         <checkBox refId="CHK_CC_SF">Enable custom search folder</checkBox>
         <textBox refId="TXT_CC_SF_CUS">
           <label>Custom search folder</label>
-          <defaultValue>C:\Program Files\CCleaner</defaultValue>
+          <defaultValue>C:\Program Files (x86)\CCleaner</defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_CMTrace">
@@ -913,7 +1090,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       </presentation>
       <presentation id="POL_LogCfg">
         <checkBox refId="CHK_CLI_LogCfg">Enable Central Log Share</checkBox>
-        <textBox refId="TXT_LogCfg">
+        <textBox refId="TXT_301FB559_F663_4697_9602_6EDB78401441">
           <label>Log Share</label>
           <defaultValue>\\Server\Share</defaultValue>
         </textBox>
@@ -934,8 +1111,12 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         </textBox>
       </presentation>
       <presentation id="POL_PVSCfg">
+<<<<<<< HEAD
         <checkBox refId="CHK_P2V_SKIP_IMG">Skip PVS master image creation</checkBox>
         <dropdownList refId="DST_WC_Driveletter" defaultItem="0">Write cache drive letter</dropdownList>
+=======
+        <dropdownList refId="DST_WC_Driveletter" defaultItem="0">WriteCacheDisk drive letter</dropdownList>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
         <dropdownList refId="DST_P2PVS_Tool" defaultItem="0">P2V Tool</dropdownList>
         <dropdownList refId="DST_VDISK_FORMAT" noSort="true" defaultItem="1">vDisk Format</dropdownList>
         <checkBox refId="CHK_P2VHDX">Enable P2V Custom UNC-Path</checkBox>
@@ -945,7 +1126,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         </textBox>
         <checkBox refId="CHK_P2V_CUSARGS">Enable custom arguments</checkBox>
         <textBox refId="TXT_CUS_ARGS">
-          <label>Custom arguments</label>
+          <label>Arguments</label>
           <defaultValue>C:</defaultValue>
         </textBox>
         <dropdownList refId="DST_CLI_NumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
@@ -970,6 +1151,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       </presentation>
       <presentation id="POL_VDACfg">
         <checkBox refId="CHK_CLI_CDS">Delay Citrix Desktop Service</checkBox>
+<<<<<<< HEAD
         <decimalTextBox refId="DXT_CLI_CDSdelay" defaultValue="0" spinStep="5">Additional delay (seconds)</decimalTextBox>
         <checkBox refId="CHK_VDA_NVDIAGRID">Enable Nvidia GRID</checkBox>
         <checkBox refId="CHK_VDA_INTELGRFX">Enable Intel Graphics Driver</checkBox>
@@ -995,6 +1177,8 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
           <label>File extensions to hydrate:</label>
           <defaultValue>*.exe,*.dll</defaultValue>
         </textBox>
+=======
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       </presentation>
       <presentation id="POL_VieScan">
         <checkBox refId="CHK_AV_VIE_SF">Enable custom search folder</checkBox>
@@ -1006,6 +1190,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       <presentation id="POL_WinSxS">
         <checkBox refId="CHK_WinSxSBaseImage">Execute WinSxS Optimization on BaseDisk only</checkBox>
         <decimalTextBox refId="DXT_WinSxSTimeout" defaultValue="240" spinStep="15">Maximum Execution Timeout (min)</decimalTextBox>
+<<<<<<< HEAD
       </presentation>
       <presentation id="POL_METCfg">
         <decimalTextBox refId="DXT_MET" defaultValue="60">MaxExecution timeout in minutes (default: 60)</decimalTextBox>
@@ -1042,6 +1227,8 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
           <label>Custom Sysprep Arguments</label>
           <defaultValue></defaultValue>
         </textBox>
+=======
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
       </presentation>
     </presentationTable>
   </resources>

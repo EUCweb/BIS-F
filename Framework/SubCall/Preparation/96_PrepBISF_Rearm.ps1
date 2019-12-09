@@ -2,6 +2,7 @@
 param(
 )
 <#
+<<<<<<< HEAD
 	.SYNOPSIS
 		Prepare for System for Image Management
 	.DESCRIPTION
@@ -46,6 +47,51 @@ param(
 	.LINK
 		https://eucweb.com
 #>
+=======
+    .Synopsis
+      prepare System for Image Management
+    .Description
+      Rearm System once only and if office 2010,2013,2016 detected, rearm this once only
+    .EXAMPLE
+    .Inputs
+    .Outputs
+    .NOTES
+      Author: Matthias Schlimm
+      Editor: Mike Bijl (Rewritten variable names and script format)
+      Company: Login Consultants Germany GmbH
+
+      Date: 10.10.2012
+
+      History
+      Last Change: 10.10.2012 MS: Script created
+      Last Change: 19.10.2012 MS: Changed rearm to silent mode -> cscript.exe //B slmgr.vbs /rearm
+      Last Change: 07.06.2013 MS: Office 2010 rearm: OSPPREARM.EXE added, but not tested
+      Last Change: 18.09.2013 MS: Replaced $date with $(Get-date) to get current timestamp at running scriptlines write to the logfile
+      Last Change: 18.09.2013 MS: Set Office reamstatus to 0, if office x86 not detected
+      Last Change: 19.09.2013 MS: Set wrong value for office rearm
+      Last Change: 27.02.2013 MS: New function MigrateValues > Migrate old values from earlier script version to new one
+      Last Change: 13.03.2013 MS: Remove function MigrateValues > add MessageBox to OS rearm and office rearm
+      Last Change: 18.03.2014 BR: Revisited Script
+      Last Change: 13.05.2014 MS: Added Silentswitch -OSrearm (YES|NO)-OFrearm (YES|NO)
+      Last Change: 11.06.2014 MS: Fixed read variable LIC_BISF_CLI_AV and LIC_BISF_CLI_OF
+      Last Change: 13.08.2014 MS: Removed $logfile = Set-logFile, it would be used in the 10_XX_LIB_Config.ps1 Script only
+      Last Change: 17.08.2014 MS: Changed line 39 to $OSPPREARM = "$CommonProgramFilesx86\microsoft shared\OfficeSoftwareProtectionPlatform\OSPPREARM.EXE"s
+      Last Change: 13.01.2015 MB: Script created for Office 2010 and Office 2013
+      Last Change: 08.06.2015 MS: Different path for OSSPREAM.exe not valid for Office2013, for office2010 only
+      Last Change: 13.08.2015 MS: If Office not installed and CLI switch would be set to ream office, an error occurs. Check if Office is installed, before starting rearm process
+      Last Change: 01.10.2015 MS: Rewritten script to use central BISF function
+      Last Change: 07.01.2016 MS: Added Office 2016 x86 rearm support
+	  Last Change: 13.01.2016 MS: Fixed typo
+	  Last Change: 06.03.2017 MS: Bugfix read Variable $varCLI = ...
+	  Last Change: 16.10.2017 MS: Bugfix OS rearm never run, path to slmgr.vbs must be entered before, thx to Bernd Baedermann
+	  Last Change: 17.10.2017 MS: Bugfix Running Office ream first and second OS rerarm, thx to Bernd Baedermann
+	  Last Change: 01.11.2017 MS: Feature: get detailed OS License Information and write them to the BIS-F Log
+	  Last Change: 01.11.2017 MS: Feature: Office Rearm state writes to BIS-F Log
+	  Last Change: 09.11.2017 MS: Read Office Installationpath from regisrty, support now for Office x64 and x86
+	  Last Change: 28.03.2019 MS: FRQ 86 - Office 2019 support
+    .Link
+    #>
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 Begin {
 
@@ -57,15 +103,26 @@ Begin {
 		$PSScriptFullName = $psise.CurrentFile.FullPath.ToLower()
 		$PSCommand = (Get-PSCallStack).InvocationInfo.MyCommand.Definition
 	}
+<<<<<<< HEAD
 	ELSE {
+=======
+ ELSE {
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 		$PSScriptFullName = $MyInvocation.MyCommand.Definition.ToLower()
 		$PSCommand = $MyInvocation.Line
 	}
 	[string]$PSScriptName = (Split-Path $PSScriptFullName -leaf).ToLower()
+<<<<<<< HEAD
 	If (($PSScriptRoot -eq "") -or ($PSScriptRoot -eq $null)) { [string]$PSScriptRoot = (Split-Path $PSScriptFullName).ToLower() }
 
 	$cu_user = $env:username
 	$Domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
+=======
+	If (($PSScriptRoot -eq "") -or ($PSScriptRoot -eq $null)) { [string]$PSScriptRoot = (Split-Path $PSScriptFullName).ToLower()}
+
+	$cu_user = $env:username
+	$Domain = (Get-WmiObject -Class Win32_ComputerSystem).domain
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 	$RearmREG_name1 = "LIC_BISF_RearmOS_run"
 	$RearmREG_name2 = "LIC_BISF_RearmOS_user"
 	$RearmREG_name3 = "LIC_BISF_RearmOS_date"
@@ -81,27 +138,40 @@ Begin {
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office2010InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\14.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path
 	}
+<<<<<<< HEAD
 	If ($Office2010InstallRoot -isnot [system.object]) { $Office2010InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\14.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+=======
+	If ($Office2010InstallRoot -isnot [system.object]) {$Office2010InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\14.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 	# Check the installation path of Office 2013
 	$Office2013InstallRoot = $null
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office2013InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\15.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path
 	}
+<<<<<<< HEAD
 	If ($Office2013InstallRoot -isnot [system.object]) { $Office2013InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\15.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+=======
+	If ($Office2013InstallRoot -isnot [system.object]) {$Office2013InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\15.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 	# Check the installation path of Office 2016
 	$Office2016InstallRoot = $null
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office2016InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path
 	}
+<<<<<<< HEAD
 	If ($Office2016InstallRoot -isnot [system.object]) { $Office2016InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\16.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+=======
+	If ($Office2016InstallRoot -isnot [system.object]) {$Office2016InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\16.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 	# Check the installation path of Office 2019
 	$Office2019InstallRoot = $null
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office2019InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\17.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path
 	}
+<<<<<<< HEAD
 	If ($Office2019InstallRoot -isnot [system.object]) { $Office2019InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\17.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
 
 
@@ -113,6 +183,11 @@ Begin {
 	}
 	If ($Office365InstallRoot -isnot [system.object]) { $Office365InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\ClickToRun -Name InstallPath -ErrorAction SilentlyContinue).Path }
 
+=======
+	If ($Office2019InstallRoot -isnot [system.object]) {$Office2019InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\17.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+
+
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 
 	#$OSPPREARM_2k10x86 = "$CommonProgramFilesx86\microsoft shared\OfficeSoftwareProtectionPlatform\OSPPREARM.EXE"
@@ -130,6 +205,7 @@ Begin {
 		Write-BISFLog -Msg "check OS rearm registry keys in $hklm_software_LIC_CTX_BISF_SCRIPTS"
 		Write-BISFLog -Msg "get OS rearm Status [0=never run, 1=run] ..Status = $LIC_BISF_RearmOS_run"
 		IF ($LIC_BISF_RearmOS_run -ne 1) {
+<<<<<<< HEAD
 			Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 			$varCLI = $LIC_BISF_CLI_OS
 			IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
@@ -141,6 +217,19 @@ Begin {
 
 			}
 			if (($OSrearmAnsw -eq "YES" ) -or ($varCLI -eq "YES")) {
+=======
+			Write-BISFLog -Msg "Check Silentswitch..."
+			$varCLI = $LIC_BISF_CLI_OS
+			IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
+				Write-BISFLog -Msg "Silentswitch would be set to $varCLI"
+			}
+			ELSE {
+				Write-BISFLog -Msg "Show Messagebox to rearm System" -ShowConsole -Color DarkCyan -SubMsg
+				$OSrearmAnsw = Show-MessageBox -Msg $RearmMSG_OS -Title "Operating System KMS rearm " -YesNo -Question
+				Write-BISFLog -Msg "$OSrearmAnsw woul be choosen [YES = System is already rearmed, registry flags would be set only] [NO = System mus be rearmed from script]"
+			}
+			if (($OSrearmAnsw -eq "NO" ) -or ($varCLI -eq "YES")) {
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 				Write-BISFLog -Msg "Operating System will be rearmed now" -ShowConsole -Color DarkCyan -SubMsg
 				Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\cscript.exe" -Args "//NoLogo $env:windir\system32\slmgr.vbs /rearm" -ActText "OS - Reset OS License state"
 				Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\cscript.exe" -Args "//NoLogo $env:windir\system32\slmgr.vbs /dlv" -ActText "OS - Get detailed license informations"
@@ -185,6 +274,7 @@ Begin {
 		ELSE {
 			Write-BISFLog -Msg "Office 2013 is not installed"
 		}
+<<<<<<< HEAD
 
 		IF ($Office2016InstallRoot -is [System.Object]) {
 			$OSPPREARM = $Office2016InstallRoot + "OSPPREARM.EXE"
@@ -222,6 +312,25 @@ Begin {
 		}
 		ELSE {
 			Write-BISFLog -Msg "Office 365 is not installed"
+=======
+
+		IF ($Office2016InstallRoot -is [System.Object]) {
+			$OSPPREARM = $Office2016InstallRoot + "OSPPREARM.EXE"
+			Write-BISFLog -Msg "Checking Office 2016 rearm status" -ShowConsole -Color Cyan
+
+		}
+		ELSE {
+			Write-BISFLog -Msg "Office 2016 is not installed"
+		}
+
+		IF ($Office2019InstallRoot -is [System.Object]) {
+			$OSPPREARM = $Office2019InstallRoot + "OSPPREARM.EXE"
+			Write-BISFLog -Msg "Checking Office 2019 rearm status" -ShowConsole -Color Cyan
+
+		}
+		ELSE {
+			Write-BISFLog -Msg "Office 2019 is not installed"
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 		}
 
 		IF ("$OSPPREARM" -ne "") {
@@ -231,6 +340,7 @@ Begin {
 				Write-BISFLog -Msg "Check Office rearm registry keys in $hklm_software_LIC_CTX_BISF_SCRIPTS"
 				Write-BISFLog -Msg "Get Office rearm Status [0=never run, 1=run] ..Status = $LIC_BISF_RearmOF_run"
 				IF ($LIC_BISF_RearmOF_run -ne 1) {
+<<<<<<< HEAD
 					Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 					$varCLI = $LIC_BISF_CLI_OF
 					IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
@@ -245,6 +355,23 @@ Begin {
 						Write-BISFLog -Msg "Prepare Office for product activation - $OSPPREARM"
 						$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
 						$process = Start-Process -FilePath "$OSPPREARM" -Wait -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
+=======
+					Write-BISFLog -Msg "Check Silentswitch..."
+					$varCLI = $LIC_BISF_CLI_OF
+					IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
+						Write-BISFLog -Msg "Silentswitch would be set to $varCLI"
+					}
+					ELSE {
+						Write-BISFLog -Msg "Show Messagebox to rearm Office" -ShowConsole -Color DarkCyan -SubMsg
+						$OFreamAnsw = Show-BISFMessageBox -Msg $RearmMSG_OF -title "Office KMS rearm "  -YesNo -Question
+						Write-BISFLog -Msg "$OFreamAnsw would be choosen [YES = Office is already rearmed, registry flags would be set only] [NO = Office mus be rearmed from script]"
+					}
+					if (($OFreamAnsw -eq "NO" ) -or ($varCLI -eq "YES")) {
+						Write-BISFLog -Msg "Office will be rearmed now" -ShowConsole -Color DarkCyan -SubMsg
+						Write-BISFLog -Msg "Prepare Office for product activation - $OSPPREARM"
+						$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
+						$process = start-process -FilePath "$OSPPREARM" -Wait -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 						$ProcessExitCode = $Process.ExitCode
 						Write-BISFLog -Msg  "ExitCode: $ProcessExitCode"
 						Get-BISFLogContent -GetLogFile "$tmpLogFile"
@@ -279,14 +406,25 @@ Begin {
 	####################################################################
 }
 Process {
+<<<<<<< HEAD
 
 	#### Main Program
 	#Loads the WinForm Assembly, Out-Null hides the message while loading.
 	[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
 
+=======
+	#### Main Program
+	#Loads the WinForm Assembly, Out-Null hides the message while loading.
+	[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 	RearmOffice
 	RearmOS
 }
 End {
 	Add-BISFFinishLine
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35

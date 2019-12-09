@@ -1,12 +1,15 @@
 ﻿<#
     .SYNOPSIS
         Activate Office against the KMS server
-	.DESCRIPTION
+	.Description
     .EXAMPLE
+    .Inputs
+    .Outputs
     .NOTES
 		Author: Benjamin Ruoff
       	Company:  EUCWeb.com
 
+<<<<<<< HEAD
 		History:
       	13.01.2015 BR: Script created for Office 2010 and Office 2013
 		06.10.2015 MS: Rewritten script with standard .SYNOPSIS
@@ -17,6 +20,15 @@
 		03.10.2019 MS: ENH 84 - if hosting on azure, Displays the device join status
 	.LINK
         https://eucweb.com
+=======
+		History
+      	Last Change: 13.01.2015 BR: Script created for Office 2010 and Office 2013
+		Last Change: 06.10.2015 MS: Rewritten script with standard .SYNOPSIS
+		Last Change: 07.12.2016 MS: Added Office 2016 support
+		Last Change: 01.11.2017 MS: get Office activation state and License state back to the BIS-F log
+		Last Change: 28.03.2019 MS: FRQ 86 - Office 2019 support
+	.Link
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 #>
 
 
@@ -33,27 +45,28 @@ Process {
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office2010InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\14.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path
 	}
-	If ($Office2010InstallRoot -isnot [system.object]) { $Office2010InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\14.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+	If ($Office2010InstallRoot -isnot [system.object]) {$Office2010InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\14.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
 
 	# Check the installation path of Office 2013
 	$Office2013InstallRoot = $null
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office2013InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\15.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path
 	}
-	If ($Office2013InstallRoot -isnot [system.object]) { $Office2013InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\15.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+	If ($Office2013InstallRoot -isnot [system.object]) {$Office2013InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\15.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
 
 	# Check the installation path of Office 2016
 	$Office2016InstallRoot = $null
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office2016InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path
 	}
-	If ($Office2016InstallRoot -isnot [system.object]) { $Office2016InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\16.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+	If ($Office2016InstallRoot -isnot [system.object]) {$Office2016InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\16.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
 
 	# Check the installation path of Office 2019
 	$Office2019InstallRoot = $null
 	If ([Environment]::Is64BitOperatingSystem) {
 		$Office2019InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\17.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path
 	}
+<<<<<<< HEAD
 	If ($Office2019InstallRoot -isnot [system.object]) { $Office2019InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\17.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
 
 
@@ -63,6 +76,9 @@ Process {
 		$Office365InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\ClickToRun -Name InstallPath -ErrorAction SilentlyContinue).Path
 	}
 	If ($Office365InstallRoot -isnot [system.object]) { $Office365InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\ClickToRun -Name InstallPath -ErrorAction SilentlyContinue).Path }
+=======
+	If ($Office2019InstallRoot -isnot [system.object]) {$Office2019InstallRoot = (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\Office\17.0\Common\InstallRoot -Name Path -ErrorAction SilentlyContinue).Path }
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 
 
@@ -105,6 +121,7 @@ Process {
 		Write-BISFLog -msg "Office 2019 is NOT installed"
 	}
 
+<<<<<<< HEAD
 	IF ($Office365InstallRoot -is [System.Object]) {
 		Write-BISFLog -msg "Office 365 is installed" -ShowConsole -Color Cyan
 		Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\cscript.exe" -Args "//NoLogo ""$($Office365InstallRoot)OSPP.VBS"" /act" -ActText "Start triggering activation"
@@ -124,6 +141,8 @@ Process {
 		Write-BISFLog -msg "Office 365 is NOT installed"
 	}
 
+=======
+>>>>>>> 0f9eb41cc3803821f5779a0f8d265524fea7ec35
 
 }
 
