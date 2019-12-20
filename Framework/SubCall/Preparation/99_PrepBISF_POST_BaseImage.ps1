@@ -56,6 +56,7 @@ param(
 		02.11.2017 MS: Bugfix: if booting up in private Mode the vhdx and custom unc-path is configured, defrag runs on the UNC-Path and not on the BaseDisk itself.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		03.10.2019 MS: ENH 94 - Add sysprep command-line options to ADMX
+		20.12.2019 MS/SF: FRQ 154 (PR)- Edjust for compositing engine change in AppLayering 1911 an higher
 
 	.LINK
 		https://eucweb.com
