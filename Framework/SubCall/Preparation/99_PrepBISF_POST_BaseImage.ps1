@@ -85,6 +85,10 @@ Begin {
 	$PostCLI = @()
 	$vDiskDriveLetter = get-BISFvDiskDrive
 
+	# Specific to Citrix Application Layering -ge 1911
+	$CEDir = "$env:SYSTEMDRIVE\CitrixCE" # -> Citrix Compositing Engine introduced in CAL 1911, only available when compositing offloading is enabled.
+	$bootIdPath = "$CEDir\bootid" # -> Boot Order information.
+
 	IF ($LIC_BISF_CLI_DF -eq "YES") {
 		Write-BISFLog -Msg "Defrag is enabled in ADMX, check Defrag Service is running"
 		Invoke-BISFService -ServiceName defragsvc -StartType manual -Action Start
@@ -224,6 +228,14 @@ Process {
 	IF ($returnTestPVSSoftware -eq $true) {
 		IF ($CTXAppLayeringSW) {
 			Write-BISFLog -Msg "Successfully build your Base Image with Citrix AppLayering - $CTXAppLayerName ..." -ShowConsole -Color DarkCyan -SubMsg
+			if (Test-Path $bootIdPath) {
+				$bootId = Get-Content -Path $bootIdPath
+				& bcdedit /bootsequence $bootId
+				$shutdownFlag = "/r"
+				$PostCommands = $PostCommands | where { $_.order -ne "999" }
+				$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, restart System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
+				Write-BISFLog -Msg "Machine will be restarted to allow layer finalize ..." -ShowConsole -Color DarkCyan -SubMsg
+			}
 			PostCommand
 		}
 		ELSE {
@@ -252,8 +264,20 @@ Process {
 	}
 	ELSE {
 		IF ($ImageSW -eq $true) {
-			IF ($CTXAppLayeringSW)
-			{ $txt = "Successfully build your Base Image with Citrix AppLayering in $CTXAppLayerName ..." } ELSE { $txt = "Successfully build your Base Image.." }
+			IF ($CTXAppLayeringSW) {
+				$txt = "Successfully build your Base Image with Citrix AppLayering in $CTXAppLayerName ..."
+				if (Test-Path $bootIdPath) {
+					$bootId = Get-Content -Path $bootIdPath
+					& bcdedit /bootsequence $bootId
+					$shutdownFlag = "/r"
+					$PostCommands = $PostCommands | where { $_.order -ne "999" }
+					$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, restart System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
+					Write-BISFLog -Msg "Machine will be restarted to allow layer finalize ..." -ShowConsole -Color DarkCyan -SubMsg
+				}
+			}
+			ELSE {
+				$txt = "Successfully build your Base Image.."
+			}
 			Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
 			PostCommand
 		}
