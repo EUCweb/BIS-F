@@ -1,3 +1,5 @@
+20.12.2019 MS/SF: FRQ 154 (PR)- Edjust for compositing engine change in AppLayering 1911 an higher
+20.12.2019 MS/SF: HF 153 (PR) - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
 31.10.2019 MS: ENH 15 - BugFix with Office 365 Implementation, overwrite the value for Office 2016 detection
 08.10.2019 MS: HF 20 - Installer - Scripts not in custom folders being kept during Update and fix to keep the content of the custom folder now
 08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run

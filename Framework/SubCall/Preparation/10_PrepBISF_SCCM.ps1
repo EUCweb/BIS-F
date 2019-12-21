@@ -25,6 +25,7 @@
 		10.05.2019 JP: Converted wmic commands to Get-CimInstance and reworked script synthax
 		14.05.2019 JP: The CcmExec service is no longuer set to manual
 		08.12.2019:JP: Fixed error on line 74, thanks toBrian Timp
+		20.12.2019 MS/SF: HF 153 (PR) - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
 
 	.LINK
 		https://eucweb.com
@@ -73,7 +74,8 @@ Process {
 		}
 	}
 
-	If (Test-BISFService -ServiceName $appService -eq $True) {
+	$svc = Test-BISFService -ServiceName $appService
+	IF ($svc -eq $true) {
 		Remove-CCMCache # 01.09.2015 MS: Remove-CCMCache must be run before stopping the service
 		Invoke-BISFService -ServiceName $appService -Action Stop
 		Remove-CCMData

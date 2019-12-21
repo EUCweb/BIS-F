@@ -861,7 +861,7 @@ Begin {
 			schtasks.exe /create /sc ONSTART /TN "$BISFtask" /IT /RU 'System' /RL HIGHEST /tr "powershell.exe -Executionpolicy unrestricted -file '$LIC_BISF_MAIN_PersScript'" /f | Out-Null
 		}
 		ELSE {
-			Write-BISFLog -Msg "Task alrady exist, modify startup task $BISFtask to personalize System" -ShowConsole -Color Cyan
+			Write-BISFLog -Msg "Task already exist, modify startup task $BISFtask to personalize System" -ShowConsole -Color Cyan
 			schtasks.exe /change /TN "$BISFtask" /RL HIGHEST /tr "powershell.exe -Executionpolicy unrestricted -file '$LIC_BISF_MAIN_PersScript'" | Out-Null
 		}
 
