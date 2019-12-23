@@ -266,6 +266,7 @@ Process {
 			}
 			ELSE {
 				Write-BISFLog -Msg "Execution of PostCommands are skipped, if the PVS Master Image creation is skipped..." -ShowConsole -Color Yellow -Type W
+				Start-Sleep -s 30
 			}
 		}
 	}
