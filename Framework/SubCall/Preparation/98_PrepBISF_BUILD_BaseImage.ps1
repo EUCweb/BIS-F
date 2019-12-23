@@ -61,8 +61,8 @@ param(
 		17.09.2017 MS: Bugfix 212 - If Custom UNC-Path in ADMX is selected, and booting up a PVS avhd/avhdx, imaging wizard/P2PVS would be executed
 		17.10.2017 MS: Feature: ADM extension PVS Target Device: select vDisk Type VHDX/VHD that can be using for P2PVS only, thx to Christian Schuessler
 		29.10.2017 MS: Bugfix: Custom UNC-Path get the wrong value back and does not perform a defrag on the vhd(x) and set the right value now $Global:TestDiskMode
-		14.08.2019 MS: ENH 98 - Skip execution of PVS Target OS Optimization
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		23.12.2019 MS: ENH 98 - Skip execution of PVS Target OS Optimization
 
 	.LINK
 		https://eucweb.com
@@ -374,37 +374,44 @@ Process {
 
 		IF ($returnTestPVSSoftware -eq $true) {
 			IF ($returnTestAppLayeringSoftware -eq $false) {
-				Set-P2VTool
-				IF ($TestDiskMode) { $vDiskMode = Test-BootMode }
-				IF (($vDiskMode -eq "HD") -or ($TestDiskMode -eq $false)) {
-					IF ($TestDiskMode) {
-						Write-BISFLog -Msg "Mode $vDiskMode - Boot from HardDisk in Private Mode" -ShowConsole -Color DarkCyan -SubMsg
+				IF ($DiskMode -notmatch "AndSkipImaging") {
+					$Global:SkipPVSImaging = $false
+					Set-P2VTool
+					IF ($TestDiskMode) { $vDiskMode = Test-BootMode }
+					IF (($vDiskMode -eq "HD") -or ($TestDiskMode -eq $false)) {
+						IF ($TestDiskMode) {
+							Write-BISFLog -Msg "Mode $vDiskMode - Boot from HardDisk in Private Mode" -ShowConsole -Color DarkCyan -SubMsg
+						}
+						ELSE {
+							Write-BISFLog -Msg "Mode UNC-Path - Boot from HardDisk" -ShowConsole -Color DarkCyan -SubMsg
+						}
+						## 12.08.2015 MS: Get-P2PVSLog must be running 2 times for P2V and after that
+						Get-P2PVSLog -PreCmd
+						Write-BISFLog -Msg "Using $PVSTool with Arguments $PVSToolArgs" -ShowConsole -SubMSg -Color DarkCyan
+						Start-P2PVS
+						IF (!($DiskMode -match "UNC-Path")) {
+							Show-BISFProgressBar -CheckProcess "$PVSTool" -ActivityText "convert $SysDrive to PVS vDisk...($PVSTool)"
+						}
+						ELSE {
+							Show-BISFProgressBar -CheckProcess "$PVSTool" -ActivityText "convert $SysDrive to $DiskMode -vDiskName: $vDiskName -UNC-Path: $LIC_BISF_CLI_P2V_PT_CUS...($PVSTool)"
+						}
+						Get-P2PVSLog
+						$Global:CheckP2PVSlog = "True"
 					}
-					ELSE {
-						Write-BISFLog -Msg "Mode UNC-Path - Boot from HardDisk" -ShowConsole -Color DarkCyan -SubMsg
+					IF ($vDiskMode -eq "P") {
+						Write-BISFLog -Msg "Mode $vDiskMode - Boot from vDisk/avhd in Private Mode"
+						$Global:CheckP2PVSlog = "FALSE"
 					}
-					## 12.08.2015 MS: Get-P2PVSLog must be running 2 times for P2V and after that
-					Get-P2PVSLog -PreCmd
-					Write-BISFLog -Msg "Using $PVSTool with Arguments $PVSToolArgs" -ShowConsole -SubMSg -Color DarkCyan
-					Start-P2PVS
-					IF (!($DiskMode -match "UNC-Path")) {
-						Show-BISFProgressBar -CheckProcess "$PVSTool" -ActivityText "convert $SysDrive to PVS vDisk...($PVSTool)"
+					IF ($vDiskMode -eq "S") {
+						$a = New-Object -comobject wscript.shell
+						$b = $a.popup("vDisk in Standard Mode (Mode: $vDiskMode), read access only. After shutdown, change the WriteCacheType to Private Image Mode and run the script again", 0, "Error", 0)
+						$Global:CheckP2PVSlog = "ERROR"
+						Write-BISFLog -Msg "Mode $vDiskMode - vDisk in Standard Mode, read access only!" -Type E -SubMsg
 					}
-					ELSE {
-						Show-BISFProgressBar -CheckProcess "$PVSTool" -ActivityText "convert $SysDrive to $DiskMode -vDiskName: $vDiskName -UNC-Path: $LIC_BISF_CLI_P2V_PT_CUS...($PVSTool)"
-					}
-					Get-P2PVSLog
-					$Global:CheckP2PVSlog = "True"
 				}
-				IF ($vDiskMode -eq "P") {
-					Write-BISFLog -Msg "Mode $vDiskMode - Boot from vDisk/avhd in Private Mode"
-					$Global:CheckP2PVSlog = "FALSE"
-				}
-				IF ($vDiskMode -eq "S") {
-					$a = New-Object -comobject wscript.shell
-					$b = $a.popup("vDisk in Standard Mode (Mode: $vDiskMode), read access only. After shutdown, change the WriteCacheType to Private Image Mode and run the script again", 0, "Error", 0)
-					$Global:CheckP2PVSlog = "ERROR"
-					Write-BISFLog -Msg "Mode $vDiskMode - vDisk in Standard Mode, read access only!" -Type E -SubMsg
+				ELSE {
+					Write-BISFLog -Msg "skipping PVS Master Image creation " -ShowConsole -Color Yellow -Type W
+					$Global:SkipPVSImaging = $true
 				}
 			}
 			ELSE {
@@ -417,6 +424,6 @@ Process {
 	}
 }
 
-	End {
-		Add-BISFFinishLine
-	}
+End {
+	Add-BISFFinishLine
+}

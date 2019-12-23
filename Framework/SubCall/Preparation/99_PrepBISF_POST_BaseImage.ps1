@@ -57,6 +57,7 @@ param(
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		03.10.2019 MS: ENH 94 - Add sysprep command-line options to ADMX
 		20.12.2019 MS/SF: FRQ 154 (PR)- Edjust for compositing engine change in AppLayering 1911 an higher
+		23.12.2019 MS: ENH 98 - Skip PostCommand execution, if PVS Master Image creation is skipped too
 
 	.LINK
 		https://eucweb.com
@@ -240,26 +241,31 @@ Process {
 			PostCommand
 		}
 		ELSE {
-			IF ($CheckP2PVSlog -eq $true) {
-				$CheckPVSLog = Test-BISFLog -CheckLogFile "$P2PVS_LOGFile" -SearchString "$P2PVS_LOGFile_search"
-				get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
-				IF ($CheckPVSLog -ne "") {
+			IF ($SkipPVSImaging -eq $false) {
+				IF ($CheckP2PVSlog -eq $true) {
+					$CheckPVSLog = Test-BISFLog -CheckLogFile "$P2PVS_LOGFile" -SearchString "$P2PVS_LOGFile_search"
+					get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
+					IF ($CheckPVSLog -ne "") {
+						Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
+						Write-BISFLog -Msg "vDisk $P2PVS_LOGFile_search"
+						PostCommand
+					}
+					ELSE {
+						Write-BISFLog -Msg "vDisk operation NOT successfull, check $P2PVS_LOGFile for further details" -Type E
+					}
+				}
+				IF ($CheckP2PVSlog -eq $false) {
 					Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
-					Write-BISFLog -Msg "vDisk $P2PVS_LOGFile_search"
 					PostCommand
 				}
-				ELSE {
-					Write-BISFLog -Msg "vDisk operation NOT successfull, check $P2PVS_LOGFile for further details" -Type E
+
+				IF ($CheckP2PVSlog -eq "ERROR") {
+					get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
+					Write-BISFLog -Msg "vDisk operation NOT successfull, check $LIC_PVS_LogPath for further details" -Type E
 				}
 			}
-			IF ($CheckP2PVSlog -eq $false) {
-				Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
-				PostCommand
-			}
-
-			IF ($CheckP2PVSlog -eq "ERROR") {
-				get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
-				Write-BISFLog -Msg "vDisk operation NOT successfull, check $LIC_PVS_LogPath for further details" -Type E
+			ELSE {
+				Write-BISFLog -Msg "Execution of PostCommands are skipped, if the PVS Master Image creation is skipped..." -ShowConsole -Color Yellow -Type W
 			}
 		}
 	}

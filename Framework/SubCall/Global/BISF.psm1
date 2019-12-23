@@ -1538,7 +1538,8 @@ function Get-DiskMode {
 		15.08.2017 MS: get additional DiskMode with AppLayering back, like ReadWriteAppLayering, ReadOnlyAppLayering
 		29.10.2017 MS: get VDA back instead of MCS
 		13.08.2019 AS: ENH 46 - Make any PVS conversion work Optional
-		20.09.2019 MS: ENH 136 - detect PVS Private Image with Asynchronous IO
+		20.09.2019 MS: ENH 136 - detect PVS Private Image with Asynchronous IO ($WriteCacheMode -eq "10")
+		23.12.2019 MS: HF 46: moving AndSkipImaging into finally block
 		.LINK
 		https://eucweb.com
 #>
@@ -1568,10 +1569,13 @@ function Get-DiskMode {
 		else {
 			$returnValue = "Unmanaged"
 			IF ($LIC_BISF_CLI_P2V_PT -eq "1") { $returnValue = $ReturnValue + "UNC-Path" }
-			IF ($LIC_BISF_CLI_P2V_SKIP_IMG -eq "1") { $returnValue = $ReturnValue + "AndSkipImaging" }
+
 		}
 	}
-	Finally { $ErrorActionPreference = "Continue" }
+	Finally {
+		$ErrorActionPreference = "Continue"
+		IF ($LIC_BISF_CLI_P2V_SKIP_IMG -eq "1") { $returnValue = $ReturnValue + "AndSkipImaging" }
+	}
 	IF ($CTXAppLayeringSW -eq $true) { $ReturnValue = $ReturnValue + "AppLayering" }
 	write-BISFlog -Msg "DiskMode is $($ReturnValue)"
 	return $returnValue

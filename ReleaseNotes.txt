@@ -1,5 +1,5 @@
-20.12.2019 MS/SF: FRQ 154 (PR)- Edjust for compositing engine change in AppLayering 1911 an higher
-20.12.2019 MS/SF: HF 153 (PR) - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
+20.12.2019 MS/SF: FRQ 154 - Edjust for compositing engine change in AppLayering 1911 an higher
+20.12.2019 MS/SF: HF 153 - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
 31.10.2019 MS: ENH 15 - BugFix with Office 365 Implementation, overwrite the value for Office 2016 detection
 08.10.2019 MS: HF 20 - Installer - Scripts not in custom folders being kept during Update and fix to keep the content of the custom folder now
 08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run
@@ -10,7 +10,7 @@
 05.10.2019 MS: ENH 22 - Get DiskID's of the system - for monitoring only ->  for later use to fix 'Endless Reboot with VMware Paravirtual SCSI disk'
 05.10.2019 MS: ENH 143 - Add Intel Graphics Support for Citrix VDA
 05.10.2019 MS: ENH 16 - Add NVIDIA GRID Support for Citrix VDA
-05.10.2019 MS: HF 77 - Remvoing Wsus ClientSide Targeting and reset it during every sealing process
+05.10.2019 MS: HF 77 - Removing Wsus ClientSide Targeting and reset it during every sealing process
 05.10.2019 MS: HF 69 - If WriteCache disk on master is GPT-partiton then uniqueid doesn't match
 05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only to prevent reboot loop
 05.10.2019 MS: ENH 142 - Remove DirtyShutdown Flag
