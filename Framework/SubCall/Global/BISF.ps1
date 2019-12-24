@@ -195,10 +195,10 @@ Begin {
 
 			$ErrorActionPreference = "Continue"
 			Write-BISFLog -Msg "Move BIS-F log to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
-			Get-ChildItem -Path "C:\Windows\Logs\*" -Include "*BISF*.log" -Exclude "*BISF_WPT*.log" -Recurse | Move-Item -Destination $LogPath -Force
+			Get-ChildItem -Path "C:\Windows\Logs\*" -Include "PREP_BISF*.log","PERS_BISF*.log" -Exclude "*BISF_WPT*.log" -Recurse | Move-Item -Destination $LogPath -Force
 			IF (($NewLogPath) -and ($NewLogPath -ne $LogPath)) {
 				Write-BISFLog -Msg "Move BIS-F log from $NewLogPath to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
-				Get-ChildItem -Path "$($NewLogPath)\*" -include "*BISF*.log" -Exclude "*BISF_WPT*.log" -Recurse | Move-Item -Destination $LogPath -Force
+				Get-ChildItem -Path "$($NewLogPath)\*" -include "PREP_BISF*.log","PERS_BISF*.log" -Exclude "*BISF_WPT*.log" -Recurse | Move-Item -Destination $LogPath -Force
 			}
 
 			$Global:Logfile = "$LogPath\$LogFileName"

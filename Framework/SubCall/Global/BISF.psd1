@@ -3,7 +3,7 @@
 #
 # Generiert von: Matthias Schlimm
 #
-# Generiert am: 23.12.2019
+# Generiert am: 24.12.2019
 #
 
 @{
@@ -12,7 +12,7 @@
 RootModule = 'BISF.psm1'
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '7.1912.2'
+ModuleVersion = '7.1912.0'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()
