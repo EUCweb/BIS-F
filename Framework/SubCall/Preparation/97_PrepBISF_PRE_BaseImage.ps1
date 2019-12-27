@@ -109,7 +109,8 @@ param(
 		05.10.2019 MS: HF 77 - Remvoing Wsus ClientSide Targeting and reset it during every sealing process
 		05.10.2019 MS: ENH 16 - Add NVIDIA GRID Support for Citrix VDA
 		05.10.2019 MS: ENH 143 - Add Intel Graphics Support for Citrix VDA
-		27.12.2019 MS: HF 159 - C:\Windows\temp not deleted
+		27.12.2019 MS/MN: HF 159 - C:\Windows\temp not deleted
+		27.12.2019 MS/MN: HF 162 - Note when logging on to a created VDisk (after ENH142)
 
 	.LINK
 		https://eucweb.com
@@ -738,6 +739,17 @@ Begin {
 		Command     = "Remove-ItemProperty -Path '$REG_HKLM_MS_CU' -Name 'DirtyShutdown' -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
+	
+	$PrepCommands += [pscustomobject]@{
+            Order       = "$ordercnt";
+            Enabled     = "$true";
+            showmessage = "N";
+            CLI         = "";
+            TestPath    = "";
+            Description = "Remove LastAliveStamp to prevent shutdown tracker after reboot";
+            Command     = "Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Reliability' -Name 'LastAliveStamp' -ErrorAction SilentlyContinue"
+      };
+      $ordercnt += 1
 
 	IF (($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) -and ($LIC_BISF_CLI_VDA_INTELGRFX -eq 1)) {
 		Write-BISFLog -Msg "NVIDIA GRID and Intel Graphic can be enabled at the same time, please check the ADMX configuration !!" -ShowConsole -Type E
