@@ -2730,6 +2730,7 @@ function Move-EvtLogs {
 		11.11.2017 MS: Bugfix, show the right Eventlog during move to the WCD
 		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
 		03.10.2019 MS: EHN 126 - added MCSIO redirection
+		27.12.2019 MS/MN: HF 161 - Quotation marks are different 
 
 	.FUNCTIONALITY
 		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
@@ -2767,7 +2768,7 @@ function Move-EvtLogs {
 			#$Error.ErrorRecord
 			#$Error.Errors
 			$x = $_.Exception.Message
-			Write-BISFLog -Msg “Error:`t`t $x" -Type W
+			Write-BISFLog -Msg "Error:`t`t $x" -Type W
 
 			#Exit
 		}
@@ -2782,7 +2783,7 @@ function Move-EvtLogs {
 
 	foreach ($logitem in $appvlogs) {
 		$x = $logitem.LogName
-		Write-BISFLog -Msg “Log enabled: $x"
+		Write-BISFLog -Msg "Log enabled: $x"
 		#     $logitem.IsEnabled = $true
 		$LogfilePath = "$LIC_BISF_EvtPath\" + $logitem.logName + ".evtx"
 		$Logfilepath = $LogFilePath.Replace("/", "")
@@ -2798,7 +2799,7 @@ function Move-EvtLogs {
 			#$Error.ErrorRecord
 			#$Error.Errors
 			$x = $_.Exception.Message
-			Write-BISFLog -Msg “Error:`t`t $x" -Type W
+			Write-BISFLog -Msg "Error:`t`t $x" -Type W
 
 			#Exit
 		}
@@ -2812,7 +2813,7 @@ function Move-EvtLogs {
 
 	foreach ($logitem in $appvlogs) {
 		$x = $logitem.LogName
-		Write-BISFLog -Msg “Log enabled: $x"
+		Write-BISFLog -Msg "Log enabled: $x"
 		$logitem.IsEnabled = $false
 		$LogfilePath = "$LIC_BISF_EvtPath\" + $logitem.logName + ".evtx"
 		$Logfilepath = $LogFilePath.Replace("/", "")
@@ -2828,7 +2829,7 @@ function Move-EvtLogs {
 			#$Error.ErrorRecord
 			#$Error.Errors
 			$x = $_.Exception.Message
-			Write-BISFLog -Msg “Error:`t`t $x" -Type W
+			Write-BISFLog -Msg "Error:`t`t $x" -Type W
 
 			#Exit
 		}
@@ -2841,7 +2842,7 @@ function Move-EvtLogs {
 
 	foreach ($logitem in $appvlogs) {
 		$x = $logitem.LogName
-		Write-BISFLog -Msg “Log enabled: $x"
+		Write-BISFLog -Msg "Log enabled: $x"
 		$LogfilePath = "$LIC_BISF_EvtPath\" + $logitem.logName + ".evtx"
 		$Logfilepath = $LogFilePath.Replace("/", "")
 

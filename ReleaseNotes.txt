@@ -1,3 +1,4 @@
+27.12.2019 MS/MN: HF 161 - Quotation marks are different in Move-BISFEvtLogs
 27.12.2019 MS/MN: HF 159 - C:\Windows\temp not deleted
 20.12.2019 MS/SF: FRQ 154 - Edjust for compositing engine change in AppLayering 1911 an higher
 20.12.2019 MS/SF: HF 153 - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
