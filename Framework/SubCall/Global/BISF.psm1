@@ -796,7 +796,7 @@ function Test-Log {
 }
 
 function Add-FinishLine {
-	write-BISFlog -Msg "------- FINISH SCRIPT -------"
+	Write-BISFLog -Msg "=========================== FINISH SCRIPT ==========================="
 }
 
 Function Get-SoftwareInfo {
