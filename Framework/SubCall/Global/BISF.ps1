@@ -85,6 +85,7 @@ param()
 		05.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
 		08.10.2019 MS: ENH 146 - Move Get-PendingReboot to earlier phase of preparation
 		08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run
+		27.12.2019 MS/MN: HF 160 - typo for Calculation of free space for the VHDX file
 
       #>
 Begin {
@@ -399,7 +400,7 @@ Process {
 			Write-BISFLog -Msg "Check if there enough free Diskspace on the Custom UNC-Path available before proceed" -ShowConsole -Color Cyan
 			$FreeSpace = Get-BISFSpace -path "$LIC_BISF_CLI_P2V_PT_CUS" -FreeSpace
 			$UsedSpace = Get-BISFSpace -path $env:SystemDrive
-			IF (FreeSpace -le $UsedSpace) {
+			IF ($FreeSpace -le $UsedSpace) {
 				Write-BISFLog -Msg "STOP: There is NOT enough Free Space on the Custom UNC path to store the vDisk " -ShowConsole -Type E -SubMsg
 			}
 			ELSE {

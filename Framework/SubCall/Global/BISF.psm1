@@ -4066,6 +4066,7 @@ Function Get-Space {
 		History:
 		  03.10.2019 MS: function created
 		  03.10.2019 MS: required for ENH 28 - Check if there's enough disk space on P2V Custom UNC-Path
+		  27.12.2019 MS/MN: HF 160 - Calculation of free space for the VHDX file using [math]::round and PS-Drive
 
 	.LINK
 		https://eucweb.com
@@ -4081,26 +4082,24 @@ Function Get-Space {
 		$localSpace = Get-WmiObject Win32_Volume -Filter 'DriveLetter="C:"'| select Capacity,FreeSpace
 
 		IF ($FreeSpace) {
-			$space = "{0:N2}" -f  (($localSpace.FreeSpace) / 1GB)
+			[int]$space = [math]::Round((($localSpace.FreeSpace) / 1GB))
 			Write-Log -Msg "Free space for $path is $space GB"
 		} ELSE {
 			$usedspace = $localSpace.Capacity - $localSpace.FreeSpace
-			$space = "{0:N2}" -f ($usedspace / 1GB)
+			[int]$space = [math]::Round(($usedspace / 1GB))
 			Write-Log -Msg "Used space for $path is $space GB"
 		}
 	} ELSE {
 		IF ($FreeSpace) {
 			$FreeDrive =  ls function:[d-z]: -n | ?{ !(test-path $_) } | random
-			$nwobj = new-object -comobject WScript.Network
-			$status = $nwobj.mapnetworkdrive($FreeDrive,$share)
-			$Driveletter = $FreeDrive.Substring(0,1)
-			$drive = get-psdrive $Driveletter
-			$space = "{0:N2}" -f (($drive.free) / 1GB)
-			$null = $nwobj.removenetworkdrive($FreeDrive)
+			$Driveletter = [string]$FreeDrive.Substring(0,1)
+			$drive = New-PSDrive -Name $Driveletter -Root $Path -Persist -PSProvider FileSystem
+			[int]$space = [math]::Round((($drive.free) / 1GB))
+			$null = Remove-PSDrive -Name $Driveletter
 			Write-Log -Msg "Free space for $path is $space GB"
 		} ELSE {
 			$objFSO = New-Object -com Scripting.FileSystemObject
-			$space = "{0:N2}" -f (($objFSO.GetFolder($path).Size) / 1GB)
+			[int]$space = [math]::Round((($objFSO.GetFolder($path).Size) / 1GB))
 			Write-Log -Msg "Used space for $path is $space GB"
 		}
 	}
