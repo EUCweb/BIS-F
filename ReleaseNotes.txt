@@ -1,5 +1,3 @@
----------------------------------
-Version 7.1912.0.011022 -- 24.12.2019 09:52:28 :
 20.12.2019 MS/SF: FRQ 154 - Edjust for compositing engine change in AppLayering 1911 an higher
 20.12.2019 MS/SF: HF 153 - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
 31.10.2019 MS: ENH 15 - BugFix with Office 365 Implementation, overwrite the value for Office 2016 detection
