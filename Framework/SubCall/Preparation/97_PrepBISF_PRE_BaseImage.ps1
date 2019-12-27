@@ -109,6 +109,7 @@ param(
 		05.10.2019 MS: HF 77 - Remvoing Wsus ClientSide Targeting and reset it during every sealing process
 		05.10.2019 MS: ENH 16 - Add NVIDIA GRID Support for Citrix VDA
 		05.10.2019 MS: ENH 143 - Add Intel Graphics Support for Citrix VDA
+		27.12.2019 MS: HF 159 - C:\Windows\temp not deleted
 
 	.LINK
 		https://eucweb.com
@@ -722,7 +723,7 @@ Begin {
 			CLI         = "";
 			TestPath    = "";
 			Description = "Cleaning directory: $path";
-			Command     = "Remove-BISFFolderAndContent($path)"
+			Command     = "Remove-BISFFolderAndContents -folder_path $path"
 		};
 		$ordercnt += 1
 	}

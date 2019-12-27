@@ -3247,15 +3247,21 @@ function Remove-FolderAndContents {
 
 		History:
 	  	22.08.2017 MS: function created
+		27.12.2019 NM: HF 159 - added begin section
 
 	.LINK
 		https://eucweb.com
 	  # http://stackoverflow.com/a/9012108
 #>
-	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	param(
 		[Parameter(Mandatory = $true, Position = 1)] [string] $folder_path
 	)
+	
+	Begin {
+            Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+            Write-BISFlog -Msg "Delete files and subfolders from folder $($folder_path)"
+      } #close Begin
+
 
 	process {
 		$child_items = ([array] (Get-ChildItem -Path $folder_path -Recurse -Force))
@@ -3263,7 +3269,7 @@ function Remove-FolderAndContents {
 			$null = $child_items | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue -Confirm:$False
 		}
 		$null = Remove-Item $folder_path -Force -Recurse -Confirm:$False -ErrorAction SilentlyContinue
-	}
+	} #close process
 }
 
 function Start-CDS {
