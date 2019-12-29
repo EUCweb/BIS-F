@@ -9,7 +9,6 @@ param(
 	.NOTES
 		Author: Matthias Schlimm
 		Editor: Mike Bijl (Rewritten variable names and script format)
-		Company: Login Consultants Germany GmbH
 
 		History:
 		27.09.2012 MS: Script created
@@ -98,6 +97,21 @@ param(
 		31.05.2019 MS: FRQ 92: Server 2019 Support
 		31.05.2019 MS: ENH 105: Keep Windows Administrative Tools in Startmenu
 		21.06.2019 MS: HF 116: During Preparation, BIS-F Shows Versionnumber instead of OSName
+		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		17.08.2019 MS: ENH 54: ADMX: Configure BIS-F Desktop Shortcut
+		18.08.2019 MS: ENH 101: check sdelete Version 2.02 or newer, otherwise send out error
+		25.08.2019 MS: FRQ 134: Removing Disable Cortana
+		25.08.2019 MS: FRQ 133: Removing Disable scheduled Task
+		03.10.2019 MS: ENH 102 - Use CCleaner64.exe on x64 system
+		03.10.2019 MS: ENH 101 - Use sdelete64.exe on x64 system
+		05.10.2019 MS: ENH 12 - Configure sDelete for different environments
+		05.10.2019 MS: ENH 142 - Remove DirtyShutdown Flag
+		05.10.2019 MS: HF 77 - Remvoing Wsus ClientSide Targeting and reset it during every sealing process
+		05.10.2019 MS: ENH 16 - Add NVIDIA GRID Support for Citrix VDA
+		05.10.2019 MS: ENH 143 - Add Intel Graphics Support for Citrix VDA
+		27.12.2019 MS/MN: HF 159 - C:\Windows\temp not deleted
+		27.12.2019 MS/MN: HF 162 - Note when logging on to a created VDisk (after ENH142)
+
 	.LINK
 		https://eucweb.com
 #>
@@ -127,9 +141,9 @@ Begin {
 	$PreCLI = @()
 	$CTX_SYS32_CACHE_PATH = "C:\Program Files (x86)\Citrix\System32\Cache\*"
 	$REG_hklm_WSUS = "$hklm_software\Microsoft\Windows\CurrentVersion\WindowsUpdate"
+	$REG_HKLM_MS_CU = "$hklm_software\Microsoft\Windows\CurrentVersion"
 	$REG_hklm_Pol_WSUS = "$hklm_software\Policies\Microsoft\Windows\WindowsUpdate"
 	$REG_hku_HP = "$hku_software\Hewlett-Packard\"
-	$WSUS_TargetGroupEnabled = (Get-ItemProperty "$REG_hklm_Pol_WSUS" -Name "TargetGroupEnabled").TargetGroupEnabled
 	$Dir_SwDistriPath = "C:\Windows\SoftwareDistribution\Download\*"
 	$File_WindowsUpdateLog = "C:\Windows\WindowsUpdate.log"
 	$Dir_AllUsersStartMenu = "C:\ProgramData\Microsoft\Windows\Start Menu\*"
@@ -192,7 +206,7 @@ Begin {
 		CLI         = "LIC_BISF_CLI_SM";
 		TestPath    = "";
 		Description = "Delete AllUsers Start Menu $Dir_AllUsersStartMenu ?";
-		Command="Get-ChildItem -path '$Dir_AllUsersStartMenu' -Exclude 'Administrative Tools' | remove-item -Force -Recurse"
+		Command     = "Get-ChildItem -path '$Dir_AllUsersStartMenu' -Exclude 'Administrative Tools' | remove-item -Force -Recurse"
 	};
 	$ordercnt += 1
 
@@ -229,15 +243,29 @@ Begin {
 	};
 	$ordercnt += 1
 
-	$PrepCommands += [pscustomobject]@{
-		Order       = "$ordercnt";
-		Enabled     = "$true";
-		showmessage = "Y";
-		CLI         = "LIC_BISF_CLI_CC";
-		TestPath    = "$($SearchFoldersCC)\CCleaner.exe" ;
-		Description = "Run CCleaner to clean temp files";
-		Command     = "Start-BISFProcWithProgBar -ProcPath '$($SearchFoldersCC)\CCleaner.exe' -Args '/AUTO' -ActText 'CCleaner is running'"
-	};
+	# ENH 102 - Use CCleaner64.exe on x64 system
+	IF ($OSBitness -eq "32-bit") {
+		$PrepCommands += [pscustomobject]@{
+			Order       = "$ordercnt";
+			Enabled     = "$true";
+			showmessage = "Y";
+			CLI         = "LIC_BISF_CLI_CC";
+			TestPath    = "$($SearchFoldersCC)\CCleaner.exe" ;
+			Description = "Run CCleaner to clean temp files";
+			Command     = "Start-BISFProcWithProgBar -ProcPath '$($SearchFoldersCC)\CCleaner.exe' -Args '/AUTO' -ActText 'CCleaner is running'"
+		};
+	}
+ ELSE {
+		$PrepCommands += [pscustomobject]@{
+			Order       = "$ordercnt";
+			Enabled     = "$true";
+			showmessage = "Y";
+			CLI         = "LIC_BISF_CLI_CC";
+			TestPath    = "$($SearchFoldersCC)\CCleaner64.exe" ;
+			Description = "Run CCleaner to clean temp files";
+			Command     = "Start-BISFProcWithProgBar -ProcPath '$($SearchFoldersCC)\CCleaner64.exe' -Args '/AUTO' -ActText 'CCleaner is running'"
+		};
+	}
 	$ordercnt += 1
 
 	$PrepCommands += [pscustomobject]@{
@@ -375,45 +403,62 @@ Begin {
 	};
 	$ordercnt += 1
 
-	# recommended: Running SDelete on PVS WriteCacheDisk on each PVS Target Devices only
-	IF ($returnTestPVSSoftware -eq "true") {
-		IF (($LIC_BISF_CLI_SD -ne $null) -or ($LIC_BISF_CLI_SD -ne "")) {
+	# ENH 12: Running SDelete during preparation
+	IF ($RunPrepSdelete -eq $true) {
+		IF ($OSBitness -eq "32-bit") { $sdeleteversion = "sdelete.exe" } ELSE { $sdeleteversion = "sdelete64.exe" }
+		IF ($LIC_BISF_CLI_SD_SF -eq "1") {
+			$SDeletePath = "$($LIC_BISF_CLI_SD_SF_CUS)\$sdeleteversion"
+		}
+		ELSE {
+			$SDeletePath = "C:\Windows\system32\$sdeleteversion"
+		}
+		$DiskType = Get-BISFDiskNameExtension
+
+		#During sealing on the BaseImage
+		IF ( ($LIC_BISF_CLI_SD_runBI -eq 1) -and ($CTXAppLayerName -ne "No-ELM") -and ($DiskType -eq "BaseDisk") -or ($DiskType -eq "NoVirtualDisk") ) {
 			$PrepCommands += [pscustomobject]@{
 				Order       = "$ordercnt";
 				Enabled     = "$true";
 				showmessage = "N";
 				CLI         = "";
-				TestPath    = "";
-				Description = "Reset value LIC_BISF_SDeleteRun in registry ?";
-				Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$false'"
+				TestPath    = "$SDeletePath";
+				Description = "SDelete is running to Zero Out Free Space on the Base Image";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$SDeletePath' -Args '-accepteula -z C:' -ActText 'SDelete is running to Zero Out Free Space on the Base Image'"
 			};
 			$ordercnt += 1
 		}
-		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
-			showmessage = "Y";
-			CLI         = "LIC_BISF_CLI_SD";
-			TestPath    = "$($SearchFoldersSD)\sdelete.exe";
-			Description = "Run SDelete to Zero-Out free space on PVS WriteCacheDisk on each PVS Target Device at system startup ?";
-			Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$true'"
-		};
-		$ordercnt += 1
-	}
-	ELSE {
-		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
-			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
-			Description = "Reset value LIC_BISF_SDeleteRun in registry ?";
-			Command     = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_SDeleteRun' -value '$false'"
-		};
-		$ordercnt += 1
+
+		#During sealing on the PVS parent Disk (avhd or avhdx)
+		IF ( ($LIC_BISF_CLI_SD_runPVSparentDisk -eq 1) -and ($DiskType -eq "ParentDisk") ) {
+			$PrepCommands += [pscustomobject]@{
+				Order       = "$ordercnt";
+				Enabled     = "$true";
+				showmessage = "N";
+				cli         = "";
+				TestPath    = "$SDeletePath";
+				Description = "SDelete is running to Zero Out Free Space on the PVS parent Disk";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$SDeletePath' -Args '-accepteula -z C:' -ActText 'SDelete is running to Zero Out Free Space on the PVS parent Disk'"
+			};
+			$ordercnt += 1
+		}
+
+		#During sealing with Citrix AppLayering outside ELM IF (!($CTXAppLayerName -eq "No-ELM")) {
+		IF ( ($LIC_BISF_CLI_SD_runOutsideELM -eq 1) -and ($CTXAppLayerName -eq "No-ELM") ) {
+			$PrepCommands += [pscustomobject]@{
+				Order       = "$ordercnt";
+				Enabled     = "$true";
+				showmessage = "N";
+				cli         = "";
+				TestPath    = "$SDeletePath";
+				Description = "SDelete is running to Zero Out Free Space with AppLayering Outside ELM";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$SDeletePath' -Args '-accepteula -z C:' -ActText 'SDelete is running to Zero Out Free Space with AppLayering Outside ELM'"
+			};
+			$ordercnt += 1
+		}
 	}
 
-	if (!($LIC_BISF_CLI_DotNet -eq "NO")) {
+
+	IF (!($LIC_BISF_CLI_DotNet -eq "NO")) {
 
 		### Executing all queued .NET compilation jobs - Precompiling assemblies with Ngen.exe can improve the startup time for some applications.
 		$NgenPath = Get-ChildItem -Path 'C:\Windows\Microsoft.NET' -Recurse "ngen.exe" | % { $_.FullName }
@@ -633,32 +678,31 @@ Begin {
 
 	}
 
-	## WSUS client-side targeting
+	## Rmove WSUS ID
 
-	IF ($WSUS_TargetGroupEnabled -eq 1) {
-		Write-BISFLog -Msg "WSUS client-side targeting detected"
-		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
-			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
-			Description = "Delete WSUS - SusClientId in $REG_hklm_WSUS";
-			Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientId' -ErrorAction SilentlyContinue"
-		};
-		$ordercnt += 1
+	$PrepCommands += [pscustomobject]@{
+		Order       = "$ordercnt";
+		Enabled     = "$true";
+		showmessage = "N";
+		CLI         = "";
+		TestPath    = "";
+		Description = "Delete WSUS - SusClientId in $REG_hklm_WSUS";
+		Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientId' -ErrorAction SilentlyContinue"
+	};
+	$ordercnt += 1
 
-		$PrepCommands += [pscustomobject]@{
-			Order       = "$ordercnt";
-			Enabled     = "$true";
-			showmessage = "N";
-			CLI         = "";
-			TestPath    = "";
-			Description = "Delete WSUS - SusClientIdValidation in $REG_hklm_WSUS";
-			Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientIdValidation' -ErrorAction SilentlyContinue"
-		};
-		$ordercnt += 1
-	}
+	$PrepCommands += [pscustomobject]@{
+		Order       = "$ordercnt";
+		Enabled     = "$true";
+		showmessage = "N";
+		CLI         = "";
+		TestPath    = "";
+		Description = "Delete WSUS - SusClientIdValidation in $REG_hklm_WSUS";
+		Command     = "Remove-ItemProperty -Path '$REG_hklm_WSUS' -Name 'SusClientIdValidation' -ErrorAction SilentlyContinue"
+	};
+	$ordercnt += 1
+
+
 	$PrepCommands += [pscustomobject]@{
 		Order       = "$ordercnt";
 		Enabled     = "$true";
@@ -669,36 +713,6 @@ Begin {
 		Command     = "Set-Service -Name wuauserv -StartupType Disabled -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
-	IF ($LIC_BISF_3RD_OPT -eq $false) {
-		## Disable useless scheduled tasks
-		IF (($OSVersion -like "6.3*") -or ($OSVersion -like "10*")) {
-			Write-BISFLog -Msg "Disable Scheduled Tasks" -ShowConsole -Color Cyan
-			$ScheduledTasksList = @("AitAgent", "ProgramDataUpdater", "StartupAppTask", "Proxy", "UninstallDeviceTask", "BthSQM", "Consolidator", "KernelCeipTask", "Uploader", "UsbCeip", "Scheduled", "Microsoft-Windows-DiskDiagnosticDataCollector", "Microsoft-Windows-DiskDiagnosticResolver", "WinSAT", "HotStart", "AnalyzeSystem", "RacTask", "MobilityManager", "RegIdleBackup", "FamilySafetyMonitor", "FamilySafetyRefresh", "AutoWake", "GadgetManager", "SessionAgent", "SystemDataProviders", "UPnPHostConfig", "ResolutionHost", "BfeOnServiceStartTypeChange", "UpdateLibrary", "ServerManager", "Proxy", "UninstallDeviceTask", "Scheduled", "Microsoft-Windows-DiskDiagnosticDataCollector", "Microsoft-Windows-DiskDiagnosticResolver", "WinSAT", "MapsToastTask", "MapsUpdateTask", "ProcessMemoryDiagnosticEvents", "RunFullMemoryDiagnostic", "MNO Metadata Parser", "AnalyzeSystem", "MobilityManager", "RegIdleBackup", "CleanupOfflineContent", "FamilySafetyMonitor", "FamilySafetyRefresh", "SR", "UPnPHostConfig", "ResolutionHost", "UpdateLibrary", "WIM-Hash-Management", "WIM-Hash-Validation", "ServerCeipAssistant")
-			ForEach ($ScheduledTaskList in $ScheduledTasksList) {
-				$task = Get-ScheduledTask -TaskName "$ScheduledTaskList" -ErrorAction SilentlyContinue
-				IF ($task) {
-					Write-BISFLog -Msg "Scheduled Task $ScheduledTaskList exists" -ShowConsole -SubMsg -Color DarkCyan
-					$TaskPathName = Get-ScheduledTask -TaskName "$ScheduledTaskList" | % { $_.TaskPath }
-					$PrepCommands += [pscustomobject]@{
-						Order       = "$ordercnt";
-						Enabled     = "$true";
-						showmessage = "N";
-						CLI         = "";
-						Testpath    = "";
-						Description = "Disable scheduled Task $ScheduledTaskList ";
-						Command     = "Disable-ScheduledTask -Taskname '$ScheduledTaskList' -TaskPath '$TaskPathName' | Out-Null"
-					};
-					$ordercnt += 1
-				}
-				ELSE {
-					Write-BISFLog -Msg "Scheduled Task $ScheduledTaskList NOT exists"
-				}
-			}
-		}
-	}
-	ELSE {
-		Write-BISFLog -Msg "Schedule Task are not disabled from BIS-F, because 3rd Party Optimization is configured" -Type W -ShowConsole -SubMsg
-	}
 
 	$paths = @( "$env:windir\Temp", "$env:temp")
 
@@ -710,9 +724,85 @@ Begin {
 			CLI         = "";
 			TestPath    = "";
 			Description = "Cleaning directory: $path";
-			Command     = "Remove-BISFFolderAndContent($path)"
+			Command     = "Remove-BISFFolderAndContents -folder_path $path"
 		};
 		$ordercnt += 1
+	}
+
+	$PrepCommands += [pscustomobject]@{
+		Order       = "$ordercnt";
+		Enabled     = "$true";
+		showmessage = "N";
+		CLI         = "";
+		TestPath    = "";
+		Description = "Remove DirtyShutdown to prevent not coorect shutdown after reboot";
+		Command     = "Remove-ItemProperty -Path '$REG_HKLM_MS_CU' -Name 'DirtyShutdown' -ErrorAction SilentlyContinue"
+	};
+	$ordercnt += 1
+	
+	$PrepCommands += [pscustomobject]@{
+            Order       = "$ordercnt";
+            Enabled     = "$true";
+            showmessage = "N";
+            CLI         = "";
+            TestPath    = "";
+            Description = "Remove LastAliveStamp to prevent shutdown tracker after reboot";
+            Command     = "Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Reliability' -Name 'LastAliveStamp' -ErrorAction SilentlyContinue"
+      };
+      $ordercnt += 1
+
+	IF (($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) -and ($LIC_BISF_CLI_VDA_INTELGRFX -eq 1)) {
+		Write-BISFLog -Msg "NVIDIA GRID and Intel Graphic can be enabled at the same time, please check the ADMX configuration !!" -ShowConsole -Type E
+		Start-Sleep -Seconds 20
+	}
+ ELSE {
+		IF ($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) {
+			$svc = Test-BISFService -ServiceName "nvsvc" -ProductName "nVIDIA Diplay Driver Service"
+			IF ($svc -eq $true) {
+				Write-BISFLog -Msg "VDA Version $VDAVersion" -ShowConsole
+				IF ($VDAVersion -le "7.11") {
+					$cmd = "$glbSVCImagePath\bin\Montereyenable.exe" # $glbSVCImagePath is getting from Test-BISFService
+					$args = "-enable -noreset"
+				}
+
+				IF ($VDAVersion -ge "7.12") {
+					$cmd = "$glbSVCImagePath\bin\NVFBCEnable.exe" # $glbSVCImagePath is getting from Test-BISFService
+					$args = "-enable -noreset"
+				}
+
+				$PrepCommands += [pscustomobject]@{
+					Order       = "$ordercnt";
+					Enabled     = "$true";
+					showmessage = "N";
+					CLI         = "";
+					TestPath    = "$cmd";
+					Description = "Enable NVIDIA GRID with command $cmd $args";
+					Command     = "Start-BISFProcWithProgBar -ProcPath '$cmd' -Args '$args' -ActText 'Enable NVIDIA GRID for VDA Version $VDAVersion'"
+				};
+				$ordercnt += 1
+
+
+			}
+			ELSE {
+				Write-BISFLog -Msg "NVIDIA Display Driver is not installed and can't be enabled" -ShowConsole -Type W
+			}
+		}
+
+		IF ($LIC_BISF_CLI_VDA_INTELGRFX -eq 1) {
+			$cmd = "$env:ProgramFiles\Citrix\ICAServices\IntelVirtualDisplayTool.exe"
+			$args = "-vd enable"
+
+			$PrepCommands += [pscustomobject]@{
+				Order       = "$ordercnt";
+				Enabled     = "$true";
+				showmessage = "N";
+				CLI         = "";
+				TestPath    = "$cmd";
+				Description = "Enable Intel graphics with command $cmd $args";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$cmd' -Args '$args' -ActText 'Enable Intel graphics  for VDA Version $VDAVersion'"
+			};
+			$ordercnt += 1
+		}
 	}
 
 	####################################################################
@@ -732,8 +822,8 @@ Begin {
 					$Productname = (Get-Item $($prepCommand.TestPath)).Basename
 					$ProductFileVersion = (Get-Item $($prepCommand.TestPath)).VersionInfo.FileVersion
 					Write-BISFLog -Msg "Product $Productname $ProductFileVersion installed" -ShowConsole -Color Cyan
-					IF (($Productname -eq "sdelete") -and ($ProductFileVersion -eq "2.0")) {
-						Write-BISFLog -Msg "WARNING: $Productname $ProductFileVersion has an vendor bug, please install Version 1.6.1 or newer !!" -ShowConsole -Type W
+					IF (($Productname -eq "sdelete") -and ($ProductFileVersion -lt "2.02")) {
+						Write-BISFLog -Msg "WARNING: $Productname $ProductFileVersion is not supported, Please use Version 2.02 or newer !!" -ShowConsole -Type E
 						Start-Sleep 20
 					}
 
@@ -742,26 +832,25 @@ Begin {
 				# write-host "MessageBox: $($prepCommand.showmessage)" -ForegroundColor White -BackgroundColor Red  #<<< enable for debug only
 				IF ($($prepCommand.showmessage) -eq "N") {
 					# Write-BISFLog -Msg "$($prepCommand.Command)" -ShowConsole
-					invoke-expression $($prepCommand.Command)
+					Invoke-Expression $($prepCommand.Command)
 				}
 				ELSE {
-					Write-BISFLog -Msg "Check Silentswitch..."
+					Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
 					$varCLI = Get-Variable -Name $($prepCommand.CLI) -ValueOnly
 					If (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-						Write-BISFLog -Msg "Silentswitch will be set to $varCLI" -ShowConsole -Color DarkCyan -SubMsg
+						Write-BISFLog -Msg "GPO Valuedata: $varCLI"
 					}
 					ELSE {
 
-						If ($LIC_BISF_CLI_VS) {
-							Write-BISFLog -Msg "VerySilent will be configured with the BIS-F ADMX template! Please configure the BIS-F ADMX to run $($prepCommand.Description) and start the script again !" -Type E
-						}
-						Write-BISFLog -Msg "Silentswitch not defined, show MessageBox"
-						$PreMsgBox = Show-BISFMessageBox -Msg "$($prepCommand.Description)" -Title "PRE build Base Image Action" -YesNo -Question
-						Write-BISFLog -Msg "`"$PreMsgBox`" is the response to perform $($prepCommand.Description)... please wait" -ShowConsole -Color DarkGreen -SubMsg
+						Write-BISFLog -Msg "GPO not configured.. using default setting" -ShowConsole -SubMsg -Color DarkCyan
+						$DefaultValue = "No"
 					}
-					if (($PreMsgBox -eq "YES") -or ($varCLI -eq "YES")) {
+					if (($DefaultValue -eq "YES") -or ($varCLI -eq "YES")) {
 						Write-BISFLog -Msg "Running Command $($prepCommand.Command)"
-						invoke-expression $($prepCommand.Command)
+						Invoke-Expression $($prepCommand.Command)
+					}
+					ELSE {
+						Write-BISFLog -Msg " Skipping Commannd $($prepCommand.Description)" -ShowConsole -Color DarkCyan -SubMsg
 					}
 				}
 				# these 2 variables must be cleared after each step, to not store the value in the variable and use them in the next $prepCommand
@@ -779,13 +868,13 @@ Begin {
 	function Create-BISFTask {
 		# searching for BISF scheduled task and if from different BIS-F version delete them
 
-		$testBISFtask = schtasks /query /v /FO CSV | ConvertFrom-Csv | Where { $_.TaskName -eq "\$BISFtask" }
+		$testBISFtask = schtasks.exe /query /v /FO CSV | ConvertFrom-Csv | where { $_.TaskName -eq "\$BISFtask" }
 		IF (!($testBISFtask)) {
 			Write-BISFLog -Msg "Create startup task $BISFtask to personalize System" -ShowConsole -Color Cyan
 			schtasks.exe /create /sc ONSTART /TN "$BISFtask" /IT /RU 'System' /RL HIGHEST /tr "powershell.exe -Executionpolicy unrestricted -file '$LIC_BISF_MAIN_PersScript'" /f | Out-Null
 		}
 		ELSE {
-			Write-BISFLog -Msg "Task alrady exist, modify startup task $BISFtask to personalize System" -ShowConsole -Color Cyan
+			Write-BISFLog -Msg "Task already exist, modify startup task $BISFtask to personalize System" -ShowConsole -Color Cyan
 			schtasks.exe /change /TN "$BISFtask" /RL HIGHEST /tr "powershell.exe -Executionpolicy unrestricted -file '$LIC_BISF_MAIN_PersScript'" | Out-Null
 		}
 
@@ -806,173 +895,51 @@ Begin {
 	}
 
 
-	function Add-AdminShortcut {
-		Write-BISFLog -Msg "Create BIS-F Shortcut on your Desktop" -ShowConsole -Color Cyan
-		$DisplayIcon = (Get-ItemProperty "$HKLM_Full_Uninsstall" -Name "DisplayIcon").DisplayIcon
-		$WshShell = New-Object -comObject WScript.Shell
-		$Shortcut = $WshShell.CreateShortcut("$Home\Desktop\PrepareBaseImage (BIS-F) Admin Only.lnk")
-		$Shortcut.TargetPath = "$InstallLocation\PrepareBaseImage.cmd"
-		$Shortcut.IconLocation = "$DisplayIcon"
-		$Shortcut.Description = "Run Base Image Script Framework (Admin Only)"
-		$Shortcut.WorkingDirectory = "$InstallLocation"
-		$Shortcut.Save()
-	}
-
-
-	function Disable-Cortana {
-		IF ($LIC_BISF_3RD_OPT -eq $false) {
-			Write-BISFLog -Msg  "Disabling Cortana..." -ShowConsole -Color DarkCyan -Submsg
-			New-Item -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\' -Name 'Windows Search' | Out-Null
-			New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' -Name 'AllowCortana' -PropertyType DWORD -Value '0' | Out-Null
+	function Invoke-DesktopShortcut {
+		IF ($LIC_BISF_CLI_DesktopShortcut -eq "YES") {
+			Write-BISFLog -Msg "Create BIS-F Shortcut on your Desktop" -ShowConsole -Color Cyan
+			$DisplayIcon = (Get-ItemProperty "$HKLM_Full_Uninsstall" -Name "DisplayIcon").DisplayIcon
+			$WshShell = New-Object -comObject WScript.Shell
+			$Shortcut = $WshShell.CreateShortcut("$Home\Desktop\PrepareBaseImage (BIS-F) Admin Only.lnk")
+			$Shortcut.TargetPath = "$InstallLocation\PrepareBaseImage.cmd"
+			$Shortcut.IconLocation = "$DisplayIcon"
+			$Shortcut.Description = "Run Base Image Script Framework (Admin Only)"
+			$Shortcut.WorkingDirectory = "$InstallLocation"
+			$Shortcut.Save()
 		}
-		ELSE {
-			Write-BISFLog -Msg "Disabling Cortana are not set from BIS-F, because 3rd Party Optimization is configured" -Type W -ShowConsole -SubMsg
+
+		IF ($LIC_BISF_CLI_DesktopShortcut -eq "NO") {
+			Write-BISFLog -Msg "Removing BIS-F Shortcut on your Desktop" -ShowConsole -Color Cyan
+			Remove-Item "$Home\Desktop\PrepareBaseImage (BIS-F) Admin Only.lnk" -Force
 		}
 	}
-
 
 	function Clear-EventLog {
-		wevtutil el | Foreach-Object {
+		wevtutil.exe el | ForEach-Object {
 			Write-BISFLog -Msg  "Clearing Event-Log $_" -ShowConsole -Color DarkCyan -Submsg
-			wevtutil cl "$_"
+			wevtutil.exe cl "$_"
 		}
 	}
 
 	function Create-AllusersStartmenuPrograms {
 		#bugfix 56: recreate "$Dir_AllUsersStartMenu\Programs" that is necassary for to start Office C2R or other AppX after delete $Dir_AllUsersStartMenu
 		$StartMenuProgramsPath = $Dir_AllUsersStartMenu.Substring(0, $Dir_AllUsersStartMenu.Length - 2) + "\Programs"
-		IF (!(Test-path "$StartMenuProgramsPath")) {
+		IF (!(Test-Path "$StartMenuProgramsPath")) {
 			Write-BISFLog -Msg "Create Directory $StartMenuProgramsPath" -ShowConsole -Color Cyan
-			New-Item -ItemType Directory -Path "$StartMenuProgramsPath" | out-null
+			New-Item -ItemType Directory -Path "$StartMenuProgramsPath" | Out-Null
 		}
 	}
 
 	function Pre-Win7 {
-		<#
-		IF (Test-Path "$env:WinDir\System32\cleanmgr.exe" -PathType Leaf )
-		{
-			Write-BISFLog -Msg "Perform a disk cleanup" -ShowConsole -Color DarkCyan -SubMsg
-			# Automate by creating the reg checks corresponding to "cleanmgr /sageset:100" so we can use "sagerun:100"
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Active Setup Temp Folders' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\BranchCache' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Downloaded Program Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameNewsFiles' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameStatisticsFiles' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameUpdateFiles' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Internet Cache Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Memory Dump Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Offline Pages Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Old ChkDsk Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Previous Installations' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Recycle Bin' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Service Pack Cleanup' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Setup Log Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error memory dump files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error minidump files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Setup Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Sync Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Update Cleanup' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Upgrade Discarded Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\User file versions' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Defender' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Archive Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Queue Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Archive Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Queue Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows ESD installation files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Upgrade Log Files' -Type DWord -Value 0x00000002
-			# Perform a disk cleanup
-			Start-Process 'cleanmgr.exe' -Verb runAs -ArgumentList '/sagerun:100 | Out-Null' -Wait
-			Show-BISFProgressBar -CheckProcess "cleanmgr" -ActivityText "Running Disk Cleanup..."
-		}
-		ELSE
-		{
-			Write-BISFLog -Msg "Disk Cleanup is NOT installed" -ShowConsole -Color DarkCyan -SubMsg
-		}
-		#>
+
 	}
 
-   	function Pre-Win2008R2 {
-		<#
-		IF (Test-Path "$env:WinDir\System32\cleanmgr.exe" -PathType Leaf )
-		{
-			Write-BISFLog -Msg "Perform a disk cleanup" -ShowConsole -Color DarkCyan -SubMsg
-			# Automate by creating the reg checks corresponding to "cleanmgr /sageset:100" so we can use "sagerun:100"
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Active Setup Temp Folders' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\BranchCache' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Downloaded Program Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameNewsFiles' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameStatisticsFiles' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\GameUpdateFiles' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Internet Cache Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Memory Dump Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Offline Pages Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Old ChkDsk Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Previous Installations' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Recycle Bin' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Service Pack Cleanup' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Setup Log Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error memory dump files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error minidump files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Setup Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Sync Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Update Cleanup' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Upgrade Discarded Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\User file versions' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Defender' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Archive Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Queue Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Archive Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Queue Files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows ESD installation files' -Type DWord -Value 0x00000002
-			Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Upgrade Log Files' -Type DWord -Value 0x00000002
-			# Perform a disk cleanup
-			Start-Process 'cleanmgr.exe' -Verb runAs -ArgumentList '/sagerun:100 | Out-Null' -Wait
-			Show-BISFProgressBar -CheckProcess "cleanmgr" -ActivityText "Running Disk Cleanup..."
-		}
-		ELSE
-		{
-			Write-BISFLog -Msg "Disk Cleanup is NOT installed" -ShowConsole -Color DarkCyan -SubMsg
-			# Install Disk Cleanup (without Desktop Experience feature)
-			#Copy-Item -Path "$env:WinDir\winsxs\amd64_microsoft-windows-cleanmgr_31bf3856ad364e35_6.1.7600.16385_none_c9392808773cd7da\cleanmgr.exe" -Destination "$env:WinDir\System32\"  -Force |Out-Null
-			#Depends on Windows Language!
-			#Copy-Item -Path "$env:WinDir\winsxs\amd64_microsoft-windows-cleanmgr.resources_31bf3856ad364e35_6.1.7600.16385_en-us_b9cb6194b257cc63\cleanmgr.exe.mui" -Destination "$env:WinDir\System32\en-US\"  -Force |Out-Null
-		}
-		#>
+	function Pre-Win2008R2 {
+
 	}
 
 	function Pre-Win8 {
-		<#
-		Write-BISFLog -Msg "Perform a disk cleanup" -ShowConsole -Color DarkCyan -SubMsg
-		# Automate by creating the reg checks corresponding to "cleanmgr /sageset:100" so we can use "sagerun:100"
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Active Setup Temp Folders' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Downloaded Program Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Internet Cache Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Memory Dump Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Offline Pages Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Old ChkDsk Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Previous Installations' -Type DWord -Value 0x00000000
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Recycle Bin' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Setup Log Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error memory dump files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\System error minidump files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Temporary Setup Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Thumbnail Cache' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Upgrade Discarded Files' -Type DWord -Value 0x00000000
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Archive Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting Queue Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Archive Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Error Reporting System Queue Files' -Type DWord -Value 0x00000002
-		Set-ItemProperty -Name StateFlags0100 -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Windows Upgrade Log Files' -Type DWord -Value 0x00000002
-		# Perform a disk cleanup
-		Start-Process 'cleanmgr.exe' -Verb runAs -ArgumentList '/sagerun:100 | Out-Null' -Wait
-		Show-BISFProgressBar -CheckProcess "cleanmgr" -ActivityText "Running Disk Cleanup..."
-		#>
+
 		Optimize-BISFWinSxs
 	}
 
@@ -982,13 +949,11 @@ Begin {
 	}
 
 	function Pre-Win2016 {
-		Disable-Cortana
 		Optimize-BISFWinSxs
 
 	}
 
 	function Pre-Win10 {
-		Disable-Cortana
 		Optimize-BISFWinSxs
 	}
 
@@ -998,6 +963,7 @@ Begin {
 }
 
 Process {
+
 	#### Main Program
 
 
@@ -1042,7 +1008,7 @@ Process {
 	Test-DrvLabel
 	Create-AllusersStartmenuPrograms
 	Create-BISFTask
-	Add-AdminShortcut
+	Invoke-DesktopShortcut
 
 }
 End {

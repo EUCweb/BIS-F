@@ -1,9 +1,9 @@
 #
 # Modulmanifest für das Modul "PSGet_BISF"
 #
-# Generiert von: Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank
+# Generiert von: Matthias Schlimm
 #
-# Generiert am: 10.08.2019
+# Generiert am: 28.12.2019
 #
 
 @{
@@ -12,7 +12,7 @@
 RootModule = 'BISF.psm1'
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '6.1.3'
+ModuleVersion = '7.1912.0'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()
@@ -21,45 +21,16 @@ ModuleVersion = '6.1.3'
 GUID = '632e959f-fff8-40ee-96f4-d8fb3f122a9f'
 
 # Autor dieses Moduls
-Author = 'Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank'
+Author = 'Matthias Schlimm'
 
 # Unternehmen oder Hersteller dieses Moduls
-CompanyName = 'Login Consultants'
+CompanyName = 'EUCweb'
 
 # Urheberrechtserklärung für dieses Modul
-Copyright = '(c) 2016 Benjamin Ruoff / Matthias Schlimm / Mike Bijl / Florian Frank. All rights reserved.'
+Copyright = '(c) 2019 EUCweb.com - All rights reserved.'
 
 # Beschreibung der von diesem Modul bereitgestellten Funktionen
-Description = 'This module contains functions and global variables needed for the Login Consultants Base Image Script Framework (BISF)
-  Author: Benjamin Ruoff
-  Date: 11.03.2014
-
-  History
-  Last Change: 11.03.2014 BR: Script created -function Get-Adaptername  
-  Last Change: 13.03.2014 MS: add function Show-MessageBox (thx to BR)
-  Last Change: 18.03.2014 BR: new functions added (Write-Log, Set-Logfile, Invoke-FolderScripts)
-  Last Change: 21.03.2014 MS: last code change before release to web
-  Last Change: 01.04.2014 MS: added central functions and global environment variables from 10_XX_LIB_Config.ps1
-  Last Change: 15.05.2014 MS: add function get-version, to display this in the console window
-  Last Change: 06.08.2014 MS: Add function ChangeNetworkProviderOrder
-  Last Change: 11.08.2014 MS: change function set-Logfile to a single LogFile, like $LOG = "$regdata_log1\$LogFileName"
-  Last Change: 11.08.2014 MS: add $Global:hkcu_software= "HKCU:\SOFTWARE"
-  Last Change: 12.08.2014 MS: add function CheckPVSSoftware to check BNDevice.exe
-  Last Change: 12.08.2014 MS: move Set-Logfile to 10_XX_LIB_Config.ps1 / remove CheckLogDir
-  Last Change: 14.08.2014 MS: add Type for Info, Warning, Error for function Write-Log, exit script if Type = Error
-  Last Change: 15.08.2014 MS: function Get-Adaptername: add check AdapterIndex IF (!($AdapterIndex -eq $null))...
-  Last Change: 15.08.2014 MS: Change Title to "Base Image Script Framework (BIS-F)"
-  Last Change: 15.08.2014 MS: add function get-OSinfo
-  Last Change: 15.08.2014 MS: add function CheckXDSoftware
-  Last Change: 19.08.2014 MS: line 43: reduce PVSDiskDrive to 2 strings if variable exists -> $env:PVSWriteCacheDisk.Substring(0,2)
-  Last Change: 19.08.2014 MS: move function progressbar from 98_XX_PrepPVS_BUILD_vDisk.ps1 to this script 
-  Last Change: 19.08.2014 MS: add function get-LogContent
-  Last Change: 31.10.2014 MB: Renamed functions: Progressbar -> Show-progressbar / CheckXDSoftware -> Test-XDSoftware / CheckPVSSoftware -> Test-PVSSoftware / ChangeNetworkProviderOrder -> Set-NetworkProviderOrder / CheckPSVersion -> Get-PSVersion 
-  Last Change: 31.10.2014 MB: Renamed variables: hklm_sw -> hklm_software / hklm_sys -> hklm_system / hkcu_sw -> hkcu_software / CTX_PVS_SCRIPTS -> CTX_BISF_SCRIPTS / $LogFolderName = "BISLogs" -> $LogFolderName = "BISFLogs" / hklm_software_LIC_CTX_PVS_SCRIPTS -> hklm_software_LIC_CTX_BISF_SCRIPTS
-  Last Change: 06.02.2015 MS: add function Get-PendingReboot to BISF.psd1
-  Last Change: 24.04.2015 MS: change powershell minimum version to 3.0, because with version 2.0 the psd1 would not loaded corretly
-  Last Change: 21.08.2015 MS: Change Request 77 - remove all XX,XA,XD from al files and Scripts
-'
+Description = 'This module contains functions and global variables needed for the Base Image Script Framework (BISF)'
 
 # Die für dieses Modul mindestens erforderliche Version des Windows PowerShell-Moduls
 PowerShellVersion = '2.0'
@@ -146,7 +117,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo-URI dieses Moduls
-HelpInfoURI = 'http://www.loginconsultants.com/de/ueber-uns/news/tech-update/item/base-image-script-framework-bis-f'
+HelpInfoURI = 'https://eucweb.com/'
 
 # Standardpräfix für Befehle, die aus diesem Modul exportiert werden. Das Standardpräfix kann mit "Import-Module -Prefix" überschrieben werden.
 DefaultCommandPrefix = 'BISF'
