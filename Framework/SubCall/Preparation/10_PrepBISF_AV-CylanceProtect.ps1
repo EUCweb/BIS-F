@@ -10,6 +10,7 @@
 		History
 			09.05.2019 MK: Script created
 			14.08.2019 MS: ENH 98: add function Set-CompatibilityMode
+			02.01.2020 MS: HF 164: Wrong Command for Compatibility Mode
 
 	.LINK
         https://eucweb.com
@@ -101,7 +102,7 @@ Process {
 		$key.Close()
 
 		Write-BISFLog -Msg "Set Compatibility Mode" -ShowConsole -Color DarkCyan -SubMsg
-		Set-ItemProperty -Path "HKLM:\SOFTWARE\Cylance\Desktop" -Name "CompatibilityMode" -value 01 -PropertyType Binary -Force
+		New-ItemProperty -Path "HKLM:\SOFTWARE\Cylance\Desktop" -Name "CompatibilityMode" -value 01 -PropertyType Binary -Force
 	}
 
 	####################################################################
