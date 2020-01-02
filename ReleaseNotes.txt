@@ -1,5 +1,6 @@
+02.01.2020 MS: HF 168 - VMware Optimizations 52_PrepBISF_VMWareTCPIPOptimization not executed
 02.01.2020 MS: HF 166 - CylanceProtect - Wrong Command for Compatibility Mode
-02.01.2020 MS: HF 164 -  Layer finalize is blocked with VDA 1912 LTSR and activated UPL
+02.01.2020 MS: HF 164 - Layer finalize is blocked with VDA 1912 LTSR and activated UPL
 ---------------------------------
 Version 7.1912.0.011023 -- 28.12.2019 00:38:37 :
 27.12.2019 MS/MN: HF 160 - Calculation of free space for the VHDX on UNC-Path
