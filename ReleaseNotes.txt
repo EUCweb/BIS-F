@@ -1,6 +1,7 @@
+02.01.2020 MS: Bugfix 164: Layer finalize is blocked with VDA 1912 LTSR and activated UPL
 ---------------------------------
 Version 7.1912.0.011023 -- 28.12.2019 00:38:37 :
-27.12.2019 MS/MN: HF 160 - Calculation of free space for the VHDX on UNC-Path 
+27.12.2019 MS/MN: HF 160 - Calculation of free space for the VHDX on UNC-Path
 27.12.2019 MS/MN: HF 162 - Note when logging on to a created VDisk (after ENH142)
 27.12.2019 MS/MN: HF 161 - Quotation marks are different in Move-BISFEvtLogs
 27.12.2019 MS/MN: HF 159 - C:\Windows\temp not deleted

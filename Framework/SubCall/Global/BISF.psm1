@@ -2474,6 +2474,7 @@ function Test-AppLayeringSoftware {
 		09.07.2018 MS: Bugfix 48 - Part II: get DiskMode, to handle App Layering different
 		09.07.2018 MS: Bugfix 48 - Part III: using DiskMode in RunMode 4 to diff between App- or Platform Layer
 		21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalized is blocked with MCS - Booting Layered Image
+		02.01.2020 MS: Bugfix 164: Layer finalize is blocked with VDA 1912 LTSR and activated UPL
 	.LINK
 		https://eucweb.com
 #>
@@ -2491,7 +2492,7 @@ function Test-AppLayeringSoftware {
 		$DiskMode = Get-BISFDiskMode
 		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
 		$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
-		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {
+		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running") -or ($DiskMode -eq "VDAPrivateAppLayering")) {
 
 			$CTXAppLayeringRunModeNew = 1
 			Write-BISFLog "The origin App Layering RunMode ist set to $CTXAppLayeringRunMode , based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
@@ -2730,7 +2731,7 @@ function Move-EvtLogs {
 		11.11.2017 MS: Bugfix, show the right Eventlog during move to the WCD
 		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
 		03.10.2019 MS: EHN 126 - added MCSIO redirection
-		27.12.2019 MS/MN: HF 161 - Quotation marks are different 
+		27.12.2019 MS/MN: HF 161 - Quotation marks are different
 
 	.FUNCTIONALITY
 		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
@@ -3257,7 +3258,7 @@ function Remove-FolderAndContents {
 	param(
 		[Parameter(Mandatory = $true, Position = 1)] [string] $folder_path
 	)
-	
+
 	Begin {
             Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
             Write-BISFlog -Msg "Delete files and subfolders from folder $($folder_path)"
