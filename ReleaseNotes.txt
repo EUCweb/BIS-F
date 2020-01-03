@@ -1,4 +1,4 @@
-02.01.2020 MS: HF 169 - Disable redirection if MCS GPO is disabled
+03.01.2020 MS: HF 169 - Disable redirection if MCS GPO is disabled
 02.01.2020 MS: HF 168 - VMware Optimizations 52_PrepBISF_VMWareTCPIPOptimization not executed
 02.01.2020 MS: HF 166 - CylanceProtect - Wrong Command for Compatibility Mode
 02.01.2020 MS: HF 164 - Layer finalize is blocked with VDA 1912 LTSR and activated UPL
