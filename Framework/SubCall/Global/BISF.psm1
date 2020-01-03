@@ -2664,10 +2664,12 @@ function Use-MCSConfig {
 		$Global:Redirection = $false
 		Write-BISFLog -Msg "Check if redirection of Files to MCSIO CacheDisk is possible" -ShowConsole -Color Cyan
 		#enable redirection
-		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Preparation")) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Prep" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
-		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
-		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-BI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
-		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-AppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
+			IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Preparation")) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Prep" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+			IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+			IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-BI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+			IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-AppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		}
 
 		#disable redirection
 		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Preparation")) { $Global:Redirection = $false; $Global:RedirectionCode = "MCS-AppLay-Prep" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
