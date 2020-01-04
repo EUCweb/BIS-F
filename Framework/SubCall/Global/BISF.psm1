@@ -3695,7 +3695,7 @@ function Set-ACLrights {
 
 			History:
 			14.08.2019 MS: function created
-			04.01.2020 MS: HF 172 - better errorhandling
+			04.01.2020 MS: HF 172 - set ACLrights error and using Quotation marks for $perm
 
 	.Link
 		https://eucweb.com
@@ -3710,7 +3710,7 @@ function Set-ACLrights {
 	Write-BISFlog -Msg "Set NTFS rights on $path" -ShowConsole -Color Cyan
 
 	$acl = Get-Acl -Path $path
-	$perm = 'local service', 'FullControl', 'ContainerInherit, ObjectInherit', 'None', 'Allow'
+	$perm = "local service", "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
 	$rule = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $perm
 	try {
 		$acl.SetAccessRule($rule)
