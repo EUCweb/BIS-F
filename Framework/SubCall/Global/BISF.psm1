@@ -3695,6 +3695,7 @@ function Set-ACLrights {
 
 			History:
 			14.08.2019 MS: function created
+			04.01.2020 MS: HF 172 - better errorhandling
 
 	.Link
 		https://eucweb.com
@@ -3711,7 +3712,14 @@ function Set-ACLrights {
 	$acl = Get-Acl -Path $path
 	$perm = 'local service', 'FullControl', 'ContainerInherit, ObjectInherit', 'None', 'Allow'
 	$rule = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $perm
-	$acl.SetAccessRule($rule)
+	try {
+		$acl.SetAccessRule($rule)
+	}
+	catch {
+		Write-BISFlog -Msg "Error during set NTFS rights. The error is:`r`n$_" -Type W -SubMsg
+	}
+
+
 	$acl | Set-Acl -Path $path
 	$acl = Get-Acl -Path $path
 
