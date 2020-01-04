@@ -3716,7 +3716,7 @@ function Set-ACLrights {
 		$acl.SetAccessRule($rule)
 	}
 	catch {
-		Write-BISFlog -Msg "Error during set NTFS rights. The error is:`r`n$_" -Type W -SubMsg
+		Write-BISFlog -Msg "Error during set NTFS rights. The error is: $_" -Type W -SubMsg
 	}
 
 
