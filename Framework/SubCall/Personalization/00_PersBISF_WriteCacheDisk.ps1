@@ -49,6 +49,7 @@
 		25.08.2019 MS: HF 21 - endless Reboot with wrong count of Partitons
 		03.10.2019 MS: ENH 126 - MCSIO with persistent drive
 		05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only, to prevent reboot loop on priavte images
+		04.01.2020 MS: HF 170 - using wrong $variable -> $LIC_BISF_POL_MCSCfg insted of $LIC_BISF_CLI_MCSCfg
 	.LINK
 		https://eucweb.com
 #>
@@ -274,7 +275,7 @@ Process {
 			Write-BISFLog -Msg "PVS WriteCache is not configured or is set to 'NONE', skipping configuration"
 		}
 
-		IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
+		IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
 			IF (!($LIC_BISF_CLI_MCSIODriveLetter -eq $null) -or (!($LIC_BISF_CLI_MCSIODriveLetter -eq "NONE")) ) {
 				IF ($MCSIO -eq $true) {
 					$uniqueid_REG = GetUniqueIDreg

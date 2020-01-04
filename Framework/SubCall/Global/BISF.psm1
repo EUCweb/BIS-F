@@ -64,7 +64,7 @@
 	Import-BISFSharedConfiguration -Verbose:$VerbosePreference
 	Get-BISFCLIcmd -Verbose:$VerbosePreference #must be running before the $Global:PVSDiskDrive = $LIC_BISF_CLI_WCD is set
 
-	IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
+	IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
 	} ELSE {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
@@ -368,6 +368,7 @@ function Test-WriteCacheDiskDriveLetter {
 		12.03.2017 MS: configure WriteCacheDisk driveletter with ADMX or show error if PVS Target Device Driver is installed
 		03.10.2019 MS: ENH 126 - added MCSIO
 		03.10.2019 MS: FRQ 3 - Remove Messagebox
+		04.01.2020 MS: HF 170 - using wrong $variable -> $LIC_BISF_POL_MCSCfg insted of $LIC_BISF_CLI_MCSCfg
 
 	.LINK
 		https://eucweb.com
@@ -388,7 +389,7 @@ function Test-WriteCacheDiskDriveLetter {
 	}
 
 	# IF $MCSIO can be used with VDA 1903 and later and the BIS-F MCSIO ADMX is configured as well
-	IF (($MCSIO) -and ($LIC_BISF_POL_MCSCfg -eq "YES")) {
+	IF (($MCSIO) -and ($LIC_BISF_CLI_MCSCfg -eq "YES")) {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
 		write-BISFlog -Msg "MCSIO persistent Disk is configured: $PVSDiskDrive" -ShowConsole -Color DarkCyan -SubMsg
 		return $true
