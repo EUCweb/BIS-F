@@ -438,6 +438,7 @@ function Test-WriteCacheDisk {
 		12.03.2017 MS: add .SYNOPSIS to this function
 		03.10.2019 MS: ENH 126 - added MCSIO persistent drive
 		03.10.2019 MS: FRQ 3 - Remove Messagebox
+		04.01.2020 MS: HF 170 - C:\Windows\Logs does not exist
 
 	.LINK
 		https://eucweb.com
@@ -445,22 +446,27 @@ function Test-WriteCacheDisk {
 	IF ($returnTestPVSSoftware) {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
 	} ELSE {
-		IF (($MCSIO) -and ($LIC_BISF_POL_MCSCfg -eq "YES")) {
+		IF (($MCSIO) -and ($LIC_BISF_CLI_MCSCfg -eq "YES")) {
 			$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
 		}
 	}
 
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
-	$CacheDisk = Get-CimInstance -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
-	IF ($CacheDisk -eq $null) {
-		write-BISFlog -Msg "Disk $PVSDiskDrive not exist. Please create a local new harddrive with enough space, assign driveletter $PVSDiskDrive and run this script again..!!" -Type E -SubMsg
-		return $false
-	}
-	ELSE {
-		write-BISFlog -Msg "Check WriteCache Disk $PVSDiskDrive"
+	IF ($PVSDiskDrive.substring(0,2) -eq $env:SystemDrive) {
+		write-BISFlog -Msg "No seperated Cache Disk configured"
 		return $true
+		}
+	ELSE {
+		$CacheDisk = Get-CimInstance -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
+		IF ($CacheDisk -eq $null) {
+			write-BISFlog -Msg "Disk $PVSDiskDrive not exist. Please create a local new harddrive with enough space, assign driveletter $PVSDiskDrive and run this script again..!!" -Type E -SubMsg
+			return $false
+		}
+		ELSE {
+			write-BISFlog -Msg "Check WriteCache Disk $PVSDiskDrive"
+			return $true
+		}
 	}
-
 }
 
 function Get-Version {
