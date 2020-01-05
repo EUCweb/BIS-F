@@ -3584,13 +3584,14 @@ Function Get-Hypervisor {
 		History
       	Last Change: 26.03.2018 MS: Script created
 		Last Change: 13.05.2019 MS: FRQ 76 - rewritten script to detect the platform of the running computer
+		Last Change: 05.01.2020 MS: remove typo
 	.Link
 	  #
 #>
 
 	$HV = Get-WmiObject -query 'select * from Win32_ComputerSystem' | Select-Object Manufacturer, Model
 	$Platform = $HV.Manufacturer + " " + $HV.Model
-	Write-BISFLog -Msg "Computer is running on $Platform Platform" -Color Cyan -ShowConsole
+	Write-BISFLog -Msg "Computer is running on $Platform" -Color Cyan -ShowConsole
 	return $Platform
 
 
