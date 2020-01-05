@@ -111,6 +111,7 @@ param(
 		05.10.2019 MS: ENH 143 - Add Intel Graphics Support for Citrix VDA
 		27.12.2019 MS/MN: HF 159 - C:\Windows\temp not deleted
 		27.12.2019 MS/MN: HF 162 - Note when logging on to a created VDisk (after ENH142)
+		05.01.2020 MS: HF 173 - Remove DHCP Information if 3P Optimizer is configured
 
 	.LINK
 		https://eucweb.com
@@ -480,7 +481,7 @@ Begin {
 		Write-BISFLog -Msg "Microsoft .NET Optimization is disabled in ADMX"
 	}
 
-	IF ($LIC_BISF_3RD_OPT -eq $false) {
+
 		## Read language specified adapter name to support mui installations for each customer
 		$adapter = get-BISFAdapterName
 		foreach ($element in $adapter) {
@@ -613,10 +614,7 @@ Begin {
 			};
 			$ordercnt += 1
 		}
-	}
-	ELSE {
-		Write-BISFLog -Msg "Network Adapter are not optimized from BIS-F, because 3rd Party Optimization is configured" -Type W -ShowConsole -SubMsg
-	}
+
 	## reset Distributed Transaction Coordinator service if installed
 	$svc = Test-BISFService -ServiceName "MSDTC"
 	IF ($svc -eq $true) {
@@ -739,7 +737,7 @@ Begin {
 		Command     = "Remove-ItemProperty -Path '$REG_HKLM_MS_CU' -Name 'DirtyShutdown' -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
-	
+
 	$PrepCommands += [pscustomobject]@{
             Order       = "$ordercnt";
             Enabled     = "$true";

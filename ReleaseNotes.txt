@@ -1,3 +1,4 @@
+05.01.2020 MS: HF 173 - Remove DHCP Information if 3P Optimizer is configured too
 05.01.2020 MS: HF 171 - VMware TCPIP Optimizations failed
 04.01.2020 MS: HF 170 - C:\Windows\Logs does not exist -function Test-BISFWriteCacheDisk
 03.01.2020 MS: HF 169 - Disable redirection if MCS GPO is disabled
