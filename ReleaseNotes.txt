@@ -1,3 +1,4 @@
+05.01.2020 MS: ENH 165: detect UPL - new feature with VDA 1912 LTSR
 05.01.2020 MS: HF 172 - using S-1-5-19 instead of local Service
 05.01.2020 MS: HF 173 - Remove DHCP Information if 3P Optimizer is configured too
 05.01.2020 MS: HF 171 - VMware TCPIP Optimizations failed

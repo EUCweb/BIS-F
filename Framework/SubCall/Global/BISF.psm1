@@ -620,6 +620,7 @@ function Test-XDSoftware {
 	  	dd.mm.yyyy MS: function created
 		07.09.2015 MS: add .SYNOPSIS to this function
 		25.08.2019 MS: ENH 126: detect MCSIO based on VDA Minimum Version
+		05.01.2020 MS: ENH 165: detect UPL - new feature with VDA 1912 LTSR
 
 	.LINK
 		https://eucweb.com
@@ -631,18 +632,34 @@ function Test-XDSoftware {
 		IF ($svc -eq $true) {
 			$Version = Get-BISFFileVersion $glbSVCImagePath
 			$Global:VDAVersion = "$($Version.Major).$($Version.Minor)"
-			$CheckVersion = "7.21"
+			$CheckVersion = "7.21" #VDA 1903
 			IF ($VDAVersion -ge $CheckVersion){
 				$Global:MCSIO = $true
-				Write-BISFLog "VDA Version $VDAVersion supports MCS IO and persistent disk"
+				Write-BISFLog "VDA Version $VDAVersion supports MCS IO with persistent disk" -ShowConsole -Color DarkCyan -SubMsg
 			} ELSE {
 				$Global:MCSIO = $false
-				Write-BISFLog "VDA version $VDAVersion does NOT support MCS IO and persistent disk"
+				Write-BISFLog "VDA version $VDAVersion does NOT support MCS IO with persistent disk"
 			}
 			$Global:ImageSW = $true
-
+			$Global:UPL = $false
+			$CheckVersion = "7.24" # VDA 1912  with UPL support
+			IF ($VDAVersion -ge $CheckVersion){
+				Write-BISFLog "VDA Version $VDAVersion supports User Personalization Layer (UPL).. check if UPL Services are installed" -ShowConsole -Color DarkCyan -SubMsg
+				$UPLsvc1 = Test-BISFService -ServiceName "upl-Support" -ProductName "Citrix UPL Support Service"
+				$UPLsvc2 = Test-BISFService -ServiceName "ulayer" -ProductName "Citrix Layering Service"
+				IF (($UPLsvc1 -eq $true) -and ($UPLsvc2 -eq $true)) {
+					$Global:UPL = $true
+					Write-BISFLog "UPL Services installed" -ShowConsole -Color DarkCyan -SubMsg
+				} ELSE {
+					Write-BISFLog "UPL Services NOT installed"
+				}
+			} ELSE {
+				Write-BISFLog "VDA version $VDAVersion does NOT supports User Personalization Layer (UPL)"
+			}
 		}
 	}
+
+
 	return $svc
 
 }
