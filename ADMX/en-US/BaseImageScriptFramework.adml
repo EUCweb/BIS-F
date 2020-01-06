@@ -1,8 +1,8 @@
 <policyDefinitionResources revision="1.0" schemaVersion="1.0">
   <displayName>
   </displayName>
-  <description>Base Image Script Framework (BIS-F helps you to seal and personalize your Base Image for Citrix, VMWare View and Microsoft environments. With this Group Policy you can configure the CLI commands to fully automate BIS-F and runs the sealing process without any needed interaction.)
-@Login Consultants 2019</description>
+  <description>Base Image Script Framework (BIS-F helps you to seal and personalize your Base Image for Citrix, VMware View and Microsoft environments. With this Group Policy you can configure the CLI commands to fully automate BIS-F and runs the sealing process without any needed interaction.)
+©Login Consultants 2019</description>
   <resources>
     <stringTable>
       <string id="CAT_3P">3rd Party Tools</string>
@@ -19,28 +19,28 @@
       <string id="POL_CTXOE">Configure Citrix Optimizer</string>
       <string id="POL_CTXOE_Help">Run Citrix Optimizer
 
-If you enable this policy setting, Citrix Optimizer (CtxOptimizerEngine.ps1) will be executed. Optional you can define the name of a template that should be used during execution. If there is no template specified, BIS-F will search for an OS-specific default template. If there is no appropriate template available, the execution of Citrix Optimizer will be skipped.
-It is also possible to define a list of GroupIDs (defined in the template) of setting groups that should be executed. The value must be a comma-separated string; e.g. "DisableServices,OptionalServices". If there are no GroupIDs specified, Citrix Optimizer will execute all available setting groups.
+If you enable this policy setting, Citrix Optimizer (CtxOptimizerEngine.ps1) will be executed. Optionally you can define the name of a template that should be used during execution. If there is no template specified, BIS-F will search for an OS-specific default template. If there is no appropriate template available, the execution of Citrix Optimizer will be skipped.
+It is also possible to define a list of GroupIDs (defined in the template) for defining groups that should be executed. The value must be a comma-separated string; e.g. "DisableServices,OptionalServices". If there are no GroupIDs specified, Citrix Optimizer will execute all available setting groups.
 To run Citrix Optimizer in analyze-only mode, check "Mode: Analyze only".
 
 If you disable or do not configure this policy setting, Citrix Optimizer will not be executed.
 
-Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define a custom search  folder within this policy. Example: Copy the complete extracted folder of the Citrix Optimizer download to C:\Program Files (x86)\CitrixOptimizer
+Prerequisites: Citrix Optimizer must be installed on the Base Image first (BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define a custom search folder within this policy. Example: Copy the complete extracted folder of the Citrix Optimizer download to C:\Program Files (x86)\CitrixOptimizer
 
 (Optional) Template:
 Enter multiple templates comma-separated and with no spaces, example:
 PVS_Optimization.xml,3rd_Party.xml
 
-AutoSelect with Multiple Templates:
-For Autoselection of the OS Template in combination with multiple Templates please use:
+Auto Select with Multiple Templates:
+For auto selection of the OS Template in combination with multiple Templates please use:
 AutoSelect,PVS_Optimization.xml,3rd_Party.xml
 
-AutoSelect is a hardcoded string and must be used in the GPO, BIS-F will trigger the right OS template for Citrix Optimzer
+"AutoSelect" is a hard-coded string and must be used in the GPO, BIS-F will trigger the right OS template for Citrix Optimizer
 
-(Optional) Templateprefix:
+(Optional) Template prefix:
 By default, Citrix Optimizer is looking for templates that start with "Citrix_Windows" and are provided by Citrix as part of default Optimizer build.
 If you would like to use your own templates with auto-select, you can override the default templates prefix.
-For example if your template is called "EUCweb_Windows_10_1809.xml", use TemplatePrefix "EUCweb_Windows" to automatically
+For example, if your template is called "EUCweb_Windows_10_1809.xml", use TemplatePrefix "EUCweb_Windows" to automatically
 select your templates based on the current operating system and build.
 
 Delete Optimizer LogFile:
@@ -52,11 +52,11 @@ The Optimizer Logfile is included in the BIS-F logfile, with this option you can
       <string id="POL_SDelete_Help">Run SDelete depending on your environment:
 
 - During sealing on the BaseImage 
-- During sealing on the Citrix PVS parent Disk (avhd or avhdx)
+- During sealing on the Citrix PVS parent Disk (vhd or vhdx)
 - During sealing with Citrix AppLayering outside ELM
 - Citrix PVS Image on the WriteCache Disk if the image is in shared image mode
 - Citrix MCSIO on persistent CacheDisk if the image is in shared image mode
-- Citrix MCS on Systemdrive if the image is in shared image mode
+- Citrix MCS on the System drive if the image is in shared image mode
 
 If you enable this policy setting, SDelete will be executed on the selected environments only.
 If you disable or do not configure this policy setting, SDelete will not be executed.
@@ -65,7 +65,7 @@ Prerequisites: SDelete must be installed on the Base Image first
 
 INFO: SDelete 2.02 or greater is supported. Download it from https://docs.microsoft.com/en-us/sysinternals/downloads/sdelete and place both sdelete.exe and sdeletex64.exe into the folder. Based on the OS-Architecture BIS-F will use the correct version.
 
-You can also enter a custom search  folder, e.g. C:\Windows\System32, if you do not configure or disable the custom search folder option, the standard BIS-F folders will be used.
+You can also enter a custom search folder, e.g. C:\Windows\System32, if you do not configure or disable the custom search folder option, the standard BIS-F folders will be used.
 </string>
       <string id="POL_Defrag">Run Defrag</string>
       <string id="POL_Defrag_Help">This policy setting allows you to run a defrag on your base image disk (Citrix PVS or MCS) or your local system drive (VMware View or Microsoft Windows).
@@ -93,22 +93,22 @@ If you disable or do not configure this policy setting, Microsoft Office rearm w
       <string id="POL_AVFullScan">Run AntiVirus Scan</string>
       <string id="POL_AVFullScan_Help">Run AntiVirus Scan
 
-If you enable or do not configure this policy setting, an Antivirus full scan will be executed during sealing of the image.
+If you enable or do not configure this policy setting, an AntiVirus full scan will be executed during sealing of the image.
 If you disable this policy setting, an AntiVirus scan will not be executed.
 
 Enable Custom Scan Arguments:
-The checkbox enables the custom scan arguments and disables the default full scan
+The check box enables the custom scan arguments and disables the default full scan
 
 Custom Scan Arguments:
 Enter the arguments to run for the scan
 
-You need the arguments only, the executable is chosen from BIS-F itself depending
+You need the arguments only; the executable is chosen from BIS-F itself depending
 on the detected AV-Solution.
 </string>
       <string id="POL_GhostDeviceRemoval">Ghost Devices: Operation mode</string>
       <string id="POL_GhostDeviceRemoval_Help">Defines how the ghost device feature will operate.
 
-This policy has three operation modes:
+This policy has three operational modes:
 
 Remove ghost devices
 List all devices without removal
@@ -122,7 +122,7 @@ List only ghost devices without removal:
 This option will output ghost devices detected into the log without removing any devices.
 
 If you enable this policy setting you must select a mode of operation.
-If you disable or do not configure this policy setting then Ghost Device Removal will not be executed.
+If you disable or do not configure this policy setting, then Ghost Device Removal will not be executed.
 </string>
       <string id="POL_GhostDeviceClass">Ghost Devices: Classes to exclude from removal</string>
       <string id="POL_GhostDeviceClass_Help">Specifies the classes to be excluded from being removed by the ghost device removal tool.
@@ -222,7 +222,7 @@ If you disable this policy setting, Symantec VIEtool will not be executed.
 
 Prerequisites: VIEtool.exe must be installed on the Base Image first and must match the Version of SEP Client.
 
-(BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define a custom search  folder within this policy</string>
+(BIS-F will check the following locations: C:\Program Files, C:\Program Files (x86), C:\Windows\System32) or you can enable and define a custom search folder within this policy</string>
       <string id="POL_CtxPvD">Configure Citrix Personal vDisk</string>
       <string id="POL_CtxPvD_Help">Run Citrix Personal vDisk inventory on VDI Clients only
 
@@ -237,7 +237,7 @@ If you disable or do not configure this policy setting, CCleaner will not be exe
 
 Prerequisites: CCleaner must be installed on the Base Image first
 
-You can also enter a custom search  folder, e.g. C:\Windows\System32, if you do not configure or disable the custom search folder option, the standard BIS-F folders will be used.</string>
+You can also enter a custom search folder, e.g. C:\Windows\System32, if you do not configure or disable the custom search folder option, the standard BIS-F folders will be used.</string>
       <string id="POL_CMTrace">Enable CMTrace</string>
       <string id="POL_CMTrace_Help">CMTrace log file viewer
 
@@ -246,7 +246,7 @@ If you disable or do not configure this policy setting, CMTrace will not be regi
 
 Prerequisites: CMTrace.exe must be copied to the Base Image first
 
-You can also enter a custom search  folder, e.g. C:\Windows\System32, if you do not configure or disable the custom search folder option, the standard BIS-F folders will be used.</string>
+You can also enter a custom search folder, e.g. C:\Windows\System32, if you do not configure or disable the custom search folder option, the standard BIS-F folders will be used.</string>
       <string id="POL_PerfCnt">Rebuild Performance Counters</string>
       <string id="POL_PerfCnt_Help">Rebuild the Performance Counters. See CTX129350 or CTX127151 for further information
 
@@ -380,12 +380,12 @@ If you enable this policy setting, RES ONE Automation Agent Service will be disa
 If you disable or do not configure this policy setting, RES ONE Automation Agent Service will not be disabled.
 </string>
       <string id="POL_RESWASdisableSeal">Disable RES ONE Automation Sealing</string>
-      <string id="POL_RESWASdisableSeal_Help">This policy setting allows you to disable the RES ONE Automation Sealing completly and did non remove entries like CachedDispatchers, CommunicationID or others.
+      <string id="POL_RESWASdisableSeal_Help">This policy setting allows you to disable the RES ONE Automation Sealing completely and does not remove entries like CachedDispatchers, CommunicationID or others.
 
-If you enable this policy setting, RES ONE Automation sealing is not running and keep all information.
+If you enable this policy setting, RES ONE Automation sealing is not run and keeps all information.
 If you disable or do not configure this policy, RES ONE Automation Agent sealing is performed and removes all necessary items.</string>
-      <string id="POL_ZCM">Configure Novell ZCM Agent web based URL</string>
-      <string id="POL_ZCM_Help">Configure Novell ZCM Agent web based URL
+      <string id="POL_ZCM">Configure Novell ZCM Agent web-based URL</string>
+      <string id="POL_ZCM_Help">Configure Novell ZCM Agent web-based URL
 Enter the URL in the following format:
 reg https://ZCM-Server.domain.com -k CTX-XA65 -u XAuser -p XAuserPassword
 
@@ -411,13 +411,13 @@ SCCM / MDT Logfile Redirection:
 if you enable this policy and BIS-F preparation is triggered from an SCCM or MDT Task Sequence, the BIS-F log is stored inside the Task Sequence log path.
 this policy overwrites the values for a configured Log share if configured.
 
-Enable Windows Powershell Transcript:
-For more debugging a Windows Powershell Transcript is created. This will be created in C:\Windows\Logs every run. The configuration of the BIS-F Log share has no impact to this configuration item.
+Enable Windows PowerShell Transcript:
+For more debugging a Windows PowerShell Transcript is created. This will be created in C:\Windows\Logs every run. The configuration of the BIS-F Log share has no impact to this configuration item.
 
 During sealing a log file will be created:  C:\Windows\Logs\PREP_BISF_WPT_%Computername%_DateTime.log
-During personlization a log file will be created:  C:\Windows\Logs\PERS_BISF_WPT_%Computername%_DateTime.log
+During personalization a log file will be created:  C:\Windows\Logs\PERS_BISF_WPT_%Computername%_DateTime.log
 
-The log rotation for the Windows Powershell Transcript is hardcoded set to 5, so yyou will have a maximum of 5 WPT logs.
+The log rotation for the Windows PowerShell Transcript is hardcoded set to 5, so a maximum of 5 WPT logs will be kept.
  
 </string>
       <string id="POL_FldCfg">Configure Folders</string>
@@ -427,13 +427,13 @@ Event logs:
 If you enable this policy setting, you must enter a custom event viewer log folder name, e.g. "EventLogs"
 If you disable or do not configure this policy setting, the BIS-F standard folder will be used.
 
-NOTE: Please specify the Name of the folder only, without any drive letter !!
+NOTE: Please specify the Name of the folder only, without any drive letter!!
 
 Spool:
 If you enable this policy setting, you must enter a custom Spool folder name, e.g. "Spool"
 If you disable or do not configure this policy setting, the BIS-F standard folder will be used.
 
-NOTE: Please specify the name of the folder only, without any drive letter !!</string>
+NOTE: Please specify the name of the folder only, without any drive letter!!</string>
       <string id="POL_PVSCfg">Configure Citrix PVS Target Device</string>
       <string id="POL_PVSCfg_Help">WriteCacheDisk drive letter
 
@@ -519,7 +519,7 @@ Do not change and wait: Wait until the personalization is finished or the MaxExe
 Change and wait: Does not wait for the end of the personalization phase and immediately starts the sealing process (preparation phase). 
 
 Maximum Execution Timeout (private Images only):
-You can specify the maximum execution timeout for the personalization process. Default is set to 60 minutes, min. 15, max 120. You can increase/decrease the value in increments of 5 minutes. If the value is reached the personalization phase is terminated and the sealing process (preparation phase)can be started 
+You can specify the maximum execution timeout for the personalization process. Default is set to 60 minutes, min. 15, max 120. You can increase/decrease the value in increments of 5 minutes. If the value is reached the personalization phase is terminated and the sealing process (preparation phase) can be started 
 </string>
       <string id="POL_ExpCfg">Shared Configuration</string>
       <string id="POL_ExpCfg_Help">This policy setting allows you to export the BISF CLI commands that are set from a complete BIS-F policy to an JSON file. This can be used for computers that are running in Worker Groups (like Citrix AppLayering) or you have no access to modify the Active Directory Group Policies.
@@ -533,7 +533,7 @@ If you enable this policy setting, you must enter a valid path (recommended: BIS
 5. Copy BISFSharedConfig.json to the &lt;BIS-F Installation folder&gt;
 6. If BIS-F is running, it reads the Configuration from BISFSharedConfig.json and retrieves the path to the shared configuration, imports these settings into the local policy and loads the values into BIS-F.
 
-If you disable do not configure this policy setting, the export wont be run.
+If you disable do not configure this policy setting, the export won’t be run.
 
 Note: For the most part you only need to action the export once after which you can edit the export manually
 
@@ -542,16 +542,16 @@ Note: For the most part you only need to action the export once after which you 
       <string id="POL_VDACfg_Help">This policy settings allows you to manage the Citrix VDA Configuration
 
 If you enable this policy setting, you can configure several items
-If you disable or do not configure this policy setting, the vda configuration will not performed
+If you disable or do not configure this policy setting, the VDA configuration will not performed
 
 Delay Citrix Desktop Service:
-The Citrix Desktop Service controls the registration state against the Citrix Controller. In some circumstances, this service has successfully registered the VM and the user can be logged on through Receiver/StoreFront before the machine is ready to accept workloads. For example you may have some dependant actions or solutionssuch as Workspace Environment Agent, Group Policies, App-V Client custom tasks you wish to run before the machine accepts user sessions. If you enable this policy the Citrix Desktop Service will be started only after the BIS-F personalization phase is finished.
+The Citrix Desktop Service controls the registration state against the Citrix Controller. In some circumstances, this service has successfully registered the VM and the user can be logged on through Receiver/StoreFront before the machine is ready to accept workloads. For example, you may have some dependent actions or solutions such as Workspace Environment Agent, Group Policies, App-V Client custom tasks you wish to run before the machine accepts user sessions. If you enable this policy the Citrix Desktop Service will be started only after the BIS-F personalization phase is finished.
 
 Additional delay (default 0)
 You can enter additional time in seconds, to start the Citrix Desktop Service after this delay. This time you entered here will be addition to the BIS-F personalization phase finishing.
 Max seconds: 1800
 
-Note: If you have configured the environment so that device personalization configuration is skipped on all disk modes or in Private Mode only, the Citrix Desktop Service will be started as per normal windows behaviour. 
+Note: If you have configured the environment so that device personalization configuration is skipped on all disk modes or in Private Mode only, the Citrix Desktop Service will be started as per normal windows behavior. 
 
 Enable NVIDIA GRID:
 If the NVIDIA Display Driver Service is detected, BIS-F will trigger the right command on the Base Image as follows:
@@ -575,7 +575,7 @@ IntelVirtualDisplayTool.exe is included with the VDA installer. The IntelVirtual
 
 Note: If you disable the checkbox, the Intel Graphics Driver is not disabled from BIS-F.
 
-If you enable both NVIDIA and INTEL, BIS-F will stop the sealing process (preparation phase) and respond with an error!.
+If you enable both NVIDIA and INTEL, BIS-F will stop the sealing process (preparation phase) and respond with an error!
 </string>
       <string id="ITM_VDISK_VHD">VHD</string>
       <string id="ITM_VDISK_VHDX">VHDX</string>
@@ -584,7 +584,7 @@ If you enable both NVIDIA and INTEL, BIS-F will stop the sealing process (prepar
 
 If you enable this policy setting, .NET Optimization is run during sealing (Preparation phase)
 If you disable this policy setting, .NET Optimization is disabled during sealing (Preparation phase)
-If you do not configure this policy setting, .NET Optimization is run during sealing(Preparation phase)
+If you do not configure this policy setting, .NET Optimization is run during sealing (Preparation phase)
 </string>
       <string id="POL_WinSxS">WinSxS Optimization</string>
       <string id="POL_WinSxS_Help">Run WinSxS Optimization during sealing (preparation)
@@ -607,7 +607,7 @@ The component store contains all the files that are required for a Windows insta
       <string id="POL_WUAgent">Install Windows Updates using WUAgent</string>
       <string id="POL_WUAgent_Help">Install Windows Update using the native Windows Update Agent
 
-If you enable this policy setting, Windows Update will be run and any detected updates will be applied. You will need to set the "Windows Components/Windows Update/Specify intranet Microsoft update service location" group policy setting to enable this to operate with WSUS.
+If you enable this policy setting, Windows Update will be run, and any detected updates will be applied. You will need to set the "Windows Components/Windows Update/Specify intranet Microsoft update service location" group policy setting to enable this to operate with WSUS.
 If you disable this policy setting, Windows Update will not run.
 If you do not configure this policy setting, Windows Update will not run.
 </string>
@@ -615,7 +615,7 @@ If you do not configure this policy setting, Windows Update will not run.
       <string id="POL_PAGEFILE_Help">Configures the Windows page file to be statically configured in both size and drive letter.</string>
       <string id="PageFile_PVSWriteCacheDrive">PVS write cache drive</string>
       <string id="POL_METCfg">Configure MaxExecution timeout</string>
-      <string id="POL_METCfg_Help">This policy settings allows you to manage the MaxExecution timeout. During sealing, some processes (like AV-FullScan, .NET optimization, P2PVS, ImagingWizard, etc) will be triggered, if the MaxExecutionTime is reached, the process will ended.
+      <string id="POL_METCfg_Help">This policy settings allows you to manage the MaxExecution timeout. During sealing, some processes (like AV-FullScan, .NET optimization, P2PVS, ImagingWizard, etc) will be triggered, if the MaxExecution time is reached, the process will ended.
 
 If you enable this policy setting, you can configure the MaxExecution timeout from 30-120 minutes, default (60)
 If you disable this policy setting, the MaxExecution timeout is set to unlimited
@@ -652,7 +652,7 @@ Enable OS Layer config file:
 Configuration from BISFconfig_AppLay_OS.json is used 
 
 Enable Platform Layer config file:
-If your Platform Layer is domain joined you can enable this setting and Configuration from BISFconfig_AppLay_Plt.json is used 
+If your Platform Layer is domain joined, you can enable this setting and Configuration from BISFconfig_AppLay_Plt.json is used 
 
 Enable App-/Platform Layer config file: 
 Configuration from BISFconfig_AppLay_AppPlt.json is used 
@@ -672,7 +672,7 @@ Note: The Path is defined in the ADMX &gt; Global &gt; Shared Configuration
 
 If you enable this policy setting, you can set options for assigning an SSL to the Citrix VDA.
 If you disable this policy than SSL assignment will be explicitly disabled.
-If you do not configure this policy then the VDA SSL script will be skipped.
+If you do not configure this policy, then the VDA SSL script will be skipped.
 
 Certificate Thumbprint:
 Enter the certificate thumbprint you want to be assigned to the VDA in this field. Thumbprints are in the following format:
@@ -684,7 +684,7 @@ If you make this field blank the script will attempt to auto-assign a certificat
 Note the comma at the end of the Subject Name and "CN=" at the start. A computer with the name "W2016" and a domain of "contoso.com" would have the following name: CN=W2016.contoso.com,"
 
 SSL Port:
-The port you want to assign the VDA SSL service(default = 443).
+The port you want to assign the VDA SSL service (default = 443).
 
 Minimum SSL Version:
 The minimum SSL Version you want to allow for your certificate (default = TLS_1.0).
@@ -705,10 +705,10 @@ https://support.citrix.com/article/CTX220062
       <string id="POL_PVSHydration_Help">Enables hydrating files on Citrix PVS Servers.
 
 If you enable this policy setting, you can set options for which files to hydrate on a Citrix PVS machine.
-If you disable this policy then hydration will be explicitly disabled.
-If you do not configure this policy then the hydration script will be skipped.
+If you disable this policy, then hydration will be explicitly disabled.
+If you do not configure this policy, then the hydration script will be skipped.
 
-Citrix PVS servers will operate faster after some period of time due to the file system caching files into RAM. However, if you access a file that PVS has not cached previously then there may be a substantial delay in getting those bits into the file system cache. This is due to PVS traversing the network back to the source file to pull those bytes. If the storage those bytes reside on is under some stress or delayed for some reason then it will take even longer to access the file making PVS appear slow.
+Citrix PVS servers will operate faster after some period of time due to the file system caching files into RAM. However, if you access a file that PVS has not cached previously then there may be a substantial delay in getting those bits into the file system cache. This is due to PVS traversing the network back to the source file to pull those bytes. If the storage those bytes reside on is under some stress or delayed for some reason, then it will take even longer to access the file making PVS appear slow.
 
 The fix to this is "hydrating" the file by reading them as soon as the system is booted.
 
@@ -716,18 +716,18 @@ Paths to hydrate:
 Paths you want to have hydrated, separated by a "|" (pipe) symbol. Paths are searched recursively. (default = C:\Program Files|C:\Program Files (x86))
 
 Extensions to hydrate:
-The file extensions you want to hydrate, seperated by a "," (comma) symbol (default = *.exe,*.dll).
+The file extensions you want to hydrate, separated by a "," (comma) symbol (default = *.exe,*.dll).
 </string>
       <string id="ITM_Part2">2</string>
       <string id="ITM_Part3">3</string>
       <string id="ITM_Part4">4</string>
       <string id="ITM_Part5">5</string>
       <string id="POL_LAPSExpirationTime">Reset LAPS Password</string>
-      <string id="POL_LAPSExpirationTime_Help">This policy setting allows you to reset the LAPS password on Computer Startup
+      <string id="POL_LAPSExpirationTime_Help">This policy setting allows you to reset the LAPS (Local Administrator Password Solution) on Computer Startup
 
-If you enable this policy setting, the LAPS password is reset
+If you enable this policy setting, the LAPS is reset
 
-If you disable or do not configure this policy setting, the LAPS Password reset is skipped.
+If you disable or do not configure this policy setting, the LAPS reset is skipped.
 
 Deploying Microsoft LAPS to a non-persistent VDI environment requires a different approach to traditional machines, especially for those environments that force a reboot after user log-off, like PVS, MCS deployments.</string>
       <string id="ITM_DM_All">All</string>
@@ -849,7 +849,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         </text>
         <text>Run SDelete during sealing (preparation)</text>
         <checkBox refId="CHK_SD_runBI">During sealing on the BaseImage</checkBox>
-        <checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (avhd/ avhdx)</checkBox>
+        <checkBox refId="CHK_SD_runPVSparentDisk">During sealing on the Citrix PVS parent Disk (vhd/ vhdx)</checkBox>
         <checkBox refId="CHK_SD_runOutsideELM">During sealing with Citrix AppLayering outside ELM</checkBox>
         <text>
         </text>
@@ -954,7 +954,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       <presentation id="POL_PersCfg">
         <dropdownList refId="DST_CLI_DM" defaultItem="0">Skip Personalization based on DiskMode</dropdownList>
         <dropdownList refId="DST_CLI_PersonalizationOverride" defaultItem="0">Active State Override</dropdownList>
-        <decimalTextBox refId="DXT_PersonalizationOverrideTimeOut" defaultValue="60" spinStep="5">Maximum Execution Timeout (min.)</decimalTextBox>
+        <decimalTextBox refId="DXT_PersonalizationOverrideTimeOut" defaultValue="60" spinStep="5">Maximum Execution Timeout (min)</decimalTextBox>
         <text>
         </text>
       </presentation>
