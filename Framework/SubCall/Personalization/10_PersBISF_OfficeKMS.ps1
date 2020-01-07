@@ -60,11 +60,11 @@ Process {
 		IF ($O365 -eq $true) {
 			$O365onAzure = Test-BISFAzureVM
 			IF ($O365onAzure -eq $true) {
-				Write-BISFLog -Msg "Office 365 is hosting on Microsoft Azure" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Office is hosting on Microsoft Azure" -ShowConsole -Color DarkCyan -SubMsg
 				Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/status" -ActText "Office - Displays the device join status"
 			}
 			ELSE {
-				Write-BISFLog -Msg "Office 365 is NOT hosting on Microsoft Azure" -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Office is NOT hosting on Microsoft Azure" -Color DarkCyan -SubMsg
 			}
 		}
 	}
