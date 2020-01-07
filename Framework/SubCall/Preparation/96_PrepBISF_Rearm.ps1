@@ -80,9 +80,9 @@ Begin {
 	ForEach ($Office in $OfficeInstallations)
 	{
 		$OFName = $Office.Name
-		$OFVersion = Office.Version						#Version : 16.0.4266.1001
+		$OFVersion = $Office.Version						#Version : 16.0.4266.1001
 		$OFVersionShort = $OFVersion.substring(0,4)  	#Version : 16.0
-		IF ($OFName -like "*Click-to-Run*") { $OFName = "Microsoft Office 365"; $O365 = $true } ELSE { $O365 = $false}
+		IF ($OFName -like "*Click-to-Run*") { $O365 = $true } ELSE { $O365 = $false}
 		Write-BISFLog -Msg "$OFName - $OFVersion installed" -ShowConsole -Color Cyan
 		IF ($O365 -eq $false) {
 			If ([Environment]::Is64BitOperatingSystem) {
