@@ -1,3 +1,4 @@
+07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 07.01.2020 MS: HF 177 - typo in DiskMode (00_persBISF_writeCacheDisk.ps1)
 06.01.2020 MS: HF 175 - GPO ADML file typo and grammar check
 05.01.2020 MS: ENH 165 - detect UPL - new feature with VDA 1912 LTSR

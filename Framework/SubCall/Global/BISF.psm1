@@ -28,6 +28,7 @@
 	12.03.2017 MS: add $Global:Wait1= "10"  #global time in seconds
 	11.09.2017 MS: add $TaskStates to control the Preparation is running after Personlization first
 	03.10.2019 MS: ENH 126 - MCSI for persistent to set $Global:PVSDiskDrive = LIC_BISF_CLI_MCSIODriveLetter
+	07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 .LINK
 	https://eucweb.com
 #>
@@ -61,12 +62,14 @@
 	$Global:AppLayAppPltCfg = "BISFconfig_AppLay_AppPlt.json"
 	$Global:AppLayPltCfg = "BISFconfig_AppLay_Plt.json"
 	$Global:AppLayNoELMCfg = "BISFconfig_AppLay_NoELM.json"
+	$Global:ImageSW = $false
 	Import-BISFSharedConfiguration -Verbose:$VerbosePreference
 	Get-BISFCLIcmd -Verbose:$VerbosePreference #must be running before the $Global:PVSDiskDrive = $LIC_BISF_CLI_WCD is set
 
 	IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
-	} ELSE {
+	}
+ ELSE {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
 	}
 
@@ -591,13 +594,14 @@ function Test-PVSSoftware {
 		History:
 	  	dd.mm.yyyy MS: function created
 		07.09.2015 MS: add .SYNOPSIS to this function
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "BNDevice" -ProductName "Citrix Provisioning Services Target Device Driver (PVS)"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF ($svc -eq $true) { $Global:ImageSW = $true }
 	return $svc
 
 }
@@ -621,6 +625,7 @@ function Test-XDSoftware {
 		07.09.2015 MS: add .SYNOPSIS to this function
 		25.08.2019 MS: ENH 126: detect MCSIO based on VDA Minimum Version
 		05.01.2020 MS: ENH 165: detect UPL - new feature with VDA 1912 LTSR
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 	.LINK
 		https://eucweb.com
@@ -628,37 +633,34 @@ function Test-XDSoftware {
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "BrokerAgent" -ProductName "Citrix XenDesktop Virtual Desktop Agent (VDA)"
 
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
-		IF ($svc -eq $true) {
-			$Version = Get-BISFFileVersion $glbSVCImagePath
-			$Global:VDAVersion = "$($Version.Major).$($Version.Minor)"
-			$CheckVersion = "7.21" #VDA 1903
-			IF ($VDAVersion -ge $CheckVersion){
-				$Global:MCSIO = $true
-				Write-BISFLog "VDA Version $VDAVersion supports MCS IO with persistent disk" -ShowConsole -Color DarkCyan -SubMsg
+	IF ($svc -eq $true) {
+		$Version = Get-BISFFileVersion $glbSVCImagePath
+		$Global:VDAVersion = "$($Version.Major).$($Version.Minor)"
+		$CheckVersion = "7.21" #VDA 1903
+		IF ($VDAVersion -ge $CheckVersion){
+			$Global:MCSIO = $true
+			Write-BISFLog "VDA Version $VDAVersion supports MCS IO with persistent disk" -ShowConsole -Color DarkCyan -SubMsg
+		} ELSE {
+			$Global:MCSIO = $false
+			Write-BISFLog "VDA version $VDAVersion does NOT support MCS IO with persistent disk"
+		}
+		$Global:ImageSW = $true
+		$Global:UPL = $false
+		$CheckVersion = "7.24" # VDA 1912  with UPL support
+		IF ($VDAVersion -ge $CheckVersion){
+			Write-BISFLog "VDA Version $VDAVersion supports User Personalization Layer (UPL).. check if UPL Services are installed" -ShowConsole -Color DarkCyan -SubMsg
+			$UPLsvc1 = Test-BISFService -ServiceName "upl-Support" -ProductName "Citrix UPL Support Service"
+			$UPLsvc2 = Test-BISFService -ServiceName "ulayer" -ProductName "Citrix Layering Service"
+			IF (($UPLsvc1 -eq $true) -and ($UPLsvc2 -eq $true)) {
+				$Global:UPL = $true
+				Write-BISFLog "UPL Services installed" -ShowConsole -Color DarkCyan -SubMsg
 			} ELSE {
-				$Global:MCSIO = $false
-				Write-BISFLog "VDA version $VDAVersion does NOT support MCS IO with persistent disk"
+				Write-BISFLog "UPL Services NOT installed"
 			}
-			$Global:ImageSW = $true
-			$Global:UPL = $false
-			$CheckVersion = "7.24" # VDA 1912  with UPL support
-			IF ($VDAVersion -ge $CheckVersion){
-				Write-BISFLog "VDA Version $VDAVersion supports User Personalization Layer (UPL).. check if UPL Services are installed" -ShowConsole -Color DarkCyan -SubMsg
-				$UPLsvc1 = Test-BISFService -ServiceName "upl-Support" -ProductName "Citrix UPL Support Service"
-				$UPLsvc2 = Test-BISFService -ServiceName "ulayer" -ProductName "Citrix Layering Service"
-				IF (($UPLsvc1 -eq $true) -and ($UPLsvc2 -eq $true)) {
-					$Global:UPL = $true
-					Write-BISFLog "UPL Services installed" -ShowConsole -Color DarkCyan -SubMsg
-				} ELSE {
-					Write-BISFLog "UPL Services NOT installed"
-				}
-			} ELSE {
-				Write-BISFLog "VDA version $VDAVersion does NOT supports User Personalization Layer (UPL)"
-			}
+		} ELSE {
+			Write-BISFLog "VDA version $VDAVersion does NOT supports User Personalization Layer (UPL)"
 		}
 	}
-
 
 	return $svc
 
@@ -2032,6 +2034,7 @@ function Test-VMwareHorizonViewSoftware {
 
 		History:
 	  	07.01.2016 MS: function created
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 
 	.LINK
@@ -2039,7 +2042,7 @@ function Test-VMwareHorizonViewSoftware {
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "WSNM" -ProductName "VMware Horizon View Script Host"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF ($svc -eq $true) { $Global:ImageSW = $true }
 	return $svc
 
 }
@@ -2499,6 +2502,7 @@ function Test-AppLayeringSoftware {
 		09.07.2018 MS: Bugfix 48 - Part III: using DiskMode in RunMode 4 to diff between App- or Platform Layer
 		21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalized is blocked with MCS - Booting Layered Image
 		02.01.2020 MS: Bugfix 164: Layer finalize is blocked with VDA 1912 LTSR and activated UPL
+		07.01.20120 MS: HF 176 - $Global:ImageSW request is set one Time only
 	.LINK
 		https://eucweb.com
 #>
@@ -2509,9 +2513,9 @@ function Test-AppLayeringSoftware {
 	$Global:CTXAppLayeringPFLayer = $false       # Platform Layer detected
 	$GLobal:CTXAppLayerName = $Null
 	$svc = Test-BISFService -ServiceName "UniService" -ProductName "Citrix AppLayering"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	IF ($svc -eq $true) {
 		$Global:CTXAppLayeringSW = $true
+		$Global:ImageSW = $true
 		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
 		$DiskMode = Get-BISFDiskMode
 		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
@@ -2543,29 +2547,6 @@ function Test-AppLayeringSoftware {
 		}
 		Write-BISFLog -Msg "Citrix AppLayering - $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
 
-		<#
-		$Global:AppLayMachineState = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\UniService).MachineState
-		Write-BISFLog -Msg "AppLayering MachineState is set to $AppLayMachineState"
-		$AppLayOS = Test-BISFRegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UniService" -Value "OSLayerEdit"
-		$AppLayVS = Test-BISFRegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UniService" -Value "VolumeSerialNumber"
-		$PrevBICTaskID = Test-BISFRegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UniService" -Value "PrevBICTaskID"
-		Switch ($AppLayMachineState)
-		{
-			1 {	#VM not running inside ELM
-				IF (($AppLayVS) -and ($PrevBICTaskID) -and ($CTXAppLayerName -eq $Null)) {Write-BISFLog -Msg "Citrix AppLayering - VM is not running inside ELM" -ShowConsole -SubMsg -Color DarkCyan; $GLobal:CTXAppLayerName="No-ELM"}
-			}
-			3 {
-				#VM is running pre ELM, build VM before import
-				IF ((!($AppLayOS)) -and (!($AppLayVS)) -and (!($PrevBICTaskID)) -and ($CTXAppLayerName -eq $Null)) {Write-BISFLog -Msg "Citrix AppLayering - VM is not running Pre-ELM" -ShowConsole -SubMsg -Color DarkCyan; $GLobal:CTXAppLayerName = "No-ELM"}
-			}
-			4 {
-				IF (($AppLayOS) -and ($CTXAppLayerName -eq $Null)) {Write-BISFLog -Msg "Citrix AppLayering - OS Layer detected" -ShowConsole -SubMsg -Color DarkCyan; $Global:CTXAppLayeringOSLayer=$true; $GLobal:CTXAppLayerName="OS-Layer"}
-				IF ((!($AppLayVS) -and ($CTXAppLayerName -eq $Null))) {Write-BISFLog -Msg "Citrix AppLayering - New Platform/Application Layer detected" -ShowConsole -SubMsg -Color DarkCyan; $Global:CTXAppLayeringPFLayer=$true; ; $GLobal:CTXAppLayerName="Platform/Application Layer"}
-				IF (($AppLayVS) -and ($CTXAppLayerName -eq $Null)) {Write-BISFLog -Msg "Citrix AppLayering - Updated Platform/Application Layer detected" -ShowConsole -SubMsg -Color DarkCyan; $Global:CTXAppLayeringPFLayer=$true; ; $GLobal:CTXAppLayerName="Platform/Application Layer"}
-			}
-		Default {Write-BISFLog -Msg "Not defined - AppLayering MachineState is set to $AppLayMachineState" -ShowConsole -Type W}
-		}
-		#>
 	}
 	return $svc
 
@@ -3657,13 +3638,13 @@ function Test-NutanixFrameSoftware {
 
 		History:
 	  	13.08.2019 MS: function created
-
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "MF2Service" -ProductName "Nutanix Xi Frame"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF ($svc -eq $true) { $Global:ImageSW = $true }
 	return $svc
 
 }
@@ -3683,13 +3664,14 @@ function Test-ParallelsRASSoftware {
 
 		History:
 	  	14.08.2019 MS: function created
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "RAS RD Session Host Agent" -ProductName "Parallels RAS Software"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF ($svc -eq $true) { $Global:ImageSW = $true }
 	return $svc
 
 }
@@ -3758,7 +3740,8 @@ function Test-WVDSoftware {
 		Author: Matthias Schlimm
 
 		History:
-	  	25.08.2019 MS: function created
+		  25.08.2019 MS: function created
+		  07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 	.LINK
 		https://eucweb.com
@@ -3767,13 +3750,12 @@ function Test-WVDSoftware {
 	$OSName = (Get-WMIObject Win32_OperatingSystem).Name
 	$product = "Microsoft Windows 10 Enterprise for Virtual Desktops"
 	IF ($OSName -eq $product) { $WVD = $true } ELSE { $WVD = $false }
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
+	IF ($WVD -eq $true) {
 		IF ($WVD -eq $true) {
 			Write-BISFlog -Msg "Product $product installed" -ShowConsole -Color Cyan
 			$Global:ImageSW = $true
 		} ELSE {
 			Write-BISFlog -Msg "Product $product NOT installed"
-			$Global:ImageSW = $false
 		}
 	}
 	return $WVD
