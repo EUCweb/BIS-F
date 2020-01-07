@@ -260,7 +260,7 @@ Process {
 	CheckCDRom
 
 	$DiskMode = Get-BISFDiskMode
-	IF ( ($DisMode -eq "ReadOnly") -or ($DisMode -eq "VDAShared") -or ($DisMode -eq "ReadOnlyAppLayering") -or ($DisMode -eq "VDASharedAppLayering") ) {
+	IF ( ($DiskMode -eq "ReadOnly") -or ($DiskMode -eq "VDAShared") -or ($DiskMode -eq "ReadOnlyAppLayering") -or ($DiskMode -eq "VDASharedAppLayering") ) {
 		Write-BISFLog -Msg "CacheDisk would be configured now for DiskMode $DiskMode"
 		IF (!($LIC_BISF_CLI_WCD -eq $null) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
 			IF ("$returnTestPVSSoftware" -eq $true) {
