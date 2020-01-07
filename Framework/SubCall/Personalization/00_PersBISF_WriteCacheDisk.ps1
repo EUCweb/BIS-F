@@ -50,6 +50,7 @@
 		03.10.2019 MS: ENH 126 - MCSIO with persistent drive
 		05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only, to prevent reboot loop on priavte images
 		04.01.2020 MS: HF 170 - using wrong $variable -> $LIC_BISF_POL_MCSCfg insted of $LIC_BISF_CLI_MCSCfg
+		07.01.2020 MS: HF 177 - typo in DiskMode
 	.LINK
 		https://eucweb.com
 #>
@@ -260,7 +261,7 @@ Process {
 	CheckCDRom
 
 	$DiskMode = Get-BISFDiskMode
-	IF ( ($DisMode -eq "ReadOnly") -or ($DisMode -eq "VDAShared") -or ($DisMode -eq "ReadOnlyAppLayering") -or ($DisMode -eq "VDASharedAppLayering") ) {
+	IF ( ($DiskMode -eq "ReadOnly") -or ($DiskMode -eq "VDAShared") -or ($DiskMode -eq "ReadOnlyAppLayering") -or ($DiskMode -eq "VDASharedAppLayering") ) {
 		Write-BISFLog -Msg "CacheDisk would be configured now for DiskMode $DiskMode"
 		IF (!($LIC_BISF_CLI_WCD -eq $null) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
 			IF ("$returnTestPVSSoftware" -eq $true) {
