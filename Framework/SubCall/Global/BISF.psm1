@@ -3303,6 +3303,7 @@ function Start-CDS {
 	  	10.09.2017 MS: function created
 		12.09.2017 MS: Changing to $servicename = "BrokerAgent"
 		25.03.2018 MS: Feature 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
+		08.01.2020 MS: HF 178 - no defaultvalue is set if GPO for Additional Citrix Desktop Service delay is not configured 
 	.LINK
 		https://eucweb.com
 	  #
@@ -3315,7 +3316,7 @@ function Start-CDS {
 		IF ($LIC_BISF_CLI_CDS -eq "1") {
 			Write-BISFLog -Msg "The $servicename would configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
 
-			IF ($LIC_BISF_CLI_CDSdelay = "") { $LIC_BISF_CLI_CDSdelay = 0 }
+			IF ([string]::IsNullOrEmpty($LIC_BISF_CLI_CDSdelay)) { $LIC_BISF_CLI_CDSdelay = 0 }
 			Write-BISFLog -Msg "Additional Citrix Desktop Service delay is set to $LIC_BISF_CLI_CDSdelay seconds"
 			Start-Sleep -Seconds $LIC_BISF_CLI_CDSdelay
 			Invoke-BISFService -ServiceName "$servicename" -Action Start -StartType Automatic
