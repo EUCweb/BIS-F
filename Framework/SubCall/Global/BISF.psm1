@@ -2253,6 +2253,7 @@ function Invoke-LogRotate {
 	  	15.03.2016 BR: function created
 		17.03.2016 BR: Change Remove-Item to delete the oldest log
 		02.08.2017 MS: using log rotate from ADMX, default = 5 if not set
+		10.01.2020 MS: HF 182 - if LogRotate is set to 0 it doesnt keep all logs
 
 	.LINK
 		https://eucweb.com
@@ -2270,7 +2271,7 @@ function Invoke-LogRotate {
 
 	$val_LF_RT = Test-BISFRegistryValue -Path "$Reg_LIC_Policies" -Value "LIC_BISF_CLI_LF_RT"
 	IF ($val_LF_RT -eq $false) { write-BISFlog -Msg "Log rotate would NOT specified in the ADMX, it uses their default value 5 "; [int]$Versions = "5" }
-	IF ($LIC_BISF_CLI_LF_RT -eq "0") { write-BISFlog -Msg "Log rotate would set to 0 value in the ADMX, it uses now the max. count of 9999 "; [int]$Versions = "9999" }
+	IF ($Versions -eq 0) { write-BISFlog -Msg "Log rotate would set to 0 value in the ADMX, it uses now the max. count of 9999 "; [int]$Versions = "9999" }
 
 	$LogFiles = Get-ChildItem -Path $Directory -Filter $strLogFileName | Sort-Object -Property LastWriteTime -Descending
 	for ($i = $Versions; $i -le ($Logfiles.Count - 1); $i++) { Remove-Item $LogFiles[$i].FullName }
