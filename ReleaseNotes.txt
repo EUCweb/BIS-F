@@ -1,4 +1,5 @@
-08.01.2020 MS: HF 178 - no defaultvalue is set if GPO for Additional Citrix Desktop Service delay is not configured 
+10.01.2020 MS: HF 180 - IF WEM Config is not configured it's processes to reconfigure too
+08.01.2020 MS: HF 178 - no defaultvalue is set if GPO for Additional Citrix Desktop Service delay is not configured
 07.01.2020 MS: HF 174 - Office detection general change
 07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 07.01.2020 MS: HF 177 - typo in DiskMode (00_persBISF_writeCacheDisk.ps1)
