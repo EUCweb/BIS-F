@@ -1,3 +1,4 @@
+11.01.2020 MS: HF 181 - Show-ProgressBar function never ends if it triggers from MDT cscript
 10.01.2020 MS: HF 182 - if LogRotate is set to 0 it doesnt keep all logs
 10.01.2020 MS: HF 180 - IF WEM Config is not configured it's processes to reconfigure too
 08.01.2020 MS: HF 178 - no defaultvalue is set if GPO for Additional Citrix Desktop Service delay is not configured

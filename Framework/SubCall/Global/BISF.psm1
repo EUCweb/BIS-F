@@ -726,6 +726,7 @@ function Show-ProgressBar {
 		31.08.2017 MS: POSH Progressbar, sleep time during preparation only
 		05.09.2017 TT: Added Maximum Execution Minutes and Terminate Runaway Process parameters
 		25.03.2018 MS: Feature 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
+		11.01.2020 MS: HF 181 - function never ends if it triggers from MDT cscript
 	.LINK
 		https://eucweb.com
 #>
@@ -757,7 +758,11 @@ function Show-ProgressBar {
 			$ProcessActive = Get-Process -Id $CheckProcessId -ErrorAction SilentlyContinue
 		}
 		else {
-			$ProcessActive = Get-Process $CheckProcess -ErrorAction SilentlyContinue
+			If ($CheckProcess -ne "cscript") {
+				$ProcessActive = Get-Process $CheckProcess -ErrorAction SilentlyContinue
+			} Else {
+				$ProcessActive = $null
+			}
 		}
 		#$ProcessActive = Get-Process $CheckProcess -ErrorAction SilentlyContinue  #26.07.2017 MS: comment-out:
 
@@ -787,6 +792,7 @@ function Show-ProgressBar {
 		}
 	}
 }
+
 
 function Get-LogContent {
 	PARAM(
