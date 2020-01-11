@@ -58,6 +58,7 @@ param(
 		03.10.2019 MS: ENH 94 - Add sysprep command-line options to ADMX
 		20.12.2019 MS/SF: FRQ 154 (PR)- Edjust for compositing engine change in AppLayering 1911 an higher
 		23.12.2019 MS: ENH 98 - Skip PostCommand execution, if PVS Master Image creation is skipped too
+		11.01.2019 MS: HF 183 - fix defrag arguments for Server 2012 R2
 
 	.LINK
 		https://eucweb.com
@@ -99,16 +100,16 @@ Begin {
 
 	Write-BISFLog -Msg "Define Defrag arguments based on OS-Version"
 	$defragargs = ""
-	IF ($OSVersion -like "6.1*") { $defragargs = "/H /U /V" }
-	IF ($ProductType -eq "1") {
-		IF ($OSVersion -like "6.2*") { $defragargs = "/H /O" }
-		IF ($OSVersion -like "6.3*") { $defragargs = "/H /O" }
+	IF ($OSVersion -like "6.1*") { $defragargs = "/H /O" } #Windows Server 2008 R2 or Windows 7
+	IF ($ProductType -eq "1") {  #Desktop OS
+		IF ($OSVersion -like "6.2*") { $defragargs = "/H /O" } #Windows 8
+		IF ($OSVersion -like "6.3*") { $defragargs = "/H /O" } #Windows 8.1
 	}
-	Else {
-		IF ($OSVersion -like "6.2*") { $defragargs = "/H /K" }
-		IF ($OSVersion -like "6.3*") { $defragargs = "/H /K /G" }
+	Else { #Member Server
+		IF ($OSVersion -like "6.2*") { $defragargs = "/H /O" } #Windows Server 2012
+		IF ($OSVersion -like "6.3*") { $defragargs = "/H /O" } #Windows Server 2012 R2
 	}
-	IF ($OSVersion -like "10.*") { $defragargs = "/H" }
+	IF ($OSVersion -like "10.*") { $defragargs = "/H" } #Windows Server 2016/2019, Windows 10
 
 	IF ($defragargs -eq "") {
 		$defragargs = "/U"
