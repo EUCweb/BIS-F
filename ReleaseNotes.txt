@@ -1,3 +1,4 @@
+13.01.2019 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
 11.01.2019 MS: HF 183 - fix defrag arguments for Server 2012 R2
 11.01.2020 MS: HF 181 - Show-ProgressBar function never ends if it triggers from MDT cscript
 10.01.2020 MS: HF 182 - if LogRotate is set to 0 it doesnt keep all logs

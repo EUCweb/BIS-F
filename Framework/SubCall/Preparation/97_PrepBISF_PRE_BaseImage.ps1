@@ -112,6 +112,7 @@ param(
 		27.12.2019 MS/MN: HF 159 - C:\Windows\temp not deleted
 		27.12.2019 MS/MN: HF 162 - Note when logging on to a created VDisk (after ENH142)
 		05.01.2020 MS: HF 173 - Remove DHCP Information if 3P Optimizer is configured
+		13.01.2019 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
 
 	.LINK
 		https://eucweb.com
@@ -711,7 +712,8 @@ Begin {
 		Command     = "Set-Service -Name wuauserv -StartupType Disabled -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
-
+	
+<# 13.01.2019 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
 	$paths = @( "$env:windir\Temp", "$env:temp")
 
 	foreach ($path in $paths) {
@@ -726,6 +728,7 @@ Begin {
 		};
 		$ordercnt += 1
 	}
+#>
 
 	$PrepCommands += [pscustomobject]@{
 		Order       = "$ordercnt";
