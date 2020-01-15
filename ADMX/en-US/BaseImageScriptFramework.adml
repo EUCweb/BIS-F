@@ -2,7 +2,7 @@
   <displayName>
   </displayName>
   <description>Base Image Script Framework (BIS-F helps you to seal and personalize your Base Image for Citrix, VMware View and Microsoft environments. With this Group Policy you can configure the CLI commands to fully automate BIS-F and runs the sealing process without any needed interaction.)
-©Login Consultants 2019</description>
+©EUCweb 2020</description>
   <resources>
     <stringTable>
       <string id="CAT_3P">3rd Party Tools</string>
