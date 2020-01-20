@@ -727,6 +727,7 @@ function Show-ProgressBar {
 		05.09.2017 TT: Added Maximum Execution Minutes and Terminate Runaway Process parameters
 		25.03.2018 MS: Feature 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
 		11.01.2020 MS: HF 181 - function never ends if it triggers from MDT cscript
+		20.01.2020 MS: HF 191 - MaxExecution is not set correctly
 	.LINK
 		https://eucweb.com
 #>
@@ -739,7 +740,8 @@ function Show-ProgressBar {
 	)
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$a = 0
-	if ($MaximumExecutionMinutes) {
+
+	IF (!(IsNullOrEmpty($MaximumExecutionMinutes))) {
 		$MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
 		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
 	}
@@ -3310,7 +3312,7 @@ function Start-CDS {
 	  	10.09.2017 MS: function created
 		12.09.2017 MS: Changing to $servicename = "BrokerAgent"
 		25.03.2018 MS: Feature 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
-		08.01.2020 MS: HF 178 - no defaultvalue is set if GPO for Additional Citrix Desktop Service delay is not configured 
+		08.01.2020 MS: HF 178 - no defaultvalue is set if GPO for Additional Citrix Desktop Service delay is not configured
 	.LINK
 		https://eucweb.com
 	  #
