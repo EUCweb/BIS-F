@@ -3721,7 +3721,9 @@ function Set-ACLrights {
 
 	$acl = Get-Acl -Path $path
 	#$perm = "local service", "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
-	$perm = "S-1-5-19", "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
+	$localServiceSID = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-19")
+	$localServiceName = ($localServiceSID.Translate( [System.Security.Principal.NTAccount])).Value
+	$perm = $localServiceName, "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
 	$rule = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $perm
 	try {
 		$acl.SetAccessRule($rule)
@@ -3729,6 +3731,7 @@ function Set-ACLrights {
 	catch {
 		Write-BISFlog -Msg "Error during set NTFS rights. The error is: $_" -Type W -SubMsg
 	}
+
 
 
 	$acl | Set-Acl -Path $path
