@@ -52,6 +52,7 @@
 		04.01.2020 MS: HF 170 - using wrong $variable -> $LIC_BISF_POL_MCSCfg insted of $LIC_BISF_CLI_MCSCfg
 		07.01.2020 MS: HF 177 - typo in DiskMode
 		15.01.2020 MS: HF 188 - Async WriteCacheType not detected for shared Images and ending up in a reboot loop
+		27.01.2020 MS: HF 194 - format WriteCacheDisk didn't run if "skip PVS master image creation" enabled
 	.LINK
 		https://eucweb.com
 #>
@@ -278,7 +279,7 @@ Process {
 	CheckCDRom
 
 	$DiskMode = Get-BISFDiskMode
-	IF ( ($DiskMode -eq "ReadOnly") -or ($DiskMode -eq "VDAShared") -or ($DiskMode -eq "ReadOnlyAppLayering") -or ($DiskMode -eq "VDASharedAppLayering") ) {
+	IF ( ($DiskMode -contains "ReadOnly*") -or ($DiskMode -contains "VDAShared*") ) {
 		Write-BISFLog -Msg "CacheDisk would be configured now for DiskMode $DiskMode"
 		IF (!($LIC_BISF_CLI_WCD -eq $null) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
 			IF ("$returnTestPVSSoftware" -eq $true) {
