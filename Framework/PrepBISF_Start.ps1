@@ -74,6 +74,7 @@
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 		06.10.2019 MS: Removing call to Get-BISFScriptExecutionPath
 		08.10.2019 MS: ENH 146 - Removing Test for Get-PendingReboot out of this script and included into BISF.ps1 to an eralier state
+		20.01.2020 MS: HF 191 - MaxExecution is not set correctly
 
 	.LINK
 		https://eucweb.com
@@ -197,7 +198,7 @@ Process {
 	#ENH 127 - Personalization is in Active State Override
 	IF ($LIC_BISF_CLI_PersonalizationOverrideTimeOut -eq $null) {
 		[int]$MaximumExecutionMinutes = 60
-		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
+		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionMinutes minutes"
 	}
  ELSE {
 		[int]$MaximumExecutionMinutes = $LIC_BISF_CLI_PersonalizationOverrideTimeOut
