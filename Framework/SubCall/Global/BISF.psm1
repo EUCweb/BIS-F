@@ -741,7 +741,7 @@ function Show-ProgressBar {
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$a = 0
 
-	IF (($MaximumExecutionMinutes) {
+	IF ($MaximumExecutionMinutes) {
 		$MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
 		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
 	}
