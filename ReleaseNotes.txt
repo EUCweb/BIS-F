@@ -1,7 +1,7 @@
-20.01.2020 MS: HF 191 - MaxExecution is not set correctly
+27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
+27.01.2020 MS: HF 191 - MaxExecution is not set correctly
 13.01.2019 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
 11.01.2019 MS: HF 183 - fix defrag arguments for Server 2012 R2
-
 15.01.2020 MS: HF 188 - Async WriteCacheType not detected for shared Images to format the disk and ending up in a reboot loop
 15.01.2020 MS/AS: HF 172 - Function Set-BISFNTFSRights: Resolve SID S-1-5-19 to localized name to set proper NTFS ACLRights
 13.01.2020 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible

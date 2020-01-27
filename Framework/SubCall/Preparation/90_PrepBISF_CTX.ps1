@@ -64,6 +64,7 @@ param(
 		26.07.2019 MS: ENH 122: Citrix Optimizer Templateprefix support
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		03.10.2019 MS: ENH 65 - ADMX Extension to delete the log files for Citrix Optimizer
+		27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
 
 
 	.Link
@@ -529,40 +530,6 @@ Begin {
 		}
 	}
 
-	#Citrix Applayering
-	function Start-AppLayering {
-		IF (!($CTXAppLayerName -eq "No-ELM")) {
-			IF ($CTXAppLayeringSW) {
-				$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
-				Write-BISFLog -Msg "Prepare Citrix AppLayering" -ShowConsole -Color Cyan
-				$txt = "Prepare AppLayering - List and remove unused network devices"
-				Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
-				$ctxAppLay1 = Start-Process -FilePath "${env:ProgramFiles}\Unidesk\Uniservice\Uniservice.exe" -ArgumentList "-G" -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
-				Show-BISFProgressBar -CheckProcessId $ctxAppLay1.Id -ActivityText "$txt"
-				Get-BISFLogContent -GetLogFile "$tmpLogFile"
-				Remove-Item -Path "$tmpLogFile" -Force | Out-Null
-
-				$txt = "Prepare AppLayering - Check System Layer integrity"
-				Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
-				$ctxAppLay2 = Start-Process -FilePath "${env:ProgramFiles}\Unidesk\Uniservice\Uniservice.exe" -ArgumentList "-L" -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
-				Show-BISFProgressBar -CheckProcessId $ctxAppLay2.Id -ActivityText "$txt"
-				Get-BISFLogContent -GetLogFile "$tmpLogFile"
-				$ctxAppLay2log = Test-BISFLog -CheckLogFile "$tmpLogFile" -SearchString "allowed"
-				Remove-Item -Path "$tmpLogFile" -Force | Out-Null
-				IF ($ctxAppLay2log -eq $true) {
-					Write-BISFLog -Msg "Layer finalize is allowed" -ShowConsole -Color DarkCyan -SubMsg
-				}
-				ELSE {
-					Write-BISFLog -Msg "Layer finalize is NOT allowed, this issue is sending out from AppLayering and not BIS-F, please check the BIS-F log for further informations" -SubMsg -Type E
-				}
-
-			}
-		}
-		ELSE {
-			Write-BISFLog -Msg "AppLayering is running $($CTXAppLayerName), UniService must not optimized" -ShowConsole -Color Cyan
-		}
-	}
-
 	function Invoke-CDS {
 		$servicename = "BrokerAgent"
 		IF ($LIC_BISF_CLI_CDS -eq "1") {
@@ -608,7 +575,6 @@ Process {
 		}
 
 	}
-	Start-AppLayering
 	Start-CTXOE
 }
 End {
