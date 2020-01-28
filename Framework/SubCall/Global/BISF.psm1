@@ -2111,7 +2111,7 @@ Function Get-OSCSessionType {
 		}
 	}
 	ELSE {
-		Write-BISFLog -Msg "RDP session support can be enabled in the ADMX template" -ShowConsole -SubMsg -Color DarkCyan
+		Write-BISFLog -Msg "RDP session support is enabled" -ShowConsole -SubMsg -Color DarkCyan
 	}
 
 }
