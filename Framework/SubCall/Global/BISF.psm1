@@ -3165,6 +3165,7 @@ function Import-SharedConfiguration {
 		  15.08.2017 MS: function created
 		  21.09.2019 MS: EHN 36 - Shared Configuration - JSON Import
 		  06.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
+		  30.01.2019 MS: HF 195 - Shared Configuration not imported
 
 	.LINK
 		https://eucweb.com
@@ -3214,6 +3215,7 @@ function Import-SharedConfiguration {
 			}
 			Write-BISFlog "Import Json Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
 			$object = Get-Content $JSONSharedConfigFile | Convertfrom-Json
+			$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
 
 		} ELSE {
 			Write-BISFlog "Error: Shared Configuration $JSONSharedConfigFile does not exists !!" -Type E

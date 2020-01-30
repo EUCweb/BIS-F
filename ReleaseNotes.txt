@@ -1,3 +1,4 @@
+30.01.2019 MS: HF 195 - Shared Configuration not imported
 27.01.2020 MS: HF 194 - format WriteCacheDisk didn't run if "skip PVS master image creation" enabled
 27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
 27.01.2020 MS: HF 191 - MaxExecution is not set correctly
