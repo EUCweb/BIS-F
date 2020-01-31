@@ -64,8 +64,8 @@ Begin {
 	####### functions #####
 	####################################################################
 	function GetUniqueID {
-		# Get uniqueid PVSWriteCacheDisk
-		Write-BISFLog -Msg "Get UniqueID from PVSWriteCacheDisk" -ShowConsole -Color Cyan
+		# Get uniqueid WriteCacheDisk
+		Write-BISFLog -Msg "Get UniqueID from WriteCacheDisk" -ShowConsole -Color Cyan
 		$DriveLetter = $PVSDiskDrive.substring(0, 1)
 		Write-BISFLog -Msg "use Diskpart, search Driveletter $DriveLetter"
 
@@ -125,11 +125,11 @@ Process {
 			GetUniqueID
 		}
 		ELSE {
-			Write-BISFLog -Msg "PVS WriteCacheDisk environment variable not defined, skipping configuration"
+			Write-BISFLog -Msg "WriteCacheDisk environment variable not defined, skipping configuration"
 		}
 	}
  ELSE {
-		Write-BISFLog -Msg "PVS WriteCacheDisk is set to 'NONE', skipping configuration"
+		Write-BISFLog -Msg "WriteCacheDisk is set to 'NONE', skipping configuration"
 	}
 	SetCDRom
 	SetRefSrv

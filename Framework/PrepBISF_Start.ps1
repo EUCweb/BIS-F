@@ -74,6 +74,7 @@
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 		06.10.2019 MS: Removing call to Get-BISFScriptExecutionPath
 		08.10.2019 MS: ENH 146 - Removing Test for Get-PendingReboot out of this script and included into BISF.ps1 to an eralier state
+		20.01.2020 MS: HF 191 - MaxExecution is not set correctly
 
 	.LINK
 		https://eucweb.com
@@ -197,7 +198,7 @@ Process {
 	#ENH 127 - Personalization is in Active State Override
 	IF ($LIC_BISF_CLI_PersonalizationOverrideTimeOut -eq $null) {
 		[int]$MaximumExecutionMinutes = 60
-		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
+		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionMinutes minutes"
 	}
  ELSE {
 		[int]$MaximumExecutionMinutes = $LIC_BISF_CLI_PersonalizationOverrideTimeOut
@@ -221,8 +222,8 @@ Process {
 		$PersState = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState").LIC_BISF_PersState
 		IF (($PersState -eq $($TaskStates[0])) -or ($PersState -eq $($TaskStates[3]))) {
 			$a = 100
-			Write-Progress -Activity "Personlization is in current ""$PersState"" state, go ahead the preparation task in 5 seconds" -PercentComplete $a -Status "Finish."
-			Start-Sleep 5
+			Write-Progress -Activity "Personalization is in current ""$PersState"" state, go ahead the preparation task in 3 seconds" -PercentComplete $a -Status "Finish."
+			Start-Sleep 3
 			Write-Progress "Done" "Done" -completed
 			break
 		}

@@ -106,11 +106,11 @@ Process {
 
 	#Personalization is in Active State Override
 	IF ($LIC_BISF_CLI_PersonalizationOverride -eq 2 ) {
-		Write-BISFLog "Personlization Active State override is set to: Change and continue"
+		Write-BISFLog "Personalization Active State override is set to: Change and continue"
 		$PersState = $TaskStates[3]
 	}
  ELSE {
-		Write-BISFLog "Personlization Active State override is set to: Do not change and wait"
+		Write-BISFLog "Personalization Active State override is set to: Do not change and wait"
 		$PersState = $TaskStates[2]
 	}
 	Write-BISFLog -Msg "Write PersState to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_PersState -Value: $PersState"

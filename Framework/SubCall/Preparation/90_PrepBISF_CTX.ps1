@@ -64,6 +64,7 @@ param(
 		26.07.2019 MS: ENH 122: Citrix Optimizer Templateprefix support
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		03.10.2019 MS: ENH 65 - ADMX Extension to delete the log files for Citrix Optimizer
+		27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
 
 
 	.Link
@@ -265,107 +266,112 @@ Begin {
 			11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
 			03.10.2019 MS: ENH 139 - WEM 1909 detection (tx to citrixguyblog / chezzer64)
 			04.10.2019 MS: ENH 11 - ADMX extension: Configure WEM Cache to persistent drive
+			10.01.2020 MS: HF 180 - IF WEM Config is not configured it's processes to reconfigure too
 
 	.LINK
 		https://eucweb.com
 #>
 
-		$services = "Norskale Agent Host Service", "WemAgentSvc"
-		$AgentCacheFolder = "WEMAgentCache"  # ->  $LIC_BISF_CtxPath\$AgentCacheFolder
+		IF ($LIC_BISF_CLI_WEMCfg -eq "YES") {
+			$services = "Norskale Agent Host Service", "WemAgentSvc"
+			$AgentCacheFolder = "WEMAgentCache"  # ->  $LIC_BISF_CtxPath\$AgentCacheFolder
 
-		foreach ($service in $services) {
-			if ($service -eq "Norskale Agent Host Service") {
-				$product = "Citrix Workspace Environment Management (WEM) Legacy Agent"
-			}
-
-			else { $product = "Citrix Workspace Environment Management (WEM) Agent" }
-
-			$svc = Test-BISFService -ServiceName "$service" -ProductName "$product"
-			IF ($svc -eq $true) {
-				$servicename = $service
-				Invoke-BISFService -ServiceName "$servicename" -Action Stop
-
-
-				#read WEM AgentAlternateCacheLocation from registry
-				$REG_WEMAgent = "HKLM:\SYSTEM\CurrentControlSet\Control\Norskale\Agent Host"
-				$WEMAgentLocation = (Get-ItemProperty $REG_WEMAgent).AgentLocation
-				Write-BISFLog -Msg "WEM Agent Location: $WEMAgentLocation"
-
-				$WEMAgentCacheLocation = (Get-ItemProperty $REG_WEMAgent).AgentCacheAlternateLocation
-				Write-BISFLog -Msg "WEM Agent cache location: $WEMAgentCacheLocation"
-
-				$WEMAgentCacheDrive = $WEMAgentCacheLocation.Substring(0, 2)
-				Write-BISFLog -Msg "WEM Agent cache drive: $WEMAgentCacheDrive"
-
-
-				#Read WEM Agent Host BrokerName from registry
-				#Check if WEM is installed On-Prem or in Cloud Mode
-				$REG_WEMAgentHost = "HKLM:\SOFTWARE\Policies\Norskale\Agent Host"
-
-
-				if (Get-ItemProperty $REG_WEMAgentHost -Name "BrokerSvcName") {
-					$WEMAgentHostBrokerName = (Get-ItemProperty $REG_WEMAgentHost).BrokerSvcName
-					IF (!$WEMAgentHostBrokerName) { Write-BISFLog -Msg "WEM Agent BrokerName not specified through WEM ADMX" } ELSE { Write-BISFLog -Msg "WEM Agent BrokerName: $WEMAgentHostBrokerName" }
+			foreach ($service in $services) {
+				if ($service -eq "Norskale Agent Host Service") {
+					$product = "Citrix Workspace Environment Management (WEM) Legacy Agent"
 				}
 
+				else { $product = "Citrix Workspace Environment Management (WEM) Agent" }
 
-				if (Get-ItemProperty $REG_WEMAgentHost -Name "CloudConnectorList") {
-					$WEMAgentHostBrokerName = (Get-ItemProperty $REG_WEMAgentHost).CloudConnectorList
-					IF (!$WEMAgentHostBrokerName) { Write-BISFLog -Msg "WEM Agent CloudConnector not specified through WEM ADMX" } ELSE { Write-BISFLog -Msg "WEM Agent CloudConnector: $WEMAgentHostBrokerName" }
-				}
+				$svc = Test-BISFService -ServiceName "$service" -ProductName "$product"
+				IF ($svc -eq $true) {
+					$servicename = $service
+					Invoke-BISFService -ServiceName "$servicename" -Action Stop
+
+
+					#read WEM AgentAlternateCacheLocation from registry
+					$REG_WEMAgent = "HKLM:\SYSTEM\CurrentControlSet\Control\Norskale\Agent Host"
+					$WEMAgentLocation = (Get-ItemProperty $REG_WEMAgent).AgentLocation
+					Write-BISFLog -Msg "WEM Agent Location: $WEMAgentLocation"
+
+					$WEMAgentCacheLocation = (Get-ItemProperty $REG_WEMAgent).AgentCacheAlternateLocation
+					Write-BISFLog -Msg "WEM Agent cache location: $WEMAgentCacheLocation"
+
+					$WEMAgentCacheDrive = $WEMAgentCacheLocation.Substring(0, 2)
+					Write-BISFLog -Msg "WEM Agent cache drive: $WEMAgentCacheDrive"
+
+
+					#Read WEM Agent Host BrokerName from registry
+					#Check if WEM is installed On-Prem or in Cloud Mode
+					$REG_WEMAgentHost = "HKLM:\SOFTWARE\Policies\Norskale\Agent Host"
+
+
+					if (Get-ItemProperty $REG_WEMAgentHost -Name "BrokerSvcName") {
+						$WEMAgentHostBrokerName = (Get-ItemProperty $REG_WEMAgentHost).BrokerSvcName
+						IF (!$WEMAgentHostBrokerName) { Write-BISFLog -Msg "WEM Agent BrokerName not specified through WEM ADMX" } ELSE { Write-BISFLog -Msg "WEM Agent BrokerName: $WEMAgentHostBrokerName" }
+					}
+
+
+					if (Get-ItemProperty $REG_WEMAgentHost -Name "CloudConnectorList") {
+						$WEMAgentHostBrokerName = (Get-ItemProperty $REG_WEMAgentHost).CloudConnectorList
+						IF (!$WEMAgentHostBrokerName) { Write-BISFLog -Msg "WEM Agent CloudConnector not specified through WEM ADMX" } ELSE { Write-BISFLog -Msg "WEM Agent CloudConnector: $WEMAgentHostBrokerName" }
+					}
 
 
 
-				IF (($Redirection -eq $true) -and ($LIC_BISF_CLI_WEMCache -eq 1)) {
-					IF ($PVSDiskDrive -ne $WEMAgentCacheDrive) {
-						IF ($LIC_BISF_CLI_WEMb -eq 1) {
-							Write-BISFLog -Msg "Use custom WEM Cache Folder"
-							$NewWEMAgentCacheLocation = "$LIC_BISF_CtxPath\" + $LIC_BISF_CLI_WEMFolder
+					IF (($Redirection -eq $true) -and ($LIC_BISF_CLI_WEMCache -eq 1)) {
+						IF ($PVSDiskDrive -ne $WEMAgentCacheDrive) {
+							IF ($LIC_BISF_CLI_WEMb -eq 1) {
+								Write-BISFLog -Msg "Use custom WEM Cache Folder"
+								$NewWEMAgentCacheLocation = "$LIC_BISF_CtxPath\" + $LIC_BISF_CLI_WEMFolder
+							}
+							ELSE {
+								$NewWEMAgentCacheLocation = "$LIC_BISF_CtxPath\$AgentCacheFolder"
+							}
+
+							Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is not equal to the PVS WriteCache disk ($PVSDiskDrive)" -Type W -SubMsg
+							Write-BISFLog -Msg "The AgentCacheAlternateLocation value must be reconfigured now to $NewWEMAgentCacheLocation" -Type W -SubMsg
+
+							IF (!(Test-Path "$NewWEMAgentCacheLocation")) {
+								Write-BISFLog -Msg "Creating folder $NewWEMAgentCacheLocation" -ShowConsole -Color DarkCyan -SubMsg
+								New-Item -Path "$NewWEMAgentCacheLocation" -ItemType Directory | Out-Null
+							}
+
+							$WEMAgentLclDb = "$WEMAgentLocation" + "Local Databases"
+							Write-BISFLog -Msg "Moving the local database files (*sdf) from $WEMAgentLclDb to $NewWEMAgentCacheLocation" -ShowConsole -Color DarkCyan -SubMsg
+							Move-Item -Path "$WEMAgentLclDb\*.sdf" -Destination "$NewWEMAgentCacheLocation"
+							Set-ItemProperty -Path "$REG_WEMAgent" -Name "AgentCacheAlternateLocation" -Value "$NewWEMAgentCacheLocation"
+							Set-ItemProperty -Path "$REG_WEMAgent" -Name "AgentServiceUseNonPersistentCompliantHistory" -Value "1"
+							$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
 						}
 						ELSE {
-							$NewWEMAgentCacheLocation = "$LIC_BISF_CtxPath\$AgentCacheFolder"
+							Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is equal to the PVS or MCSIO CacheDisk ($PVSDiskDrive) and must not be reconfigured" -ShowConsole -SubMsg -Color DarkCyan
 						}
 
-						Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is not equal to the PVS WriteCache disk ($PVSDiskDrive)" -Type W -SubMsg
-						Write-BISFLog -Msg "The AgentCacheAlternateLocation value must be reconfigured now to $NewWEMAgentCacheLocation" -Type W -SubMsg
-
-						IF (!(Test-Path "$NewWEMAgentCacheLocation")) {
-							Write-BISFLog -Msg "Creating folder $NewWEMAgentCacheLocation" -ShowConsole -Color DarkCyan -SubMsg
-							New-Item -Path "$NewWEMAgentCacheLocation" -ItemType Directory | Out-Null
-						}
-
-						$WEMAgentLclDb = "$WEMAgentLocation" + "Local Databases"
-						Write-BISFLog -Msg "Moving the local database files (*sdf) from $WEMAgentLclDb to $NewWEMAgentCacheLocation" -ShowConsole -Color DarkCyan -SubMsg
-						Move-Item -Path "$WEMAgentLclDb\*.sdf" -Destination "$NewWEMAgentCacheLocation"
-						Set-ItemProperty -Path "$REG_WEMAgent" -Name "AgentCacheAlternateLocation" -Value "$NewWEMAgentCacheLocation"
-						Set-ItemProperty -Path "$REG_WEMAgent" -Name "AgentServiceUseNonPersistentCompliantHistory" -Value "1"
-						$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
-					}
-					ELSE {
-						Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is equal to the PVS or MCSIO CacheDisk ($PVSDiskDrive) and must not be reconfigured" -ShowConsole -SubMsg -Color DarkCyan
-					}
-
-					Write-BISFLog -Msg "Running Agent Cache Management Utility with $product" -ShowConsole -Color DarkCyan -SubMsg
-					Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility"
-				}
-				ELSE {
-					IF ($PVSDiskDrive -eq $WEMAgentCacheDrive) {
-						Write-BISFLog -Msg "Redirection is disabled, configure the WEM Cache back to the origin path" -ShowConsole -Color DarkCyan -SubMsg
-						$WEMAgentLclDb = "$WEMAgentLocation" + "Local Databases"
-						Write-BISFLog -Msg "Origin path is set to $WEMAgentLclDb" -ShowConsole -Color DarkCyan -SubMsg
-						Set-ItemProperty -Path "$REG_WEMAgent" -Name "AgentCacheAlternateLocation" -Value $WEMAgentLclDb
-						Remove-ItemProperty -Path "$REG_WEMAgent" -Name "AgentServiceUseNonPersistentCompliantHistory"
-						$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
 						Write-BISFLog -Msg "Running Agent Cache Management Utility with $product" -ShowConsole -Color DarkCyan -SubMsg
 						Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility"
-						Write-BISFLog -Msg "Removing old path $WEMAgentCacheLocation" -ShowConsole -Color DarkCyan -SubMsg
-						Remove-Item "$WEMAgentCacheLocation" -Recurse -Force
-
 					}
+					ELSE {
+						IF ($PVSDiskDrive -eq $WEMAgentCacheDrive) {
+							Write-BISFLog -Msg "Redirection is disabled, configure the WEM Cache back to the origin path" -ShowConsole -Color DarkCyan -SubMsg
+							$WEMAgentLclDb = "$WEMAgentLocation" + "Local Databases"
+							Write-BISFLog -Msg "Origin path is set to $WEMAgentLclDb" -ShowConsole -Color DarkCyan -SubMsg
+							Set-ItemProperty -Path "$REG_WEMAgent" -Name "AgentCacheAlternateLocation" -Value $WEMAgentLclDb
+							Remove-ItemProperty -Path "$REG_WEMAgent" -Name "AgentServiceUseNonPersistentCompliantHistory"
+							$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
+							Write-BISFLog -Msg "Running Agent Cache Management Utility with $product" -ShowConsole -Color DarkCyan -SubMsg
+							Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility"
+							Write-BISFLog -Msg "Removing old path $WEMAgentCacheLocation" -ShowConsole -Color DarkCyan -SubMsg
+							Remove-Item "$WEMAgentCacheLocation" -Recurse -Force
+
+						}
+					}
+
+
 				}
-
-
 			}
+		} ELSE {
+			Write-BISFLog "GPO for WEM Agent is disabled or not configured"
 		}
 	}
 
@@ -524,40 +530,6 @@ Begin {
 		}
 	}
 
-	#Citrix Applayering
-	function Start-AppLayering {
-		IF (!($CTXAppLayerName -eq "No-ELM")) {
-			IF ($CTXAppLayeringSW) {
-				$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
-				Write-BISFLog -Msg "Prepare Citrix AppLayering" -ShowConsole -Color Cyan
-				$txt = "Prepare AppLayering - List and remove unused network devices"
-				Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
-				$ctxAppLay1 = Start-Process -FilePath "${env:ProgramFiles}\Unidesk\Uniservice\Uniservice.exe" -ArgumentList "-G" -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
-				Show-BISFProgressBar -CheckProcessId $ctxAppLay1.Id -ActivityText "$txt"
-				Get-BISFLogContent -GetLogFile "$tmpLogFile"
-				Remove-Item -Path "$tmpLogFile" -Force | Out-Null
-
-				$txt = "Prepare AppLayering - Check System Layer integrity"
-				Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
-				$ctxAppLay2 = Start-Process -FilePath "${env:ProgramFiles}\Unidesk\Uniservice\Uniservice.exe" -ArgumentList "-L" -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
-				Show-BISFProgressBar -CheckProcessId $ctxAppLay2.Id -ActivityText "$txt"
-				Get-BISFLogContent -GetLogFile "$tmpLogFile"
-				$ctxAppLay2log = Test-BISFLog -CheckLogFile "$tmpLogFile" -SearchString "allowed"
-				Remove-Item -Path "$tmpLogFile" -Force | Out-Null
-				IF ($ctxAppLay2log -eq $true) {
-					Write-BISFLog -Msg "Layer finalize is allowed" -ShowConsole -Color DarkCyan -SubMsg
-				}
-				ELSE {
-					Write-BISFLog -Msg "Layer finalize is NOT allowed, this issue is sending out from AppLayering and not BIS-F, please check the BIS-F log for further informations" -SubMsg -Type E
-				}
-
-			}
-		}
-		ELSE {
-			Write-BISFLog -Msg "AppLayering is running $($CTXAppLayerName), UniService must not optimized" -ShowConsole -Color Cyan
-		}
-	}
-
 	function Invoke-CDS {
 		$servicename = "BrokerAgent"
 		IF ($LIC_BISF_CLI_CDS -eq "1") {
@@ -603,7 +575,6 @@ Process {
 		}
 
 	}
-	Start-AppLayering
 	Start-CTXOE
 }
 End {

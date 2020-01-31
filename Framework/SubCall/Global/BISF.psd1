@@ -3,7 +3,7 @@
 #
 # Generiert von: Matthias Schlimm
 #
-# Generiert am: 28.12.2019
+# Generiert am: 31.01.2020
 #
 
 @{
@@ -12,7 +12,7 @@
 RootModule = 'BISF.psm1'
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '7.1912.0'
+ModuleVersion = '7.1912.1'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()
@@ -27,10 +27,10 @@ Author = 'Matthias Schlimm'
 CompanyName = 'EUCweb'
 
 # Urheberrechtserklärung für dieses Modul
-Copyright = '(c) 2019 EUCweb.com - All rights reserved.'
+Copyright = '(c) 2020 Eucweb'
 
 # Beschreibung der von diesem Modul bereitgestellten Funktionen
-Description = 'This module contains functions and global variables needed for the Base Image Script Framework (BISF)'
+# Description = ''
 
 # Die für dieses Modul mindestens erforderliche Version des Windows PowerShell-Moduls
 PowerShellVersion = '2.0'
@@ -117,7 +117,7 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 # HelpInfo-URI dieses Moduls
-HelpInfoURI = 'https://eucweb.com/'
+HelpInfoURI = 'https://eucweb.com'
 
 # Standardpräfix für Befehle, die aus diesem Modul exportiert werden. Das Standardpräfix kann mit "Import-Module -Prefix" überschrieben werden.
 DefaultCommandPrefix = 'BISF'

@@ -1,6 +1,36 @@
 ---------------------------------
+Version 7.1912.1.011024 -- 31.01.2020 16:24:39 :
+30.01.2020 MS: HF 196 - WEM Agent: GPO help description
+30.01.2020 MS: HF 195 - Shared Configuration not imported
+27.01.2020 MS: HF 194 - format WriteCacheDisk didn't run if "skip PVS master image creation" enabled
+27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
+27.01.2020 MS: HF 191 - MaxExecution is not set correctly
+13.01.2020 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
+11.01.2020 MS: HF 183 - fix defrag arguments for Server 2012 R2
+15.01.2020 MS: HF 188 - Async WriteCacheType not detected for shared Images to format the disk and ending up in a reboot loop
+15.01.2020 MS/AS: HF 172 - Function Set-BISFNTFSRights: Resolve SID S-1-5-19 to localized name to set proper NTFS ACLRights
+13.01.2020 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
+11.01.2020 MS: HF 183 - fix defrag arguments for Server 2012 R2
+11.01.2020 MS: HF 181 - Show-ProgressBar function never ends if it triggers from MDT cscript
+10.01.2020 MS: HF 182 - if LogRotate is set to 0 it doesnt keep all logs
+10.01.2020 MS: HF 180 - IF WEM Config is not configured it's processes to reconfigure too
+08.01.2020 MS: HF 178 - no defaultvalue is set if GPO for Additional Citrix Desktop Service delay is not configured
+07.01.2020 MS: HF 174 - Office detection general change
+07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
+07.01.2020 MS: HF 177 - typo in DiskMode (00_persBISF_writeCacheDisk.ps1)
+06.01.2020 MS: HF 175 - GPO ADML file typo and grammar check
+05.01.2020 MS: ENH 165 - detect UPL - new feature with VDA 1912 LTSR
+05.01.2020 MS: HF 172 - using S-1-5-19 instead of local Service
+05.01.2020 MS: HF 173 - Remove DHCP Information if 3P Optimizer is configured too
+05.01.2020 MS: HF 171 - VMware TCPIP Optimizations failed
+04.01.2020 MS: HF 170 - C:\Windows\Logs does not exist -function Test-BISFWriteCacheDisk
+03.01.2020 MS: HF 169 - Disable redirection if MCS GPO is disabled
+02.01.2020 MS: HF 168 - VMware Optimizations 52_PrepBISF_VMWareTCPIPOptimization not executed
+02.01.2020 MS: HF 166 - CylanceProtect - Wrong Command for Compatibility Mode
+02.01.2020 MS: HF 164 - Layer finalize is blocked with VDA 1912 LTSR and activated UPL
+---------------------------------
 Version 7.1912.0.011023 -- 28.12.2019 00:38:37 :
-27.12.2019 MS/MN: HF 160 - Calculation of free space for the VHDX on UNC-Path 
+27.12.2019 MS/MN: HF 160 - Calculation of free space for the VHDX on UNC-Path
 27.12.2019 MS/MN: HF 162 - Note when logging on to a created VDisk (after ENH142)
 27.12.2019 MS/MN: HF 161 - Quotation marks are different in Move-BISFEvtLogs
 27.12.2019 MS/MN: HF 159 - C:\Windows\temp not deleted

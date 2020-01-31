@@ -28,6 +28,7 @@
 	12.03.2017 MS: add $Global:Wait1= "10"  #global time in seconds
 	11.09.2017 MS: add $TaskStates to control the Preparation is running after Personlization first
 	03.10.2019 MS: ENH 126 - MCSI for persistent to set $Global:PVSDiskDrive = LIC_BISF_CLI_MCSIODriveLetter
+	07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 .LINK
 	https://eucweb.com
 #>
@@ -61,12 +62,14 @@
 	$Global:AppLayAppPltCfg = "BISFconfig_AppLay_AppPlt.json"
 	$Global:AppLayPltCfg = "BISFconfig_AppLay_Plt.json"
 	$Global:AppLayNoELMCfg = "BISFconfig_AppLay_NoELM.json"
+	$Global:ImageSW = $false
 	Import-BISFSharedConfiguration -Verbose:$VerbosePreference
 	Get-BISFCLIcmd -Verbose:$VerbosePreference #must be running before the $Global:PVSDiskDrive = $LIC_BISF_CLI_WCD is set
 
-	IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
+	IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
-	} ELSE {
+	}
+ ELSE {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
 	}
 
@@ -368,6 +371,7 @@ function Test-WriteCacheDiskDriveLetter {
 		12.03.2017 MS: configure WriteCacheDisk driveletter with ADMX or show error if PVS Target Device Driver is installed
 		03.10.2019 MS: ENH 126 - added MCSIO
 		03.10.2019 MS: FRQ 3 - Remove Messagebox
+		04.01.2020 MS: HF 170 - using wrong $variable -> $LIC_BISF_POL_MCSCfg insted of $LIC_BISF_CLI_MCSCfg
 
 	.LINK
 		https://eucweb.com
@@ -388,7 +392,7 @@ function Test-WriteCacheDiskDriveLetter {
 	}
 
 	# IF $MCSIO can be used with VDA 1903 and later and the BIS-F MCSIO ADMX is configured as well
-	IF (($MCSIO) -and ($LIC_BISF_POL_MCSCfg -eq "YES")) {
+	IF (($MCSIO) -and ($LIC_BISF_CLI_MCSCfg -eq "YES")) {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
 		write-BISFlog -Msg "MCSIO persistent Disk is configured: $PVSDiskDrive" -ShowConsole -Color DarkCyan -SubMsg
 		return $true
@@ -438,6 +442,7 @@ function Test-WriteCacheDisk {
 		12.03.2017 MS: add .SYNOPSIS to this function
 		03.10.2019 MS: ENH 126 - added MCSIO persistent drive
 		03.10.2019 MS: FRQ 3 - Remove Messagebox
+		04.01.2020 MS: HF 170 - C:\Windows\Logs does not exist
 
 	.LINK
 		https://eucweb.com
@@ -445,22 +450,27 @@ function Test-WriteCacheDisk {
 	IF ($returnTestPVSSoftware) {
 		$Global:PVSDiskDrive = $LIC_BISF_CLI_WCD
 	} ELSE {
-		IF (($MCSIO) -and ($LIC_BISF_POL_MCSCfg -eq "YES")) {
+		IF (($MCSIO) -and ($LIC_BISF_CLI_MCSCfg -eq "YES")) {
 			$Global:PVSDiskDrive = $LIC_BISF_CLI_MCSIODriveLetter
 		}
 	}
 
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
-	$CacheDisk = Get-CimInstance -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
-	IF ($CacheDisk -eq $null) {
-		write-BISFlog -Msg "Disk $PVSDiskDrive not exist. Please create a local new harddrive with enough space, assign driveletter $PVSDiskDrive and run this script again..!!" -Type E -SubMsg
-		return $false
-	}
-	ELSE {
-		write-BISFlog -Msg "Check WriteCache Disk $PVSDiskDrive"
+	IF ($PVSDiskDrive.substring(0,2) -eq $env:SystemDrive) {
+		write-BISFlog -Msg "No seperated Cache Disk configured"
 		return $true
+		}
+	ELSE {
+		$CacheDisk = Get-CimInstance -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
+		IF ($CacheDisk -eq $null) {
+			write-BISFlog -Msg "Disk $PVSDiskDrive not exist. Please create a local new harddrive with enough space, assign driveletter $PVSDiskDrive and run this script again..!!" -Type E -SubMsg
+			return $false
+		}
+		ELSE {
+			write-BISFlog -Msg "Check WriteCache Disk $PVSDiskDrive"
+			return $true
+		}
 	}
-
 }
 
 function Get-Version {
@@ -584,13 +594,14 @@ function Test-PVSSoftware {
 		History:
 	  	dd.mm.yyyy MS: function created
 		07.09.2015 MS: add .SYNOPSIS to this function
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "BNDevice" -ProductName "Citrix Provisioning Services Target Device Driver (PVS)"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF ($svc -eq $true) { $Global:ImageSW = $true }
 	return $svc
 
 }
@@ -613,6 +624,8 @@ function Test-XDSoftware {
 	  	dd.mm.yyyy MS: function created
 		07.09.2015 MS: add .SYNOPSIS to this function
 		25.08.2019 MS: ENH 126: detect MCSIO based on VDA Minimum Version
+		05.01.2020 MS: ENH 165: detect UPL - new feature with VDA 1912 LTSR
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 	.LINK
 		https://eucweb.com
@@ -620,22 +633,35 @@ function Test-XDSoftware {
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "BrokerAgent" -ProductName "Citrix XenDesktop Virtual Desktop Agent (VDA)"
 
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
-		IF ($svc -eq $true) {
-			$Version = Get-BISFFileVersion $glbSVCImagePath
-			$Global:VDAVersion = "$($Version.Major).$($Version.Minor)"
-			$CheckVersion = "7.21"
-			IF ($VDAVersion -ge $CheckVersion){
-				$Global:MCSIO = $true
-				Write-BISFLog "VDA Version $VDAVersion supports MCS IO and persistent disk"
+	IF ($svc -eq $true) {
+		$Version = Get-BISFFileVersion $glbSVCImagePath
+		$Global:VDAVersion = "$($Version.Major).$($Version.Minor)"
+		$CheckVersion = "7.21" #VDA 1903
+		IF ($VDAVersion -ge $CheckVersion){
+			$Global:MCSIO = $true
+			Write-BISFLog "VDA Version $VDAVersion supports MCS IO with persistent disk" -ShowConsole -Color DarkCyan -SubMsg
+		} ELSE {
+			$Global:MCSIO = $false
+			Write-BISFLog "VDA version $VDAVersion does NOT support MCS IO with persistent disk"
+		}
+		$Global:ImageSW = $true
+		$Global:UPL = $false
+		$CheckVersion = "7.24" # VDA 1912  with UPL support
+		IF ($VDAVersion -ge $CheckVersion){
+			Write-BISFLog "VDA Version $VDAVersion supports User Personalization Layer (UPL).. check if UPL Services are installed" -ShowConsole -Color DarkCyan -SubMsg
+			$UPLsvc1 = Test-BISFService -ServiceName "upl-Support" -ProductName "Citrix UPL Support Service"
+			$UPLsvc2 = Test-BISFService -ServiceName "ulayer" -ProductName "Citrix Layering Service"
+			IF (($UPLsvc1 -eq $true) -and ($UPLsvc2 -eq $true)) {
+				$Global:UPL = $true
+				Write-BISFLog "UPL Services installed" -ShowConsole -Color DarkCyan -SubMsg
 			} ELSE {
-				$Global:MCSIO = $false
-				Write-BISFLog "VDA version $VDAVersion does NOT support MCS IO and persistent disk"
+				Write-BISFLog "UPL Services NOT installed"
 			}
-			$Global:ImageSW = $true
-
+		} ELSE {
+			Write-BISFLog "VDA version $VDAVersion does NOT supports User Personalization Layer (UPL)"
 		}
 	}
+
 	return $svc
 
 }
@@ -700,6 +726,8 @@ function Show-ProgressBar {
 		31.08.2017 MS: POSH Progressbar, sleep time during preparation only
 		05.09.2017 TT: Added Maximum Execution Minutes and Terminate Runaway Process parameters
 		25.03.2018 MS: Feature 17: Read $MaximumExecutionMinutes from ADMX if not internal override during BIS-F Call
+		11.01.2020 MS: HF 181 - function never ends if it triggers from MDT cscript
+
 	.LINK
 		https://eucweb.com
 #>
@@ -712,7 +740,8 @@ function Show-ProgressBar {
 	)
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$a = 0
-	if ($MaximumExecutionMinutes) {
+
+	IF ($MaximumExecutionMinutes) {
 		$MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
 		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
 	}
@@ -731,7 +760,11 @@ function Show-ProgressBar {
 			$ProcessActive = Get-Process -Id $CheckProcessId -ErrorAction SilentlyContinue
 		}
 		else {
-			$ProcessActive = Get-Process $CheckProcess -ErrorAction SilentlyContinue
+			If ($CheckProcess -ne "cscript") {
+				$ProcessActive = Get-Process $CheckProcess -ErrorAction SilentlyContinue
+			} Else {
+				$ProcessActive = $null
+			}
 		}
 		#$ProcessActive = Get-Process $CheckProcess -ErrorAction SilentlyContinue  #26.07.2017 MS: comment-out:
 
@@ -761,6 +794,7 @@ function Show-ProgressBar {
 		}
 	}
 }
+
 
 function Get-LogContent {
 	PARAM(
@@ -825,7 +859,6 @@ Function Get-SoftwareInfo {
 	  [System.Array]
 	.NOTES
 	  Author: Mike Bijl
-	  Company: Login Consultants
 
 	  History
 	  2014-11-07T12:24:59 : Initial writing of the function.
@@ -2008,6 +2041,7 @@ function Test-VMwareHorizonViewSoftware {
 
 		History:
 	  	07.01.2016 MS: function created
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 
 	.LINK
@@ -2015,7 +2049,7 @@ function Test-VMwareHorizonViewSoftware {
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "WSNM" -ProductName "VMware Horizon View Script Host"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF ($svc -eq $true) { $Global:ImageSW = $true }
 	return $svc
 
 }
@@ -2076,7 +2110,7 @@ Function Get-OSCSessionType {
 		}
 	}
 	ELSE {
-		Write-BISFLog -Msg "RDP session support can be enabled in the ADMX template" -ShowConsole -SubMsg -Color DarkCyan
+		Write-BISFLog -Msg "RDP session support is enabled" -ShowConsole -SubMsg -Color DarkCyan
 	}
 
 }
@@ -2226,6 +2260,7 @@ function Invoke-LogRotate {
 	  	15.03.2016 BR: function created
 		17.03.2016 BR: Change Remove-Item to delete the oldest log
 		02.08.2017 MS: using log rotate from ADMX, default = 5 if not set
+		10.01.2020 MS: HF 182 - if LogRotate is set to 0 it doesnt keep all logs
 
 	.LINK
 		https://eucweb.com
@@ -2243,7 +2278,7 @@ function Invoke-LogRotate {
 
 	$val_LF_RT = Test-BISFRegistryValue -Path "$Reg_LIC_Policies" -Value "LIC_BISF_CLI_LF_RT"
 	IF ($val_LF_RT -eq $false) { write-BISFlog -Msg "Log rotate would NOT specified in the ADMX, it uses their default value 5 "; [int]$Versions = "5" }
-	IF ($LIC_BISF_CLI_LF_RT -eq "0") { write-BISFlog -Msg "Log rotate would set to 0 value in the ADMX, it uses now the max. count of 9999 "; [int]$Versions = "9999" }
+	IF ($Versions -eq 0) { write-BISFlog -Msg "Log rotate would set to 0 value in the ADMX, it uses now the max. count of 9999 "; [int]$Versions = "9999" }
 
 	$LogFiles = Get-ChildItem -Path $Directory -Filter $strLogFileName | Sort-Object -Property LastWriteTime -Descending
 	for ($i = $Versions; $i -le ($Logfiles.Count - 1); $i++) { Remove-Item $LogFiles[$i].FullName }
@@ -2474,6 +2509,8 @@ function Test-AppLayeringSoftware {
 		09.07.2018 MS: Bugfix 48 - Part II: get DiskMode, to handle App Layering different
 		09.07.2018 MS: Bugfix 48 - Part III: using DiskMode in RunMode 4 to diff between App- or Platform Layer
 		21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalized is blocked with MCS - Booting Layered Image
+		02.01.2020 MS: Bugfix 164: Layer finalize is blocked with VDA 1912 LTSR and activated UPL
+		07.01.20120 MS: HF 176 - $Global:ImageSW request is set one Time only
 	.LINK
 		https://eucweb.com
 #>
@@ -2484,14 +2521,14 @@ function Test-AppLayeringSoftware {
 	$Global:CTXAppLayeringPFLayer = $false       # Platform Layer detected
 	$GLobal:CTXAppLayerName = $Null
 	$svc = Test-BISFService -ServiceName "UniService" -ProductName "Citrix AppLayering"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
 	IF ($svc -eq $true) {
 		$Global:CTXAppLayeringSW = $true
+		$Global:ImageSW = $true
 		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
 		$DiskMode = Get-BISFDiskMode
 		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
 		$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
-		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {
+		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running") -or ($DiskMode -eq "VDAPrivateAppLayering")) {
 
 			$CTXAppLayeringRunModeNew = 1
 			Write-BISFLog "The origin App Layering RunMode ist set to $CTXAppLayeringRunMode , based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
@@ -2518,29 +2555,6 @@ function Test-AppLayeringSoftware {
 		}
 		Write-BISFLog -Msg "Citrix AppLayering - $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
 
-		<#
-		$Global:AppLayMachineState = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\UniService).MachineState
-		Write-BISFLog -Msg "AppLayering MachineState is set to $AppLayMachineState"
-		$AppLayOS = Test-BISFRegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UniService" -Value "OSLayerEdit"
-		$AppLayVS = Test-BISFRegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UniService" -Value "VolumeSerialNumber"
-		$PrevBICTaskID = Test-BISFRegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UniService" -Value "PrevBICTaskID"
-		Switch ($AppLayMachineState)
-		{
-			1 {	#VM not running inside ELM
-				IF (($AppLayVS) -and ($PrevBICTaskID) -and ($CTXAppLayerName -eq $Null)) {Write-BISFLog -Msg "Citrix AppLayering - VM is not running inside ELM" -ShowConsole -SubMsg -Color DarkCyan; $GLobal:CTXAppLayerName="No-ELM"}
-			}
-			3 {
-				#VM is running pre ELM, build VM before import
-				IF ((!($AppLayOS)) -and (!($AppLayVS)) -and (!($PrevBICTaskID)) -and ($CTXAppLayerName -eq $Null)) {Write-BISFLog -Msg "Citrix AppLayering - VM is not running Pre-ELM" -ShowConsole -SubMsg -Color DarkCyan; $GLobal:CTXAppLayerName = "No-ELM"}
-			}
-			4 {
-				IF (($AppLayOS) -and ($CTXAppLayerName -eq $Null)) {Write-BISFLog -Msg "Citrix AppLayering - OS Layer detected" -ShowConsole -SubMsg -Color DarkCyan; $Global:CTXAppLayeringOSLayer=$true; $GLobal:CTXAppLayerName="OS-Layer"}
-				IF ((!($AppLayVS) -and ($CTXAppLayerName -eq $Null))) {Write-BISFLog -Msg "Citrix AppLayering - New Platform/Application Layer detected" -ShowConsole -SubMsg -Color DarkCyan; $Global:CTXAppLayeringPFLayer=$true; ; $GLobal:CTXAppLayerName="Platform/Application Layer"}
-				IF (($AppLayVS) -and ($CTXAppLayerName -eq $Null)) {Write-BISFLog -Msg "Citrix AppLayering - Updated Platform/Application Layer detected" -ShowConsole -SubMsg -Color DarkCyan; $Global:CTXAppLayeringPFLayer=$true; ; $GLobal:CTXAppLayerName="Platform/Application Layer"}
-			}
-		Default {Write-BISFLog -Msg "Not defined - AppLayering MachineState is set to $AppLayMachineState" -ShowConsole -Type W}
-		}
-		#>
 	}
 	return $svc
 
@@ -2652,7 +2666,8 @@ function Use-MCSConfig {
 		Author: Matthias Schlimm
 
 		History:
-	  	03.10.2019 MS: EHN 126 - function created (coopy from Use-PVSConfig function and modifed for MCS)
+		  03.10.2019 MS: EHN 126 - function created (coopy from Use-PVSConfig function and modifed for MCS)
+		  03.01.2020 MS: HF 169 - Disable redirection if MCS GPO is disabled
 
 	.LINK
 		https://eucweb.com
@@ -2662,16 +2677,19 @@ function Use-MCSConfig {
 		$Global:Redirection = $false
 		Write-BISFLog -Msg "Check if redirection of Files to MCSIO CacheDisk is possible" -ShowConsole -Color Cyan
 		#enable redirection
-		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Preparation")) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Prep" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
-		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
-		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-BI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
-		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-AppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
+			IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Preparation")) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Prep" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+			IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+			IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-NoAppLay-Pers-BI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+			IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "MCS-AppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		}
 
 		#disable redirection
 		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Preparation")) { $Global:Redirection = $false; $Global:RedirectionCode = "MCS-AppLay-Prep" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Preparation") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $false; $Global:RedirectionCode = "MCS-AppLay-Prep-BI" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 		IF (($CTXAppLayeringSW -eq $true) -and ($State -eq "Personalization") -and ($computer -eq $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $false; $Global:RedirectionCode = "MCS-AppLay-Pers-BI" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
+		IF ($LIC_BISF_CLI_MCSCfg -ne "YES") {$Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-Disabled" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 		IF ($LIC_BISF_CLI_MCSIODriveLetter -eq "NONE") {$Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-No-WCD" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($LIC_BISF_CLI_MCSIODisableRedirection -eq 1) {$Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
@@ -2730,7 +2748,7 @@ function Move-EvtLogs {
 		11.11.2017 MS: Bugfix, show the right Eventlog during move to the WCD
 		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
 		03.10.2019 MS: EHN 126 - added MCSIO redirection
-		27.12.2019 MS/MN: HF 161 - Quotation marks are different 
+		27.12.2019 MS/MN: HF 161 - Quotation marks are different
 
 	.FUNCTIONALITY
 		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
@@ -3146,6 +3164,7 @@ function Import-SharedConfiguration {
 		  15.08.2017 MS: function created
 		  21.09.2019 MS: EHN 36 - Shared Configuration - JSON Import
 		  06.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
+		  30.01.2019 MS: HF 195 - Shared Configuration not imported
 
 	.LINK
 		https://eucweb.com
@@ -3195,6 +3214,7 @@ function Import-SharedConfiguration {
 			}
 			Write-BISFlog "Import Json Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
 			$object = Get-Content $JSONSharedConfigFile | Convertfrom-Json
+			$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
 
 		} ELSE {
 			Write-BISFlog "Error: Shared Configuration $JSONSharedConfigFile does not exists !!" -Type E
@@ -3257,7 +3277,7 @@ function Remove-FolderAndContents {
 	param(
 		[Parameter(Mandatory = $true, Position = 1)] [string] $folder_path
 	)
-	
+
 	Begin {
             Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
             Write-BISFlog -Msg "Delete files and subfolders from folder $($folder_path)"
@@ -3293,6 +3313,7 @@ function Start-CDS {
 	  	10.09.2017 MS: function created
 		12.09.2017 MS: Changing to $servicename = "BrokerAgent"
 		25.03.2018 MS: Feature 14: ADMX Extension - enable additional time to delay the Citrix Desktop Service
+		08.01.2020 MS: HF 178 - no defaultvalue is set if GPO for Additional Citrix Desktop Service delay is not configured
 	.LINK
 		https://eucweb.com
 	  #
@@ -3305,7 +3326,7 @@ function Start-CDS {
 		IF ($LIC_BISF_CLI_CDS -eq "1") {
 			Write-BISFLog -Msg "The $servicename would configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
 
-			IF ($LIC_BISF_CLI_CDSdelay = "") { $LIC_BISF_CLI_CDSdelay = 0 }
+			IF ([string]::IsNullOrEmpty($LIC_BISF_CLI_CDSdelay)) { $LIC_BISF_CLI_CDSdelay = 0 }
 			Write-BISFLog -Msg "Additional Citrix Desktop Service delay is set to $LIC_BISF_CLI_CDSdelay seconds"
 			Start-Sleep -Seconds $LIC_BISF_CLI_CDSdelay
 			Invoke-BISFService -ServiceName "$servicename" -Action Start -StartType Automatic
@@ -3555,13 +3576,14 @@ Function Get-Hypervisor {
 		History
       	Last Change: 26.03.2018 MS: Script created
 		Last Change: 13.05.2019 MS: FRQ 76 - rewritten script to detect the platform of the running computer
+		Last Change: 05.01.2020 MS: remove typo
 	.Link
 	  #
 #>
 
 	$HV = Get-WmiObject -query 'select * from Win32_ComputerSystem' | Select-Object Manufacturer, Model
 	$Platform = $HV.Manufacturer + " " + $HV.Model
-	Write-BISFLog -Msg "Computer is running on $Platform Platform" -Color Cyan -ShowConsole
+	Write-BISFLog -Msg "Computer is running on $Platform" -Color Cyan -ShowConsole
 	return $Platform
 
 
@@ -3627,13 +3649,13 @@ function Test-NutanixFrameSoftware {
 
 		History:
 	  	13.08.2019 MS: function created
-
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "MF2Service" -ProductName "Nutanix Xi Frame"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF ($svc -eq $true) { $Global:ImageSW = $true }
 	return $svc
 
 }
@@ -3653,13 +3675,14 @@ function Test-ParallelsRASSoftware {
 
 		History:
 	  	14.08.2019 MS: function created
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$svc = Test-BISFService -ServiceName "RAS RD Session Host Agent" -ProductName "Parallels RAS Software"
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) { IF ($svc -eq $true) { $Global:ImageSW = $true } }
+	IF ($svc -eq $true) { $Global:ImageSW = $true }
 	return $svc
 
 }
@@ -3683,8 +3706,9 @@ function Set-ACLrights {
 
 			History:
 			14.08.2019 MS: function created
-
-	.Link
+			04.01.2020 MS: HF 172 - set ACLrights error and using Quotation marks for $perm
+			05.01.2020 MS: HF 172 - using S-1-5-19 instead of local Service
+		.Link
 		https://eucweb.com
 #>
 
@@ -3697,9 +3721,20 @@ function Set-ACLrights {
 	Write-BISFlog -Msg "Set NTFS rights on $path" -ShowConsole -Color Cyan
 
 	$acl = Get-Acl -Path $path
-	$perm = 'local service', 'FullControl', 'ContainerInherit, ObjectInherit', 'None', 'Allow'
+	#$perm = "local service", "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
+	$localServiceSID = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-19")
+	$localServiceName = ($localServiceSID.Translate( [System.Security.Principal.NTAccount])).Value
+	$perm = $localServiceName, "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
 	$rule = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $perm
-	$acl.SetAccessRule($rule)
+	try {
+		$acl.SetAccessRule($rule)
+	}
+	catch {
+		Write-BISFlog -Msg "Error during set NTFS rights. The error is: $_" -Type W -SubMsg
+	}
+
+
+
 	$acl | Set-Acl -Path $path
 	$acl = Get-Acl -Path $path
 
@@ -3719,7 +3754,8 @@ function Test-WVDSoftware {
 		Author: Matthias Schlimm
 
 		History:
-	  	25.08.2019 MS: function created
+		  25.08.2019 MS: function created
+		  07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 
 	.LINK
 		https://eucweb.com
@@ -3728,13 +3764,12 @@ function Test-WVDSoftware {
 	$OSName = (Get-WMIObject Win32_OperatingSystem).Name
 	$product = "Microsoft Windows 10 Enterprise for Virtual Desktops"
 	IF ($OSName -eq $product) { $WVD = $true } ELSE { $WVD = $false }
-	IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
+	IF ($WVD -eq $true) {
 		IF ($WVD -eq $true) {
 			Write-BISFlog -Msg "Product $product installed" -ShowConsole -Color Cyan
 			$Global:ImageSW = $true
 		} ELSE {
 			Write-BISFlog -Msg "Product $product NOT installed"
-			$Global:ImageSW = $false
 		}
 	}
 	return $WVD

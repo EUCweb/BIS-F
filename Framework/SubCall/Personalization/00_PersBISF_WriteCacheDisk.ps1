@@ -49,6 +49,10 @@
 		25.08.2019 MS: HF 21 - endless Reboot with wrong count of Partitons
 		03.10.2019 MS: ENH 126 - MCSIO with persistent drive
 		05.10.2019 MS: HF 30 - Format CacheDisk on shared Images only, to prevent reboot loop on priavte images
+		04.01.2020 MS: HF 170 - using wrong $variable -> $LIC_BISF_POL_MCSCfg insted of $LIC_BISF_CLI_MCSCfg
+		07.01.2020 MS: HF 177 - typo in DiskMode
+		15.01.2020 MS: HF 188 - Async WriteCacheType not detected for shared Images and ending up in a reboot loop
+		27.01.2020 MS: HF 194 - format WriteCacheDisk didn't run if "skip PVS master image creation" enabled
 	.LINK
 		https://eucweb.com
 #>
@@ -93,7 +97,22 @@ Process {
 		if ((Test-Path -Path "$LIC_BISF_LogPath") -eq $false) {
 			Write-BISFLog -Msg "LogFolder $LIC_BISF_LogPath does not exist" -Type W -SubMsg
 			# Check for Cache on Device HardDrive Mode
-			if ((Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType -eq 4 -or (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType -eq 9) {
+			$WriteCacheType = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType
+			Switch ($WriteCacheType)
+			{
+				0 {$WriteCacheTypeTxt = "Private"}
+				1 {$WriteCacheTypeTxt = "Cache on Server"}
+				3 {$WriteCacheTypeTxt = "Cache in Device RAM"}
+				4 {$WriteCacheTypeTxt = "Cache on Device Hard Disk"}
+				7 {$WriteCacheTypeTxt = "Cache on Server, Persistent"}
+				9 {$WriteCacheTypeTxt = "Cache in Device RAM with Overflow on Hard Disk"}
+				10 {$WriteCacheTypeTxt = "Private async"}
+				11 {$WriteCacheTypeTxt = "Server persistent async"}
+				12 {$WriteCacheTypeTxt = "Cache in Device RAM with Overflow on Hard Disk async"}
+				default {$WriteCacheTypeTxt = "WriteCacheType $WriteCacheType not defined !!"}
+			}
+			Write-BISFLog -Msg "PVS WriteCacheType is set to $WriteCacheType - $WriteCacheTypeTxt"
+			if (($WriteCacheType -eq 4) -or ($WriteCacheType -eq 9) -or ($WriteCacheType -eq 12)) {   # 4:Cache on Device Hard Disk // 9:Cache in Device RAM with Overflow on Hard Disk // 12:Cache in Device RAM with Overflow on Hard Disk async
 				Write-BISFLog -Msg "vDisk is set to Cache on Device Hard Drive Mode"
 				#grab the numbers of Partitions from the BIS-F ADMX
 				Write-BISFLog -Msg "Number of Partitions from ADMX: $LIC_BISF_CLI_NumberOfPartitions"
@@ -147,6 +166,7 @@ Process {
 			}
 			else {
 				Write-BISFLog -Msg "vDisk is not in Read Only Mode, skipping WriteCache preparation"
+				$SkipReboot = "TRUE"
 			}
 
 			IF (!($SkipReboot -eq "TRUE")) {
@@ -259,7 +279,7 @@ Process {
 	CheckCDRom
 
 	$DiskMode = Get-BISFDiskMode
-	IF ( ($DisMode -eq "ReadOnly") -or ($DisMode -eq "VDAShared") -or ($DisMode -eq "ReadOnlyAppLayering") -or ($DisMode -eq "VDASharedAppLayering") ) {
+	IF ( ($DiskMode -match "ReadOnly*") -or ($DiskMode -match "VDAShared*") ) {
 		Write-BISFLog -Msg "CacheDisk would be configured now for DiskMode $DiskMode"
 		IF (!($LIC_BISF_CLI_WCD -eq $null) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
 			IF ("$returnTestPVSSoftware" -eq $true) {
@@ -274,7 +294,7 @@ Process {
 			Write-BISFLog -Msg "PVS WriteCache is not configured or is set to 'NONE', skipping configuration"
 		}
 
-		IF ($LIC_BISF_POL_MCSCfg -eq "YES") {
+		IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
 			IF (!($LIC_BISF_CLI_MCSIODriveLetter -eq $null) -or (!($LIC_BISF_CLI_MCSIODriveLetter -eq "NONE")) ) {
 				IF ($MCSIO -eq $true) {
 					$uniqueid_REG = GetUniqueIDreg

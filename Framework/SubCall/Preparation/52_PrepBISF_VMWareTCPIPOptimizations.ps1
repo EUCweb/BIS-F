@@ -27,7 +27,9 @@
 	  2017.08.05 TT: Tested with 2008 R2
 	  2017.08.29 TT: Updated with NUMA detection
 	  19.08.2019 MS: ENH 8: VMWare RSS and TCPIP Optimizations integrated into BIS-F
-      11.10.2019 MS: Running Optimizations on VMWare Hypervisor only
+	  11.10.2019 MS: Running Optimizations on VMWare Hypervisor only
+	  02.01.2020 MS: HF 168 - VMware Optimizations 52_PrepBISF_VMWareTCPIPOptimization not executed
+	  05.01.2020 MS: HF 171 - VMware TCPIP Optimizations failed
 
 	  .Link
     #>
@@ -263,7 +265,7 @@ Process {
 			}
 		}
 	}
-    IF ($returnGetHypervisor -contains "VMWare") {
+    IF ($returnGetHypervisor -like "VMware*") {
 	    Write-BISFLog -Msg "Starting VMWare TCPIP Optimizations" -ShowConsole -Color Cyan
 
 	                                                                                        if ($OS -like "*2008 R2*") {
@@ -317,7 +319,7 @@ Process {
 		#if RSS is not configured for all NIC's we'll enable
 		$NICNeedConfiguring = $false
 		foreach ($netAdapter in $netAdapters) {
-			if (($netAdapter | Get-NetAdapter).Enabled -eq $false) {
+			if (($netAdapter | Get-NetAdapterRSS).Enabled -eq $false) {
 				$setRSS = $true
 				break
 			}
