@@ -1,3 +1,5 @@
+---------------------------------
+Version 7.1912.1.011024 -- 31.01.2020 16:24:39 :
 30.01.2020 MS: HF 196 - WEM Agent: GPO help description
 30.01.2020 MS: HF 195 - Shared Configuration not imported
 27.01.2020 MS: HF 194 - format WriteCacheDisk didn't run if "skip PVS master image creation" enabled
