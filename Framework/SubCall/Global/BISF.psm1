@@ -859,7 +859,6 @@ Function Get-SoftwareInfo {
 	  [System.Array]
 	.NOTES
 	  Author: Mike Bijl
-	  Company: Login Consultants
 
 	  History
 	  2014-11-07T12:24:59 : Initial writing of the function.
