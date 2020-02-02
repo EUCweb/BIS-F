@@ -267,6 +267,7 @@ Begin {
 			03.10.2019 MS: ENH 139 - WEM 1909 detection (tx to citrixguyblog / chezzer64)
 			04.10.2019 MS: ENH 11 - ADMX extension: Configure WEM Cache to persistent drive
 			10.01.2020 MS: HF 180 - IF WEM Config is not configured it's processes to reconfigure too
+			02.02.2020 MS: fix description for WEMCache
 
 	.LINK
 		https://eucweb.com
@@ -329,7 +330,7 @@ Begin {
 								$NewWEMAgentCacheLocation = "$LIC_BISF_CtxPath\$AgentCacheFolder"
 							}
 
-							Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is not equal to the PVS WriteCache disk ($PVSDiskDrive)" -Type W -SubMsg
+							Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is not equal to the CacheDisk ($PVSDiskDrive)" -Type W -SubMsg
 							Write-BISFLog -Msg "The AgentCacheAlternateLocation value must be reconfigured now to $NewWEMAgentCacheLocation" -Type W -SubMsg
 
 							IF (!(Test-Path "$NewWEMAgentCacheLocation")) {
@@ -345,7 +346,7 @@ Begin {
 							$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
 						}
 						ELSE {
-							Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is equal to the PVS or MCSIO CacheDisk ($PVSDiskDrive) and must not be reconfigured" -ShowConsole -SubMsg -Color DarkCyan
+							Write-BISFLog -Msg "The WEM Agent cache drive ($WEMAgentCacheDrive) is equal configured to the CacheDisk ($PVSDiskDrive) and must not be reconfigured" -ShowConsole -SubMsg -Color DarkCyan
 						}
 
 						Write-BISFLog -Msg "Running Agent Cache Management Utility with $product" -ShowConsole -Color DarkCyan -SubMsg
