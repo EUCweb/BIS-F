@@ -13,7 +13,7 @@
       History
 		  2019.08.16 TT: Script created
 		  18.08.2019 MS: integrate into BIS-F
-
+		  03.02.2020 MS: HF 201 - Hydration not startig if configured
 	  .Link
 		  https://github.com/EUCweb/BIS-F/issues/129
 
@@ -25,8 +25,6 @@ Begin {
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
 	$script_name = [System.IO.Path]::GetFileName($script_path)
-	if ($LIC_BISF_CLI_PVSHydration -eq "YES") { $EnableMode = $true }
-	if ($LIC_BISF_CLI_PVSHydration -eq "NO") { $DisableMode = $true }
 	$PathsToCache = $LIC_BISF_CLI_PVSHydration_Paths
 	$ExtensionsToCache = $LIC_BISF_CLI_PVSHydration_Extensions
 }
@@ -43,7 +41,7 @@ Process {
 		Write-BISFLog -Msg "PVS Software not found. Skipping file precache."  -ShowConsole -Color Yellow
 		Return
 	}
-	if (-not($EnableMode) -or ($DisableMode)) {
+	if (-not($LIC_BISF_CLI_PVSHydration -eq "YES")) {
 		Write-BISFLog -Msg "File precache configuration not found. Skipping."  -ShowConsole -Color Yellow
 		Return
 	}
