@@ -41,9 +41,9 @@ Process {
 		$regval = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -ErrorAction SilentlyContinue).LIC_BISF_FSXRulesShare
 		IF ($regval -ne $null) {
 			If (Test-Path -Path $regval) {
-				Write-Log -Msg "Starting copy of FSLogix Rules & Assignment files" -showConsole -Color Cyan
+				Write-Log -Msg "Starting copy of $Product Rules & Assignment files" -showConsole -Color Cyan
 				ForEach ($FileCopy in $FSXfiles2Copy) {
-					Write-Log -Msg "Copy fsLogix $FileCopy files"
+					Write-Log -Msg "Copy $Product $FileCopy files"
 					Copy-Item -Path "$regval\*" -Filter "$FileCopy" -Destination "$FSXrulesDest"
 				}
 			}
@@ -59,7 +59,7 @@ Process {
 	}
 
 	Function Clear-RedirectedCloudCache {
-		Write-Log -Msg "Processing FSLogix CloudCache" -ShowConsole -Color Cyan
+		Write-Log -Msg "Processing $Product CloudCache" -ShowConsole -Color Cyan
 		$frxreg = "HKLM:\SYSTEM\CurrentControlSet\Services\frxccds\Parameters"
 		$FRXProxyDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).ProxyDirectory
 		$FRXWriteCacheDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).WriteCacheDirectory
