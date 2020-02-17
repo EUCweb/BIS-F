@@ -1,7 +1,7 @@
 <policyDefinitionResources revision="1.0" schemaVersion="1.0">
   <displayName>
   </displayName>
-  <description>Base Image Script Framework (BIS-F helps you to seal and personalize your Base Image for Citrix, VMware View and Microsoft environments. With this Group Policy you can configure the CLI commands to fully automate BIS-F and runs the sealing process without any needed interaction.)
+  <description>Base Image Script Framework (BIS-F helps you to seal and personalize your Base Image for Citrix, VMware View and Microsoft environments. With this Group Policy you can configure the CLI commands to fully automate BIS-F and runs the sealing process without any interaction.)
 Copyright EUCweb 2020</description>
   <resources>
     <stringTable>
@@ -533,7 +533,7 @@ If you enable this policy setting, you must enter a valid path (recommended: BIS
 5. Copy BISFSharedConfig.json to the &lt;BIS-F Installation folder&gt;
 6. If BIS-F is running, it reads the Configuration from BISFSharedConfig.json and retrieves the path to the shared configuration, imports these settings into the local policy and loads the values into BIS-F.
 
-If you disable do not configure this policy setting, the export won????????t be run.
+If you disable do not configure this policy setting, the export will not be run.
 
 Note: For the most part you only need to action the export once after which you can edit the export manually
 

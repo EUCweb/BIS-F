@@ -1,6 +1,6 @@
 ﻿<#
 	.SYNOPSIS
-		Copy the FsLogic rules from central share
+		Copy FSLogix rules and assignments from central share
 	.DESCRIPTION
 	.EXAMPLE
 	.NOTES
@@ -9,12 +9,13 @@
 
 		History:
 		03.06.2015 MS: Initial script development
-		13.08.2015 MS: copy fslogix rules and assignment files from central share to the fslogix apps rule folder on computer startup
-		17.08.2015 MS: The fslogix rules are copied from the central share but not applied, in thefslogix personalization script, the copy must be performed after starting the fslogix service, to resolve this issue
-		21.08.2015 MS: Do not checked PVS or MCS DiskMode, Service is already running or would be start if stopped
+		13.08.2015 MS: Copy FSLogix rules and assignment files from central share to the FSLogix Apps rules folder at computer startup
+		17.08.2015 MS: The FSlogix rules are copied from the central share but not applied, in the FSLogix personalization script, the copy must be performed after starting the FSLogix service, to resolve this issue
+		21.08.2015 MS: Do not checked PVS or MCS DiskMode, Service is already running or will be started if stopped
 		01.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		03.10.2019 MS: ENH 141 - FSLogix App Masking URL Rule Files
 		03.10.2019 MS: ENH 140 - cleanup redirected CloudCache empty directories
+		13.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -25,7 +26,7 @@ Begin {
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
 	$script_name = [System.IO.Path]::GetFileName($script_path)
-	$Product = "FsLogix Apps"
+	$Product = "FSLogix Apps"
 	$product_path = "${env:ProgramFiles}\FSLogix\Apps"
 	$servicename = "FSLogix Apps Services"
 	$FSXrulesDest = "$product_path\Rules"
@@ -40,25 +41,25 @@ Process {
 		$regval = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -ErrorAction SilentlyContinue).LIC_BISF_FSXRulesShare
 		IF ($regval -ne $null) {
 			If (Test-Path -Path $regval) {
-				Write-Log -Msg "Starting copy fsLogix Rules & Assignment files" -showConsole -Color Cyan
+				Write-Log -Msg "Starting copy of $Product Rules & Assignment files" -showConsole -Color Cyan
 				ForEach ($FileCopy in $FSXfiles2Copy) {
-					Write-Log -Msg "Copy fsLogix $FileCopy files"
+					Write-Log -Msg "Copy $Product $FileCopy files"
 					Copy-Item -Path "$regval\*" -Filter "$FileCopy" -Destination "$FSXrulesDest"
 				}
 			}
 			ELSE {
 				$ErrorActionPreference = "Continue"
-				Write-Log -Msg "$Product Central Rules Share '$regval' does not accesible or user '$cu_user' does not have enough rights !!" -Type W -ShowConsole
+				Write-Log -Msg "$Product Central Rules Share '$regval' is not accessible or user '$cu_user' does not have enough rights!" -Type W -ShowConsole
 			}
 		}
 		ELSE {
 			$ErrorActionPreference = "Continue"
-			Write-Log -Msg "No fsLogix Central Rules Share defined, did not copy rules and assignment files !!" -Type W
+			Write-Log -Msg "No $Product Central Rules Share defined, did not copy rules and assignment files!" -Type W
 		}
 	}
 
 	Function Clear-RedirectedCloudCache {
-		Write-Log -Msg "Processing FXLogix CloudCache" -ShowConsole -Color Cyan
+		Write-Log -Msg "Processing $Product CloudCache" -ShowConsole -Color Cyan
 		$frxreg = "HKLM:\SYSTEM\CurrentControlSet\Services\frxccds\Parameters"
 		$FRXProxyDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).ProxyDirectory
 		$FRXWriteCacheDirectory = (Get-ItemProperty $frxreg -ErrorAction SilentlyContinue).WriteCacheDirectory
@@ -68,15 +69,15 @@ Process {
 			IF (Test-Path $FRXDir -PathType Leaf) {
 				$FRXDrive = $FRXDir.substring(0, 2)
 				IF ($FRXDrive -ne $env:SystemDrive) {
-					Write-Log -Msg "Drive is different from Systemdrive, cleanup now" -ShowConsole -Color DarkCyan -SubMsg
+					Write-Log -Msg "Drive is different from the System Drive, cleanup now" -ShowConsole -Color DarkCyan -SubMsg
 					Remove-Item "$FRXDir\*" -recurse
 				}
 			}
 			ELSE {
-				Write-Log -Msg "Directory $FRXDir NOT exits"
+				Write-Log -Msg "Directory $FRXDir does not exist"
 			}
 			ELSE {
-				Write-Log -Msg "Drive is NOT different from Systemdrive, skipping" -ShowConsole -Color DarkCyan -SubMsg
+				Write-Log -Msg "Drive is not different from System Drive, skipping" -ShowConsole -Color DarkCyan -SubMsg
 			}
 		}
 	}
