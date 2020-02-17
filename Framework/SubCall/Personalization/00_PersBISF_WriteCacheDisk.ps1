@@ -53,6 +53,7 @@
 		07.01.2020 MS: HF 177 - typo in DiskMode
 		15.01.2020 MS: HF 188 - Async WriteCacheType not detected for shared Images and ending up in a reboot loop
 		27.01.2020 MS: HF 194 - format WriteCacheDisk didn't run if "skip PVS master image creation" enabled
+		17.02.2020 MS: HF 206 - Reboot loop if central logshare is configured
 	.LINK
 		https://eucweb.com
 #>
@@ -67,7 +68,7 @@ Begin {
 	$hklm_bnistack_pvsagent = "$hklm_system\CurrentControlSet\services\bnistack\PvsAgent"
 	$reg_value_WriteCacheDrive = "WriteCacheDrive"
 	$DiskLabel = "CacheDisk"
-	$PVSCheckFile = "$PVSDiskDrive\$computer-$PSScriptName.txt"
+	$CacheCheckFile = "$PVSDiskDrive\$computer.txt"
 	$DiskpartFile = "$TEMP\$computer-DiskpartFile.txt"
 	$PVSPersonality = "$SysDrive\Personality.ini"
 	$SkipReboot = "FALSE"
@@ -91,11 +92,29 @@ Process {
 		}
 	}
 
+	function Test-WriteableCacheDisk {
+		$val = $true
+		try {
+			IF (!(Test-path $CacheCheckFile)) {new-item $CacheCheckFile}
+		}
+
+		catch {
+			$val = $false
+		}
+
+		finally {
+			IF (Test-path $CacheCheckFile) {remove-item $CacheCheckFile -Force}
+		}
+
+		return $val
+	}
+
 	# Check WriteCacheDrive Driveletter and Check UniqueID
 	function CheckWriteCacheDrive {
-		# Check for PVSLogs Folder on WriteCache Partition
-		if ((Test-Path -Path "$LIC_BISF_LogPath") -eq $false) {
-			Write-BISFLog -Msg "LogFolder $LIC_BISF_LogPath does not exist" -Type W -SubMsg
+		# test checkfile on CacheDisk
+		$TestCache = Test-WriteableCacheDisk
+		if ($TestCache -eq $false) {
+			Write-BISFLog -Msg "CacheDisk partition is NOT properly configured" -Type W
 			# Check for Cache on Device HardDrive Mode
 			$WriteCacheType = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType
 			Switch ($WriteCacheType)
@@ -185,9 +204,10 @@ Process {
 	}
 
 	function Test-MCSIOCacheDisk {
-		# Check for BIS-F Log Folder on CacheDisk Partition
-		if ((Test-Path -Path "$LIC_BISF_LogPath") -eq $false) {
-			Write-BISFLog -Msg "LogFolder $LIC_BISF_LogPath does not exist"
+		# test checkfile on CacheDisk
+		$TestCache = Test-WriteableCacheDisk
+		if ($TestCache -eq $false) {
+			Write-BISFLog -Msg "CacheDisk partition is NOT properly configured" -Type W
 			#grab the numbers of Partitions from the BIS-F ADMX
 			Write-BISFLog -Msg "Number of Partitions from ADMX: $LIC_BISF_CLI_MCSIONumberOfPartitions"
 			$SystemPartitions = (Get-CimInstance -ClassName Win32_volume).count
