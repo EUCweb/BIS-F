@@ -13,6 +13,7 @@
 		2017.08.05 TT: Tested on 2008 R2
 		2018.01.29 TT: Fixed error appearing even though no such error existed.
 		2019.10.11 MS: IF ADMX is not configured or disabled skip any pagefile configuration
+		2020.02.17 MS: HF 207 - PageFiel not set
 
 	.LINK
 		https://eucweb.com
@@ -24,7 +25,7 @@ Begin {
 	$script_name = [System.IO.Path]::GetFileName($script_path)
 	$pageFileInitialSize = ([int]$LIC_BISF_CLI_PAGEFILE_SIZE * 1024)
 	$pageFileMaximumSize = ([int]$LIC_BISF_CLI_PAGEFILE_SIZE * 1024)
-	if ($LIC_BISF_CLI_PAGEFILE_DRIVE -eq $PVSWriteCacheDrive) {
+	if ($LIC_BISF_CLI_PAGEFILE_DRIVE -eq "$PVSWriteCacheDrive") {
 		$pagefileLocation = "$LIC_BISF_CLI_WCD\pagefile.sys"
 	}
 	else {
@@ -43,8 +44,8 @@ Process {
 		Write-BISFLog -Msg "Variable pageFileInitialSize         : $pageFileInitialSize" -ShowConsole -Color Cyan  -SubMsg
 		Write-BISFLog -Msg "Variable pageFileMaximumSize         : $pageFileMaximumSize" -ShowConsole -Color Cyan  -SubMsg
 
-		$CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
-		$System = Get-CimInstance -ClassName Win32_ComputerSystem -EnableAllPrivileges
+		$CurrentPageFile = Get-WmiObject -query "select * from Win32_PageFileSetting"
+		$System = Get-WmiObject Win32_ComputerSystem -EnableAllPrivileges
 
 		#we set our pagefile to D:\pagefile.sys with initial and maximum values at 4096MB and disable automatic pagefile management
 		if ($System.AutomaticManagedPagefile -eq $true) {
@@ -76,14 +77,12 @@ Process {
 		}
 
 		if ($recreatePageFile -eq $true) {
-			$CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
-			$CurrentPageFile.Delete()
-			$CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
+			$CurrentPageFile = Get-WmiObject -Query "select * from Win32_PageFileSetting"
 			if ($CurrentPageFile -ne $null) { $CurrentPageFile.Delete() }
 
-			Set-CimInstance -ClassName Win32_PageFileSetting -Arguments @{name = $pageFileLocation; InitialSize = $pageFileInitialSize; MaximumSize = $pageFileMaximumSize } | Out-Null
-			Write-BISFLog -Msg  "New Pagefile settings applied:" -ShowConsole -Color DarkCyan -SubMsg
-			$CurrentPageFile = Get-CimInstance -Query "select * from Win32_PageFileSetting"
+			Set-WMIInstance -class Win32_PageFileSetting -Arguments @{name=$pageFileLocation;InitialSize = $pageFileInitialSize;MaximumSize = $pageFileMaximumSize} | out-null
+            Write-BISFLog -Msg  "New Pagefile settings applied:" -ShowConsole -Color DarkCyan -SubMsg
+			$CurrentPageFile = Get-WmiObject -Query "select * from Win32_PageFileSetting"
 			Write-BISFLog -Msg  "Number of pagefiles: $($($CurrentPageFile.SettingID).count)" -ShowConsole -Color DarkCyan -SubMsg
 			Write-BISFLog -Msg  "Pagefile location: $($CurrentPageFile.name)" -ShowConsole -Color DarkCyan -SubMsg
 			Write-BISFLog -Msg  "Pagefile initial size: $($CurrentPageFile.initialSize)" -ShowConsole -Color DarkCyan -SubMsg
