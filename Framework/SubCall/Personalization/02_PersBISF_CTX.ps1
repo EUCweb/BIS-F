@@ -21,6 +21,7 @@
 		18.04.2017 MS: reset Performance Counters with installed Citrix VDA only
 		21.10.2028 MS: Bufix 47: MSMQ windows services will fail to start in App Layering
 		21.10.2028 MS: Bufix 18: XA/ XD 7.x Cache folder will be created
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com

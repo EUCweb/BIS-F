@@ -134,7 +134,7 @@ Process {
 		Write-BISFLog -Msg "Disabling ICA SSL." -ShowConsole -Color DarkCyan -SubMsg
 		Set-ItemProperty -Path $ICA_LISTENER_PATH -name $ENABLE_SSL_KEY -Value 0 -Type DWord -Confirm:$false
 
-		Write-BISFLog -Msg "SSL to VDA has been disabled." -ShowConsole -Color DarkCyan -SubMsg
+		Write-BISFLog -Msg "SSL for VDA has been disabled." -ShowConsole -Color DarkCyan -SubMsg
 	}
 
 	if ($EnableMode) {
@@ -358,19 +358,19 @@ Process {
 		$Store.Close()
 
 		if ($RegistryKeysSet -and $ACLsSet -and $FirewallConfigured) {
-			Write-BISFLog -Msg "SSL to VDA enabled." -ShowConsole -Color DarkCyan -SubMsg
+			Write-BISFLog -Msg "SSL for VDA enabled." -ShowConsole -Color DarkCyan -SubMsg
 		}
 		else {
 			if (!$RegistryKeysSet) {
-				Write-BISFLog -Msg "Configure registry manually or re-run the script to complete enabling SSL to VDA." -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Configure registry manually or re-run the script to complete enabling SSL for VDA." -ShowConsole -Color DarkCyan -SubMsg
 			}
 
 			if (!$ACLsSet) {
-				Write-BISFLog -Msg "Configure ACLs manually or re-run the script to complete enabling SSL to VDA." -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Configure ACLs manually or re-run the script to complete enabling SSL for VDA." -ShowConsole -Color DarkCyan -SubMsg
 			}
 
 			if (!$FirewallConfigured) {
-				Write-BISFLog -Msg "Configure firewall manually or re-run the script to complete enabling SSL to VDA." -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Configure firewall manually or re-run the script to complete enabling SSL for VDA." -ShowConsole -Color DarkCyan -SubMsg
 			}
 		}
 	}

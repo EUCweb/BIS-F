@@ -63,6 +63,7 @@ param(
 		29.10.2017 MS: Bugfix: Custom UNC-Path get the wrong value back and does not perform a defrag on the vhd(x) and set the right value now $Global:TestDiskMode
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		23.12.2019 MS: ENH 98 - Skip execution of PVS Target OS Optimization
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -115,7 +116,7 @@ Begin {
 				$Sel3 = Select-String -Pattern $Personality_search3 -Path $Personality_file
 				If (!($sel3 -eq $null)) {
 					$vDiskMode = $null
-					Write-BISFLog -Msg "vDisk in Shared Mode - READ Access only !!"
+					Write-BISFLog -Msg "vDisk in Shared Mode - READ Access only!"
 					$vDiskMode = "S"
 					return $vDiskMode
 				}
@@ -136,7 +137,7 @@ Begin {
 					return $vDiskMode
 				}
 				ELSE {
-					Write-BISFLog -Msg "vDisk in Shared Mode - READ Access only !!"
+					Write-BISFLog -Msg "vDisk in Shared Mode - READ Access only!"
 					$vDiskMode = "S"
 					return $vDiskMode
 				}
@@ -144,7 +145,7 @@ Begin {
 
 		}
 		ELSE {
-			Write-BISFLog -Msg "$Personality_file not found, Device boot from HardDisk"
+			Write-BISFLog -Msg "$Personality_file not found, Device booting from HardDisk"
 			$vDiskMode = "HD"
 			return $vDiskMode
 		}
@@ -283,23 +284,23 @@ Begin {
 						$DateFromToday = Get-Date | % { $_.ToShortDateString() }
 						$DateFromFile = Get-ChildItem "$P2PVSLog" | % { $_.CreationTime } | % { $_.ToShortDateString() }
 						If ($DateFromToday -eq $DateFromFile) {
-							Write-BISFLog "File $P2PVSLog would be found" -Color DarkCyan -SubMsg
+							Write-BISFLog "File $P2PVSLog found" -Color DarkCyan -SubMsg
 							$Global:P2PVS_LOGFile = "$P2PVSLog"
 							$P2PVSfound = $true
 						}
 						ELSE {
-							Write-BISFLog "File $P2PVSLog would be created on $DateFromFile and not from today $DateFromToday, it would be deleted now" -Type W -SubMsg
+							Write-BISFLog "File $P2PVSLog will be created on $DateFromFile and not from today $DateFromToday, it will be deleted now" -Type W -SubMsg
 							Remove-Item $P2PVSLog -recurse -ErrorAction SilentlyContinue
 							$P2PVSfound = $false
 						}
 					}
 					ELSE {
-						Write-BISFLog "LogFile $P2PVSLog NOT exist" -Type W -SubMsg
+						Write-BISFLog "LogFile $P2PVSLog does NOT exist" -Type W -SubMsg
 						$P2PVSfound = $false
 					}
 				}
 				ELSE {
-					Write-BISFLog -Msg "Logfile from $($PVSTool) would be detected in $P2PVS_LOGFile, skipped all other logfiles"
+					Write-BISFLog -Msg "Logfile from $($PVSTool) will be detected in $P2PVS_LOGFile, skipped all other logfiles"
 				}
 			}
 			ELSE {
@@ -309,7 +310,7 @@ Begin {
 					Remove-Item $P2PVSLog -recurse -ErrorAction SilentlyContinue
 				}
 				ELSE {
-					Write-BISFLog -Msg "Logfile $P2PVSLog not exist"
+					Write-BISFLog -Msg "Logfile $P2PVSLog does not exist"
 				}
 			}
 		}
@@ -354,7 +355,7 @@ Process {
 
 		}
 		ELSE {
-			Write-BISFLog -Msg "Skip personal vDisk Inventory Update, Citrix Virtual Desktop Agent not installed"
+			Write-BISFLog -Msg "Skip personal vDisk Inventory Update, Citrix Virtual Desktop Agent is not installed"
 		}
 
 		IF ($runPvd -eq "true") {
@@ -415,7 +416,7 @@ Process {
 				}
 			}
 			ELSE {
-				Write-BISFLog -Msg "Citrix AppLayering installed, convert to Disk not necassary" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Citrix AppLayering installed, convert to Disk not necessary" -ShowConsole -Color DarkCyan -SubMsg
 			}
 		}
 		ELSE {

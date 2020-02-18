@@ -16,6 +16,8 @@
 		28.03.2019 MS: FRQ 86 - Office 2019 support
 		03.10.2019 MS: ENH 84 - if hosting on azure, Displays the device join status
 		07.01.2020 MS: HF 174 - Office detection general change
+		18.02.2020 JK: Fixed Log output spelling
+		
 	.LINK
         https://eucweb.com
 #>
@@ -60,11 +62,11 @@ Process {
 		IF ($O365 -eq $true) {
 			$O365onAzure = Test-BISFAzureVM
 			IF ($O365onAzure -eq $true) {
-				Write-BISFLog -Msg "Office is hosting on Microsoft Azure" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Office is hosted on Microsoft Azure VM" -ShowConsole -Color DarkCyan -SubMsg
 				Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/status" -ActText "Office - Displays the device join status"
 			}
 			ELSE {
-				Write-BISFLog -Msg "Office is NOT hosting on Microsoft Azure" -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Office is NOT hosted on a Microsoft Azure VM" -Color DarkCyan -SubMsg
 			}
 		}
 	}

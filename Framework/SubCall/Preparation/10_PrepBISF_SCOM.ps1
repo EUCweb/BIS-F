@@ -16,6 +16,7 @@
 		01.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		03.10.2017 MS: Bugfix 214: Test path if $OpsStateDirOrigin before delete, instead of complete C: content if if $OpsStateDirOrigin is not available
 		29.03.2018 MS: Bugfix 37: SCOM 2018, uses new cerfifcate store Microsoft Monitoring Agent
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -56,11 +57,11 @@ Process {
 		}
 
 		IF ($returnTestPVSSoftware -eq "true") {
-			Write-BISFLog -Msg "Citrix PVS Target Device detected, Set StateDirectory to Path $OpsStateDir"
+			Write-BISFLog -Msg "Citrix PVS Target Device detected, Setting StateDirectory to Path $OpsStateDir"
 			Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\services\$servicename\Parameters" -Name "State Directory" -Value "$OpsStateDir"
 		}
 		ELSE {
-			Write-BISFLog -Msg "Citrix PVS Target Device NOT detected, StateDirectory leave on original path $OpsStateDirOrigin"
+			Write-BISFLog -Msg "Citrix PVS Target Device NOT detected, StateDirectory left on original path $OpsStateDirOrigin"
 		}
 
 		if (Test-Path $OpsStateDirOrigin) {

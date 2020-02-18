@@ -19,6 +19,7 @@
 		18.08.2019 MS: ENH 101: Use sdelete64.exe on x64 system
 		05.10.2019 MS: ENH 12 - Configure sDelete for different environments
 		05.10.2019 MS: ENH 43 - sihclient.exe consumes CPU load with disabled WSUS Service (function invoke-sihTask)
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -114,7 +115,7 @@ Process {
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "Scheduled Task $TaskName NOT exists" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFLog -Msg "Scheduled Task $TaskName does NOT exist" -ShowConsole -SubMsg -Color DarkCyan
 		}
 	}
 

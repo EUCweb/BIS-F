@@ -27,6 +27,7 @@
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS, central BISF function couldn't used for services, SEP Service must being started with smc.exe
 		09.01.2017 MS: change code to get MacAdress to use function Get-BISMACAddress
 		01.07.2018 MS: Hotfix 49: After SEP is started with smc.exe, sometimes the service will not be started. Controlled and logged now with Test-BISFServiceState in Line 58
+		18.02.2020 JK: Fixed Log output spelling
 
 
 	.LINK
@@ -67,19 +68,19 @@ Process {
 		}
 
 		IF ($TestSEPinReg -eq $true) {
-			Write-BISFLog -Msg "Registry Location for specified SEP Keys would be set to $HKLM_reg_SEP_string"
+			Write-BISFLog -Msg "Registry Location for specified SEP Keys will be set to $HKLM_reg_SEP_string"
 
 			$mac = Get-BISFMACAddress
 			Write-BISFLog -Msg "$reg_SEP_name Prefix: $HostID_Prfx"
 			$regHostID = $HostID_Prfx + $mac
-			Write-BISFLog -Msg "$reg_SEP_name would be defined to: $regHostID"
+			Write-BISFLog -Msg "$reg_SEP_name will be defined as: $regHostID"
 			Write-BISFLog -Msg "set $reg_SEP_name in Registry $HKLM_reg_SEP_string"
 			Set-ItemProperty -Path $HKLM_reg_SEP_string -Name $reg_SEP_name -value $regHostID -ErrorAction SilentlyContinue
 		}
 		ELSE {
 			Write-BISFLog -Msg "Registry Location for specified SEP Keys could not be set to $HKLM_reg_SEP_string" -Type W -SubMsg
-			Write-BISFLog -Msg " The Value $reg2Check does not exits in the abive location !!" -Type W -SubMsg
-			Write-BISFLog -Msg "The SEP Service woub be started, but each boot that creates ghostentries in the SEP Management Server" -Type W -SubMsg
+			Write-BISFLog -Msg " The Value $reg2Check does not exist in the above location!" -Type W -SubMsg
+			Write-BISFLog -Msg "The SEP Service will be started, but each boot will create ghost entries in the SEP Management Server" -Type W -SubMsg
 		}
 	}
 	####################################################################

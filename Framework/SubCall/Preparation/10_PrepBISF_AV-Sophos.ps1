@@ -13,6 +13,7 @@
 		06.03.2017 MS: Bugfix read Variable $varCLI = ...
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -70,7 +71,7 @@ Process {
 			Show-BISFProgressBar -CheckProcess "$ScanProcess" -ActivityText "$Product is scanning the system...please wait"
 		}
 		ELSE {
-			Write-BISFLog -Msg "No Scan would be performed"
+			Write-BISFLog -Msg "No Scan will be performed"
 		}
 
 	}

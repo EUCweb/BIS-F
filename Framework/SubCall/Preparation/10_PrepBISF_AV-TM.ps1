@@ -21,6 +21,7 @@
 		20.08.2017 JS: I found that the services were not being stopped and set to manual, so added a new TerminateProcess
 		function and modified the StopService function to make it reliable.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		18.02.2020 JK: Fixed Log output spelling
 
 
 	.LINK
@@ -65,7 +66,7 @@ Process {
 			#TrendMicro does support SysClen to scan system fromm CLI, but the needed an current patternfile in the same folder as sysclean
 		}
 		ELSE {
-			Write-BISFLog -Msg "No Full Scan would be performed"
+			Write-BISFLog -Msg "No Full Scan will be performed"
 		}
 
 	}
@@ -80,7 +81,7 @@ Process {
 
 	Function TerminateProcess {
 		ForEach ($ProcessName in $TMProcesses) {
-			Write-BISFLog -Msg "Process '$ProcessName' is running, kill process now" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFLog -Msg "Process '$ProcessName' is running, killing process now" -ShowConsole -SubMsg -Color DarkCyan
 			$CommandLineContains = ""
 			$delaystart = 0
 			$interval = 1

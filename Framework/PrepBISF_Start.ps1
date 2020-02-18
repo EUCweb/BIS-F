@@ -75,7 +75,12 @@
 		06.10.2019 MS: Removing call to Get-BISFScriptExecutionPath
 		08.10.2019 MS: ENH 146 - Removing Test for Get-PendingReboot out of this script and included into BISF.ps1 to an eralier state
 		20.01.2020 MS: HF 191 - MaxExecution is not set correctly
+<<<<<<< Updated upstream
+		18.02.2020 JK: Fixed Log output spelling
 
+=======
+		18.02.2020 JK: Grammar fixup		
+>>>>>>> Stashed changes
 	.LINK
 		https://eucweb.com
 #>
@@ -198,7 +203,7 @@ Process {
 	#ENH 127 - Personalization is in Active State Override
 	IF ($LIC_BISF_CLI_PersonalizationOverrideTimeOut -eq $null) {
 		[int]$MaximumExecutionMinutes = 60
-		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionMinutes minutes"
+		Write-BISFLog "Maximum execution time will default override with the value of $MaximumExecutionMinutes minutes"
 	}
  ELSE {
 		[int]$MaximumExecutionMinutes = $LIC_BISF_CLI_PersonalizationOverrideTimeOut
@@ -222,14 +227,22 @@ Process {
 		$PersState = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState").LIC_BISF_PersState
 		IF (($PersState -eq $($TaskStates[0])) -or ($PersState -eq $($TaskStates[3]))) {
 			$a = 100
-			Write-Progress -Activity "Personalization is in current ""$PersState"" state, go ahead the preparation task in 3 seconds" -PercentComplete $a -Status "Finish."
+<<<<<<< Updated upstream
+			Write-Progress -Activity "Personalization is in current ""$PersState"" state, execute the preparation task in 3 seconds" -PercentComplete $a -Status "Finish."
+=======
+			Write-Progress -Activity "Personalization is in current ""$PersState"" state, executing the preparation task in 3 seconds" -PercentComplete $a -Status "Finish."
+>>>>>>> Stashed changes
 			Start-Sleep 3
 			Write-Progress "Done" "Done" -completed
 			break
 		}
 		ELSE {
 			$a++
-			Write-Progress -Activity "Personalization is in current ""$PersState"" state, waiting if finished..." -PercentComplete $a -Status "Please wait...$a %"
+<<<<<<< Updated upstream
+			Write-Progress -Activity "Personalization is in current ""$PersState"" state, waiting until finished..." -PercentComplete $a -Status "Please wait...$a %"
+=======
+			Write-Progress -Activity "Personalization is currently in ""$PersState"" state, waiting to finish..." -PercentComplete $a -Status "Please wait...$a %"
+>>>>>>> Stashed changes
 
 		}
 		Start-Sleep -seconds 1

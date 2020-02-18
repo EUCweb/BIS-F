@@ -32,6 +32,7 @@ param(
 		29.07.2017 MS: Feature Request 192: support GPT WriteCacheDisk
 		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
 		05.10.2019 MS: HF 69 - If WriteCache disk on master is GPT-partiton then uniqueid doesn't match
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -67,7 +68,7 @@ Begin {
 		# Get uniqueid WriteCacheDisk
 		Write-BISFLog -Msg "Get UniqueID from WriteCacheDisk" -ShowConsole -Color Cyan
 		$DriveLetter = $PVSDiskDrive.substring(0, 1)
-		Write-BISFLog -Msg "use Diskpart, search Driveletter $DriveLetter"
+		Write-BISFLog -Msg "use Diskpart, searching for Drive letter $DriveLetter"
 
 		$Searchvol = "list volume" | diskpart.exe | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
 		Write-BISFLog -Msg "$Searchvol"

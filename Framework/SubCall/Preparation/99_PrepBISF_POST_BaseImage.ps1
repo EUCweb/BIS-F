@@ -60,6 +60,7 @@ param(
 		23.12.2019 MS: ENH 98 - Skip PostCommand execution, if PVS Master Image creation is skipped too
 		11.01.2019 MS: HF 183 - fix defrag arguments for Server 2012 R2
 		27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -114,15 +115,15 @@ Begin {
 
 	IF ($defragargs -eq "") {
 		$defragargs = "/U"
-		Write-BISFLog -Msg "Unsuported OS-Version $OSVersion detected. The defrag arguments would be set to standard values: $defragargs" -Type W
+		Write-BISFLog -Msg "Unsuported OS-Version $OSVersion detected. The defrag arguments will be set to standard values: $defragargs" -Type W
 	}
 	ELSE {
-		Write-BISFLog -Msg "OS-Version $OSVersion and Producttype $ProductType detected, set defrag arguments: $defragargs"
+		Write-BISFLog -Msg "OS-Version $OSVersion and Product type $ProductType detected, set defrag arguments: $defragargs"
 	}
 
 	IF ($LIC_BISF_CLI_SB -eq "") {
 		$LIC_BISF_CLI_SB = "YES"
-		Write-BISFLog -Msg "CLI Switch for Shutdown Base Image (-Shutdown YES or -Shutdown NO) not specified, it would be set to shutdown the Base Image after successfull build"
+		Write-BISFLog -Msg "CLI Switch for Shutdown Base Image (-Shutdown YES or -Shutdown NO) not specified, it will be set to shutdown the Base Image after successfull build"
 	}
 
 	# All commands that are used to after successfully build the base image
@@ -165,7 +166,7 @@ Begin {
 			}
 		}
 		ELSE {
-			Write-BISFLog "Defrag runs on BaseDisk or with noVirtualDisk assigned , $DiskNameExtension detected" -Type W
+			Write-BISFLog "Defrag runs on BaseDisk or with noVirtualDisk assigned, $DiskNameExtension detected" -Type W
 		}
 	}
 	ELSE {
@@ -267,14 +268,14 @@ Process {
 	
 	IF ($returnTestPVSSoftware -eq $true) {
 		IF ($CTXAppLayeringSW) {
-			Write-BISFLog -Msg "Successfully build your Base Image with Citrix AppLayering - $CTXAppLayerName ..." -ShowConsole -Color DarkCyan -SubMsg
+			Write-BISFLog -Msg "Successfully Built your Base Image with Citrix AppLayering - $CTXAppLayerName ..." -ShowConsole -Color DarkCyan -SubMsg
 			if (Test-Path $bootIdPath) {
 				$bootId = Get-Content -Path $bootIdPath
 				& bcdedit /bootsequence $bootId
 				$shutdownFlag = "/r"
 				$PostCommands = $PostCommands | where { $_.order -ne "999" }
-				$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, restart System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
-				Write-BISFLog -Msg "Machine will be restarted to allow layer finalize ..." -ShowConsole -Color DarkCyan -SubMsg
+				$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully built, restart System? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
+				Write-BISFLog -Msg "Machine will be restarted to allow layer finalization ..." -ShowConsole -Color DarkCyan -SubMsg
 			}
 			PostCommand
 		}
@@ -284,7 +285,7 @@ Process {
 					$CheckPVSLog = Test-BISFLog -CheckLogFile "$P2PVS_LOGFile" -SearchString "$P2PVS_LOGFile_search"
 					get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
 					IF ($CheckPVSLog -ne "") {
-						Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
+						Write-BISFLog -Msg "Successfully built your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
 						Write-BISFLog -Msg "vDisk $P2PVS_LOGFile_search"
 						PostCommand
 					}
@@ -293,7 +294,7 @@ Process {
 					}
 				}
 				IF ($CheckP2PVSlog -eq $false) {
-					Write-BISFLog -Msg "Successfully build your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
+					Write-BISFLog -Msg "Successfully built your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
 					PostCommand
 				}
 
@@ -311,18 +312,18 @@ Process {
 	ELSE {
 		IF ($ImageSW -eq $true) {
 			IF ($CTXAppLayeringSW) {
-				$txt = "Successfully build your Base Image with Citrix AppLayering in $CTXAppLayerName ..."
+				$txt = "Successfully built your Base Image with Citrix AppLayering in $CTXAppLayerName ..."
 				if (Test-Path $bootIdPath) {
 					$bootId = Get-Content -Path $bootIdPath
 					& bcdedit /bootsequence $bootId
 					$shutdownFlag = "/r"
 					$PostCommands = $PostCommands | where { $_.order -ne "999" }
-					$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, restart System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
-					Write-BISFLog -Msg "Machine will be restarted to allow layer finalize ..." -ShowConsole -Color DarkCyan -SubMsg
+					$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully built, restart System? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
+					Write-BISFLog -Msg "Machine will be restarted to allow layer finalization ..." -ShowConsole -Color DarkCyan -SubMsg
 				}
 			}
 			ELSE {
-				$txt = "Successfully build your Base Image.."
+				$txt = "Successfully built your Base Image.."
 			}
 			Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
 			PostCommand
@@ -352,7 +353,7 @@ Process {
 				IF ($CheckSysPrepLog -eq $true) {
 					#syspreplog show errors
 					get-BISFLogContent -GetLogFile "$SysPrepLog"
-					Write-BISFLog -Msg "Sysprep encounter an error, check $SysPrepLog for further details" -Type E -SubMsg
+					Write-BISFLog -Msg "Sysprep encountered an error, check $SysPrepLog for further details" -Type E -SubMsg
 				}
 				ELSE {
 					Write-BISFLog -Msg "Sysprep run successfully" -ShowConsole -Color DarkCyan -SubMsg

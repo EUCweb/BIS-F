@@ -10,6 +10,7 @@
 
 	  	History:
 		22.03.2016 MS: Script created
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -38,7 +39,7 @@ Process {
 
 	function Invoke-TurboSupscriptionUpdate {
 		$varTB = Get-Variable -Name LIC_BISF_TurboRun -ValueOnly
-		Write-BISFLog -Msg "The Turbo Subscription Update would be set to the Value $($varTB) in the registry"
+		Write-BISFLog -Msg "The Turbo Subscription Update will be set to the Value $($varTB) in the registry"
 
 		IF ($varTB -eq "YES") {
 			Write-BISFLog -Msg "Running Turbo Update Subscription Now"

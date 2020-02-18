@@ -13,7 +13,8 @@
 		2017.08.05 TT: Tested on 2008 R2
 		2018.01.29 TT: Fixed error appearing even though no such error existed.
 		2019.10.11 MS: IF ADMX is not configured or disabled skip any pagefile configuration
-		2020.02.17 MS: HF 207 - PageFiel not set
+    17.02.2020 MS: HF 207 - PageFiel not set
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -93,7 +94,7 @@ Process {
 			Write-BISFLog -Msg  "Pagefile set to correct values" -ShowConsole -Color DarkCyan -SubMsg
 		}
 	} ELSE {
-		Write-BISFLog -Msg  "Pagefile NOT configured"
+		Write-BISFLog -Msg  "Pagefile is NOT configured"
 	}
 }
 

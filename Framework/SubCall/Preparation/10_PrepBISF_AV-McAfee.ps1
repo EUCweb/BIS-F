@@ -108,6 +108,7 @@ Process {
 		History:
 			15.12.2014 JP: Added automatic virus definitions updates
 			28.04.2019 wing2005: Added Parameter - due to change in update mchanism
+			18.02.2020 JK: Fixed Log output spelling
 
 		#>
 
@@ -304,7 +305,7 @@ Process {
 		Remove-VSEData
 	}
 	Else {
-		Write-BISFLog -Msg "Product $Product20 NOT installed"
+		Write-BISFLog -Msg "Product $Product20 is NOT installed"
 	}
 
 }
