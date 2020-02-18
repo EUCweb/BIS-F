@@ -1,3 +1,6 @@
+17.02.2020 MS: HF 206 - Reboot loop if central logshare is configured
+17.02.2020 MS: HF 207 - Pagefile not set
+17.02.2020 MS: HF 208 - ADMX/ADML fix FSLogix grammar
 03.02.2020 MS: HF 201 - Hydration not startig if configured
 ---------------------------------
 Version 7.1912.1.011024 -- 31.01.2020 16:24:39 :
