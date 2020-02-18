@@ -13,6 +13,7 @@
 		02.09.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		09.11.2016 MS: add preparation for Altiris Inventory Agent
 		12.07.2017 FF: Create $RegKeys as an array (was a hashtable before)
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -45,7 +46,7 @@ Process {
 		foreach ($RegKey in $RegKeys) {
 			Try {
 				Remove-ItemProperty -Path $Regkey -Name "MachineGUID" -ErrorAction Stop
-				Write-BISFLog -Msg "$($RegKey) Successfull deleted" -showconsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "$($RegKey) Successfully deleted" -showconsole -Color DarkCyan -SubMsg
 			}
 			catch [System.Security.SecurityException] {
 				Write-BISFLog -Msg "Permission Denied for $($RegKey)" -ForegroundColor Red -SubMsg

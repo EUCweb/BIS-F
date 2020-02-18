@@ -11,6 +11,7 @@
 		History
 		22.03.2016 MS: Script created
 		28.06.2017 MS: Bugfix 186 - AppSense Product Path - thx to Matthias Kowalkowski
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -36,7 +37,7 @@ Process {
 			& Start-Process -FilePath "$product_path\$PrepApp" -ArgumentList "/imageprep" -Wait
 		}
 		ELSE {
-			Write-BISFLog -Msg "$product_path\$PrepApp not exists. Image Preparation could not be performed !!!" -Type E -SubMsg
+			Write-BISFLog -Msg "$product_path\$PrepApp does not exist. Image Preparation could not be performed!" -Type E -SubMsg
 		}
 
 	}

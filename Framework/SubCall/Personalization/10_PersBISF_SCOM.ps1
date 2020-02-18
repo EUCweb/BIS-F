@@ -13,6 +13,7 @@
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		04.03.2016 MS: fixed issue SCOM service would be start on every Image Mode if installed
 		19.10.2018 MS: Bugfix 72: MCS Deployment: SCOM Agent - creates OpsStateDir in C: drive
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -40,7 +41,7 @@ Process {
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "Citrix PVS Target Device NOT detected, StateDirectory leave on original path $OpsStateDir"
+			Write-BISFLog -Msg "Citrix PVS Target Device NOT detected, leaving StateDirectory on original path $OpsStateDir"
 		}
 		Invoke-BISFService -ServiceName "$servicename" -Action Start
 	}

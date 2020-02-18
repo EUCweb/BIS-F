@@ -25,6 +25,8 @@
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 
 		17.08.2019 MS: ENH 78: Sealing for Ivanti Automation agent can be disabled in ADMX
+		18.02.2020 JK: Fixed Log output spelling
+		
 	.LINK
 		https://eucweb.com
 #>
@@ -94,11 +96,11 @@ Process {
 			$InstallDir_REG = Get-ItemProperty -path "$HKLM_REG_ROW" | % { $_.InstallDir }
 
 			IF (Test-Path $InstallDir_REG) {
-				Write-BISFLog -Msg "DB Cache is set to $InstallDir_REG\Data\DBCache and would deleted now"
+				Write-BISFLog -Msg "DB Cache is set to $InstallDir_REG\Data\DBCache and will be deleted now"
 				Remove-Item -Path "$InstallDir_REG\Data\DBCache" -recurse
 			}
 			ELSE {
-				Write-BISFLog -Msg "DB Cache is set to $InstallDir_REG\Data\DBCache and could NOT deleted" -Type W -SubMsg
+				Write-BISFLog -Msg "DB Cache is set to $InstallDir_REG\Data\DBCache and could NOT be deleted" -Type W -SubMsg
 
 			}
 		}
@@ -109,11 +111,11 @@ Process {
 			$ROWCachePath = (Get-ItemProperty "$HKLM_REG_ROW").DBCache
 			$ROWCachePathDrive = $ROWCachePath.substring(0, 2)
 			IF ($PVSDiskDrive -eq $ROWCachePathDrive) {
-				Write-BISFLog -Msg "RES Workspace Manager DBCache is already redicted $ROWCachePath" -SubMsg -ShowConsole -Color DarkCyan
+				Write-BISFLog -Msg "RES Workspace Manager DBCache is already redirected $ROWCachePath" -SubMsg -ShowConsole -Color DarkCyan
 			}
 			ELSE {
 				$ROWCachePath = "$PVSDiskDrive\RES\Workspace Manager\DBCache"
-				Write-BISFLog -Msg "Redirect RES ONE Workspace Agent DBCache to $ROWCachePath" -SubMsg -ShowConsole -Color DarkCyan
+				Write-BISFLog -Msg "Redirecting RES ONE Workspace Agent DBCache to $ROWCachePath" -SubMsg -ShowConsole -Color DarkCyan
 				Set-ItemProperty -Path "$HKLM_REG_ROW" -Name "LocalCachePath" -Value "$ROWCachePath"
 				Set-ItemProperty -Path "$HKLM_REG_ROW" -Name "LocalCacheOnDisk" -Value "YES"
 			}
@@ -169,11 +171,11 @@ Process {
 			ELSE {
 				$ROA_StdPath = "$Inst_Path_ROA\Workspace"
 				IF (Test-Path $ROA_StdPath) {
-					Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and would deleted now"
+					Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and will be deleted now"
 					Remove-Item -Path "$ROA_StdPath\*" -recurse
 				}
 				ELSE {
-					Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and could NOT deleted" -Type W -SubMsg
+					Write-BISFLog -Msg "Standardpath is set to $ROA_StdPath and could NOT be deleted" -Type W -SubMsg
 				}
 			}
 		}
@@ -186,7 +188,7 @@ Process {
 			$ROACachePath = (Get-ItemProperty "$HKLM_REG_ROA\Agent").LastKnownResourceCacheFolder
 			$ROACachePathDrive = $ROACachePath.substring(0, 2)
 			IF ($PVSDiskDrive -eq $ROACachePathDrive) {
-				Write-BISFLog -Msg "RES Automation Manager DBCache is already redicted to $ROACachePath" -SubMsg -ShowConsole -Color DarkCyan
+				Write-BISFLog -Msg "RES Automation Manager DBCache is already redirected to $ROACachePath" -SubMsg -ShowConsole -Color DarkCyan
 			}
 			ELSE {
 				$ROACachePath = "$PVSDiskDrive\RES\Automation Manager\DBCache"

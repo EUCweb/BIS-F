@@ -15,6 +15,7 @@
 		01.07.2017 MS: Import Script into BIS-F and change variables to BIS-F global variables LIC_BISF_CLI_GD_ExCL and LIC_BISF_CLI_GD_ExFN
 		05.07.2017 FF: Substitute 'break' with 'return', if Remove Ghost Devices is not configured
 		07.07.2017 FF: Change script console output to be in compliance with BIS-F
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -52,28 +53,28 @@ Process {
 
 			switch ($LIC_BISF_CLI_GD) {
 				"Remove" {
-					Write-BISFLog -Msg "Remove ghost devices enabled.  Ghost devices that pass filters will be removed."
+					Write-BISFLog -Msg "Remove ghost devices is enabled. Ghost devices that pass filters will be removed."
 					$script:removeGhostDevices = $true
 				}
 				"ListAllDevices" {
-					Write-BISFLog -Msg "Remove ghost devices enabled.  List devices without removing any is configured."
+					Write-BISFLog -Msg "Remove ghost devices is enabled. List devices without removing any is configured."
 					$script:removeGhostDevices = $false
 					$script:listDevicesOnly = $true
 				}
 				"ListOnlyGhostDevices" {
-					Write-BISFLog -Msg "Remove ghost devices enabled.  List ghost devices without removing any is configured."
+					Write-BISFLog -Msg "Remove ghost devices is enabled. List ghost devices without removing any is configured."
 					$script:removeGhostDevices = $false
 					$script:listGhostDevicesOnly = $true
 				}
 				default {
-					Write-BISFLog -Msg "Remove ghost devices not configured. Exiting."
+					Write-BISFLog -Msg "Remove ghost devices is not configured. Exiting."
 					$script:removeGhostDevices = $false
 					return
 				}
 			}
 		}
 		else {
-			Write-BISFLog -Msg "Remove ghost devices not configured. Exiting."
+			Write-BISFLog -Msg "Remove ghost devices is not configured. Exiting."
 			$removeGhostDevices = $false
 			return
 		}
@@ -81,7 +82,7 @@ Process {
 
 	function GD-ConfigureFilters {
 		if ($LIC_BISF_CLI_GD -ne "Remove") {
-			Write-BISFLog -Msg "A list device only mode was detected.  Skipping filter configuration."
+			Write-BISFLog -Msg "A list device only mode was detected. Skipping filter configuration."
 			return
 		}
 		$filtersDetected = $false
@@ -116,7 +117,7 @@ Process {
 			$filtersDetected = $true
 		}
 		if (-not($filtersDetected)) {
-			Write-BISFLog -Msg "No filters detected.  Defaulting to searching for all ghost devices."
+			Write-BISFLog -Msg "No filters detected. Defaulting to searching for all ghost devices."
 		}
 	}
 
@@ -420,7 +421,7 @@ namespace Win32
 			#more than 1 ghost device found.  Output chart.
 			Write-BISFLog -Msg "$ghostDevices"
 		}
-		Write-BISFLog -Msg  "Total ghost devices found : $($ghostDevicesCount)"
+		Write-BISFLog -Msg  "Total ghost devices found: $($ghostDevicesCount)"
 
 	}
 
@@ -431,7 +432,7 @@ namespace Win32
 			Write-BISFLog -Msg  "Removed devices:"
 			Write-BISFLog -Msg "$removedDevices"
 		}
-		Write-BISFLog -Msg  "Total removed devices     : $removedDevicesCount"
+		Write-BISFLog -Msg  "Total removed devices: $removedDevicesCount"
 	}
 
 }

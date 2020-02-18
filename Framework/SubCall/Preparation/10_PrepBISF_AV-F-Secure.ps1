@@ -10,7 +10,8 @@
 		History:
 		  29.07.2017 MS: Script created
 		  14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
-		  03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
+			03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
+			18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
         https://eucweb.com
@@ -63,7 +64,7 @@ Process {
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "No Scan would be performed"
+			Write-BISFLog -Msg "No Scan will be performed"
 		}
 
 	}

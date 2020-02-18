@@ -14,6 +14,7 @@ param(
 		27.05.2015 MS: Script created
 		01.10.2015 MS: Rewritten script with standard .SYNOPSIS, use central BISF function to configure service
 		12.03.2017 MS: Change $tmparray=$LIC_BISF_ZCM_CFG to $tmparray=$LIC_BISF_CLI_ZCM to configure ZCM with ADMX
+		18.02.2020 JK: Fixed Log output spelling
 
 
 	.LINK
@@ -99,7 +100,7 @@ Process {
 				Remove-Item -path "$product_path\conf\$file" -force
 			}
 			ELSE {
-				Write-BISFLog -Msg "file $product_path\conf\$file NOT exist"
+				Write-BISFLog -Msg "file $product_path\conf\$file does NOT exist"
 			}
 
 		}

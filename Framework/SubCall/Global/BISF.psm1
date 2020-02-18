@@ -29,6 +29,8 @@
 	11.09.2017 MS: add $TaskStates to control the Preparation is running after Personlization first
 	03.10.2019 MS: ENH 126 - MCSI for persistent to set $Global:PVSDiskDrive = LIC_BISF_CLI_MCSIODriveLetter
 	07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
+	18.02.2020 JK: Fixed Log output spelling
+	
 .LINK
 	https://eucweb.com
 #>
@@ -144,7 +146,7 @@ function Get-Adaptername {
 		}
 	}
 	Else {
-		write-BISFlog -Msg "No DHCP Networkadapter found. DHCP Networkadapter would be optimized only !" -Type W
+		write-BISFlog -Msg "No DHCP Networkadapter found. DHCP Networkadapter will be optimized only!" -Type W
 		$AdapterNames = $null
 	}
 	return $AdapterNames
@@ -330,8 +332,8 @@ Function Invoke-FolderScripts {
 	IF ($scripts -ne $null) {
 		Foreach ($item in $scripts) {
 			IF ($TerminateScript -eq $true) {
-				write-BISFlog -Msg "Check Logfile $logfile for further informations !!" -Type W
-				write-BISFlog -Msg "Script exiting !!" -Color Red
+				write-BISFlog -Msg "Check Logfile $logfile for further information!" -Type W
+				write-BISFlog -Msg "Script exiting!" -Color Red
 				Start-Sleep 5
 				break
 			}
@@ -380,7 +382,7 @@ function Test-WriteCacheDiskDriveLetter {
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF ($returnTestPVSSoftware) {
 		IF ($LIC_BISF_CLI_WCD -eq $null) {
-			write-BISFlog -Msg "PVSWriteCacheDisk not configured with ADMX, configure it and run this script again..!! " -Type E -SubMsg
+			write-BISFlog -Msg "PVSWriteCacheDisk not configured with ADMX, configure it and run this script again! " -Type E -SubMsg
 			return $false
 			break
 		}
@@ -412,7 +414,7 @@ function Test-RegHive {
 	IF (!(Test-Path $hklm_software\$LIC\$CTX_BISF_SCRIPTS)) {
 		New-Item -Path $hklm_software -Name $LIC -Force | Out-Null
 		New-Item -Path $hklm_software"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
-		write-BISFlog -Msg "create RegHive $hklm_software\$LIC\$CTX_BISF_SCRIPTS"
+		write-BISFlog -Msg "Create RegHive $hklm_software\$LIC\$CTX_BISF_SCRIPTS"
 		return $true
 	}
 	ELSE {
@@ -457,13 +459,13 @@ function Test-WriteCacheDisk {
 
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF ($PVSDiskDrive.substring(0,2) -eq $env:SystemDrive) {
-		write-BISFlog -Msg "No seperated Cache Disk configured"
+		write-BISFlog -Msg "No seperate Cache Disk configured"
 		return $true
 		}
 	ELSE {
 		$CacheDisk = Get-CimInstance -Query "SELECT * from win32_logicaldisk where DriveType = 3 and DeviceID = ""$PVSDiskDrive"""
 		IF ($CacheDisk -eq $null) {
-			write-BISFlog -Msg "Disk $PVSDiskDrive not exist. Please create a local new harddrive with enough space, assign driveletter $PVSDiskDrive and run this script again..!!" -Type E -SubMsg
+			write-BISFlog -Msg "Disk $PVSDiskDrive does not exist. Please create a new local disk with enough space, assign driveletter $PVSDiskDrive and run this script again!" -Type E -SubMsg
 			return $false
 		}
 		ELSE {
@@ -513,11 +515,11 @@ function Get-Version {
 
 	$BuildNbr = $LIC_BISF_BuildNumber.substring(1, 1)
 	switch ($BuildNbr) {
-		4 { Write-BISFLog -Msg "WARNING: This running version $BISFVersion is an DEVELOPER Release, not for production use !!" -Type W -SubMsg ; Start-Sleep $Wait1 }
-		3 { Write-BISFLog -Msg "WARNING: This running version $BISFVersion is an TEST Release, not for production use !!" -Type W -SubMsg ; Start-Sleep $Wait1 }
-		2 { Write-BISFLog -Msg "WARNING: This running version $BISFVersion is an BETA Release, User Acceptance Test only !!" -Type W -SubMsg ; Start-Sleep $Wait1 }
+		4 { Write-BISFLog -Msg "WARNING: This running version $BISFVersion is a DEVELOPER Release, not for production use!" -Type W -SubMsg ; Start-Sleep $Wait1 }
+		3 { Write-BISFLog -Msg "WARNING: This running version $BISFVersion is a TEST Release, not for production use!" -Type W -SubMsg ; Start-Sleep $Wait1 }
+		2 { Write-BISFLog -Msg "WARNING: This running version $BISFVersion is a BETA Release, User Acceptance Test only!" -Type W -SubMsg ; Start-Sleep $Wait1 }
 		1 { Write-BISFLog -Msg "Running Version $BISFVersion" -ShowConsole -SubMsg -Color DarkCyan }
-		default { Write-BISFLog -Msg "WARNING: BuildNumber could not be determined !!" -Type W -SubMsg ; Start-Sleep $Wait1 }
+		default { Write-BISFLog -Msg "WARNING: The BuildNumber could not be determined !!" -Type W -SubMsg ; Start-Sleep $Wait1 }
 	}
 
 	$BuildDate_DD = $LIC_BISF_BuildDate.substring(0, 2)
@@ -548,7 +550,7 @@ function Set-NetworkProviderOrder {
 	for ($i = 0; $i -lt $proder.length; $i++) {
 		IF ($proder[$i] -eq $searchPrOrder) {
 			$SaveIndex = $i
-			write-BISFlog -Msg "SearchString $searchPrOrder would be found in index $SaveIndex"
+			write-BISFlog -Msg "SearchString $searchPrOrder is not found in index $SaveIndex"
 			$Foundproder = 1
 		}
 	}
@@ -648,17 +650,17 @@ function Test-XDSoftware {
 		$Global:UPL = $false
 		$CheckVersion = "7.24" # VDA 1912  with UPL support
 		IF ($VDAVersion -ge $CheckVersion){
-			Write-BISFLog "VDA Version $VDAVersion supports User Personalization Layer (UPL).. check if UPL Services are installed" -ShowConsole -Color DarkCyan -SubMsg
+			Write-BISFLog "VDA Version $VDAVersion supports User Personalization Layer (UPL).. check if the UPL Services are installed" -ShowConsole -Color DarkCyan -SubMsg
 			$UPLsvc1 = Test-BISFService -ServiceName "upl-Support" -ProductName "Citrix UPL Support Service"
 			$UPLsvc2 = Test-BISFService -ServiceName "ulayer" -ProductName "Citrix Layering Service"
 			IF (($UPLsvc1 -eq $true) -and ($UPLsvc2 -eq $true)) {
 				$Global:UPL = $true
-				Write-BISFLog "UPL Services installed" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog "UPL Services are installed" -ShowConsole -Color DarkCyan -SubMsg
 			} ELSE {
-				Write-BISFLog "UPL Services NOT installed"
+				Write-BISFLog "UPL Services are NOT installed"
 			}
 		} ELSE {
-			Write-BISFLog "VDA version $VDAVersion does NOT supports User Personalization Layer (UPL)"
+			Write-BISFLog "VDA version $VDAVersion does NOT support User Personalization Layer (UPL)"
 		}
 	}
 
@@ -690,9 +692,9 @@ function Get-OSinfo {
 		$Global:CommonProgramFilesx86 = "${env:CommonProgramFiles(x86)}"
 		$Global:HKLM_sw_x86 = "$hklm_software\Wow6432Node"
 	}
-	write-BISFlog -Msg "ProgramFiles X86 Path would be set: $ProgramFilesx86"
-	write-BISFlog -Msg "CommonProgramFiles X86 would be set to: $CommonProgramFilesx86"
-	write-BISFlog -Msg "HKLM_sw_x86 would be set to: $HKLM_sw_x86"
+	write-BISFlog -Msg "ProgramFiles X86 Path is set to: $ProgramFilesx86"
+	write-BISFlog -Msg "CommonProgramFiles X86 is set to: $CommonProgramFilesx86"
+	write-BISFlog -Msg "HKLM_sw_x86 is set to: $HKLM_sw_x86"
 
 }
 
@@ -743,7 +745,7 @@ function Show-ProgressBar {
 
 	IF ($MaximumExecutionMinutes) {
 		$MaximumExecutionTime = (Get-Date).AddMinutes($MaximumExecutionMinutes)
-		Write-BISFLog "Maximum execution time will internal override with the value of $MaximumExecutionTime minutes"
+		Write-BISFLog "Maximum execution time will default override with the value of $MaximumExecutionTime minutes"
 	}
 	ELSE {
 		IF ($LIC_BISF_CLI_METCfg -eq "YES") { $MaximumExecutionMinutes = $LIC_BISF_CLI_MET }
@@ -782,7 +784,7 @@ function Show-ProgressBar {
 
 		if ($ProcessActive -eq $null) {
 			$a = 100
-			Write-Progress -Activity "Finish...wait for next operation in 3 seconds" -PercentComplete $a -Status "Finish."
+			Write-Progress -Activity "Finish...waiting for next operation in 3 seconds" -PercentComplete $a -Status "Finish."
 			IF ($State -eq "Preparation") { Start-Sleep 3 }
 			Write-Progress "Done" "Done" -completed
 			break
@@ -822,7 +824,7 @@ function Test-Log {
 		IF ($searchP2PVS) { return $True } else { return $false }
 	}
 	ELSE {
-		write-BISFlog -Msg "File $CheckLogFile not exist" -Type E
+		write-BISFlog -Msg "File $CheckLogFile does not exist" -Type E
 		$searchP2PVS = ""
 	}
 	return $searchP2PVS
@@ -937,7 +939,7 @@ function Convert-Settings {
 	$querytask = schtasks.exe /query /v /fo csv | ConvertFrom-Csv | ForEach-Object { $_.TaskName }
 	Foreach ($task in  $querytask) {
 		IF ($task -eq "\LIC_PVS_Device_Personalize") {
-			write-BISFlog -Msg "Migrate BISF Settings: delete old Task $OldTask" -ShowConsole -Color DarkCyan -SubMsg
+			write-BISFlog -Msg "Migrating BISF Settings: delete old Task $OldTask" -ShowConsole -Color DarkCyan -SubMsg
 			& schtasks.exe /delete /TN $OldTask /F | Out-Null
 		}
 	}
@@ -945,7 +947,7 @@ function Convert-Settings {
 	$oldRegKey = Test-Path "$hklm_software\$LIC\Citrix BISF Scripts"
 	IF (($NewRegKey -eq $false) -and ($NewRegKey -eq $true)) {
 		Rename-Item "$oldRegKey" -NewName "BISF"
-		write-BISFlog -Msg "Migrate $CTX_BISF_SCRIPTS Registry Settings" -ShowConsole -Color DarkCyan -SubMsg
+		write-BISFlog -Msg "Migrating $CTX_BISF_SCRIPTS Registry Settings" -ShowConsole -Color DarkCyan -SubMsg
 
 	}
 }
@@ -968,7 +970,7 @@ Function Get-TaskSequence() {
 		write-BISFlog -Msg "Successfully loaded ComObject [Microsoft.SMS.TSEnvironment]."
 		write-BISFlog -Msg "The script is currently running from an MDT or SCCM Task Sequence."
 		$Global:LIC_BISF_CLI_SB = "NO"
-		write-BISFlog -Msg "A system shutdown after successfully build would be suppressed, it must be performed from tasksequence !!" -Type W
+		write-BISFlog -Msg "A system shutdown after successful build will be suppressed, it must be performed from tasksequence!" -Type W
 		Return $true
 	}
 
@@ -1412,7 +1414,7 @@ function Get-ScriptExecutionPath {
 	$locadrives = Get-CimInstance -ClassName Win32_Volume | Where-Object { $_.DriveType -eq 3 } | Where-Object { $_.Driveletter }
 	Foreach ($localdrive in $locadrives) {
 		IF ($localdrive -eq $scriptdrive) {
-			write-BISFlog -Msg "Script would be started from drive $localdrive"
+			write-BISFlog -Msg "Script will be started from drive $localdrive"
 			return $true
 			break
 		}
@@ -1525,7 +1527,7 @@ function Get-CLIcmd {
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF (Test-Path $Reg_LIC_Policies -ErrorAction SilentlyContinue) {
-		write-BISFlog -Msg "The following CLI commands would set:"
+		write-BISFlog -Msg "The following CLI commands will be set:"
 		$regvalues = Get-BISFRegistryValues $Reg_LIC_Policies
 		Foreach ($regvalue in $regvalues) {
 			New-BISFGlobalVariable -Name $($regvalue.value) -Value $($regvalue.data)
@@ -1797,8 +1799,8 @@ function Test-Service {
 		return $true
 	}
 	ELSE {
-		write-BISFlog -Msg "Service $($ServiceName) Not exists"
-		IF ($ProductName) { write-BISFlog -Msg "Product $ProductName NOT installed" }
+		write-BISFlog -Msg "Service $($ServiceName) does not exist"
+		IF ($ProductName) { write-BISFlog -Msg "Product $ProductName is NOT installed" }
 		return $false
 	}
 
@@ -1883,26 +1885,26 @@ function Invoke-Service {
 			IF ($svc.Status -eq 'Running') {
 				$svc.Stop() | Out-Null
 				$svc.WaitForStatus('Stopped') | Out-Null
-				write-BISFlog -Msg "Service $ServiceName would be stopped"
+				write-BISFlog -Msg "Service $ServiceName will be stopped"
 			}
 			ELSE {
-				write-BISFlog -Msg "Service $ServiceName is already stopped !"
+				write-BISFlog -Msg "Service $ServiceName is already stopped!"
 			}
 			Test-BISFServiceState -ServiceName $ServiceName -Status "Stopped"
 		}
 
 		IF ($StartType) {
 			IF (($StartType -eq "Manual") -and ($ImageSW -eq $false)) {
-				write-BISFlog -Msg "No Image Management Software detected, Service $ServiceName would not be changed to StartupType $StartType" -Type W
+				write-BISFlog -Msg "No Image Management Software detected, Service $ServiceName will not be changed to Startup Type $StartType" -Type W
 			}
 			ELSE {
-				write-BISFlog -Msg "Service $($svc.Name) would be configured to StartupType $StartType"
+				write-BISFlog -Msg "Service $($svc.Name) will be configured to Startup Type $StartType"
 				Set-Service -Name $svc.Name -StartupType $StartType | Out-Null
 			}
 		}
 
 		IF (($CheckDiskMode -eq $null) -or ($CheckDiskMode -eq $DiskMode)) {
-			IF ($CheckDiskMode -eq $null) { Write-BISFLog -Msg "DiskMode must not checked" } ELSE { Write-BISFLog -Msg "DiskMode $CheckDiskMode would be checked successfully" }
+			IF ($CheckDiskMode -eq $null) { Write-BISFLog -Msg "DiskMode will not be checked" } ELSE { Write-BISFLog -Msg "DiskMode $CheckDiskMode will be checked" }
 			If ($Action -eq "Start") {
 
 				IF ($svc.Status -eq 'Stopped') {
@@ -1911,7 +1913,7 @@ function Invoke-Service {
 					write-BISFlog -Msg "Service $ServiceName is running now"
 				}
 				ELSE {
-					write-BISFlog -Msg "Service $ServiceName is already running !"
+					write-BISFlog -Msg "Service $ServiceName is already running!"
 				}
 				Test-BISFServiceState -ServiceName $ServiceName -Status "Running"
 			}
@@ -1921,10 +1923,10 @@ function Invoke-Service {
 
 	catch {
 		IF ($StartType) {
-			write-BISFlog -Msg "Error during reconfigure Service $($servicename) -Action $Action -StartType $StartType" -Type W -SubMsg
+			write-BISFlog -Msg "Error reconfiguring Service $($servicename) -Action $Action -StartType $StartType" -Type W -SubMsg
 		}
 		ELSE {
-			write-BISFlog -Msg "Error during reconfigure Service $($servicename) -Action $Action" -Type W -SubMsg
+			write-BISFlog -Msg "Error reconfiguring Service $($servicename) -Action $Action" -Type W -SubMsg
 		}
 		write-BISFlog -Msg "The error is: $_" -Type W -SubMsg
 	}
@@ -1954,7 +1956,7 @@ function Get-AdapterGUID {
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
-	write-BISFLog -Msg "Read GUIDs of each Networkadapter"
+	write-BISFLog -Msg "Read GUIDs of each Network Adapter"
 	$HKLM_REG_TCPIP = "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
 	$AllAdapterGUIDs = Get-ChildItem "$HKLM_REG_TCPIP\Adapters" | Get-ItemProperty | ForEach-Object { $_.PSChildName }
 	ForEach ($AdapterGUID in $AllAdapterGUIDs) {
@@ -1964,7 +1966,7 @@ function Get-AdapterGUID {
 			[array]$AdapterGUIDarray += $AdapterGUID
 		}
 		ELSE {
-			write-BISFLog -Msg "DHCP on Adapter with GUID $AdapterGUID is disabled !!"
+			write-BISFLog -Msg "DHCP on Adapter with GUID $AdapterGUID is disabled!"
 		}
 	}
 
@@ -2006,7 +2008,7 @@ function Optimize-WinSxs {
 				$runWinSxs = 1
 			} ELSE {
 				$runWinSxs = 0
-				Write-BISFLog "WinSxS Optimization is configured in ADMX to run on BaseDisk or with noVirtualDisk assigned , $DiskNameExtension detected" -ShowConsole -SubMsg -Color DarkCyan
+				Write-BISFLog "WinSxS Optimization is configured in ADMX to run on the Base Disk or when no Virtual Disk assigned, $DiskNameExtension detected" -ShowConsole -SubMsg -Color DarkCyan
 			}
 
 		}
@@ -2142,15 +2144,15 @@ function Request-Sysprep {
 		IF (($ImageSW -eq $false) -or ($ImageSW -eq $Null)) {
 			$varCLISP = $LIC_BISF_CLI_SP
 			IF (($varCLISP -eq "YES") -or ($varCLISP -eq "NO")) {
-				Write-BISFLog -Msg "Silentswitch for Sysprep would be set to $varCLISP"
+				Write-BISFLog -Msg "Silentswitch for Sysprep will be set to $varCLISP"
 			}
 			ELSE {
-				Write-BISFLog -Msg "GPO not configured.. using default setting"
+				Write-BISFLog -Msg "GPO is not configured.. using default setting"
 				$MPSP = "NO"
 			}
 
 			if (($MPSP -eq "YES" ) -or ($varCLISP -eq "YES")) {
-				Write-BISFLog -Msg "Sysprep would be used at the end of BIS-F" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Sysprep will be used at the end of BIS-F" -ShowConsole -Color DarkCyan -SubMsg
 				$Global:RunSysprep = $true
 
 			}
@@ -2163,7 +2165,7 @@ function Request-Sysprep {
 		ELSE {
 			$Global:RunSysprep = $false
 			IF ($LIC_BISF_CLI_SP -eq "YES") {
-				write-BISFLog -Msg "Sysprep can't be used, because Image Management Software like Citrix PVS Target Device Driver, XenDesktop VDA, VMware Horizon View Agent would be detected !" -ShowConsole -SubMsg -Type W
+				write-BISFLog -Msg "Sysprep can't be used because Image Management Software like Citrix PVS Target Device Driver, XenDesktop VDA, VMware Horizon View Agent has been detected!" -ShowConsole -SubMsg -Type W
 
 			}
 		}
@@ -2194,9 +2196,9 @@ function Set-PostSysprep {
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF ( (($computer -notlike "WIN-*") -or ($computer -notlike "DESKTOP-*")) -and ($State -eq "Personalization") -and ($LIC_BISF_RunSysPrep -eq $true) ) {
-		Write-BISFLog -Msg "Running Post Sysprep actions to configure the services in the ServiceList "
+		Write-BISFLog -Msg "Running Post Sysprep actions to configure the services in the Service List "
 		ForEach ($SPService in $LIC_BISF_Sysprep_ServiceList -split (",")) {
-			Write-BISFLog -Msg "Setting $($SPService) to StartUpTyppe automatic"
+			Write-BISFLog -Msg "Setting $($SPService) to Startup Type automatic"
 			Invoke-BISFService -ServiceName $($SPService) -StartType Automatic
 		}
 		$RunSysPrep = $false
@@ -2277,12 +2279,12 @@ function Invoke-LogRotate {
 	[int]$Versions = $LIC_BISF_CLI_LF_RT
 
 	$val_LF_RT = Test-BISFRegistryValue -Path "$Reg_LIC_Policies" -Value "LIC_BISF_CLI_LF_RT"
-	IF ($val_LF_RT -eq $false) { write-BISFlog -Msg "Log rotate would NOT specified in the ADMX, it uses their default value 5 "; [int]$Versions = "5" }
-	IF ($Versions -eq 0) { write-BISFlog -Msg "Log rotate would set to 0 value in the ADMX, it uses now the max. count of 9999 "; [int]$Versions = "9999" }
+	IF ($val_LF_RT -eq $false) { write-BISFlog -Msg "Log rotate is NOT specified in the ADMX, it uses the default value of 5 "; [int]$Versions = "5" }
+	IF ($Versions -eq 0) { write-BISFlog -Msg "Log rotate is set to 0 in the ADMX, it uses now the max. count of 9999 "; [int]$Versions = "9999" }
 
 	$LogFiles = Get-ChildItem -Path $Directory -Filter $strLogFileName | Sort-Object -Property LastWriteTime -Descending
 	for ($i = $Versions; $i -le ($Logfiles.Count - 1); $i++) { Remove-Item $LogFiles[$i].FullName }
-	write-BISFlog -Msg "Cleaning Logfile ($strLogFileName) in $Directory and keep the last $Versions Logs"
+	write-BISFlog -Msg "Cleaning Logfile ($strLogFileName) in $Directory and keeping the last $Versions Logs"
 
 }
 
@@ -2331,7 +2333,7 @@ function Invoke-LogShare {
 
 
 		If (($CentralLogShare -ne "") -and ($CentralLogShare -ne "NO")) {
-			Write-BISFLog -Msg "The BIS-F Central LogShare for the Client personalization would be set to $CentralLogShare" -ShowConsole -Color DarkCyan -SubMsg
+			Write-BISFLog -Msg "The BIS-F Central LogShare for the Client personalization will be set to $CentralLogShare" -ShowConsole -Color DarkCyan -SubMsg
 			Write-BISFLog -Msg "Set BIS-F Central LogShare in the registry $hklm_software_LIC_CTX_BISF_SCRIPTS, Name LIC_BISF_LogShare, value $CentralLogShare"
 			Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_LogShare" -value "$CentralLogShare" -Force
 			$Global:LIC_BISF_LogShare = "$CentralLogShare"
@@ -2339,10 +2341,10 @@ function Invoke-LogShare {
 		ELSE {
 			Write-BISFLog -Msg "No BIS-F Central LogShare defined, skip action"
 			IF (($LIC_BISF_LogShare -eq "" ) -or ($LIC_BISF_LogShare -eq $null)) {
-				Write-BISFLog -Msg "No Central LogShare would be configured, the local path would be used" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "No Central LogShare will be configured, the local path will be used" -ShowConsole -Color DarkCyan -SubMsg
 			}
 			ELSE {
-				Write-BISFLog -Msg "The Central LogShare would be previous defined to $LIC_BISF_LogShare, this log would be stored on the Central Share, but for the future the local path would be used" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "The Central LogShare has been previously defined to $LIC_BISF_LogShare, this log will be stored on the Central Share, but for the future logging the local path will be used" -ShowConsole -Color DarkCyan -SubMsg
 			}
 			Remove-ItemProperty -path $hklm_software_LIC_CTX_BISF_SCRIPTS -name "LIC_BISF_LogShare" -ErrorAction SilentlyContinue
 			$Global:LIC_BISF_LogShare = ""
@@ -2478,7 +2480,7 @@ function Get-MacAddress {
 	$mac = (($wmi | Where-Object { $_.IPAddress -eq $HostIP }).MACAddress)
 	$Delimiter = ":"
 	$mac = ($mac -replace "$Delimiter", "").toLower()
-	Write-BISFLog -Msg "The MAC-Address for further use would be resolved: $mac"
+	Write-BISFLog -Msg "The MAC-Address for further use will be resolved: $mac"
 	return $mac
 }
 
@@ -2531,7 +2533,7 @@ function Test-AppLayeringSoftware {
 		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running") -or ($DiskMode -eq "VDAPrivateAppLayering")) {
 
 			$CTXAppLayeringRunModeNew = 1
-			Write-BISFLog "The origin App Layering RunMode ist set to $CTXAppLayeringRunMode , based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
+			Write-BISFLog "The original App Layering RunMode ist set to $CTXAppLayeringRunMode, based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
 			$CTXAppLayeringRunMode = $CTXAppLayeringRunModeNew
 		}
 		Switch ($CTXAppLayeringRunMode) {
@@ -2591,7 +2593,7 @@ function Use-PVSConfig {
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF ($returnTestPVSSoftware) {
 		$Global:Redirection = $false
-		Write-BISFLog -Msg "Check if redirection of Files to PVS WriteCacheDisk is possible" -ShowConsole -Color Cyan
+		Write-BISFLog -Msg "Checking if redirection of Files to PVS Write Cache Disk is possible" -ShowConsole -Color Cyan
 		#enable redirection
 		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Preparation")) { $Global:Redirection = $true; $Global:RedirectionCode = "PVS-NoAppLay-Prep" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 		IF (($CTXAppLayeringSW -eq $false) -and ($State -eq "Personalization") -and ($computer -ne $LIC_BISF_RefSrv_HostName)) { $Global:Redirection = $true; $Global:RedirectionCode = "PVS-NoAppLay-Pers-NoBI" ; Write-BISFLog -Msg "enable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
@@ -2608,7 +2610,7 @@ function Use-PVSConfig {
 		IF ($LIC_BISF_CLI_PVSDisableRedirection -eq 1) { $Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($Redirection -eq $true) {
-			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configure it now" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
 
 			#Check redirection
 			$Global:returnTestPVSEnvVariable = Test-BISFWriteCacheDiskDriveLetter -Verbose:$VerbosePreference
@@ -2644,7 +2646,7 @@ function Use-PVSConfig {
 			Move-BISFEvtLogs
 		}
 		ELSE {
-			Write-BISFLog -Msg "Redirection is disabled with Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFLog -Msg "Redirection is disabled with code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan
 		}
 	}
 	ELSE {
@@ -2695,12 +2697,12 @@ function Use-MCSConfig {
 		IF ($LIC_BISF_CLI_MCSIODisableRedirection -eq 1) {$Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($Redirection -eq $true) {
-			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configure it now" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
 
 			#Check redirection
 			$Global:returnTestPVSEnvVariable = Test-BISFWriteCacheDiskDriveLetter -Verbose:$VerbosePreference
 			IF ($State -eq "Preparation") {
-				IF ($DiskMode -eq "VDAShared") { Write-BISFLog -Msg "Mode $DiskMode - Image is in shared Mode , read access only!" -Type E -SubMsg }
+				IF ($DiskMode -eq "VDAShared") { Write-BISFLog -Msg "Mode $DiskMode - Image is in shared Mode, read access only!" -Type E -SubMsg }
 
 				$Global:returnTestPVSDriveLetter = Test-BISFWriteCacheDisk -Verbose:$VerbosePreference
 			}
@@ -2724,7 +2726,7 @@ function Use-MCSConfig {
 			Move-BISFEvtLogs
 		}
 		ELSE {
-			Write-BISFLog -Msg "Redirection is disabled with Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFLog -Msg "Redirection is disabled with code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan
 		}
 	}
 	ELSE {
@@ -3082,7 +3084,7 @@ Function Export-Registry {
 				# Set the File Name
 				$filePath = "$LIC_BISF_CLI_EX_PT" + "\BISFSharedConfig.json "
 				Write-BISFlog -Msg "Writing $filePath - copy this file to the BIS-F installation folder, like $InstallLocation on your destination computer (example: Citrix AppLayering in Workergroup)," -ShowConsole -Color DarkCyan -SubMsg
-				Write-BISFLog -Msg "to import the BIS-F configuration from $($ExportPath). If you run the Computer in Workgroup you must set the shared path NTFS Rights to ""Everyone read"" to get access without prompt."
+				Write-BISFLog -Msg "To import the BIS-F configuration from $($ExportPath). If you run the Computer in a Workgroup you must set the shared path NTFS Rights to ""Everyone read"" to get access without being prompted."
 
 				IF ($LIC_BISF_POL_AppLayCfg -eq 1) {
 					Write-BISFLog -Msg "Citrix AppLayering export running.." -ShowConsole -Color DarkCyan -SubMsg
@@ -3200,7 +3202,7 @@ function Import-SharedConfiguration {
 					$JSONSharedConfigFile = $JsonFile.AppLayerNoELM
 				}
 				default {
-					Write-BISFlog "AppLayer can't retrieved, fallback to OS-Layer configuration" ShowConsole -Type W -SubMsg
+					Write-BISFlog "AppLayer can't be retrieved, fallback to OS-Layer configuration" ShowConsole -Type W -SubMsg
 					$JSONSharedConfigFile = $JsonFile.AppLayerOS
 				}
 			}
@@ -3212,12 +3214,12 @@ function Import-SharedConfiguration {
 				New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
 				write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
 			}
-			Write-BISFlog "Import Json Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
+			Write-BISFlog "Import Json Configuration into the local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
 			$object = Get-Content $JSONSharedConfigFile | Convertfrom-Json
 			$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
 
 		} ELSE {
-			Write-BISFlog "Error: Shared Configuration $JSONSharedConfigFile does not exists !!" -Type E
+			Write-BISFlog "Error: Shared Configuration $JSONSharedConfigFile does not exist!" -Type E
 		}
 	} ELSE {
 		# Fallback to XML Import
@@ -3236,13 +3238,13 @@ function Import-SharedConfiguration {
 					New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
 					write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
 				}
-				Write-BISFlog "Import XML Configuration into local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
+				Write-BISFlog "Import XML Configuration into the local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
 				$object = Import-Clixml "$xmlSharedConfigFile"
 				$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
 
 			}
 			ELSE {
-				Write-BISFlog "Error: Shared Configuration $xmlSharedConfigFile does not exists !!" -Type E
+				Write-BISFlog "Error: Shared Configuration $xmlSharedConfigFile does not exist!" -Type E
 			}
 		} ELSE {
 			Write-BISFlog "Legacy Shared Configuration does not exist in $XMLConfigFile"
@@ -3324,7 +3326,7 @@ function Start-CDS {
 		# Citrix VDA only
 		$servicename = "BrokerAgent"
 		IF ($LIC_BISF_CLI_CDS -eq "1") {
-			Write-BISFLog -Msg "The $servicename would configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
+			Write-BISFLog -Msg "The $servicename is configured through ADMX.. delay operation configured" -ShowConsole -Color Cyan
 
 			IF ([string]::IsNullOrEmpty($LIC_BISF_CLI_CDSdelay)) { $LIC_BISF_CLI_CDSdelay = 0 }
 			Write-BISFLog -Msg "Additional Citrix Desktop Service delay is set to $LIC_BISF_CLI_CDSdelay seconds"
@@ -3332,7 +3334,7 @@ function Start-CDS {
 			Invoke-BISFService -ServiceName "$servicename" -Action Start -StartType Automatic
 		}
 		ELSE {
-			Write-BISFLog -Msg "The $servicename would not configured through ADMX.. normal operation state"
+			Write-BISFLog -Msg "The $servicename has not been configured through ADMX.. normal operation state"
 		}
 
 	}
@@ -3385,7 +3387,7 @@ function Start-VHDOfflineDefrag {
 
 	# Retrieve drives before mounting the VHD(X)
 	$DrivesAvailableBeforeVHDMount = (Get-PSDrive -PsProvider FileSystem).Name
-	Write-BISFLog -Msg "Retrieve available drives (before mount): $([string]$DrivesAvailableBeforeVHDMount)" -ShowConsole -Color DarkCyan -SubMsg
+	Write-BISFLog -Msg "Retrieving available drives (before mount): $([string]$DrivesAvailableBeforeVHDMount)" -ShowConsole -Color DarkCyan -SubMsg
 
 
 	# Mount VHD(X) (using cvhdmount.exe)
@@ -3397,7 +3399,7 @@ function Start-VHDOfflineDefrag {
 	$ProcessExitCode = $Process.ExitCode
 	Start-Sleep -Seconds 5
 
-	Write-BISFLog -Msg "bring the attached $vhdext online" -ShowConsole -Color DarkCyan -SubMsg
+	Write-BISFLog -Msg "bringing the attached $vhdext online" -ShowConsole -Color DarkCyan -SubMsg
 	$process = Start-Process -FilePath "C:\Program Files\Citrix\Provisioning Services\CVhdMount.exe" -ArgumentList "-o 1 ""$VHDFileToDefrag""" -wait -PassThru -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
 	$ProcessExitCode = $Process.ExitCode
 	Get-BISFLogContent -GetLogFile "$tmpLogFile"
@@ -3408,7 +3410,7 @@ function Start-VHDOfflineDefrag {
 
 	# Retrieve drives after mounting the VHD(X)
 	$DrivesAvailableAfterVHDMount = (Get-PSDrive -PsProvider FileSystem).Name
-	Write-BISFLog -Msg "Retrieve available drives (after mount): $([string]$DrivesAvailableAfterVHDMount)" -ShowConsole -Color DarkCyan -SubMsg
+	Write-BISFLog -Msg "Retrieving available drives (after mount): $([string]$DrivesAvailableAfterVHDMount)" -ShowConsole -Color DarkCyan -SubMsg
 
 	# Check which drive letter or driver letters were added after mounting the VHD(X) file (drive letters are written without a colon; e.g. "D" instead of "D:")
 	try {
@@ -3473,7 +3475,7 @@ function Start-VHDOfflineDefrag {
 	$VolNbrVHDX = $VolNbr
 	Write-BISFLog -Msg "UniqueID on SystemDrive is $DiskIDOSDisk  - UniqueID on mounted $vhdext is $DiskIDVHDX" -ShowConsole -Color DarkCyan -SubMsg
 	IF (!($DiskIDOSDisk -eq $DiskIDVHDX)) {
-		Write-BISFLog -Msg "Set same UniqueID from SystemDrive on mounted $vhdext - Drive $DriveLetterToDefrag" -ShowConsole -Type W -SubMsg
+		Write-BISFLog -Msg "Setting the same UniqueID from SystemDrive on mounted $vhdext - Drive $DriveLetterToDefrag" -ShowConsole -Type W -SubMsg
 		$DiskpartFile = "$env:TEMP\$computer-DiskpartFile.txt"
 		If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 
@@ -3484,11 +3486,11 @@ function Start-VHDOfflineDefrag {
 		Write-BISFLog -Msg "Disk ID $DiskIDOSDisk is set on $DriveLetterToDefrag"
 	}
 	ELSE {
-		Write-BISFLog "DiskID on both Disks are equal, no changes necessary !" -ShowConsole -Color DarkCyan -SubMsg
+		Write-BISFLog "DiskID on both Disks are equal, no changes necessary!" -ShowConsole -Color DarkCyan -SubMsg
 	}
 
 	# Un-mount VHD(X) (using diskpart)
-	Write-BISFLog -Msg "Un-mount (detach) the $vhdext (using CVhdMount.exe)" -ShowConsole -SubMsg -Color DarkCyan
+	Write-BISFLog -Msg "Dismount (detach) the $vhdext (using CVhdMount.exe)" -ShowConsole -SubMsg -Color DarkCyan
 	$process = Start-Process -FilePath "C:\Program Files\Citrix\Provisioning Services\CVhdMount.exe" -ArgumentList "-u 1 ""$VHDFileToDefrag""" -Wait -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
 	$ProcessExitCode = $Process.ExitCode
 	Write-BISFLog -Msg  "ExitCode: $ProcessExitCode"
@@ -3529,7 +3531,7 @@ Function Get-DiskID {
 	$DiskpartFile = "$env:TEMP\$computer-DiskpartFile.txt"
 	Write-BISFLog -Msg "Get UniqueID from Drive $DriveLetter" -ShowConsole -Color DarkCyan -SubMsg
 	$DriveLetter = $DriveLetter.substring(0, 1)
-	Write-BISFLog -Msg "use Diskpart, search Driveletter $DriveLetter"
+	Write-BISFLog -Msg "Using Diskpart and searching for Drive letter $DriveLetter"
 
 	$Searchvol = "list volume" | diskpart.exe | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
 	Write-BISFLog -Msg "$Searchvol"
@@ -3718,7 +3720,7 @@ function Set-ACLrights {
 	)
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
-	Write-BISFlog -Msg "Set NTFS rights on $path" -ShowConsole -Color Cyan
+	Write-BISFlog -Msg "Setting NTFS rights on $path" -ShowConsole -Color Cyan
 
 	$acl = Get-Acl -Path $path
 	#$perm = "local service", "FullControl", "ContainerInherit, ObjectInherit", "None", "Allow"
@@ -3730,7 +3732,7 @@ function Set-ACLrights {
 		$acl.SetAccessRule($rule)
 	}
 	catch {
-		Write-BISFlog -Msg "Error during set NTFS rights. The error is: $_" -Type W -SubMsg
+		Write-BISFlog -Msg "Error setting NTFS rights. The error is: $_" -Type W -SubMsg
 	}
 
 
@@ -3806,7 +3808,7 @@ function Set-LAPSExpirationTime{
 
 	Write-BISFlog -Msg "Reset the password expiration timer to 0"
 	$Object.psbase.InvokeSet("ms-Mcs-AdmPwdExpirationTime", 0)
-	Write-BISFlog -Msg "Save changes to Active Directory object"
+	Write-BISFlog -Msg "Save changes to the Active Directory object"
 	$Object.SetInfo()
 
 
@@ -4167,12 +4169,12 @@ Function Get-CacheDiskID {
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
-	Write-BISFLog -Msg "Retrieve Disk ID's" -ShowConsole -Color Cyan
+	Write-BISFLog -Msg "Retrieving Disk ID's" -ShowConsole -Color Cyan
     try {
         [string]$BootDisk = (Get-WmiObject Win32_DiskPartition |Where-Object {$_.BootPartition -eq "true"}).DiskID
     }
     catch {
-        Write-BISFLog "BootDisk can't retrieve from System !!" -ShowConsole -Type W
+        Write-BISFLog "BootDisk can't be retrieved from the System!" -ShowConsole -Type W
     }
 
     IF (($BootDisk -ne "") -or ($null -ne $BootDisk)) {
@@ -4224,7 +4226,7 @@ function Test-CitrixCloudConnector {
 	ForEach ($service in $services) {
 		$svc = Test-Service -ServiceName $service
 		IF ($svc) {
-			Write-BISFLog -Msg "BIS-F can't run on a Machine like Citrix Cloud Connector or Citrix Delivery Controller as a aprt of the Vendor Best Practices, check out https://docs.citrix.com/en-us/citrix-cloud/citrix-cloud-resource-locations/citrix-cloud-connector/installation.html for more informations" -Type E
+			Write-BISFLog -Msg "BIS-F can't run on machines holding roles such as Citrix Cloud Connector or Citrix Delivery Controller as part of the Vendor Best Practices, check out https://docs.citrix.com/en-us/citrix-cloud/citrix-cloud-resource-locations/citrix-cloud-connector/installation.html for more information" -Type E
 		}
 
 	}

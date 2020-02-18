@@ -19,6 +19,7 @@
 		04.08.2017 MS: Bugfix IF (!("$LIC_BISF_CLI_OT_Templ" -eq "") )
 		07.11.2017 MS: enable 3rd Party Optimizations, if vmOSOT is executed, this disabled BIS-F own optimizations
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
         https://eucweb.com
@@ -55,7 +56,7 @@ Process {
 	$varCLI = $LIC_BISF_CLI_OT
 	IF (!($varCLI -eq "NO")) {
 		Write-BISFLog -Msg "Searching for $AppName on local System" -ShowConsole -Color Cyan
-		Write-BISFLog -Msg "This can run a long time based on the size of your root drive, you can skip this in the ADMX configuration (3rd Party Tools)" -ShowConsole -Color DarkCyan
+		Write-BISFLog -Msg "This can run for a long time based on the size of your root drive, you can skip this in the ADMX configuration (3rd Party Tools)" -ShowConsole -Color DarkCyan
 		ForEach ($SearchFolder in $SearchFolders) {
 			If ($found -eq $false) {
 				Write-BISFLog -Msg "Looking in $SearchFolder"
@@ -90,7 +91,7 @@ Process {
 
 
 						if (!(Test-Path -Path $vmOSOTtemplatePath)) {
-							Write-BISFLog -Msg "Create Directory $vmOSOTtemplatePath"
+							Write-BISFLog -Msg "Createing Directory $vmOSOTtemplatePath"
 							New-Item -Path $vmOSOTtemplatePath -ItemType Directory -Force
 						}
 						$Global:LIC_BISF_3RD_OPT = $true # BIS-F own optimization will be disabled, if 3rd Party Optimization is true
@@ -100,7 +101,7 @@ Process {
 						Write-BISFLog -Msg "The HTML-Report can be found on $LogFilePath" -ShowConsole -Color DarkCyan -SubMsg
 					}
 					ELSE {
-						Write-BISFLog -Msg "No optimization by $AppName"
+						Write-BISFLog -Msg "No optimization performed by $AppName"
 					}
 				}
 			}
@@ -112,6 +113,6 @@ Process {
 }
 
 End {
-	If ($found -eq $false) { Write-BISFLog -Msg "Product $($AppName) NOT installed" }
+	If ($found -eq $false) { Write-BISFLog -Msg "Product $($AppName) is NOT installed" }
 	Add-BISFFinishLine
 }

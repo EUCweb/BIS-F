@@ -14,6 +14,7 @@
 		10.01.2017 MS: add CLI command or MessageBox to delete PreCached App-V Packages
 		24.11.2017 MS: add SubMSg do Write-BISFLog -Msg "The App-V PackageInstallationRoot $PckInstRoot Folder not exist, nothing to clean up." -Type W -SubMsg
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -32,7 +33,7 @@ Process {
 	function PrepareAgent {
 		$AppvsvcStatus = Get-Service -Name $servicename
 		If ($AppvsvcStatus.Status -ne "Running") {
-			Write-BISFLog "The client service is not running.The Script cannot clean up package files." -Type W -SubMsg
+			Write-BISFLog "The client service is not running. The Script cannot clean up package files." -Type W -SubMsg
 		}
 		ELSE {
 			$HKLM_Path = "HKLM:\Software\Microsoft\AppV\Client"
@@ -81,7 +82,7 @@ Process {
 							ForEach ($connectionGroup in $connectionGroups) {
 								if ($connectionGroup.InUse -eq $TRUE) {
 									$connectionGroupsInUse = $TRUE;
-									Write-BISFLog -Msg "Stopping connection group " $connectionGroup.Name;
+									Write-BISFLog -Msg "Stopping connection groups" $connectionGroup.Name;
 									Stop-AppvClientConnectionGroup $connectionGroup -Global;
 
 									# allow 1 second for the VE to tear down before we continue polling
@@ -91,7 +92,7 @@ Process {
 						} while ($connectionGroupsInUse);
 
 						# shutdown all active Packages
-						Write-BISFLog -Msg "Stopping all packages.";
+						Write-BISFLog -Msg "Stopping all packages";
 						Get-AppvClientPackage -all | Stop-AppvClientPackage -Global;
 
 						# poll while there are still active packages
@@ -129,7 +130,7 @@ Process {
 				$Error.Clear();
 			}
 			ELSE {
-				Write-BISFLog -Msg "The App-V PackageInstallationRoot $PckInstRoot Folder not exist, nothing to clean up." -Type W -SubMsg
+				Write-BISFLog -Msg "The App-V PackageInstallationRoot $PckInstRoot Folder does not exist, nothing to clean up." -Type W -SubMsg
 			}
 		}
 	}

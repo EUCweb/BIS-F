@@ -21,6 +21,7 @@
 		10.11.2016 MS: CMTrace would not longer distributed by BIS-F, customer must have them in their environment installed
 		21.09.2017 MS: using custom searchfolder from ADMX if enabled
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -61,7 +62,7 @@ Process {
 					Write-BISFLog -Msg "Product $($AppName) installed" -ShowConsole -Color Cyan
 					$found = $true
 
-					Write-BISFLog -Msg "Register $SMSTraceDestination as the default Logviewer for extension $reg_log" -SubMsg -Color DarkCyan
+					Write-BISFLog -Msg "Register $SMSTraceDestination as the default Log viewer for extension $reg_log" -SubMsg -Color DarkCyan
 					New-Item -Path $reg_hklm_classes -Name $reg_LogFile -Force -ErrorAction SilentlyContinue | Out-Null
 					New-Item -Path $reg_hklm_classes -Name $reg_Log -Force -ErrorAction SilentlyContinue | Out-Null
 					New-Item -Path $reg_hklm_classes -Name $reg_Lo -Force -ErrorAction SilentlyContinue | Out-Null
@@ -91,6 +92,6 @@ Process {
 }
 
 End {
-	If ($found -eq $false) { Write-BISFLog -Msg "Product $($AppName) NOT installed" }
+	If ($found -eq $false) { Write-BISFLog -Msg "Product $($AppName) is NOT installed" }
 	Add-BISFFinishLine
 }

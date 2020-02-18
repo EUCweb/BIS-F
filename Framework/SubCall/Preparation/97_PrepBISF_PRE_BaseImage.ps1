@@ -113,6 +113,7 @@ param(
 		27.12.2019 MS/MN: HF 162 - Note when logging on to a created VDisk (after ENH142)
 		05.01.2020 MS: HF 173 - Remove DHCP Information if 3P Optimizer is configured
 		13.01.2019 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -753,7 +754,7 @@ Begin {
       $ordercnt += 1
 
 	IF (($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) -and ($LIC_BISF_CLI_VDA_INTELGRFX -eq 1)) {
-		Write-BISFLog -Msg "NVIDIA GRID and Intel Graphic can be enabled at the same time, please check the ADMX configuration !!" -ShowConsole -Type E
+		Write-BISFLog -Msg "NVIDIA GRID and Intel Graphic can be enabled at the same time, please check the ADMX configuration!" -ShowConsole -Type E
 		Start-Sleep -Seconds 20
 	}
  ELSE {
@@ -859,7 +860,7 @@ Begin {
 				$PreMsgBox = @()
 			}
 			ELSE {
-				Write-BISFLog -Msg "Product $($prepCommand.TestPath) NOT installed, neccessary for Order-Nbr $($prepCommand.Order): $($prepCommand.Description)"
+				Write-BISFLog -Msg "Product $($prepCommand.TestPath) is NOT installed, neccessary for Order-Nbr $($prepCommand.Order): $($prepCommand.Description)"
 
 			}
 		}
@@ -875,7 +876,7 @@ Begin {
 			schtasks.exe /create /sc ONSTART /TN "$BISFtask" /IT /RU 'System' /RL HIGHEST /tr "powershell.exe -Executionpolicy unrestricted -file '$LIC_BISF_MAIN_PersScript'" /f | Out-Null
 		}
 		ELSE {
-			Write-BISFLog -Msg "Task already exist, modify startup task $BISFtask to personalize System" -ShowConsole -Color Cyan
+			Write-BISFLog -Msg "Task already exists, modify startup task $BISFtask to personalize System" -ShowConsole -Color Cyan
 			schtasks.exe /change /TN "$BISFtask" /RL HIGHEST /tr "powershell.exe -Executionpolicy unrestricted -file '$LIC_BISF_MAIN_PersScript'" | Out-Null
 		}
 

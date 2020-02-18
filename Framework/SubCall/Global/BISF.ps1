@@ -86,6 +86,7 @@ param()
 		08.10.2019 MS: ENH 146 - Move Get-PendingReboot to earlier phase of preparation
 		08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run
 		27.12.2019 MS/MN: HF 160 - typo for Calculation of free space for the VHDX file
+		18.02.2020 JK: Fixed Log output spelling
 
       #>
 Begin {
@@ -146,7 +147,7 @@ Begin {
 
 	function Set-Logfile {
 		IF (!(Test-Path "$env:windir\Logs")) {
-			Write-BISFLog -Msg "Folder $env:windir\Logs NOT Exist, will be created now !" -Type W -ShowConsole
+			Write-BISFLog -Msg "Folder $env:windir\Logs does NOT Exist, will be created now!" -Type W -ShowConsole
 			New-Item -ItemType Directory -path "$env:windir\Logs" | Out-Null
 
 		}
@@ -188,7 +189,7 @@ Begin {
 			New-Item -Path $LogPath -ItemType Directory -Force
 		}
 		Catch {
-			Write-BISFLog -Msg "Unhandeled Exception occured" -Type W -SubMsg
+			Write-BISFLog -Msg "Unhandled Exception occured" -Type W -SubMsg
 			$LogPath = "C:\Windows\Logs\$LogFolderName"
 			New-Item -Path $LogPath -ItemType Directory -Force
 		}
@@ -244,10 +245,10 @@ Process {
 
 	Write-BISFLog -Msg "Setting LogFile to $(Set-Logfile -Verbose:$VerbosePreference)" -ShowConsole -Color DarkCyan -SubMsg
 	Get-ActualConfig -Verbose:$VerbosePreference # Update the $BISFconfiguration with possible registry values
-	Write-BISFLog -Msg "Update LogFile to $(Set-Logfile -Verbose:$VerbosePreference)" -ShowConsole -Color DarkCyan -SubMsg
+	Write-BISFLog -Msg "Updating LogFile to $(Set-Logfile -Verbose:$VerbosePreference)" -ShowConsole -Color DarkCyan -SubMsg
 	Get-BISFVersion -Verbose:$VerbosePreference
 	Get-BISFOSCSessionType -Verbose:$VerbosePreference
-	IF ($LIC_BISF_PrepLastRunTime) { Write-BISFLog -Msg "Last BIS-F Preparation would be performed on $LIC_BISF_PrepLastRunTime started from user $LIC_BISF_PrepLastRunUser" -ShowConsole -Color DarkCyan -SubMsg }
+	IF ($LIC_BISF_PrepLastRunTime) { Write-BISFLog -Msg "Last BIS-F Preparation was not performed on $LIC_BISF_PrepLastRunTime started by user $LIC_BISF_PrepLastRunUser" -ShowConsole -Color DarkCyan -SubMsg }
 	Set-BISFLastRun -Verbose:$VerbosePreference
 	Write-BISFLog -Msg "Running $State Phase" -ShowConsole -Color DarkCyan -SubMsg
 	Invoke-BISFLogRotate -Versions 5 -Directory "$LogFilePath" -Verbose:$VerbosePreference
@@ -317,7 +318,7 @@ Process {
 
 		}
 		ELSE {
-			Write-BISFLog "Error: The custom path for the shared configuration is not configured in the Policy !!" -Type E
+			Write-BISFLog "Error: The custom path for the shared configuration is not configured in the Policy!" -Type E
 		}
 		Write-BISFLog "Press any key to exit ..." -ShowConsole -Color Red
 		$x = $host.UI.RawUI.ReadKey("NoEcho, IncludeKeyDown")
@@ -332,13 +333,13 @@ Process {
 		IF (($CheckPndReboot -eq $true) -and (!($LIC_BISF_CLI_EX)) ) {
 			IF (($LIC_BISF_CLI_SR -eq "NO") -or !($LIC_BISF_CLI_SR)) {
 				$title = "Pending Reboot"
-				$text = "A pending system reboot was detected, please reboot the system and run the script again !!!"
+				$text = "A pending system reboot was detected, please reboot the system and run the script again!"
 				Write-BISFLog -Msg $Text -Type E
 				return $false
 				break
 			}
 			ELSE {
-				Write-BISFLog -Msg "A pending reboot was detected, but suppressed from GPO configuration !!!" -Type W
+				Write-BISFLog -Msg "A pending reboot was detected, but suppressed by GPO configuration!" -Type W
 			}
 		}
 		ELSE {
@@ -397,7 +398,7 @@ Process {
 	# 03.10.2019 MS: ENH 126 - depend on the new MCSIO redirection the calling of the functions must be different now
 	IF ($returnTestPVSSoftware) {
 		IF (($State -eq "Preparation") -and ($LIC_BISF_CLI_P2V_PT -eq "1")) {
-			Write-BISFLog -Msg "Check if there enough free Diskspace on the Custom UNC-Path available before proceed" -ShowConsole -Color Cyan
+			Write-BISFLog -Msg "Check if there is enough free Diskspace on the Custom UNC-Path available before proceeding" -ShowConsole -Color Cyan
 			$FreeSpace = Get-BISFSpace -path "$LIC_BISF_CLI_P2V_PT_CUS" -FreeSpace
 			$UsedSpace = Get-BISFSpace -path $env:SystemDrive
 			IF ($FreeSpace -le $UsedSpace) {

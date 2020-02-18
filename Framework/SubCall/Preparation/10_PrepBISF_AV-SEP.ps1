@@ -50,6 +50,7 @@
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
 		11.10.2019 MS: fix typo in SearchProvOrder
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -139,7 +140,7 @@ Process {
 			Show-BISFProgressBar -CheckProcess "DoScan" -ActivityText "$Product is scanning the system"
 		}
 		ELSE {
-			Write-BISFLog -Msg "No Scan would be performed"
+			Write-BISFLog -Msg "No Scan will be performed"
 		}
 	}
 
@@ -185,7 +186,7 @@ Process {
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "Product $VIEProduct not installed, get it from the SEP iso and save them on your Image (Symantec KB TECH172218) and configure the path in the BIS-F ADMX" -Type W -SubMsg
+			Write-BISFLog -Msg "Product $VIEProduct is not installed, get it from the SEP iso and save it on your Image (Symantec KB TECH172218) and then configure the path in the BIS-F ADMX" -Type W -SubMsg
 		}
 	}
 
@@ -272,7 +273,7 @@ Process {
 		New-ItemProperty -Path "$hklm_sw\Microsoft\Windows NT\CurrentVersion\Winlogon"-Name "GpNetworkStartTimeoutPolicyValue" -PropertyType DWORD -value 60 -ErrorAction SilentlyContinue | Out-Null
 	}
 	ELSE {
-		Write-BISFLog -msg "Product $Product not installed"
+		Write-BISFLog -msg "Product $Product is not installed"
 	}
 }
 

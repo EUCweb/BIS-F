@@ -34,6 +34,7 @@
 		13.08.2019 MS: ENH 121 - change filenameextension from bis to log
 		21.09.2019 MS: ENH 127 - Personalization is in Active State Override
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
+		18.02.2020 JK: Fixed Log output spelling
 	.LINK
 		https://eucweb.com
 #>
@@ -141,9 +142,9 @@ Process {
 				Write-BISFLog -Msg "Image in Mode $DiskMode, skip device personalization (configured: Private Mode) " -Type E -SubMsg; Exit
 			}
 			ELSE
-			{ Write-BISFLog -Msg "Image in Mode $DiskMode, device personalization would not being skipped (configured: Private Mode)" -ShowConsole -Color DarkCyan }
+			{ Write-BISFLog -Msg "Image in Mode $DiskMode, device personalization is not being skipped (configured: Private Mode)" -ShowConsole -Color DarkCyan }
 		}
-		Default { Write-BISFLog -Msg "Default Action selected, device personalization would not being skipped (not configured in ADMX)" -ShowConsole -Color DarkCyan }
+		Default { Write-BISFLog -Msg "Default Action selected, device personalization is not being skipped (not configured in ADMX)" -ShowConsole -Color DarkCyan }
 	}
 	Add-BISFFinishLine
 

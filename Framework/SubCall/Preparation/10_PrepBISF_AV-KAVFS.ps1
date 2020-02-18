@@ -12,6 +12,7 @@
 		15.12.2015 MS: Initial script development
 		23.03.2016 MS: add -Recurse to search for files in subfolders
 		12.03.2017 MS: BugFix 112: wrong path to get from executable
+		18.02.2020 JK: Fixed Log output spelling
 
 	.LINK
 		https://eucweb.com
@@ -50,13 +51,13 @@ Process {
 		$KAVPath1 = Get-ChildItem -Path "$SearchFolder" -filter "$KAVexe1" -Recurse -ErrorAction SilentlyContinue | % { $_.FullName }
 		IF ($KAVPath1 -ne $null) {
 			$KAVPathname1 = $KAVPath1
-			Write-BISFLog -Msg "$Product optimize now for Imaging" -SubMsg -ShowConsole
+			Write-BISFLog -Msg "$Product optimizing now for Imaging" -SubMsg -ShowConsole
 
 			Write-BISFLog -Msg "Running $KAVPathname1 $KAVarg1_1"
 			Start-Process -FilePath "$KAVPathname1" -ArgumentList "$KAVarg1_1" -Wait | Out-Null
 		}
 		ELSE {
-			Write-BISFLog -Msg "$KAVexe1 couldn't found in any folders above $SearchFolder, correct Imaging can't be guaranteed ! " -type W -SubMsg
+			Write-BISFLog -Msg "$KAVexe1 couldn't be found in any folders above $SearchFolder, correct Imaging can't be guaranteed!" -type W -SubMsg
 		}
 
 		$KAVPath2 = Get-ChildItem -Path "$SearchFolder" -filter "$KAVexe2" -Recurse -ErrorAction SilentlyContinue | % { $_.FullName }
@@ -74,7 +75,7 @@ Process {
 			Start-Process -FilePath "$KAVPathname2" -ArgumentList "$KAVarg2_3" -Wait | Out-Null
 		}
 		ELSE {
-			Write-BISFLog -Msg "$KAVexe2 couldn't found in any folders above $SearchFolder, correct Imaging can't be guaranteed ! " -type W -SubMsg
+			Write-BISFLog -Msg "$KAVexe2 couldn't be found in any folders above $SearchFolder, correct Imaging can't be guaranteed!" -type W -SubMsg
 		}
 	}
 }
