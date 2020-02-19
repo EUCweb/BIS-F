@@ -30,7 +30,7 @@
 	03.10.2019 MS: ENH 126 - MCSI for persistent to set $Global:PVSDiskDrive = LIC_BISF_CLI_MCSIODriveLetter
 	07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 	18.02.2020 JK: Fixed Log output spelling
-	
+
 .LINK
 	https://eucweb.com
 #>
@@ -2460,6 +2460,10 @@ function Get-MacAddress {
 		Get the Mac-Adress if the first adapter to use them with the GUID
 	.DESCRIPTION
 	.EXAMPLE
+		$mac = get-BISFMacAddress
+	.EXAMPLE
+		Convert the received MAC-Address to lowercase
+		$mac = get-BISFMacAddress -ConvertToLower
 	.NOTES
 		Author: Matthias Schlimm
 	  	Company:  EUCWeb.com
@@ -2468,10 +2472,14 @@ function Get-MacAddress {
 	  	09.01.2017 MS: function created
 		20.02.2017 MS: fix empty space given back from $mac, thx to Valentino
 		18.09.2019 MS: HF 137 - generated GUID based on MAC-Address return in lowercase
+		19.02.2020 MS: HF 212 - SEP duplicate HardwareID -> FIX: $ConvertToLower mac as an parameter
 
 	.LINK
 		https://eucweb.com
 #>
+	Param(
+		[Parameter(Mandatory = $false)][switch]$ConvertToLower
+	)
 
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$computer = $env:COMPUTERNAME
@@ -2479,7 +2487,12 @@ function Get-MacAddress {
 	$wmi = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration
 	$mac = (($wmi | Where-Object { $_.IPAddress -eq $HostIP }).MACAddress)
 	$Delimiter = ":"
-	$mac = ($mac -replace "$Delimiter", "").toLower()
+	IF ($ConvertToLower) {
+		Write-BISFLog -Msg "MAC-Address is converted to lowercase"
+		$mac = ($mac -replace "$Delimiter", "").toLower()
+	} ELSE {
+		$mac = ($mac -replace "$Delimiter", "")
+	}
 	Write-BISFLog -Msg "The MAC-Address for further use will be resolved: $mac"
 	return $mac
 }

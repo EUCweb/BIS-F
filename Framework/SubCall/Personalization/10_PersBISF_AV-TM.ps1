@@ -14,7 +14,7 @@
 		06.10.2015 MS: rewritten script with standard .SYNOPSIS
 		09.01.2017 MS: change code to get MacAdress to use function Get-BISMACAddress
 		01.08.2017 JS: Added the TmPfw (OfficeScan NT Firewall) service to the array
-
+		19.02.2020 MS: HF 212 - MACAddress in lowercase with seperated switch to fix HF 137
 	.LINK
 		https://eucweb.com
 #>
@@ -55,7 +55,7 @@ Process {
 
 	## set HostID in Registry
 	function SetHostID {
-		$mac = Get-BISFMACAddress
+		$mac = Get-BISFMACAddress -ConvertToLower
 		Write-BISFLog -Msg "$reg_SEP_name Prefix: $HostID_Prfx"
 		$regHostID = $HostID_Prfx + $mac
 		Write-BISFLog -Msg "set TrendMicro $reg_TM_name in Registry $regHostID_string..."
