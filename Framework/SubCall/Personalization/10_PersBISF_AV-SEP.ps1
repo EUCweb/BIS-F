@@ -28,6 +28,7 @@
 		09.01.2017 MS: change code to get MacAdress to use function Get-BISMACAddress
 		01.07.2018 MS: Hotfix 49: After SEP is started with smc.exe, sometimes the service will not be started. Controlled and logged now with Test-BISFServiceState in Line 58
 		18.02.2020 JK: Fixed Log output spelling
+		19.02.2020 MS: HF 212 - SEP duplicate HardwareID - Get-BISFMacaddress returns lower- instead of uppercase MACAddress -> compare HardwareID after ServiceStart
 
 
 	.LINK
@@ -55,6 +56,12 @@ Process {
 		Write-BISFLog -Msg "Start Service $($ServiceName.DisplayName)"
 		& $ProgramFilesx86'\Symantec\Symantec Endpoint Protection\smc.exe' "-start"
 		Test-BISFServiceState -ServiceName $ServiceName -Status "Running"
+		$testHardwareID = Get-ItemPropertyValue -Path $HKLM_reg_SEP_string -Name $reg_SEP_name
+		IF ($testHardwareID -eq $regHostID) {
+			Write-BISFLog -Msg "HardwareID in registry is set correctly: $testHardwareID"
+		} ELSE {
+			Write-BISFLog -Msg "After the AV-Service is started, HardwareID in registry is NOT set correcty: Registry HardwareID $testHardwareID <-> Defined HardwareID $regHostID" -Type W -SubMsg
+		}
 	}
 
 
@@ -76,6 +83,7 @@ Process {
 			Write-BISFLog -Msg "$reg_SEP_name will be defined as: $regHostID"
 			Write-BISFLog -Msg "set $reg_SEP_name in Registry $HKLM_reg_SEP_string"
 			Set-ItemProperty -Path $HKLM_reg_SEP_string -Name $reg_SEP_name -value $regHostID -ErrorAction SilentlyContinue
+
 		}
 		ELSE {
 			Write-BISFLog -Msg "Registry Location for specified SEP Keys could not be set to $HKLM_reg_SEP_string" -Type W -SubMsg
