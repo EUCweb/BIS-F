@@ -15,6 +15,8 @@
 		24.11.2017 MS: add SubMSg do Write-BISFLog -Msg "The App-V PackageInstallationRoot $PckInstRoot Folder not exist, nothing to clean up." -Type W -SubMsg
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		18.02.2020 JK: Fixed Log output spelling
+		20.02.2020 MS: HF 210 - App-V PackageInstallationRoot not detected properly
+
 
 	.LINK
 		https://eucweb.com
@@ -40,7 +42,7 @@ Process {
 			$Installpath = Get-ItemProperty -path "$HKLM_Path" | % { $_.InstallPath }
 			$ModuleFile = "AppvClient.psd1"
 			$ModulePath = "$Installpath\AppvClient\$ModuleFile"
-			$PckInstRoot = Get-ItemProperty -path "$HKLM_Path\Streaming" | % { $_.PackageInstallationRoot }
+			$PckInstRoot = (get-appvclientconfiguration -name PackageInstallationRoot).value
 			$PckInstRoot = [Environment]::ExpandEnvironmentVariables($PckInstRoot)
 			if (!$PckInstRoot) {
 				Write-BISFLog -Msg "PackageInstallationRoot is required for removing packages" -Type E -SubMsg
