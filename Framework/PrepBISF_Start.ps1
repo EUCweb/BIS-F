@@ -75,12 +75,7 @@
 		06.10.2019 MS: Removing call to Get-BISFScriptExecutionPath
 		08.10.2019 MS: ENH 146 - Removing Test for Get-PendingReboot out of this script and included into BISF.ps1 to an eralier state
 		20.01.2020 MS: HF 191 - MaxExecution is not set correctly
-<<<<<<< Updated upstream
-		18.02.2020 JK: Fixed Log output spelling
-
-=======
 		18.02.2020 JK: Grammar fixup		
->>>>>>> Stashed changes
 	.LINK
 		https://eucweb.com
 #>
@@ -227,23 +222,14 @@ Process {
 		$PersState = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_PersState").LIC_BISF_PersState
 		IF (($PersState -eq $($TaskStates[0])) -or ($PersState -eq $($TaskStates[3]))) {
 			$a = 100
-<<<<<<< Updated upstream
-			Write-Progress -Activity "Personalization is in current ""$PersState"" state, execute the preparation task in 3 seconds" -PercentComplete $a -Status "Finish."
-=======
 			Write-Progress -Activity "Personalization is in current ""$PersState"" state, executing the preparation task in 3 seconds" -PercentComplete $a -Status "Finish."
->>>>>>> Stashed changes
 			Start-Sleep 3
 			Write-Progress "Done" "Done" -completed
 			break
 		}
 		ELSE {
 			$a++
-<<<<<<< Updated upstream
-			Write-Progress -Activity "Personalization is in current ""$PersState"" state, waiting until finished..." -PercentComplete $a -Status "Please wait...$a %"
-=======
 			Write-Progress -Activity "Personalization is currently in ""$PersState"" state, waiting to finish..." -PercentComplete $a -Status "Please wait...$a %"
->>>>>>> Stashed changes
-
 		}
 		Start-Sleep -seconds 1
 	} While ($a -ne 100)
