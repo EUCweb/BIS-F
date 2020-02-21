@@ -754,7 +754,7 @@ Begin {
       $ordercnt += 1
 
 	IF (($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) -and ($LIC_BISF_CLI_VDA_INTELGRFX -eq 1)) {
-		Write-BISFLog -Msg "NVIDIA GRID and Intel Graphic can be enabled at the same time, please check the ADMX configuration!" -ShowConsole -Type E
+		Write-BISFLog -Msg "NVIDIA GRID and Intel Graphic can't be enabled at the same time, please check the ADMX configuration!" -ShowConsole -Type E
 		Start-Sleep -Seconds 20
 	}
  ELSE {
