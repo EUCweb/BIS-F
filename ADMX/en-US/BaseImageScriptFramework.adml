@@ -645,7 +645,11 @@ Enter the name of the WEM Agent Cache folder, e.g. WEMCache
 If the folder doesn't exist, it will be created automatically
 Requirements: PVS Target Device driver or VDA 1903 or higer (MCSIO) must be installed to take effect.
 
-NOTE: Please specify the name of the folder only, without any drive letter!
+NOTE: Please specify the name of the folder only, without any drive letter! 
+The Cache Folder is created like %CachDisk Driveletter%\Citrix\%WEM Agent Cache folder name%
+The Citrix folder is created from BIS-F automatically.
+
+ 
 </string>
       <string id="POL_AppLayCfg">Configure Citrix App Layering</string>
       <string id="POL_AppLayCfg_Help">This policy settings allows you to manage Citrix App Layering and inject different BIS-F shared configurations based on Layers

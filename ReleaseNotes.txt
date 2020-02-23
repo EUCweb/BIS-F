@@ -1,3 +1,4 @@
+23.02.2020 MS: HF 206 - ADML: WEM AgentCache better description
 20.02.2020 KT: PR 213 - Remove git stash lines
 20.02.2020 MS: HF 210 - App-V PackageInstallationRoot not detected properly
 19.02.2020 MS: HF 137 - TM OfficeScan wrong GUID -> using Get-BISFMacaddress -ConvertToLower to get the lowercase MAC
