@@ -79,7 +79,7 @@ Process {
 
 			$mac = Get-BISFMACAddress
 			Write-BISFLog -Msg "$reg_SEP_name Prefix: $HostID_Prfx"
-			$regHostID = $HostID_Prfx + $mac
+			$global:regHostID = $HostID_Prfx + $mac
 			Write-BISFLog -Msg "$reg_SEP_name will be defined as: $regHostID"
 			Write-BISFLog -Msg "set $reg_SEP_name in Registry $HKLM_reg_SEP_string"
 			Set-ItemProperty -Path $HKLM_reg_SEP_string -Name $reg_SEP_name -value $regHostID -ErrorAction SilentlyContinue
