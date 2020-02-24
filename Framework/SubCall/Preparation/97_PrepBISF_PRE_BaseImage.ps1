@@ -713,7 +713,7 @@ Begin {
 		Command     = "Set-Service -Name wuauserv -StartupType Disabled -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
-	
+
 <# 13.01.2019 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
 	$paths = @( "$env:windir\Temp", "$env:temp")
 
@@ -900,7 +900,7 @@ Begin {
 	function Invoke-DesktopShortcut {
 		IF ($LIC_BISF_CLI_DesktopShortcut -eq "YES") {
 			Write-BISFLog -Msg "Create BIS-F Shortcut on your Desktop" -ShowConsole -Color Cyan
-			$DisplayIcon = (Get-ItemProperty "$HKLM_Full_Uninsstall" -Name "DisplayIcon").DisplayIcon
+			$DisplayIcon = $InstallLocation + "Framework\SubCall\Global\BISF.ico"
 			$WshShell = New-Object -comObject WScript.Shell
 			$Shortcut = $WshShell.CreateShortcut("$Home\Desktop\PrepareBaseImage (BIS-F) Admin Only.lnk")
 			$Shortcut.TargetPath = "$InstallLocation\PrepareBaseImage.cmd"

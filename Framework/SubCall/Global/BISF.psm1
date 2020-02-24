@@ -30,6 +30,7 @@
 	03.10.2019 MS: ENH 126 - MCSI for persistent to set $Global:PVSDiskDrive = LIC_BISF_CLI_MCSIODriveLetter
 	07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 	18.02.2020 JK: Fixed Log output spelling
+	24.02.2020 MS: ENH 200 - new Advanced Installer - change to get $InstallLocation and $BISFversion
 
 .LINK
 	https://eucweb.com
@@ -58,7 +59,8 @@
 	$AppGuid = "{A59AF8D7-4374-46DC-A0CD-8B9B50AFC32E}_is1"
 	$HKLM_Uninstall = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 	$Global:HKLM_Full_Uninsstall = "$HKLM_Uninstall\$AppGuid"
-	$Global:InstallLocation = (Get-ItemProperty "$HKLM_Full_Uninsstall" -Name "InstallLocation").InstallLocation
+	$Global:InstallLocation = (Get-ItemProperty "$hklm_software_LIC_CTX_BISF_SCRIPTS").Path
+	$Global:BISFversion = (Get-ItemProperty "$hklm_software_LIC_CTX_BISF_SCRIPTS").Version
 	Write-Log -Msg "Install location ""$InstallLocation"" " -ShowConsole -Color DarkCyan -SubMsg
 	$Global:AppLayOSCfg = "BISFconfig_AppLay_OS.json"
 	$Global:AppLayAppPltCfg = "BISFconfig_AppLay_AppPlt.json"
@@ -495,25 +497,15 @@ function Get-Version {
 		25.07.2017 MS: add .SYNOPSIS to this function
 		25.07.2017 MS: replace $ReleaseType (that is manual change in the script to set Alpha, beta or prod release) with $LIC_BISF_BuildNumber.substring(0,2) to get the right DTAP Stage
 		03.10.2019 MS: ENH 90 - new versionnumbers 7.1912.0
-
+		24.02.2020 MS: ENH 200 - new Advanced Installer - change to get DTAP Stage 
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
-	$rootfolder = Split-Path -Path $Main_Folder -Parent
-	IF ($mainmodulename -ne $null) {
-		$ver = (Get-Module $mainmodulename).Version.ToString()
-		$Global:BISFversion = "$ver"
-		IF ($ExportSharedConfiguration) { $Host.UI.RawUI.WindowTitle = "$BISFtitle [$BISFversion] - ExportSharedConfiguration" } ELSE { $Host.UI.RawUI.WindowTitle = "$BISFtitle [$BISFversion]" }
-
-	}
-	ELSE {
-		write-BISFlog -Msg "$FrameworkName Version could not get from Manifest" -Type W -SubMsg
-	}
-
-	$BuildNbr = $LIC_BISF_BuildNumber.substring(1, 1)
+	IF ($ExportSharedConfiguration) { $Host.UI.RawUI.WindowTitle = "$BISFtitle [$BISFversion] - ExportSharedConfiguration" } ELSE { $Host.UI.RawUI.WindowTitle = "$BISFtitle [$BISFversion]" }
+	$BuildNbr = $BISFversion.split(".")[-1].substring(0, 1)   #
 	switch ($BuildNbr) {
 		4 { Write-BISFLog -Msg "WARNING: This running version $BISFVersion is a DEVELOPER Release, not for production use!" -Type W -SubMsg ; Start-Sleep $Wait1 }
 		3 { Write-BISFLog -Msg "WARNING: This running version $BISFVersion is a TEST Release, not for production use!" -Type W -SubMsg ; Start-Sleep $Wait1 }
@@ -521,14 +513,6 @@ function Get-Version {
 		1 { Write-BISFLog -Msg "Running Version $BISFVersion" -ShowConsole -SubMsg -Color DarkCyan }
 		default { Write-BISFLog -Msg "WARNING: The BuildNumber could not be determined !!" -Type W -SubMsg ; Start-Sleep $Wait1 }
 	}
-
-	$BuildDate_DD = $LIC_BISF_BuildDate.substring(0, 2)
-	$BuildDate_MM = $LIC_BISF_BuildDate.substring(2, 2)
-	$BuildDate_YY = $LIC_BISF_BuildDate.substring(4, 2)
-	$BuildDate_th = $LIC_BISF_BuildDate.substring(6, 2)
-	$BuildDate_tm = $LIC_BISF_BuildDate.substring(8, 2)
-	write-BISFlog -Msg "$FrameworkName $BISFversion | Date $($BuildDate_DD).$($BuildDate_MM).$($BuildDate_YY) | Time $($BuildDate_th):$($BuildDate_tm)"
-
 }
 
 function Set-NetworkProviderOrder {
