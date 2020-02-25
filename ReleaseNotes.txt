@@ -1,3 +1,5 @@
+---------------------------------
+Version 7.1912.2.11028 -- 25/02/2020 13:05:20 PM:
 24.02.2020 MS: ENH 200 - new Advanced Installer - change to get $InstallLocation and $BISFversion
 ---------------------------------
 Version 7.1912.2.011025 -- 24/02/2020 12:08:37 PM:
