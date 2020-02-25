@@ -248,7 +248,7 @@ Process {
 	Write-BISFLog -Msg "Updating LogFile to $(Set-Logfile -Verbose:$VerbosePreference)" -ShowConsole -Color DarkCyan -SubMsg
 	Get-BISFVersion -Verbose:$VerbosePreference
 	Get-BISFOSCSessionType -Verbose:$VerbosePreference
-	IF ($LIC_BISF_PrepLastRunTime) { Write-BISFLog -Msg "Last BIS-F Preparation was not performed on $LIC_BISF_PrepLastRunTime started by user $LIC_BISF_PrepLastRunUser" -ShowConsole -Color DarkCyan -SubMsg }
+	IF ($LIC_BISF_PrepLastRunTime) { Write-BISFLog -Msg "Last BIS-F Preparation was performed on $LIC_BISF_PrepLastRunTime started by user $LIC_BISF_PrepLastRunUser" -ShowConsole -Color DarkCyan -SubMsg }
 	Set-BISFLastRun -Verbose:$VerbosePreference
 	Write-BISFLog -Msg "Running $State Phase" -ShowConsole -Color DarkCyan -SubMsg
 	Invoke-BISFLogRotate -Versions 5 -Directory "$LogFilePath" -Verbose:$VerbosePreference
