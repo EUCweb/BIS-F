@@ -1,3 +1,4 @@
+06.03.2020 MS: HF 222 - Fixing encoding 
 06.03.2020 MS: HF 223 - Advanced Installer: Empty Folder in ProgramMenu
 ---------------------------------
 Version 7.1912.2.11029 -- 26/02/2020 05:12:55 AM:
