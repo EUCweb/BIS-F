@@ -22,6 +22,7 @@
 		function and modified the StopService function to make it reliable.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		18.02.2020 JK: Fixed Log output spelling
+		23.05.2020 MS: HF 233 - TrendMicro Apex One process not killed
 
 
 	.LINK
@@ -31,7 +32,7 @@
 Begin {
 	$reg_TM_string = "$HKLM_sw_x86\TrendMicro\PC-cillinNTCorp\CurrentVersion"
 	[array]$reg_TM_name = "GUID"
-	$product = "Trend Micro Office Scan"
+	$product = "Trend Micro Office Scan/Appex One"
 	# The main 4 services are:
 	# - TmListen (OfficeScan NT Listener)
 	# - NTRTScan (OfficeScan NT RealTime Scan)
@@ -171,24 +172,28 @@ Process {
 	# Stopping multiple instances of PCCNTmon.exe processes running on the Terminal (RDS) server
 	# https://success.trendmicro.com/solution/1102736
 	function UpdateINIFile {
-		$inifile = "${env:ProgramFiles(x86)}\Trend Micro\OfficeScan Client\ofcscan.ini"
-		If (Test-Path -Path "$inifile") {
-			Write-BISFLog -Msg "Updating $inifile" -ShowConsole -SubMsg -Color DarkCyan
-			$inicontents = Get-Content "$inifile"
-			$inicontents = $inicontents | ForEach-Object { $_ -replace '^NT_RUN_KEY=.+$', "NT_RUN_KEY=" }
-			$inicontents = $inicontents | ForEach-Object { $_ -replace '^NT_RUN_KEY_FILE_NAME=.+$', "NT_RUN_KEY_FILE_NAME=" }
-			$inicontents | Set-Content $inifile
-			# Note that you will get an access denied error when writing back to the ofcscan.ini file if the
-			# services/processes are still running.
+		$inifiles = @("${env:ProgramFiles(x86)}\Trend Micro\OfficeScan Client\ofcscan.ini","${env:ProgramFiles(x86)}\Trend Micro\Security Agent\ofcscan.ini")
+		ForEach ($inifile in $inifiles) {
+			If (Test-Path -Path "$inifile") {
+				Write-BISFLog -Msg "Updating $inifile" -ShowConsole -SubMsg -Color DarkCyan
+				$inicontents = Get-Content "$inifile"
+				$inicontents = $inicontents | ForEach-Object { $_ -replace '^NT_RUN_KEY=.+$', "NT_RUN_KEY=" }
+				$inicontents = $inicontents | ForEach-Object { $_ -replace '^NT_RUN_KEY_FILE_NAME=.+$', "NT_RUN_KEY_FILE_NAME=" }
+				$inicontents | Set-Content $inifile
+				# Note that you will get an access denied error when writing back to the ofcscan.ini file if the
+				# services/processes are still running.
+			}
 		}
 	}
 	function DeleteRunValue {
 		$keypath = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Run"
-		$value = "OfficeScanNT Monitor"
-		$IsValueMissing = (Get-ItemProperty $keypath).$value -eq $null
-		If ($IsValueMissing -eq $False) {
-			Write-BISFLog -Msg "Removing the $value value from the Run key" -ShowConsole -SubMsg -Color DarkCyan
-			Remove-ItemProperty -path $keypath -name $value
+		$values = @("OfficeScanNT Monitor","Apex One NT Monitor")
+		ForEach ($value in $values) {
+			$IsValueMissing = (Get-ItemProperty $keypath).$value -eq $null
+			If ($IsValueMissing -eq $False) {
+				Write-BISFLog -Msg "Removing the $value value from the Run key" -ShowConsole -SubMsg -Color DarkCyan
+				Remove-ItemProperty -path $keypath -name $value
+			}
 		}
 	}
 
