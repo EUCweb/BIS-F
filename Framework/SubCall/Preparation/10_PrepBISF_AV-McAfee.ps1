@@ -27,6 +27,7 @@
 		15.08.2019 MS: FRQ 88 - Supporting McAfee Endpoint Security (thanks to Wing2005)
 		15.08.2019 MS: Added .SYNOPSIS to all functions and using recommended POSH Verbs for functions too
 		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
+		23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
 
 
 	.LINK
@@ -250,7 +251,10 @@ Process {
 
 		History:
 			28.03.2019 MS: script created
+			23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
 		#>
+
+		powershell -command "mvadm config set IntegrityEnabled=0"
 
 		Write-BISFLog -Msg "Remove Registry $HKLMAgent10path1 - Key $HKLMAgent10key1" -ShowConsole -Color DarkCyan -SubMsg
 		Remove-ItemProperty -Path $HKLMAgent10path1 -Name $HKLMAgent10key1 -ErrorAction SilentlyContinue
@@ -264,6 +268,7 @@ Process {
 		Write-BISFLog -Msg "Update Registry $HKLMAgent10path2 - Key $HKLMAgent10key2_3"
 		Set-ItemProperty -Path $HKLMAgent10path2 -Name $HKLMAgent10key2_3 -value "" -Force
 
+		powershell -command "mvadm config set IntegrityEnabled=7"
 
 	}
 

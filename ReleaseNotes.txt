@@ -1,3 +1,4 @@
+23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
 23.05.2020 MS: HF 231 - Skipping file precache if vDisk is in private Mode
 23.05.2020 MS: HF 220 - fix typo for DirtyShutdown Flag
 23.05.2020 MS: HF 232 - CacheDisk not formatted
