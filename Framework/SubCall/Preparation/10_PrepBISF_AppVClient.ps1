@@ -44,7 +44,7 @@ Process {
 			$ModuleFile = "AppvClient.psd1"
 			$AppVPath = (Get-ChildItem -Path $Installpath -Recurse -Filter $ModuleFile -ErrorAction SilentlyContinue).Directory.FullName
 			$ModulePath = "$AppVPath\$ModuleFile"
-			Write-BISFLog -Msg "AppV Module is located in path $AppVSPath"
+			Write-BISFLog -Msg "AppV Module is located in path $AppVPath"
 			$PckInstRoot = (get-appvclientconfiguration -name PackageInstallationRoot).value
 			$PckInstRoot = [Environment]::ExpandEnvironmentVariables($PckInstRoot)
 			if (!$PckInstRoot) {
