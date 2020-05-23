@@ -55,6 +55,7 @@
 		27.01.2020 MS: HF 194 - format WriteCacheDisk didn't run if "skip PVS master image creation" enabled
 		18.02.2020 JK: Fixed Log output spelling
 		17.02.2020 MS: HF 206 - Reboot loop if central logshare is configured
+		23.05.2020 MS: HF 232 - CacheDisk not formatted
 	.LINK
 		https://eucweb.com
 #>
@@ -67,12 +68,12 @@ Begin {
 	$PSScriptRoot = Split-Path -Parent $PSScriptFullName
 	$PSScriptName = [System.IO.Path]::GetFileName($PSScriptFullName)
 	$hklm_bnistack_pvsagent = "$hklm_system\CurrentControlSet\services\bnistack\PvsAgent"
-	$reg_value_WriteCacheDrive = "WriteCacheDrive"
+	# $reg_value_WriteCacheDrive = "WriteCacheDrive" # 23.05.2020 MS: disabled, not used anymore !
 	$DiskLabel = "CacheDisk"
 	$CacheCheckFile = "$PVSDiskDrive\$computer.txt"
 	$DiskpartFile = "$TEMP\$computer-DiskpartFile.txt"
 	$PVSPersonality = "$SysDrive\Personality.ini"
-	$SkipReboot = "FALSE"
+	$SkipReboot = $false
 }
 
 Process {
@@ -94,6 +95,7 @@ Process {
 	}
 
 	function Test-WriteableCacheDisk {
+		$ErrorActionPreference = "Stop"
 		$val = $true
 		try {
 			IF (!(Test-path $CacheCheckFile)) {new-item $CacheCheckFile}
@@ -106,7 +108,7 @@ Process {
 		finally {
 			IF (Test-path $CacheCheckFile) {remove-item $CacheCheckFile -Force}
 		}
-
+		$ErrorActionPreference = "Continue"
 		return $val
 	}
 
@@ -136,13 +138,13 @@ Process {
 				Write-BISFLog -Msg "vDisk is set to Cache on Device Hard Drive Mode"
 				#grab the numbers of Partitions from the BIS-F ADMX
 				Write-BISFLog -Msg "Number of Partitions from ADMX: $LIC_BISF_CLI_NumberOfPartitions"
-				$SystemPartitions = (Get-CimInstance -ClassName Win32_volume).count
+				$SystemPartitions = (Get-CimInstance -ClassName Win32_Volume -filter "DriveType=3" | measure).count
 				Write-BISFLog -Msg "Number of Partitions on current System: $SystemPartitions"
-				If ($SystemPartitions -eq $LIC_BISF_CLI_NumberOfPartitions) {
-					# WriteCache Disk not Formatted
-					# Construct Diskpart File to Format Disk
+				If ($SystemPartitions -ne $LIC_BISF_CLI_NumberOfPartitions) {
+					# CacheDisk not Formatted
+					# Construct Diskpart File to Format CacheDisk
 
-					Write-BISFLog -Msg "WriteCache partition is not formatted"
+					Write-BISFLog -Msg "CacheDisk partition is not formatted"
 					Write-BISFLog -Msg "BootDisk DiskID  $BootDiskID - CacheDisk DiskID $CachDiskID (Reporting only, not functional!)"
 
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
@@ -155,7 +157,7 @@ Process {
 					"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
 					get-LogContent -GetLogFile "$DiskpartFile"
 					diskpart.exe /s $DiskpartFile
-					Write-BISFLog -Msg "WriteCache partition is now formatted and the drive letter $PVSDiskDrive assigned"
+					Write-BISFLog -Msg "CacheDisk partition is now formatted and the drive letter $PVSDiskDrive assigned"
 
 					# Get WriteCache Volume and Restore Unique ID
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
@@ -166,10 +168,10 @@ Process {
 					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 				}
 				else {
-					# WriteCache Formatted, but No or Wrong Drive Letter Assigned
-					Write-BISFLog -Msg "WriteCache disk is formatted, but no drive letter or the wrong drive letter is assigned"  -Type W -SubMsg
+					# CacheDisk Formatted, but No or Wrong Drive Letter Assigned
+					Write-BISFLog -Msg "CacheDisk is formatted, but no drive letter or the wrong drive letter is assigned"  -Type W -SubMsg
 
-					Write-BISFLog -Msg "Fixing drive letter assignemnt on WriteCache disk"
+					Write-BISFLog -Msg "Fixing drive letter assignemnt on CacheDisk"
 					$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
 					Set-CimInstance -InputObject $WriteCache  -Arguments @{DriveLetter = "$PVSDiskDrive" }
 
@@ -185,14 +187,14 @@ Process {
 				}
 			}
 			else {
-				Write-BISFLog -Msg "vDisk is not in Read Only Mode, skipping WriteCache preparation"
-				$SkipReboot = "TRUE"
+				Write-BISFLog -Msg "vDisk is not in Read Only Mode, skipping CacheDisk preparation"
+				$SkipReboot = $true
 			}
 
-			IF (!($SkipReboot -eq "TRUE")) {
+			IF (!($SkipReboot -eq $true)) {
 				Write-BISFLog -Msg "Wait 60 seconds before system restart" -Type W
 				Write-BISFLog -Msg "Reboot needed for config changes"
-				Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare WriteCacheDisk - reboot in 60 seconds.."" " -Wait
+				Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare CacheDisk - reboot in 60 seconds.."" " -Wait
 				Start-Sleep 120
 			}
 			ELSE {
@@ -200,7 +202,7 @@ Process {
 			}
 		}
 		else {
-			Write-BISFLog -Msg "WriteCache partition is properly configured"
+			Write-BISFLog -Msg "CacheDisk partition is properly configured"
 		}
 	}
 
@@ -217,7 +219,7 @@ Process {
 				# WriteCache Disk not Formatted
 				# Construct Diskpart File to Format Disk
 
-				Write-BISFLog -Msg "Write Cache partition is not formatted"
+				Write-BISFLog -Msg "CacheDisk partition is not formatted"
 				Write-BISFLog -Msg "BootDisk DiskID  $BootDiskID - CacheDisk DiskID $CachDiskID (Reporting only, not functional!)"
 
 				If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
@@ -259,7 +261,7 @@ Process {
 				Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 			}
 
-			IF (!($SkipReboot -eq "TRUE")) {
+			IF (!($SkipReboot -eq $true)) {
 				Write-BISFLog -Msg "Wait 60 seconds before system restart" -Type W
 				Write-BISFLog -Msg "Reboot needed for config changes"
 				Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare CacheDisk - reboot in 60 seconds.."" " -Wait
@@ -281,14 +283,13 @@ Process {
 	# Get Reference Server Hostname in registry to detect it and skip reboot
 	function GetRefSrv {
 		IF ($CTXAppLayeringSW -eq $true) {
-			$SkipReboot = "TRUE"
+			$SkipReboot = $true
 			Write-BISFLog -Msg "Citrix AppLayering is installed - set Skip Reboot = $SkipReboot"
 		}
 		ELSE {
 			Write-BISFLog -Msg "Reading reference server hostname from registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
 			$RefSrv_Hostname_REG = Get-ItemProperty -path $hklm_software_LIC_CTX_BISF_SCRIPTS | % { $_.LIC_BISF_RefSrv_Hostname }
-			IF ($RefSrv_Hostname_REG -eq "$computer")
-			{ $SkipReboot = "TRUE" }
+			IF ($RefSrv_Hostname_REG -eq $computer) { $SkipReboot = $true }
 			Write-BISFLog -Msg "Reference server hostname [$RefSrv_Hostname_REG] / hostname from this machine [$computer] - set Skip Reboot = $SkipReboot "
 		}
 		return $SkipReboot
@@ -303,16 +304,16 @@ Process {
 	IF ( ($DiskMode -match "ReadOnly*") -or ($DiskMode -match "VDAShared*") ) {
 		Write-BISFLog -Msg "CacheDisk will be configured now for Disk Mode $DiskMode"
 		IF (!($LIC_BISF_CLI_WCD -eq $null) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
-			IF ("$returnTestPVSSoftware" -eq $true) {
+			IF ($returnTestPVSSoftware -eq $true) {
 				$uniqueid_REG = GetUniqueIDreg
 				CheckWriteCacheDrive
 			}
 			ELSE {
-				Write-BISFLog -Msg "WriteCache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
+				Write-BISFLog -Msg "CacheDisk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "PVS WriteCache is not configured or is set to 'NONE', skipping configuration"
+			Write-BISFLog -Msg "PVS CacheDisk is not configured or is set to 'NONE', skipping configuration"
 		}
 
 		IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
