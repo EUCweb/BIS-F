@@ -118,22 +118,7 @@ Process {
 		$TestCache = Test-WriteableCacheDisk
 		if ($TestCache -eq $false) {
 			Write-BISFLog -Msg "CacheDisk partition is NOT properly configured" -Type W
-			# Check for Cache on Device HardDrive Mode
-			$WriteCacheType = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType
-			Switch ($WriteCacheType)
-			{
-				0 {$WriteCacheTypeTxt = "Private"}
-				1 {$WriteCacheTypeTxt = "Cache on Server"}
-				3 {$WriteCacheTypeTxt = "Cache in Device RAM"}
-				4 {$WriteCacheTypeTxt = "Cache on Device Hard Disk"}
-				7 {$WriteCacheTypeTxt = "Cache on Server, Persistent"}
-				9 {$WriteCacheTypeTxt = "Cache in Device RAM with Overflow on Hard Disk"}
-				10 {$WriteCacheTypeTxt = "Private async"}
-				11 {$WriteCacheTypeTxt = "Server persistent async"}
-				12 {$WriteCacheTypeTxt = "Cache in Device RAM with Overflow on Hard Disk async"}
-				default {$WriteCacheTypeTxt = "WriteCacheType $WriteCacheType not defined !!"}
-			}
-			Write-BISFLog -Msg "PVS WriteCacheType is set to $WriteCacheType - $WriteCacheTypeTxt"
+			$WriteCacheType = Get-BISFPVSWriteCacheType
 			if (($WriteCacheType -eq 4) -or ($WriteCacheType -eq 9) -or ($WriteCacheType -eq 12)) {   # 4:Cache on Device Hard Disk // 9:Cache in Device RAM with Overflow on Hard Disk // 12:Cache in Device RAM with Overflow on Hard Disk async
 				Write-BISFLog -Msg "vDisk is set to Cache on Device Hard Drive Mode"
 				#grab the numbers of Partitions from the BIS-F ADMX

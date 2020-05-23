@@ -497,7 +497,7 @@ function Get-Version {
 		25.07.2017 MS: add .SYNOPSIS to this function
 		25.07.2017 MS: replace $ReleaseType (that is manual change in the script to set Alpha, beta or prod release) with $LIC_BISF_BuildNumber.substring(0,2) to get the right DTAP Stage
 		03.10.2019 MS: ENH 90 - new versionnumbers 7.1912.0
-		24.02.2020 MS: ENH 200 - new Advanced Installer - change to get DTAP Stage 
+		24.02.2020 MS: ENH 200 - new Advanced Installer - change to get DTAP Stage
 
 	.LINK
 		https://eucweb.com
@@ -4343,4 +4343,44 @@ function Show-SplashScreen {
 	# close splash-screen
 	$hash.window.Dispatcher.Invoke("Normal",[action]{ $hash.window.close() })
 	#Pwshell.EndInvoke($handle) | Out-Null
+}
+
+function Get-PVSWriteCacheType {
+	<#
+	.SYNOPSIS
+		read the PVS WriteCacheType from the Registry
+
+	.DESCRIPTION
+		send the PVS WriteCacheValue back to the caller
+		use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		$WriteCacheType = Get-BISFPVSWriteCacheType
+
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+		  23.05.2020 MS: function created
+
+	.LINK
+		https://eucweb.com
+#>
+
+	# Check for Cache on Device HardDrive Mode
+	$WriteCacheType = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\bnistack\PVSAgent).WriteCacheType
+	Switch ($WriteCacheType) {
+		0 {$WriteCacheTypeTxt = "Private"}
+		1 {$WriteCacheTypeTxt = "Cache on Server"}
+		3 {$WriteCacheTypeTxt = "Cache in Device RAM"}
+		4 {$WriteCacheTypeTxt = "Cache on Device Hard Disk"}
+		7 {$WriteCacheTypeTxt = "Cache on Server, Persistent"}
+		9 {$WriteCacheTypeTxt = "Cache in Device RAM with Overflow on Hard Disk"}
+		10 {$WriteCacheTypeTxt = "Private async"}
+		11 {$WriteCacheTypeTxt = "Server persistent async"}
+		12 {$WriteCacheTypeTxt = "Cache in Device RAM with Overflow on Hard Disk async"}
+		default {$WriteCacheTypeTxt = "WriteCacheType $WriteCacheType not defined !!"; $WriteCacheType  = -1}
+	}
+	Write-BISFLog -Msg "PVS WriteCacheType is set to $WriteCacheType - $WriteCacheTypeTxt"
+	return $WriteCacheType
 }

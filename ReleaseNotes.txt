@@ -1,3 +1,4 @@
+23.05.2020 MS: HF 231 - Skipping file precache if vDisk is in private Mode
 23.05.2020 MS: HF 220 - fix typo for DirtyShutdown Flag
 23.05.2020 MS: HF 232 - CacheDisk not formatted
 06.03.2020 MS: HF 222 - Fixing encoding
