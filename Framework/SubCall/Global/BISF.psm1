@@ -405,9 +405,33 @@ function Test-WriteCacheDiskDriveLetter {
 }
 
 function Get-PSVersion {
+	<#
+	.SYNOPSIS
+		retrieve the PoSh Host Major version
+	.DESCRIPTION
+		use get-help <functionname> -full to see full help
+	.EXAMPLE
+		Get-BISFPSVersion
+
+	.NOTES
+		Author: Matthias Schlimm
+
+
+		History:
+		  dd.mm.yyyy MS: function created
+		  23.05.2020 MS: HF 217 - Powershell Version 5 as minimum requirement
+
+	.LINK
+		https://eucweb.com
+#>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$PShostMajor = $PSVersionTable.PSVersion.Major
-	write-BISFlog -Msg "Powershell Version $PShostMajor" -ShowConsole -Color DarkCyan -SubMsg
+	IF ($PShostMajor -lt 5) {
+		write-BISFlog -Msg "Notification only: Powershell Version $PShostMajor NOT up to date, possible to update to minimum version 5 or higher to prevent further issues" -ShowConsole -Color Yellow -Type W -SubMsg
+		Start-Sleep 20
+	} else 	{
+		write-BISFlog -Msg "Powershell Version $PShostMajor" -ShowConsole -Color DarkCyan -SubMsg
+	}
 }
 
 function Test-RegHive {
