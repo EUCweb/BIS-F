@@ -1,4 +1,5 @@
-﻿23.05.2020 MS: HF 226 - App-V Powershell Module Could Not Be Loaded
+﻿23.05.2020 MS: HF 236 - No MSFT_NetAdapterRssSettingData objects found
+23.05.2020 MS: HF 226 - App-V Powershell Module Could Not Be Loaded
 23.05.2020 MS: HF 240 - EnableSSLVDA optimization
 23.05.2020 MS: HF 217 - Notification only -> Powershell Version 5 as minimum requirement
 23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
