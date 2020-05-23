@@ -114,6 +114,7 @@ param(
 		05.01.2020 MS: HF 173 - Remove DHCP Information if 3P Optimizer is configured
 		13.01.2019 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
 		18.02.2020 JK: Fixed Log output spelling
+		23.05.2020 MS: HF 220 - fix typo for DirtyShutdown Flag
 
 	.LINK
 		https://eucweb.com
@@ -737,7 +738,7 @@ Begin {
 		showmessage = "N";
 		CLI         = "";
 		TestPath    = "";
-		Description = "Remove DirtyShutdown to prevent not coorect shutdown after reboot";
+		Description = "Remove DirtyShutdown to prevent not correct shutdown after reboot";
 		Command     = "Remove-ItemProperty -Path '$REG_HKLM_MS_CU' -Name 'DirtyShutdown' -ErrorAction SilentlyContinue"
 	};
 	$ordercnt += 1
