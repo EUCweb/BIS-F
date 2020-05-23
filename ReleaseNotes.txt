@@ -1,3 +1,4 @@
+﻿23.05.2020 MS: HF 240 - EnableSSLVDA optimization
 23.05.2020 MS: HF 217 - Notification only -> Powershell Version 5 as minimum requirement
 23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
 23.05.2020 MS: HF 231 - Skipping file precache if vDisk is in private Mode

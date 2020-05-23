@@ -10,6 +10,7 @@
       History
 		  2019.07.05 TT: Script created
 		  16.08.2019 MS: ENH 107 - integrated into BIS-F
+		  23.05.2020 MS: HF 240 - EnableSSLVDA optimization
 
 	  .Link
 		  https://github.com/EUCweb/BIS-F/issues/107
@@ -146,13 +147,19 @@ Process {
 		$Store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "LocalMachine")
 		$Store.Open("ReadOnly")
 
+        Write-BISFLog -Msg "Waiting for certificate enrollment ..." -ShowConsole -Color DarkCyan -SubMsg
+        For ($i=0;($Store.Certificates.Count -lt 2) -and ($i -le 36);$i++)
+        {
+            Start-Sleep -Seconds 5
+        }
+
 		if ($Store.Certificates.Count -eq 0) {
 			Write-BISFLog -Msg "No certificates found in the Personal Local Machine Certificate Store. Please install a certificate and try again." -ShowConsole -Color DarkCyan -SubMsg
 			Write-BISFLog -Msg "Enabling SSL to VDA failed." -ShowConsole -Color DarkCyan -SubMsg
 			$Store.Close()
 			break
 		}
-		elseif ($Store.Certificates.Count -ge 1) {
+		elseif ($Store.Certificates.Count -gt 1) {
 			if ($CertificateThumbPrint) {
 				$Certificate = $Store.Certificates | where { $_.GetCertHashString() -eq $CertificateThumbPrint }
 				if (!$Certificate) {
@@ -186,7 +193,9 @@ Process {
 		foreach ($line in $($cert.DnsNameList)) { if ($line) { Write-BISFLog -Msg "DNSNameList  : $line" -ShowConsole -Color Yellow -SubMsg } }
 		foreach ($line in $($cert | fl | Out-String -Stream)) { if ($line) { Write-BISFLog -Msg "$line" -ShowConsole -Color Yellow -SubMsg } }
 
-		#Validate the certificate
+        Write-BISFLog -Msg "Skipping certificate validation." -ShowConsole -Color DarkCyan -SubMsg
+		<#
+        #Validate the certificate
 
 		#Validate expiration date
 		$ValidTo = [DateTime]::Parse($cert.GetExpirationDateString())
@@ -204,6 +213,7 @@ Process {
 			$Store.Close()
 			break
 		}
+        #>
 
 		#Check private key availability
 		try {
