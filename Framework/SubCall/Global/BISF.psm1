@@ -2573,6 +2573,7 @@ function Test-AppLayeringSoftware {
 		$DiskMode = Get-BISFDiskMode
 		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
 		$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
+		$OverrideRunMode = $false
 		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {$OverrideRunMode = $true}
 		IF (($UPL -eq $true ) -and ($DiskMode -eq "VDAPrivateAppLayering")) {$OverrideRunMode = $true}
 		IF ($OverrideRunMode -eq $true) {
