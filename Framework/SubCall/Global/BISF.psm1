@@ -2575,7 +2575,7 @@ function Test-AppLayeringSoftware {
 		$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
 		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {$OverrideRunMode = $true}
 		IF (($UPL -eq $true ) -and ($DiskMode -eq "VDAPrivateAppLayering")) {$OverrideRunMode = $true}
-		IF (OverrideRunMode -eq $true) {
+		IF ($OverrideRunMode -eq $true) {
 			$CTXAppLayeringRunModeNew = 1
 			Write-BISFLog "The original App Layering RunMode ist set to $CTXAppLayeringRunMode, based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
 			$CTXAppLayeringRunMode = $CTXAppLayeringRunModeNew
