@@ -1,4 +1,4 @@
-﻿24.05.2020 MS HF 187 - VDA 1912 inside AppLayering Packaging VM wrong Layer back
+﻿24.05.2020 MS: HF 187 - VDA 1912 inside AppLayering Packaging VM wrong Layer back
 24.05.2020 MS: HF 239 - Invoke-FolderScripts is relying on the default order from Get-ChildItem
 24.05.2020 MS: HF 242 - Shared Configuration Errorhandling if FilePath is Null Or Empty
 23.05.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
