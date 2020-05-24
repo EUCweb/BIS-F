@@ -3188,6 +3188,7 @@ function Import-SharedConfiguration {
 		  21.09.2019 MS: EHN 36 - Shared Configuration - JSON Import
 		  06.10.2019 MS: ENH 52 - Citrix AppLayering - different shared configuration based on Layer
 		  30.01.2019 MS: HF 195 - Shared Configuration not imported
+		  24.05.2020 MS: HF 242 - Shared Configuration Errorhandling if FilePath is Null Or Empty
 
 	.LINK
 		https://eucweb.com
@@ -3223,24 +3224,28 @@ function Import-SharedConfiguration {
 					$JSONSharedConfigFile = $JsonFile.AppLayerNoELM
 				}
 				default {
-					Write-BISFlog "AppLayer can't be retrieved, fallback to OS-Layer configuration" ShowConsole -Type W -SubMsg
+					Write-BISFlog "AppLayer can't be retrieved, fallback to OS-Layer configuration" -ShowConsole -Type W -SubMsg
 					$JSONSharedConfigFile = $JsonFile.AppLayerOS
 				}
 			}
 		}
-		Write-BISFlog "Shared Configuration is stored in $JSONSharedConfigFile" -ShowConsole -SubMsg -Color DarkCyan
-		IF (Test-Path $JSONSharedConfigFile -PathType Leaf) {
-			IF (!(Test-Path $Reg_LIC_Policies)) {
-				New-Item -Path $hklm_sw_pol -Name $LIC -Force | Out-Null
-				New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
-				write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
-			}
-			Write-BISFlog "Import Json Configuration into the local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
-			$object = Get-Content $JSONSharedConfigFile | Convertfrom-Json
-			$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
+		IF (!([string]::IsNullOrEmpty($JSONSharedConfigFile))) {
+			Write-BISFlog "Shared Configuration is stored in $JSONSharedConfigFile" -ShowConsole -SubMsg -Color DarkCyan
+			IF (Test-Path $JSONSharedConfigFile -PathType Leaf) {
+				IF (!(Test-Path $Reg_LIC_Policies)) {
+					New-Item -Path $hklm_sw_pol -Name $LIC -Force | Out-Null
+					New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
+					write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
+				}
+				Write-BISFlog "Import Json Configuration into the local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
+				$object = Get-Content $JSONSharedConfigFile | Convertfrom-Json
+				$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
 
+			} ELSE {
+				Write-BISFlog "Error: Shared Configuration $JSONSharedConfigFile does not exist!" -Type E
+			}
 		} ELSE {
-			Write-BISFlog "Error: Shared Configuration $JSONSharedConfigFile does not exist!" -Type E
+			Write-BISFlog "Warning: Shared Configuration File for Layer $CTXAppLayerName is empty !" -ShowConsole -Type W -SubMsg
 		}
 	} ELSE {
 		# Fallback to XML Import
@@ -3252,20 +3257,24 @@ function Import-SharedConfiguration {
 			[xml]$XmlDocument = Get-Content -Path "$XMLConfigFile"
 			$xmlfullname = $XmlDocument.GetType().FullName
 			$xmlSharedConfigFile = $XmlDocument.BISFconfig.ConfigFile
-			Write-BISFlog "Shared Configuration is stored in $xmlSharedConfigFile" -ShowConsole -SubMsg -Color DarkCyan
-			IF (Test-Path $xmlSharedConfigFile -PathType Leaf) {
-				IF (!(Test-Path $Reg_LIC_Policies)) {
-					New-Item -Path $hklm_sw_pol -Name $LIC -Force | Out-Null
-					New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
-					write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
-				}
-				Write-BISFlog "Import XML Configuration into the local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
-				$object = Import-Clixml "$xmlSharedConfigFile"
-				$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
+			IF (!([string]::IsNullOrEmpty($xmlSharedConfigFile))) {
+				Write-BISFlog "Shared Configuration is stored in $xmlSharedConfigFile" -ShowConsole -SubMsg -Color DarkCyan
+				IF (Test-Path $xmlSharedConfigFile -PathType Leaf) {
+					IF (!(Test-Path $Reg_LIC_Policies)) {
+						New-Item -Path $hklm_sw_pol -Name $LIC -Force | Out-Null
+						New-Item -Path $hklm_sw_pol"\"$LIC -Name $CTX_BISF_SCRIPTS -Force | Out-Null
+						write-BISFlog -Msg "create RegHive $Reg_LIC_Policies"
+					}
+					Write-BISFlog "Import XML Configuration into the local Registry to path $Reg_LIC_Policies" -ShowConsole -SubMsg -Color DarkCyan
+					$object = Import-Clixml "$xmlSharedConfigFile"
+					$object | ForEach-Object { New-ItemProperty -path $_.path -name $_.Name -value $_.Value -PropertyType $_.Type -Force | Out-Null }
 
+				}
+			} ELSE {
+				Write-BISFlog "Warning: Legacy Shared Configuration File is empty !" -ShowConsole -Type W -SubMsg
 			}
 			ELSE {
-				Write-BISFlog "Error: Shared Configuration $xmlSharedConfigFile does not exist!" -Type E
+				Write-BISFlog "Error: Legacy Shared Configuration $xmlSharedConfigFile does not exist!" -Type E
 			}
 		} ELSE {
 			Write-BISFlog "Legacy Shared Configuration does not exist in $XMLConfigFile"

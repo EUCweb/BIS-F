@@ -1,4 +1,5 @@
-﻿25.03.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
+﻿24.05.2020 MS: HF 242 - Shared Configuration Errorhandling if FilePath is Null Or Empty
+23.05.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
 23.05.2020 MS: HF 229 - Shut Down after generalization is not completing if PVS image creation is skipped
 23.05.2020 MS: HF 233 - TrendMicro Apex One process not killed
 23.05.2020 MS: HF 236 - No MSFT_NetAdapterRssSettingData objects found
