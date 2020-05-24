@@ -2554,7 +2554,8 @@ function Test-AppLayeringSoftware {
 		09.07.2018 MS: Bugfix 48 - Part III: using DiskMode in RunMode 4 to diff between App- or Platform Layer
 		21.10.2018 MS: Bugfix 62: BIS-F AppLayering - Layer Finalized is blocked with MCS - Booting Layered Image
 		02.01.2020 MS: Bugfix 164: Layer finalize is blocked with VDA 1912 LTSR and activated UPL
-		07.01.20120 MS: HF 176 - $Global:ImageSW request is set one Time only
+		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
+		24.05.2020 MS: HF 187 - VDA 1912 inside AppLayering Packaging VM wrong Layer back
 	.LINK
 		https://eucweb.com
 #>
@@ -2572,8 +2573,9 @@ function Test-AppLayeringSoftware {
 		$DiskMode = Get-BISFDiskMode
 		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
 		$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
-		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running") -or ($DiskMode -eq "VDAPrivateAppLayering")) {
-
+		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {$OverrideRunMode = $true}
+		IF (($UPL -eq $true ) -and ($DiskMode -eq "VDAPrivateAppLayering")) {$OverrideRunMode = $true}
+		IF (OverrideRunMode -eq $true) {
 			$CTXAppLayeringRunModeNew = 1
 			Write-BISFLog "The original App Layering RunMode ist set to $CTXAppLayeringRunMode, based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
 			$CTXAppLayeringRunMode = $CTXAppLayeringRunModeNew
