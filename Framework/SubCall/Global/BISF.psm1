@@ -322,6 +322,27 @@ function Write-Log {
 
 
 Function Invoke-FolderScripts {
+	<#
+	.SYNOPSIS
+		Get the PS1 Files from a specific folder and process all scripts
+	.DESCRIPTION
+	  	process all PS1 files in a ascending order from the specific path
+		use get-help <functionname> -full to see full help
+	.Example
+		Invoke-BISFFolderScripts -path "C:\Program Files (x86)\Base Image Script Framework\Framework\Subcall\Preparation"
+
+	.NOTES
+		Author: Matthias Schlimm
+	  	Company:  EUCWeb.com
+
+		History:
+		  dd.mm.yyyy MS: function created
+		  14.05.2020 MS: HF 239 - Invoke-FolderScripts is relying on the default order from Get-ChildItem
+
+
+	.LINK
+		https://eucweb.com
+#>
 	[CmdletBinding(SupportsShouldProcess = $true)]
 	PARAM(
 		[parameter(Mandatory = $True)][string]$Path,
@@ -329,7 +350,7 @@ Function Invoke-FolderScripts {
 	)
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	write-BISFlog -Msg "Loading Scripts from $Path"
-	$scripts = @(Get-ChildItem -Path $Path -Filter "*.ps1")
+	$scripts = @(Get-ChildItem -Path $Path -Filter "*.ps1") | Sort-Object -Property Name
 	Write-Verbose -message "$scripts"
 	IF ($scripts -ne $null) {
 		Foreach ($item in $scripts) {
