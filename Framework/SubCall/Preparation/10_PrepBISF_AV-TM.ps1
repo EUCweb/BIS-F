@@ -22,7 +22,7 @@
 		function and modified the StopService function to make it reliable.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		18.02.2020 JK: Fixed Log output spelling
-		23.05.2020 MS: HF 233 - TrendMicro Apex One process not killed
+		29.05.2020 MS: HF 233 - TrendMicro Apex One process not killed and better Log-Output
 
 
 	.LINK
@@ -38,7 +38,7 @@ Begin {
 	# - NTRTScan (OfficeScan NT RealTime Scan)
 	# - TmPfw (OfficeScan NT Firewall)
 	# - TmProxy (OfficeScan NT Proxy Service)
-	$TMServices = @("TmListen", "NTRTScan", "TmProxy", "TmPfw")
+	$TMServices = @("TmListen", "NTRTScan", "TmProxy", "TmPfw", "TmCCSF", "TMBMServer")
 	$TMProcesses = @("TmListen.exe", "NTRTScan.exe", "TmProxy.exe", "TmPfw.exe", "PccNTMon.exe")
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
@@ -90,10 +90,10 @@ Process {
 			$exitwhenfound = $True
 			Start-Sleep -Seconds $delaystart
 			if ([String]::IsNullOrEmpty($CommandLineContains)) {
-				#Write-Verbose "Killing the '$ProcessName' process..." -verbose
+				Write-BISFLog -Msg "Killing the '$ProcessName' process..."
 			}
 			Else {
-				#Write-Verbose "Killing the '$ProcessName' process which contains `"$CommandLineContains`" in it's command line..." -verbose
+				Write-BISFLog -Msg "Killing the '$ProcessName' process which contains `"$CommandLineContains`" in it's command line..."
 			}
 			Do {
 				$i = 0
@@ -103,7 +103,7 @@ Process {
 						$Processes = Get-CimInstance -ClassName Win32_Process -Filter "name='$ProcessName'" -ErrorAction Stop | Where-Object { $_.commandline -Like "*$CommandLineContains*" }
 					}
 					Catch {
-						#write-verbose $_.Exception.InnerException.Message -verbose
+						Write-BISFLog -Msg "$_.Exception.InnerException.Message"
 					}
 					If (($Processes | Measure-Object).Count -gt 0) {
 						$ProcessFound = $True
@@ -115,22 +115,22 @@ Process {
 					Start-Sleep -Seconds $interval
 				} Until ($ProcessFound -eq $true)
 				If ($ProcessFound) {
-					#write-verbose "Process '$ProcessName' was found." -verbose
+					Write-BISFLog -Msg "Process '$ProcessName' was found."
 					if (!([String]::IsNullOrEmpty($CommandLineContains))) {
-						#write-verbose "Process command line contains: '$CommandLineContains'" -verbose
+						Write-BISFLog -Msg "Process command line contains: '$CommandLineContains'"
 					}
 					ForEach ($Process in $Processes) {
 						Try {
 							$Return = ([wmi]$Process.__RELPATH).terminate()
 							If ($Return.ReturnValue -eq 0) {
-								#write-verbose "Process terminated without error." -verbose
+								Write-BISFLog -Msg "Process terminated without error."
 							}
 							Else {
-								#write-verbose "Process failed to terminate: $($Return.ReturnValue)" -verbose
+								Write-BISFLog -Msg "Process failed to terminate: $($Return.ReturnValue)"
 							}
 						}
 						Catch {
-							#write-verbose $_.Exception.Message -verbose
+							Write-BISFLog -Msg "$_.Exception.Message"
 						}
 					}
 				}
@@ -161,7 +161,7 @@ Process {
 				#   [SC] OpenSCManager FAILED 1722:  The RPC server is unavailable.
 				#   [SC] OpenService FAILED 1060:  The specified service does not exist as an installed service.
 				$result = sc.exe config $ServiceName start= demand
-				#write-verbose $result -verbose
+				Write-BISFLog -Msg "Result $result"
 			}
 			Else {
 				Write-BISFLog -Msg "Service '$ServiceName' is not installed"

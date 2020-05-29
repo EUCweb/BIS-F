@@ -15,6 +15,7 @@
 		09.01.2017 MS: change code to get MacAdress to use function Get-BISMACAddress
 		01.08.2017 JS: Added the TmPfw (OfficeScan NT Firewall) service to the array
 		19.02.2020 MS: HF 212 - MACAddress in lowercase with seperated switch to fix HF 137
+		29.05.2020 MS: HF 233 - TrendMicro Apex One Services not startet
 	.LINK
 		https://eucweb.com
 #>
@@ -23,13 +24,13 @@
 Begin {
 	$reg_TM_string = "$HKLM_sw_x86\TrendMicro\PC-cillinNTCorp\CurrentVersion"
 	$reg_TM_name = "GUID"
-	$product = "Trend Micro Office Scan"
+	$product = "Trend Micro Office Scan/Appex One"
 	# The main 4 services are:
 	# - TmListen (OfficeScan NT Listener)
 	# - NTRTScan (OfficeScan NT RealTime Scan)
 	# - TmPfw (OfficeScan NT Firewall)
 	# - TmProxy (OfficeScan NT Proxy Service)
-	$TMServices = @("TmListen", "NTRTScan", "TmProxy", "TmPfw")
+	$TMServices = @("TmListen", "NTRTScan", "TmProxy", "TmPfw", "TmCCSF", "TMBMServer")
 	$HostID_Prfx = "00000000-0000-0000-0000-"
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
