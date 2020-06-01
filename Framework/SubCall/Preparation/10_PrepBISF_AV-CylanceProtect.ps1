@@ -11,6 +11,7 @@
 			09.05.2019 MK: Script created
 			14.08.2019 MS: ENH 98: add function Set-CompatibilityMode
 			02.01.2020 MS: HF 164: Wrong Command for Compatibility Mode
+			01.06.2020 MS: HF 238: VDI Fingerprinting support
 
 	.LINK
         https://eucweb.com
@@ -40,7 +41,7 @@ Process {
 	####### Functions #####
 	####################################################################
 
-	function DeleteData {
+	function Remove-Data {
 		Write-BISFLog -Msg "Delete specified items "
 		Foreach ($DeleteItem in $ToDelete) {
 			IF ($DeleteItem.type -eq "REG") {
@@ -62,7 +63,7 @@ Process {
 			}
 		}
 	}
-	function StopService {
+	function Stop-Service {
 		$svc = Test-BISFService -ServiceName "$ServiceName"
 		IF ($svc -eq $true) { Invoke-BISFService -ServiceName "$($ServiceName)" -Action Stop }
 	}
@@ -113,9 +114,16 @@ Process {
 	$svc = Test-BISFService -ServiceName $ServiceName -ProductName $ProductName
 	If ($svc -eq $true) {
 		Write-BISFLog -Msg "Product $ProductName installed" -ShowConsole -Color Cyan
-		StopService
-		Set-CompatibilityMode
-		DeleteData
+		$VDIType = (Get-ItemProperty HKLM:\SOFTWARE\Cylance\Desktop).VDIType
+		IF (!($VDIType -eq 0)) {
+			Stop-Service
+			Set-CompatibilityMode
+			Remove-Data
+		} Else {
+			Write-BISFLog -Msg "Skipping ProductName sealing operations !" -ShowConsole -Type W -SubMsg
+		}
+
+
 	}
  Else {
 		Write-BISFLog -Msg "Product $ProductName NOT installed"
