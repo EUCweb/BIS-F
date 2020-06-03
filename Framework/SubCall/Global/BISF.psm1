@@ -4444,3 +4444,58 @@ function Get-PVSWriteCacheType {
 	Write-BISFLog -Msg "PVS WriteCacheType is set to $WriteCacheType - $WriteCacheTypeTxt"
 	return $WriteCacheType
 }
+
+function Stop-Processes {
+	<#
+	.SYNOPSIS
+		Stop a Process gracefully
+
+	.DESCRIPTION
+		gracefulle stop a process, if the process is not stopped in the defined timout,
+		the process is killed
+		use get-help <functionname> -full to see full help
+
+	.EXAMPLE
+		Stop-BISFProcesses -processName notepad
+
+	.NOTES
+		Author: Matthias Schlimm
+
+		History:
+		  03.06.2020 MS: function created
+
+	.LINK
+		https://eucweb.com
+#>
+
+    param(
+        [parameter(Mandatory=$true)] $processName,
+                                     $timeout = 5
+    )
+	Write-BISFLog -Msg "Check Process $processName" -Color Cyan -ShowConsole
+	$processList = Get-Process $processName -ErrorAction SilentlyContinue
+    if ($processList) {
+        # Try gracefully first
+        Write-BISFLog -Msg "Gracefull stop the Process $processName" -Color DarkCyan -ShowConsole -SubMsg
+        $processList.CloseMainWindow() | Out-Null
+
+        Write-BISFLog -Msg "Wait until all processes have terminated or until timeout" -Color DarkCyan -ShowConsole -SubMsg
+        for ($i = 0 ; $i -le $timeout; $i ++){
+            $AllHaveExited = $True
+            $processList | % {
+                $process = $_
+                If (!$process.HasExited){
+                    $AllHaveExited = $False
+                }
+            }
+            If ($AllHaveExited){
+                Return
+            }
+            sleep 1
+        }
+        Write-BISFLog -Msg "Process $processName can't gracefull stopped, killing now" -Type W -ShowConsole -SubMsg
+        $processList | Stop-Process -Force
+    } ELSE {
+        Write-BISFLog -Msg "Process $processName is not running, nothing to do" -Color DarkCyan -ShowConsole -SubMsg
+    }
+}

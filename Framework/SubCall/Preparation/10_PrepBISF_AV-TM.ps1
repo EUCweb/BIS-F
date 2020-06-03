@@ -23,6 +23,7 @@
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		18.02.2020 JK: Fixed Log output spelling
 		29.05.2020 MS: HF 233 - TrendMicro Apex One process not killed and better Log-Output
+		03.06.2020 MS: HF 233 - TM Process not killed, using new function Stop-BISFProcesses
 
 
 	.LINK
@@ -39,7 +40,7 @@ Begin {
 	# - TmPfw (OfficeScan NT Firewall)
 	# - TmProxy (OfficeScan NT Proxy Service)
 	$TMServices = @("TmListen", "NTRTScan", "TmProxy", "TmPfw", "TmCCSF", "TMBMServer")
-	$TMProcesses = @("TmListen.exe", "NTRTScan.exe", "TmProxy.exe", "TmPfw.exe", "PccNTMon.exe")
+	$TMProcesses = @("TmListen", "NTRTScan", "TmProxy", "TmPfw", "PccNTMon")
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
 	$script_name = [System.IO.Path]::GetFileName($script_path)
@@ -82,69 +83,7 @@ Process {
 
 	Function TerminateProcess {
 		ForEach ($ProcessName in $TMProcesses) {
-			Write-BISFLog -Msg "Process '$ProcessName' is running, killing process now" -ShowConsole -SubMsg -Color DarkCyan
-			$CommandLineContains = ""
-			$delaystart = 0
-			$interval = 1
-			$repeat = 5
-			$exitwhenfound = $True
-			Start-Sleep -Seconds $delaystart
-			if ([String]::IsNullOrEmpty($CommandLineContains)) {
-				Write-BISFLog -Msg "Killing the '$ProcessName' process..."
-			}
-			Else {
-				Write-BISFLog -Msg "Killing the '$ProcessName' process which contains `"$CommandLineContains`" in it's command line..."
-			}
-			Do {
-				$i = 0
-				Do {
-					$ProcessFound = $False
-					Try {
-						$Processes = Get-CimInstance -ClassName Win32_Process -Filter "name='$ProcessName'" -ErrorAction Stop | Where-Object { $_.commandline -Like "*$CommandLineContains*" }
-					}
-					Catch {
-						Write-BISFLog -Msg "$_.Exception.InnerException.Message"
-					}
-					If (($Processes | Measure-Object).Count -gt 0) {
-						$ProcessFound = $True
-					}
-					$i++
-					If ($i -eq $repeat) {
-						break
-					}
-					Start-Sleep -Seconds $interval
-				} Until ($ProcessFound -eq $true)
-				If ($ProcessFound) {
-					Write-BISFLog -Msg "Process '$ProcessName' was found."
-					if (!([String]::IsNullOrEmpty($CommandLineContains))) {
-						Write-BISFLog -Msg "Process command line contains: '$CommandLineContains'"
-					}
-					ForEach ($Process in $Processes) {
-						Try {
-							$Return = ([wmi]$Process.__RELPATH).terminate()
-							If ($Return.ReturnValue -eq 0) {
-								Write-BISFLog -Msg "Process terminated without error."
-							}
-							Else {
-								Write-BISFLog -Msg "Process failed to terminate: $($Return.ReturnValue)"
-							}
-						}
-						Catch {
-							Write-BISFLog -Msg "$_.Exception.Message"
-						}
-					}
-				}
-				Else {
-					If ($exitwhenfound) {
-						#write-verbose "Process '$ProcessName' was not found. Giving up!" -verbose
-						Write-BISFLog -Msg "Process '$ProcessName' was not found. Giving up!"
-					}
-					Else {
-						#write-verbose "Process '$ProcessName' was not found. Trying again!" -verbose
-						Write-BISFLog -Msg "Process '$ProcessName' was not found. Trying again!"
-					}
-				}
-			} Until ($exitwhenfound -eq $true)
+			Stop-BISFProcesses -processName $ProcessName
 		}
 	}
 
