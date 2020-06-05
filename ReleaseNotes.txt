@@ -10,7 +10,7 @@
 23.05.2020 MS: HF 229 - Shut Down after generalization is not completing if PVS image creation is skipped
 23.05.2020 MS: HF 236 - No MSFT_NetAdapterRssSettingData objects found
 23.05.2020 MS: HF 226 - App-V Powershell Module Could Not Be Loaded
-23.05.2020 MS: HF 217 - Notification only -> Powershell Version 5 as minimum requirement
+23.05.2020 MS: HF 217 - Powershell Version 5 Notification
 23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
 23.05.2020 MS: HF 231 - Skipping file precache if vDisk is in private Mode
 23.05.2020 MS: HF 220 - fix typo for DirtyShutdown Flag
