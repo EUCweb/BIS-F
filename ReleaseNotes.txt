@@ -1,4 +1,5 @@
-﻿03.06.2020 MS: HF 233 - TM Process not killed, using new function Stop-BISFProcesses
+﻿05.06.2020 DS: HF 240 - SSLVDA optimization with Certificate determination, Auto enrollment option, Skip certificate verification
+03.06.2020 MS: HF 233 - TM Process not killed, using new function Stop-BISFProcesses
 01.06.2020 MS: HF 187 - VDA 1912 inside AppLayering Packaging VM wrong Layer back
 01.06.2020 MS: HF 238 - CylanceProtect - VDI Fingerprinting support
 29.05.2020 MS: HF 233 - TrendMicro Apex One process not killed and better Log-Output
@@ -8,7 +9,6 @@
 23.05.2020 MS: HF 229 - Shut Down after generalization is not completing if PVS image creation is skipped
 23.05.2020 MS: HF 236 - No MSFT_NetAdapterRssSettingData objects found
 23.05.2020 MS: HF 226 - App-V Powershell Module Could Not Be Loaded
-23.05.2020 MS: HF 240 - EnableSSLVDA optimization
 23.05.2020 MS: HF 217 - Notification only -> Powershell Version 5 as minimum requirement
 23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
 23.05.2020 MS: HF 231 - Skipping file precache if vDisk is in private Mode
