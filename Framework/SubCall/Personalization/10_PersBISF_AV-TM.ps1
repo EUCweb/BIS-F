@@ -16,6 +16,7 @@
 		01.08.2017 JS: Added the TmPfw (OfficeScan NT Firewall) service to the array
 		19.02.2020 MS: HF 212 - MACAddress in lowercase with seperated switch to fix HF 137
 		29.05.2020 MS: HF 233 - TrendMicro Apex One Services not startet
+		05.06.2020 MS: HF 233 - Skipping ApexOne, checkout https://github.com/EUCweb/BIS-F/issues/233 for further informations
 	.LINK
 		https://eucweb.com
 #>
@@ -24,7 +25,8 @@
 Begin {
 	$reg_TM_string = "$HKLM_sw_x86\TrendMicro\PC-cillinNTCorp\CurrentVersion"
 	$reg_TM_name = "GUID"
-	$product = "Trend Micro Office Scan/Appex One"
+	$product = "Trend Micro Office Scan"
+	$product1 = "Trend Micro Apex ONE"
 	# The main 4 services are:
 	# - TmListen (OfficeScan NT Listener)
 	# - NTRTScan (OfficeScan NT RealTime Scan)
@@ -66,11 +68,19 @@ Process {
 
 	#### Main Program
 	$svc = Test-BISFService -ServiceName $TMServices[0] -ProductName "$product"
+	$ApexOne = Test-BISFService -ServiceName $TMServices[5] -ProductName "$product1"
 
-	IF ($svc) {
-		# Note that if the services start before the GUID is set it won't register with the OfficeScan Management Server
-		SetHostID
-		StartService
+	IF ($ApexOne) {
+		Write-BISFLog -Msg "Skipping $product1 personalization" -Type W -ShowConsole -SubMsg
+		Write-BISFLog -M Msg "Please Checkout ApexOne Support https://github.com/EUCweb/BIS-F/issues/233 for further information" -Type W -ShowConsole -SubMsg
+		start-sleep 10
+		} ELSE {
+
+		IF ($svc) {
+			# Note that if the services start before the GUID is set it won't register with the OfficeScan Management Server
+			SetHostID
+			StartService
+		}
 	}
 
 }

@@ -1,4 +1,5 @@
-﻿05.06.2020 DS: HF 240 - SSLVDA optimization with Certificate determination, Auto enrollment option, Skip certificate verification
+﻿05.06.2020 MS: HF 233 - Skipping ApexOne, checkout https://github.com/EUCweb/BIS-F/issues/233 for further informations
+05.06.2020 DS: HF 240 - SSLVDA optimization with Certificate determination, Auto enrollment option, Skip certificate verification
 03.06.2020 MS: HF 233 - TM Process not killed, using new function Stop-BISFProcesses
 01.06.2020 MS: HF 187 - VDA 1912 inside AppLayering Packaging VM wrong Layer back
 01.06.2020 MS: HF 238 - CylanceProtect - VDI Fingerprinting support

@@ -22,8 +22,8 @@
 		function and modified the StopService function to make it reliable.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		18.02.2020 JK: Fixed Log output spelling
-		29.05.2020 MS: HF 233 - TrendMicro Apex One process not killed and better Log-Output
 		03.06.2020 MS: HF 233 - TM Process not killed, using new function Stop-BISFProcesses
+		05.06.2020 MS: HF 233 - Skipping ApexOne, checkout https://github.com/EUCweb/BIS-F/issues/233 for further informations
 
 
 	.LINK
@@ -33,7 +33,8 @@
 Begin {
 	$reg_TM_string = "$HKLM_sw_x86\TrendMicro\PC-cillinNTCorp\CurrentVersion"
 	[array]$reg_TM_name = "GUID"
-	$product = "Trend Micro Office Scan/Appex One"
+	$product = "Trend Micro Office Scan"
+	$product1 = "Trend Micro Apex ONE"
 	# The main 4 services are:
 	# - TmListen (OfficeScan NT Listener)
 	# - NTRTScan (OfficeScan NT RealTime Scan)
@@ -126,7 +127,7 @@ Process {
 	}
 	function DeleteRunValue {
 		$keypath = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Run"
-		$values = @("OfficeScanNT Monitor","Apex One NT Monitor")
+		$values = @("OfficeScanNT Monitor")
 		ForEach ($value in $values) {
 			$IsValueMissing = (Get-ItemProperty $keypath).$value -eq $null
 			If ($IsValueMissing -eq $False) {
@@ -141,13 +142,22 @@ Process {
 
 	#### Main Program
 	$svc = Test-BISFService -ServiceName $TMServices[0] -ProductName "$product"
-	IF ($svc -eq $true) {
-		#RunFullScan  <<-currently not specified, see above...
-		TerminateProcess
-		StopService
-		deleteTMData
-		UpdateINIFile
-		DeleteRunValue
+	$ApexOne = Test-BISFService -ServiceName $TMServices[5] -ProductName "$product1"
+
+	IF ($ApexOne) {
+		Write-BISFLog -Msg "Skipping $product1 preparation" -Type W -ShowConsole -SubMsg
+		Write-BISFLog -Msg "Please Checkout ApexOne Support https://github.com/EUCweb/BIS-F/issues/233 for further information" -Type W -ShowConsole -SubMsg
+		start-sleep 10
+		} ELSE {
+
+		IF ($svc -eq $true) {
+			#RunFullScan  <<-currently not specified, see above...
+			TerminateProcess
+			StopService
+			deleteTMData
+			UpdateINIFile
+			DeleteRunValue
+		}
 	}
 }
 
