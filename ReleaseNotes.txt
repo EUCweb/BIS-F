@@ -1,4 +1,8 @@
-﻿05.06.2020 MS: ENH 225 - Providing MSI Installer with Release 7.1912.3 and above
+---------------------------------
+Version 7.1912.3.11034 -- 13/06/2020 19:15:55 PM:
+05.06.2020 MS: ENH 225 - Providing MSI Installer
+---------------------------------
+Version 7.1912.3.11033 -- 13/06/2020 19:14:34 PM:
 05.06.2020 MS: HF 233 - Skipping ApexOne, checkout https://github.com/EUCweb/BIS-F/issues/233 for further informations
 05.06.2020 DS: HF 240 - SSLVDA optimization with Certificate determination, Auto enrollment option, Skip certificate verification
 03.06.2020 MS: HF 233 - TM Process not killed, using new function Stop-BISFProcesses
