@@ -87,6 +87,7 @@ param()
 		08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run
 		27.12.2019 MS/MN: HF 160 - typo for Calculation of free space for the VHDX file
 		18.02.2020 JK: Fixed Log output spelling
+		25.03.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
 
       #>
 Begin {
@@ -398,15 +399,19 @@ Process {
 	# 03.10.2019 MS: ENH 126 - depend on the new MCSIO redirection the calling of the functions must be different now
 	IF ($returnTestPVSSoftware) {
 		IF (($State -eq "Preparation") -and ($LIC_BISF_CLI_P2V_PT -eq "1")) {
-			Write-BISFLog -Msg "Check if there is enough free Diskspace on the Custom UNC-Path available before proceeding" -ShowConsole -Color Cyan
-			$FreeSpace = Get-BISFSpace -path "$LIC_BISF_CLI_P2V_PT_CUS" -FreeSpace
-			$UsedSpace = Get-BISFSpace -path $env:SystemDrive
-			IF ($FreeSpace -le $UsedSpace) {
-				Write-BISFLog -Msg "STOP: There is NOT enough Free Space on the Custom UNC path to store the vDisk " -ShowConsole -Type E -SubMsg
-			}
-			ELSE {
-				Write-BISFLog -Msg "Custom UNC Path has $FreeSpace GB left to convert to SystemDrive with $UsedSpace GB" -ShowConsole -Color DarkCyan -SubMsg
-			}
+			IF ($DiskMode -notmatch "AndSkipImaging") {
+				Write-BISFLog -Msg "Check if there is enough free Diskspace on the Custom UNC-Path available before proceeding" -ShowConsole -Color Cyan
+				$FreeSpace = Get-BISFSpace -path "$LIC_BISF_CLI_P2V_PT_CUS" -FreeSpace
+				$UsedSpace = Get-BISFSpace -path $env:SystemDrive
+				IF ($FreeSpace -le $UsedSpace) {
+					Write-BISFLog -Msg "STOP: There is NOT enough Free Space on the Custom UNC path to store the vDisk " -ShowConsole -Type E -SubMsg
+				}
+				ELSE {
+					Write-BISFLog -Msg "Custom UNC Path has $FreeSpace GB left to convert to SystemDrive with $UsedSpace GB" -ShowConsole -Color DarkCyan -SubMsg
+				}
+		} ELSE {
+			Write-BISFLog -Msg "Skipping Custom UNC Path free Diskspace, if PVS Master Image creation is skipped !" -ShowConsole -Color DarkCyan -SubMsg
+		}
 
 		}
 		Use-BISFPVSConfig -Verbose:$VerbosePreference  #27.07.2017 MS: new created

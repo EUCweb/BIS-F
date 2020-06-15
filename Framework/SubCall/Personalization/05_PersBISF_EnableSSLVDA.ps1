@@ -10,6 +10,15 @@
       History
 		  2019.07.05 TT: Script created
 		  16.08.2019 MS: ENH 107 - integrated into BIS-F
+          05.06.2020 DS: HF 240 - SSLVDA optimization with Certificate determination, Auto enrollment option, Skip certificate verification
+
+            - Certificate determination
+                - Script is verifying if a certificate thumbprint has been specified. If a thumbprint has been configured but the respective certificate cannot be found within Local Machine Certificate Store the script fails.
+                - If no certificate thumbprint has been specified, script is checking for any valid certificate within Local Machine Certificate Store (Subject Alternative Name = Computername). If multiple valid certificates are available, the first one is automatically selected.
+            - Auto enrollment option
+                - In case there is certificate auto enrollment configured by policy timing issues might occur. If auto enrollment option is enabled, the script does wait and keeps verifying until a valid certificate has been installed or the specified timeout value has been reached.
+            - Skip certificate verification
+                - In case there is no expiration date verification required, the validation step can optionally be disabled.
 
 	  .Link
 		  https://github.com/EUCweb/BIS-F/issues/107
@@ -28,6 +37,9 @@ Begin {
 	$SSLMinVersion = $LIC_BISF_CLI_VDASSL_MinVer
 	$SSLCipherSuite = $LIC_BISF_CLI_VDASSL_CipherSuite
 	if ($CertificateThumbPrint -ne "") { $CertificateThumbPrint = $LIC_BISF_CLI_VDASSL_CertThumbprint }
+    $SkipCertVerification = $True
+    $WaitForCertEnrollment = $True
+    $CertEnrollmentTimeout = 180
 }
 
 Process {
@@ -142,73 +154,88 @@ Process {
 		Write-BISFLog -Msg "Enable SSL for the Citrix VDA." -ShowConsole -Color Yellow
 		$RegistryKeysSet = $ACLsSet = $FirewallConfigured = $False
 
-		#Certificates MUST be in the Local Machine > Personal store.
+		#Certificates MUST be in the Local Machine > Personal store
 		$Store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "LocalMachine")
 		$Store.Open("ReadOnly")
 
-		if ($Store.Certificates.Count -eq 0) {
-			Write-BISFLog -Msg "No certificates found in the Personal Local Machine Certificate Store. Please install a certificate and try again." -ShowConsole -Color DarkCyan -SubMsg
-			Write-BISFLog -Msg "Enabling SSL to VDA failed." -ShowConsole -Color DarkCyan -SubMsg
-			$Store.Close()
-			break
-		}
-		elseif ($Store.Certificates.Count -ge 1) {
-			if ($CertificateThumbPrint) {
-				$Certificate = $Store.Certificates | where { $_.GetCertHashString() -eq $CertificateThumbPrint }
-				if (!$Certificate) {
-					Write-BISFLog -Msg "No certificate found in the certificate store with thumbprint $CertificateThumbPrint"  -ShowConsole -Color DarkCyan -SubMsg
-					Write-BISFLog -Msg "Enabling SSL to VDA failed."  -ShowConsole -Color DarkCyan -SubMsg
-					$Store.Close()
-					break
-				}
-			}
-			foreach ($certificate in $Store.Certificates) {
-				if ($certificate.DnsNameList.unicode -like "$($env:COMPUTERNAME)*") {
-					$CertificateThumbPrint = $Certificate.GetCertHashString()
-					$cert = $certificate
-				}
-			}
-			if (-not($CertificateThumbPrint)) {
-				$ComputerName = "CN=" + [System.Net.Dns]::GetHostByName((hostname)).HostName + ","
-				$Certificate = $Store.Certificates | where { $_.Subject -match $ComputerName }
-				$CertificateThumbPrint = $Certificate.GetCertHashString()
-			}
+        #Check if certificate thumbprint has been specified and select the corresponding certificate from Local Machine Certificate Store.
+        if ($CertificateThumbPrint) {
+	        $Cert = $Store.Certificates | where { $_.GetCertHashString() -eq $CertificateThumbPrint }
+		    if (!$Cert) {
+		        Write-BISFLog -Msg "No certificate found in the certificate store with thumbprint $CertificateThumbPrint."  -ShowConsole -Color DarkCyan -SubMsg
+		        Write-BISFLog -Msg "Enabling SSL to VDA failed."  -ShowConsole -Color DarkCyan -SubMsg
+		        $Store.Close()
+		        break
+		    }
+        }
 
-		}
-		elseif (-not($CertificateThumbPrint)) {
-			Write-BISFLog -Msg "No certificate found in the certificate store with thumbprint $CertificateThumbPrint" -ShowConsole -Color DarkCyan -SubMsg
-			Write-BISFLog -Msg "Enabling SSL to VDA failed." -ShowConsole -Color DarkCyan -SubMsg
-			$Store.Close()
-			break
-		}
+        #If no certificate thumbprint has been specified, check for any valid certificate within Local Machine Certificate Store (Subject Alternative Name > Computername).
+        else{
 
+            foreach ($Certificate in $Store.Certificates) {
+			    if ($Certificate.DnsNameList.unicode -like "$($env:COMPUTERNAME)*") {
+			        $CertificateThumbPrint = $Certificate.GetCertHashString()
+			        $Cert = $Certificate
+	            }
+            }
+
+            #If no valid certificate has been found, check for auto enrollment variable
+            #If auto enrollnment variable is true, wait for certificate auto enrollment from Enterprise-CA (Duration is specified by CertEnrollmentTimeout value.)
+            if ((!($Cert)) -and ($WaitForCertEnrollment -eq $True)) {
+                Write-BISFLog -Msg "Waiting for certificate auto-enrollment ..." -ShowConsole -Color DarkCyan -SubMsg
+                For ($i=0;(!($Cert)) -and ($i -le $CertEnrollmentTimeout);$i++)
+                {
+                    Start-Sleep -Seconds 1
+                    foreach ($Certificate in $Store.Certificates) {
+			            if ($Certificate.DnsNameList.Unicode -like "$($env:COMPUTERNAME)*") {
+			                $CertificateThumbPrint = $Certificate.GetCertHashString()
+			                $Cert = $Certificate
+                        }
+                    }
+	            }
+                if (!$Cert) {
+                        Write-BISFLog -Msg "Timeout limit of $CertEnrollmentTimeout seconds has been reached." -ShowConsole -Color DarkCyan -SubMsg
+		                Write-BISFLog -Msg "No valid certificate found in Local Machine Certificate Store. Please verify your enrollment and try again." -ShowConsole -Color DarkCyan -SubMsg
+			            Write-BISFLog -Msg "Enabling SSL to VDA failed." -ShowConsole -Color DarkCyan -SubMsg
+		                $Store.Close()
+		                break
+		        }
+            }
+            #If auto enrollnment variable is false, script does instantly fail if no valid certificate is found.
+            elseif((!($Cert)) -and ($WaitForCertEnrollment -ne $True)){
+                    Write-BISFLog -Msg "No valid certificate found in Local Machine Certificate Store. Please install a valid certificate and try again." -ShowConsole -Color DarkCyan -SubMsg
+			        Write-BISFLog -Msg "Enabling SSL to VDA failed." -ShowConsole -Color DarkCyan -SubMsg
+		            $Store.Close()
+		            break
+            }
+        }
+
+        Write-BISFLog -Msg "Valid certificate found in Local Machine Certificate Store."  -ShowConsole -Color DarkCyan -SubMsg
 		Write-BISFLog -Msg "Certificate:" -ShowConsole -Color Cyan
-		foreach ($line in $($cert.DnsNameList)) { if ($line) { Write-BISFLog -Msg "DNSNameList  : $line" -ShowConsole -Color Yellow -SubMsg } }
+		foreach ($line in $($Cert.DnsNameList)) { if ($line) { Write-BISFLog -Msg "DNSNameList  : $line" -ShowConsole -Color Yellow -SubMsg } }
 		foreach ($line in $($cert | fl | Out-String -Stream)) { if ($line) { Write-BISFLog -Msg "$line" -ShowConsole -Color Yellow -SubMsg } }
 
-		#Validate the certificate
 
-		#Validate expiration date
-		$ValidTo = [DateTime]::Parse($cert.GetExpirationDateString())
-		if($ValidTo -lt [DateTime]::UtcNow) {
-			Write-BISFLog -Msg "The certificate is expired. Please install a valid certificate and try again." -ShowConsole -Color DarkCyan -SubMsg
-			Write-BISFLog -Msg "Enabling SSL to VDA failed." -ShowConsole -Color DarkCyan -SubMsg
-			$Store.Close()
-			break
-		}
 
-		#Check certificate trust
-		if(!$cert.Verify()) {
-			Write-BISFLog -Msg "Verification of the certificate failed. Please install a valid certificate and try again." -ShowConsole -Color DarkCyan -SubMsg
-			Write-BISFLog -Msg "Enabling SSL to VDA failed." -ShowConsole -Color DarkCyan -SubMsg
-			$Store.Close()
-			break
-		}
+        #Verify certificate
+        If($SkipCertVerification -eq $True){
+            Write-BISFLog -Msg "Skipping certificate expiration date validation." -ShowConsole -Color DarkCyan -SubMsg
+        }
+        else
+        {
+		    $ValidTo = [DateTime]::Parse($Cert.GetExpirationDateString())
+		    if($ValidTo -lt [DateTime]::UtcNow) {
+			    Write-BISFLog -Msg "Certificate has expired. Please install a valid certificate and try again." -ShowConsole -Color DarkCyan -SubMsg
+			    Write-BISFLog -Msg "Enabling SSL to VDA failed." -ShowConsole -Color DarkCyan -SubMsg
+			    $Store.Close()
+			    break
+		    }
+        }
 
 		#Check private key availability
 		try {
-			[System.Security.Cryptography.AsymmetricAlgorithm] $PrivateKey = $cert.PrivateKey
-			$UniqueContainer = ((($cert).PrivateKey).CspKeyContainerInfo).UniqueKeyContainerName
+			[System.Security.Cryptography.AsymmetricAlgorithm] $PrivateKey = $Cert.PrivateKey
+			$UniqueContainer = ((($Cert).PrivateKey).CspKeyContainerInfo).UniqueKeyContainerName
 		}
 		catch {
 			Write-BISFLog -Msg "Unable to access the Private Key of the Certificate or one of its fields." -ShowConsole -Color DarkCyan -SubMsg
@@ -225,7 +252,7 @@ Process {
 		}
 
 		Write-BISFLog -Msg "Setting ACL's on private key file" -ShowConsole -Color Cyan
-		$private_key = ((($cert).PrivateKey).CspKeyContainerInfo).UniqueKeyContainerName
+		$private_key = ((($Cert).PrivateKey).CspKeyContainerInfo).UniqueKeyContainerName
 		$dir = $env:ProgramData + '\Microsoft\Crypto\RSA\MachineKeys\'
 		$keypath = $dir + $private_key
 		icacls $keypath /grant `"$username`"`:RX | Out-Null

@@ -22,6 +22,8 @@
 		function and modified the StopService function to make it reliable.
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		18.02.2020 JK: Fixed Log output spelling
+		03.06.2020 MS: HF 233 - TM Process not killed, using new function Stop-BISFProcesses
+		05.06.2020 MS: HF 233 - Skipping ApexOne, checkout https://github.com/EUCweb/BIS-F/issues/233 for further informations
 
 
 	.LINK
@@ -32,13 +34,14 @@ Begin {
 	$reg_TM_string = "$HKLM_sw_x86\TrendMicro\PC-cillinNTCorp\CurrentVersion"
 	[array]$reg_TM_name = "GUID"
 	$product = "Trend Micro Office Scan"
+	$product1 = "Trend Micro Apex ONE"
 	# The main 4 services are:
 	# - TmListen (OfficeScan NT Listener)
 	# - NTRTScan (OfficeScan NT RealTime Scan)
 	# - TmPfw (OfficeScan NT Firewall)
 	# - TmProxy (OfficeScan NT Proxy Service)
-	$TMServices = @("TmListen", "NTRTScan", "TmProxy", "TmPfw")
-	$TMProcesses = @("TmListen.exe", "NTRTScan.exe", "TmProxy.exe", "TmPfw.exe", "PccNTMon.exe")
+	$TMServices = @("TmListen", "NTRTScan", "TmProxy", "TmPfw", "TmCCSF", "TMBMServer")
+	$TMProcesses = @("TmListen", "NTRTScan", "TmProxy", "TmPfw", "PccNTMon")
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
 	$script_name = [System.IO.Path]::GetFileName($script_path)
@@ -81,69 +84,7 @@ Process {
 
 	Function TerminateProcess {
 		ForEach ($ProcessName in $TMProcesses) {
-			Write-BISFLog -Msg "Process '$ProcessName' is running, killing process now" -ShowConsole -SubMsg -Color DarkCyan
-			$CommandLineContains = ""
-			$delaystart = 0
-			$interval = 1
-			$repeat = 5
-			$exitwhenfound = $True
-			Start-Sleep -Seconds $delaystart
-			if ([String]::IsNullOrEmpty($CommandLineContains)) {
-				#Write-Verbose "Killing the '$ProcessName' process..." -verbose
-			}
-			Else {
-				#Write-Verbose "Killing the '$ProcessName' process which contains `"$CommandLineContains`" in it's command line..." -verbose
-			}
-			Do {
-				$i = 0
-				Do {
-					$ProcessFound = $False
-					Try {
-						$Processes = Get-CimInstance -ClassName Win32_Process -Filter "name='$ProcessName'" -ErrorAction Stop | Where-Object { $_.commandline -Like "*$CommandLineContains*" }
-					}
-					Catch {
-						#write-verbose $_.Exception.InnerException.Message -verbose
-					}
-					If (($Processes | Measure-Object).Count -gt 0) {
-						$ProcessFound = $True
-					}
-					$i++
-					If ($i -eq $repeat) {
-						break
-					}
-					Start-Sleep -Seconds $interval
-				} Until ($ProcessFound -eq $true)
-				If ($ProcessFound) {
-					#write-verbose "Process '$ProcessName' was found." -verbose
-					if (!([String]::IsNullOrEmpty($CommandLineContains))) {
-						#write-verbose "Process command line contains: '$CommandLineContains'" -verbose
-					}
-					ForEach ($Process in $Processes) {
-						Try {
-							$Return = ([wmi]$Process.__RELPATH).terminate()
-							If ($Return.ReturnValue -eq 0) {
-								#write-verbose "Process terminated without error." -verbose
-							}
-							Else {
-								#write-verbose "Process failed to terminate: $($Return.ReturnValue)" -verbose
-							}
-						}
-						Catch {
-							#write-verbose $_.Exception.Message -verbose
-						}
-					}
-				}
-				Else {
-					If ($exitwhenfound) {
-						#write-verbose "Process '$ProcessName' was not found. Giving up!" -verbose
-						Write-BISFLog -Msg "Process '$ProcessName' was not found. Giving up!"
-					}
-					Else {
-						#write-verbose "Process '$ProcessName' was not found. Trying again!" -verbose
-						Write-BISFLog -Msg "Process '$ProcessName' was not found. Trying again!"
-					}
-				}
-			} Until ($exitwhenfound -eq $true)
+			Stop-BISFProcesses -processName $ProcessName
 		}
 	}
 
@@ -160,7 +101,7 @@ Process {
 				#   [SC] OpenSCManager FAILED 1722:  The RPC server is unavailable.
 				#   [SC] OpenService FAILED 1060:  The specified service does not exist as an installed service.
 				$result = sc.exe config $ServiceName start= demand
-				#write-verbose $result -verbose
+				Write-BISFLog -Msg "Result $result"
 			}
 			Else {
 				Write-BISFLog -Msg "Service '$ServiceName' is not installed"
@@ -171,24 +112,28 @@ Process {
 	# Stopping multiple instances of PCCNTmon.exe processes running on the Terminal (RDS) server
 	# https://success.trendmicro.com/solution/1102736
 	function UpdateINIFile {
-		$inifile = "${env:ProgramFiles(x86)}\Trend Micro\OfficeScan Client\ofcscan.ini"
-		If (Test-Path -Path "$inifile") {
-			Write-BISFLog -Msg "Updating $inifile" -ShowConsole -SubMsg -Color DarkCyan
-			$inicontents = Get-Content "$inifile"
-			$inicontents = $inicontents | ForEach-Object { $_ -replace '^NT_RUN_KEY=.+$', "NT_RUN_KEY=" }
-			$inicontents = $inicontents | ForEach-Object { $_ -replace '^NT_RUN_KEY_FILE_NAME=.+$', "NT_RUN_KEY_FILE_NAME=" }
-			$inicontents | Set-Content $inifile
-			# Note that you will get an access denied error when writing back to the ofcscan.ini file if the
-			# services/processes are still running.
+		$inifiles = @("${env:ProgramFiles(x86)}\Trend Micro\OfficeScan Client\ofcscan.ini","${env:ProgramFiles(x86)}\Trend Micro\Security Agent\ofcscan.ini")
+		ForEach ($inifile in $inifiles) {
+			If (Test-Path -Path "$inifile") {
+				Write-BISFLog -Msg "Updating $inifile" -ShowConsole -SubMsg -Color DarkCyan
+				$inicontents = Get-Content "$inifile"
+				$inicontents = $inicontents | ForEach-Object { $_ -replace '^NT_RUN_KEY=.+$', "NT_RUN_KEY=" }
+				$inicontents = $inicontents | ForEach-Object { $_ -replace '^NT_RUN_KEY_FILE_NAME=.+$', "NT_RUN_KEY_FILE_NAME=" }
+				$inicontents | Set-Content $inifile
+				# Note that you will get an access denied error when writing back to the ofcscan.ini file if the
+				# services/processes are still running.
+			}
 		}
 	}
 	function DeleteRunValue {
 		$keypath = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Run"
-		$value = "OfficeScanNT Monitor"
-		$IsValueMissing = (Get-ItemProperty $keypath).$value -eq $null
-		If ($IsValueMissing -eq $False) {
-			Write-BISFLog -Msg "Removing the $value value from the Run key" -ShowConsole -SubMsg -Color DarkCyan
-			Remove-ItemProperty -path $keypath -name $value
+		$values = @("OfficeScanNT Monitor")
+		ForEach ($value in $values) {
+			$IsValueMissing = (Get-ItemProperty $keypath).$value -eq $null
+			If ($IsValueMissing -eq $False) {
+				Write-BISFLog -Msg "Removing the $value value from the Run key" -ShowConsole -SubMsg -Color DarkCyan
+				Remove-ItemProperty -path $keypath -name $value
+			}
 		}
 	}
 
@@ -197,13 +142,22 @@ Process {
 
 	#### Main Program
 	$svc = Test-BISFService -ServiceName $TMServices[0] -ProductName "$product"
-	IF ($svc -eq $true) {
-		#RunFullScan  <<-currently not specified, see above...
-		TerminateProcess
-		StopService
-		deleteTMData
-		UpdateINIFile
-		DeleteRunValue
+	$ApexOne = Test-BISFService -ServiceName $TMServices[5] -ProductName "$product1"
+
+	IF ($ApexOne) {
+		Write-BISFLog -Msg "Skipping $product1 preparation" -Type W -ShowConsole -SubMsg
+		Write-BISFLog -Msg "Please Checkout ApexOne Support https://github.com/EUCweb/BIS-F/issues/233 for further information" -Type W -ShowConsole -SubMsg
+		start-sleep 10
+		} ELSE {
+
+		IF ($svc -eq $true) {
+			#RunFullScan  <<-currently not specified, see above...
+			TerminateProcess
+			StopService
+			deleteTMData
+			UpdateINIFile
+			DeleteRunValue
+		}
 	}
 }
 

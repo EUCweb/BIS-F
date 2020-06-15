@@ -61,6 +61,7 @@ param(
 		11.01.2019 MS: HF 183 - fix defrag arguments for Server 2012 R2
 		27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
 		18.02.2020 JK: Fixed Log output spelling
+		23.05.2020 MS: HF 229 - Shut Down after generalization is not completing if PVS image creation is skipped
 
 	.LINK
 		https://eucweb.com
@@ -123,10 +124,10 @@ Begin {
 
 	IF ($LIC_BISF_CLI_SB -eq "") {
 		$LIC_BISF_CLI_SB = "YES"
-		Write-BISFLog -Msg "CLI Switch for Shutdown Base Image (-Shutdown YES or -Shutdown NO) not specified, it will be set to shutdown the Base Image after successfull build"
+		Write-BISFLog -Msg "CLI Switch for Shutdown Image (-Shutdown YES or -Shutdown NO) not specified, it will be set to shutdown the Image after successfull build"
 	}
 
-	# All commands that are used to after successfully build the base image
+	# All commands that are used to after successfully build the image
 	[array]$PostCommands = @()
 	If ($TestDiskMode) {
 		$DiskNameExtension = Get-BISFDiskNameExtension
@@ -182,12 +183,12 @@ Begin {
 	}
 	$PersState = $TaskStates[1]
 	$PostCommands += [pscustomobject]@{Order = "998"; Enabled = "$true"; showmessage = "N"; CLI = ""; Description = "Set Personalization State in Registry, to control Preparation is running after Personalization first"; Command = "Set-ItemProperty -Path '$hklm_software_LIC_CTX_BISF_SCRIPTS' -Name 'LIC_BISF_PersState' -value '$PersState' -force " }
-	$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully build, shutdown System ? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/s /t 30 /d p:2:4 /c ""BIS-F shutdown finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for shutdown in 30 seconds'" }
+	$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Image $computer successfully created, shutdown System"; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/s /t 30 /d p:2:4 /c ""BIS-F shutdown finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for shutdown in 30 seconds'" }
 
 	####################################################################
 	# Post Command after succesfull build vDisk
 	function PostCommand {
-		Write-BISFLog -Msg "Running PostCommands on your Base Image" -ShowConsole -Color Green
+		Write-BISFLog -Msg "Running PostCommands on your Image" -ShowConsole -Color Green
 		Foreach ($postCommand in ($PostCommands | Sort-Object -Property "Order")) {
 			Write-BISFLog -Msg "$($PostCommand.Description)" -ShowConsole -Color DarkGreen -SubMsg
 			IF (($PostCommand.showmessage) -eq "N") {
@@ -222,7 +223,7 @@ Begin {
 		}
 		####################################################################
 	}
-	
+
 	function Start-AppLayeringLayerFinalze {
 		IF (!($CTXAppLayerName -eq "No-ELM")) {
 			IF ($CTXAppLayeringSW) {
@@ -255,7 +256,7 @@ Begin {
 			Write-BISFLog -Msg "AppLayering is running $($CTXAppLayerName), UniService must not optimized" -ShowConsole -Color Cyan
 		}
 	}
-	
+
 }
 
 Process {
@@ -263,18 +264,18 @@ Process {
 	#### Main Program
 	Write-BISFLog -Msg "Write Sysprep status to registry location Path: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_RunSysPrep -Value: $RunSysPrep"
 	Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_RunSysPrep" -value "$RunSysPrep" #-ErrorAction SilentlyContinue
-	
+
 	Start-AppLayeringLayerFinalze
-	
+
 	IF ($returnTestPVSSoftware -eq $true) {
 		IF ($CTXAppLayeringSW) {
-			Write-BISFLog -Msg "Successfully Built your Base Image with Citrix AppLayering - $CTXAppLayerName ..." -ShowConsole -Color DarkCyan -SubMsg
+			Write-BISFLog -Msg "Successfully Built your Image with Citrix AppLayering - $CTXAppLayerName ..." -ShowConsole -Color DarkCyan -SubMsg
 			if (Test-Path $bootIdPath) {
 				$bootId = Get-Content -Path $bootIdPath
 				& bcdedit /bootsequence $bootId
 				$shutdownFlag = "/r"
 				$PostCommands = $PostCommands | where { $_.order -ne "999" }
-				$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully built, restart System? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
+				$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Image $computer successfully built, restart System? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
 				Write-BISFLog -Msg "Machine will be restarted to allow layer finalization ..." -ShowConsole -Color DarkCyan -SubMsg
 			}
 			PostCommand
@@ -285,7 +286,7 @@ Process {
 					$CheckPVSLog = Test-BISFLog -CheckLogFile "$P2PVS_LOGFile" -SearchString "$P2PVS_LOGFile_search"
 					get-BISFLogContent -GetLogFile "$P2PVS_LOGFile"
 					IF ($CheckPVSLog -ne "") {
-						Write-BISFLog -Msg "Successfully built your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
+						Write-BISFLog -Msg "Successfully built your Image..." -ShowConsole -Color DarkCyan -SubMsg
 						Write-BISFLog -Msg "vDisk $P2PVS_LOGFile_search"
 						PostCommand
 					}
@@ -294,7 +295,7 @@ Process {
 					}
 				}
 				IF ($CheckP2PVSlog -eq $false) {
-					Write-BISFLog -Msg "Successfully built your Base Image..." -ShowConsole -Color DarkCyan -SubMsg
+					Write-BISFLog -Msg "Successfully built your Image..." -ShowConsole -Color DarkCyan -SubMsg
 					PostCommand
 				}
 
@@ -304,33 +305,33 @@ Process {
 				}
 			}
 			ELSE {
-				Write-BISFLog -Msg "Execution of PostCommands are skipped, if the PVS Master Image creation is skipped..." -ShowConsole -Color Yellow -Type W
-				Start-Sleep -s 30
+				Write-BISFLog -Msg "Successfully built your Image after PVS Image creation is set..." -ShowConsole -Color DarkCyan -SubMsg
+				PostCommand
 			}
 		}
 	}
 	ELSE {
 		IF ($ImageSW -eq $true) {
 			IF ($CTXAppLayeringSW) {
-				$txt = "Successfully built your Base Image with Citrix AppLayering in $CTXAppLayerName ..."
+				$txt = "Successfully built your Image with Citrix AppLayering in $CTXAppLayerName ..."
 				if (Test-Path $bootIdPath) {
 					$bootId = Get-Content -Path $bootIdPath
 					& bcdedit /bootsequence $bootId
 					$shutdownFlag = "/r"
 					$PostCommands = $PostCommands | where { $_.order -ne "999" }
-					$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Base Image $computer successfully built, restart System? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
+					$PostCommands += [pscustomobject]@{Order = "999"; Enabled = "$true"; showmessage = "Y"; CLI = "LIC_BISF_CLI_SB"; Description = "Image $computer successfully created, restart System? "; Command = "Start-BISFProcWithProgBar -ProcPath '$($env:windir)\system32\shutdown.exe' -Args '/r /t 30 /d p:2:4 /c ""BIS-F restart finalize in 30 seconds..."" ' -ActText 'Sealing completed.. waiting for restart in 30 seconds'" }
 					Write-BISFLog -Msg "Machine will be restarted to allow layer finalization ..." -ShowConsole -Color DarkCyan -SubMsg
 				}
 			}
 			ELSE {
-				$txt = "Successfully built your Base Image.."
+				$txt = "Successfully built your Image.."
 			}
 			Write-BISFLog -Msg "$txt" -ShowConsole -Color DarkCyan -SubMsg
 			PostCommand
 		}
 		ELSE {
 			IF ($RunSysPrep -eq $true) {
-				Write-BISFLog -Msg "Running Sysprep to seal the Base Image" -ShowConsole -Color DarkCyan -SubMsg
+				Write-BISFLog -Msg "Running Sysprep to seal the Image" -ShowConsole -Color DarkCyan -SubMsg
 				$LIC_BIS_Sysprep_ServiceList = $LIC_BIS_Sysprep_ServiceList -join ","
 				Write-BISFLog -Msg "Write Sysprep ServiceList to registry location: $hklm_software_LIC_CTX_BISF_SCRIPTS -Name: LIC_BISF_SysPrep_ServiceList -Value: $LIC_BIS_Sysprep_ServiceList"
 				Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BIS_Sysprep_ServiceList" -value "$LIC_BIS_Sysprep_ServiceList" #-ErrorAction SilentlyContinue

@@ -1,4 +1,33 @@
 ---------------------------------
+Version 7.1912.3.11037 -- 15/06/2020 06:32:36 AM:
+15.06.2020 MS: Fix evalution notification in MSI installer
+---------------------------------
+Version 7.1912.3.11036 -- 15/06/2020 06:31:12 AM:
+15.06.2020 MS: Fix evalution notification in EXE installer
+---------------------------------
+Version 7.1912.3.11034 -- 13/06/2020 19:15:55 PM:
+05.06.2020 MS: ENH 225 - Providing MSI Installer
+---------------------------------
+Version 7.1912.3.11033 -- 13/06/2020 19:14:34 PM:
+05.06.2020 MS: HF 233 - Skipping ApexOne, checkout https://github.com/EUCweb/BIS-F/issues/233 for further informations
+05.06.2020 DS: HF 240 - SSLVDA optimization with Certificate determination, Auto enrollment option, Skip certificate verification
+03.06.2020 MS: HF 233 - TM Process not killed, using new function Stop-BISFProcesses
+01.06.2020 MS: HF 187 - VDA 1912 inside AppLayering Packaging VM wrong Layer back
+01.06.2020 MS: HF 238 - CylanceProtect - VDI Fingerprinting support
+24.05.2020 MS: HF 239 - Invoke-FolderScripts is relying on the default order from Get-ChildItem
+24.05.2020 MS: HF 242 - Shared Configuration Errorhandling if FilePath is Null Or Empty
+23.05.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
+23.05.2020 MS: HF 229 - Shut Down after generalization is not completing if PVS image creation is skipped
+23.05.2020 MS: HF 236 - No MSFT_NetAdapterRssSettingData objects found
+23.05.2020 MS: HF 226 - App-V Powershell Module Could Not Be Loaded
+23.05.2020 MS: HF 217 - Powershell Version 5 Notification
+23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
+23.05.2020 MS: HF 231 - Skipping file precache if vDisk is in private Mode
+23.05.2020 MS: HF 220 - fix typo for DirtyShutdown Flag
+23.05.2020 MS: HF 232 - CacheDisk not formatted
+06.03.2020 MS: HF 222 - Fixing encoding
+06.03.2020 MS: HF 223 - Advanced Installer: Empty Folder in ProgramMenu
+---------------------------------
 Version 7.1912.2.11029 -- 26/02/2020 05:12:55 AM:
 26.02.2020 MS: ENH 200 - new Advanced Installer fix Trial Popup
 ---------------------------------

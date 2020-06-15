@@ -16,6 +16,7 @@
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		18.02.2020 JK: Fixed Log output spelling
 		20.02.2020 MS: HF 210 - App-V PackageInstallationRoot not detected properly
+		23.05.2020 MS: HF 226 - App-V Powershell Module Could Not Be Loaded
 
 
 	.LINK
@@ -39,9 +40,11 @@ Process {
 		}
 		ELSE {
 			$HKLM_Path = "HKLM:\Software\Microsoft\AppV\Client"
-			$Installpath = Get-ItemProperty -path "$HKLM_Path" | % { $_.InstallPath }
+			$Installpath = (Get-ItemProperty -path $HKLM_Path).InstallPath
 			$ModuleFile = "AppvClient.psd1"
-			$ModulePath = "$Installpath\AppvClient\$ModuleFile"
+			$AppVPath = (Get-ChildItem -Path $Installpath -Recurse -Filter $ModuleFile -ErrorAction SilentlyContinue).Directory.FullName
+			$ModulePath = "$AppVPath\$ModuleFile"
+			Write-BISFLog -Msg "AppV Module is located in path $AppVPath"
 			$PckInstRoot = (get-appvclientconfiguration -name PackageInstallationRoot).value
 			$PckInstRoot = [Environment]::ExpandEnvironmentVariables($PckInstRoot)
 			if (!$PckInstRoot) {

@@ -30,6 +30,7 @@
 	  11.10.2019 MS: Running Optimizations on VMWare Hypervisor only
 	  02.01.2020 MS: HF 168 - VMware Optimizations 52_PrepBISF_VMWareTCPIPOptimization not executed
 	  05.01.2020 MS: HF 171 - VMware TCPIP Optimizations failed
+	  23.05.2020 MS: HF 236 - No MSFT_NetAdapterRssSettingData objects found
 
 	  .Link
     #>
@@ -292,7 +293,7 @@ Process {
 	}
 	                                                                                                                                                                                                                                                                                                                                                                                                            else {
 		#for server 2012 R2 and 2016 this should apply
-		$NetAdapters = Get-NetAdapter | sort -Property InterfaceDescription
+		$NetAdapters = Get-NetAdapter |Where-Object {$_.Status -eq "Up"} | sort -Property InterfaceDescription
 		#check if RSC is enabled globally.  If not, enable on specific vmxnet3 NIC's
 		if (((Get-NetOffloadGlobalSetting).ReceiveSegmentCoalescing) -eq "Disabled") {
 			foreach ($netAdapter in $netAdapters) {
