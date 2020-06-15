@@ -1,4 +1,10 @@
 ---------------------------------
+Version 7.1912.3.11037 -- 15/06/2020 06:32:36 AM:
+15.06.2020 MS: Fix evalution notification in MSI installer
+---------------------------------
+Version 7.1912.3.11036 -- 15/06/2020 06:31:12 AM:
+15.06.2020 MS: Fix evalution notification in EXE installer
+---------------------------------
 Version 7.1912.3.11034 -- 13/06/2020 19:15:55 PM:
 05.06.2020 MS: ENH 225 - Providing MSI Installer
 ---------------------------------
