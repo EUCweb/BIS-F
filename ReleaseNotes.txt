@@ -1,3 +1,4 @@
+﻿15.06.2020 MS: HF 247 - function Test-AppLayeringSoftware - DomainMember output - missing $
 ---------------------------------
 Version 7.1912.3.11037 -- 15/06/2020 06:32:36 AM:
 15.06.2020 MS: Fix evalution notification in MSI installer
