@@ -2556,6 +2556,8 @@ function Test-AppLayeringSoftware {
 		02.01.2020 MS: Bugfix 164: Layer finalize is blocked with VDA 1912 LTSR and activated UPL
 		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 		01.06.2020 MS: HF 187 - VDA 1912 inside AppLayering Packaging VM wrong Layer back
+		15.06.2020 MS: HF 247 - DomainMember output - missing $
+
 	.LINK
 		https://eucweb.com
 #>
@@ -2577,7 +2579,7 @@ function Test-AppLayeringSoftware {
 		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {$OverrideRunMode = $true}
 		IF (($UPL -eq $true ) -and ($DiskMode -eq "VDAPrivateAppLayering")) {$OverrideRunMode = $true}
 		$DomainMember = (Get-WmiObject -Class Win32_ComputerSystem).PartOfDomain
-		Write-BISFLog -Msg "Computer is DomainMember: DomainMember"
+		Write-BISFLog -Msg "Computer is DomainMember: $DomainMember"
 		IF (($DomainMember -eq $true ) -and ($CTXAppLayeringRunMode -ne 1)) { $OverrideRunMode = $false } ELSE {$OverrideRunMode = $true }
 		IF ($OverrideRunMode -eq $true) {
 			$CTXAppLayeringRunModeNew = 1
