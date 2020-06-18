@@ -88,6 +88,7 @@ param()
 		27.12.2019 MS/MN: HF 160 - typo for Calculation of free space for the VHDX file
 		18.02.2020 JK: Fixed Log output spelling
 		25.03.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
+		18.06.2020 MS: HF 251 - switch the lines 356-357 -> $UPL muste be detected before Test-AppLayeringSoftware is used
 
       #>
 Begin {
@@ -353,8 +354,8 @@ Process {
 	Test-BISFRegHive -Verbose:$VerbosePreference
 	$Global:DiskID = Get-BISFCacheDiskID Verbose:$VerbosePreference
 	$Global:returnGetHypervisor = Get-BISFHypervisor -Verbose:$VerbosePreference
-	$Global:returnTestAppLayeringSoftware = Test-BISFAppLayeringSoftware -Verbose:$VerbosePreference
 	$Global:returnTestXDSoftware = Test-BISFXDSoftware -Verbose:$VerbosePreference
+	$Global:returnTestAppLayeringSoftware = Test-BISFAppLayeringSoftware -Verbose:$VerbosePreference
 	$Global:returnTestPVSSoftware = Test-BISFPVSSoftware -Verbose:$VerbosePreference
 	$Global:returnTestVMHVSoftware = Test-BISFVMwareHorizonViewSoftware -Verbose:$VerbosePreference
 	$Global:returnTestXiFrameSoftware = Test-BISFNutanixFrameSoftware -Verbose:$VerbosePreference

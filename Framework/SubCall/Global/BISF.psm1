@@ -2557,56 +2557,60 @@ function Test-AppLayeringSoftware {
 		07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 		01.06.2020 MS: HF 187 - VDA 1912 inside AppLayering Packaging VM wrong Layer back
 		15.06.2020 MS: HF 247 - DomainMember output - missing $
+		18.06.2020 MS: HF 251 - Wrong Citrix AppLayering Layer detected with UPL and on Server OS
 
 	.LINK
 		https://eucweb.com
-#>
+    #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	#default values
-	$Global:CTXAppLayeringSW = $false              # AppLayering is installed
+	$Global:CTXAppLayeringSW = $false            # AppLayering is installed
 	$Global:CTXAppLayeringOSLayer = $false       # OS Layer detected
 	$Global:CTXAppLayeringPFLayer = $false       # Platform Layer detected
 	$GLobal:CTXAppLayerName = $Null
-	$svc = Test-BISFService -ServiceName "UniService" -ProductName "Citrix AppLayering"
+	$svcName = "UniService"
+	$ProductName = "Citrix AppLayering"
+	$svc = Test-BISFService -ServiceName $svcName -ProductName $ProductName
 	IF ($svc -eq $true) {
 		$Global:CTXAppLayeringSW = $true
 		$Global:ImageSW = $true
-		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
-		$DiskMode = Get-BISFDiskMode
-		Write-BISFLog -Msg "DiskMode is set to $DiskMode"
-		$svcSatus = Test-BISFServiceState -ServiceName "UniService" -Status "Running"
 		$OverrideRunMode = $false
-		IF (($DiskMode -eq "ReadWriteAppLayering") -or ($svcSatus -ne "Running")) {$OverrideRunMode = $true}
-		IF (($UPL -eq $true ) -and ($DiskMode -eq "VDAPrivateAppLayering")) {$OverrideRunMode = $true}
+		Write-BISFLog -Msg "OverrideRunMode: $OverrideRunMode"
+		$Global:CTXAppLayeringRunMode = (Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Services\unifltr).RunMode
+		Write-BISFLog -Msg "$ProductName RunMode: $CTXAppLayeringRunMode"
+		$DiskMode = Get-BISFDiskMode
+		$svcSatus = Test-BISFServiceState -ServiceName $svcName -Status "Running"
+		Write-BISFLog -Msg "ServiceStatus Citrix AppLayering: $svcSatus"
 		$DomainMember = (Get-WmiObject -Class Win32_ComputerSystem).PartOfDomain
-		Write-BISFLog -Msg "Computer is DomainMember: $DomainMember"
-		IF (($DomainMember -eq $true ) -and ($CTXAppLayeringRunMode -ne 1)) { $OverrideRunMode = $false } ELSE {$OverrideRunMode = $true }
+		Write-BISFLog -Msg "DomainMember: $DomainMember"
+		Write-BISFLog -Msg "UPL: $UPL"
+
+		IF ($CTXAppLayeringRunMode -ne 1) {
+			IF (($svcSatus -ne "Running") -or ($UPL -eq $true)) {$OverrideRunMode = $true; $OverrideCode = "UniService/UPL";Write-BISFLog -Msg "OverrideRunMode: $OverrideRunMode"}
+		}
+
 		IF ($OverrideRunMode -eq $true) {
 			$CTXAppLayeringRunModeNew = 1
-			Write-BISFLog "The original App Layering RunMode ist set to $CTXAppLayeringRunMode, based on the DiskMode $DiskMode the RunMode is internally changed to $CTXAppLayeringRunModeNew to get the right layer"
+			Write-BISFLog "[Code $OverrideCode] The original $ProductName RunMode ist set to $CTXAppLayeringRunMode, based on the detection of the current environment the RunMode is internaly changed to $CTXAppLayeringRunModeNew to get the right layer"
 			$CTXAppLayeringRunMode = $CTXAppLayeringRunModeNew
 		}
 		Switch ($CTXAppLayeringRunMode) {
 			1 {
 				$GLobal:CTXAppLayerName = "No-ELM"
 			}
-
 			3 {
 				$Global:CTXAppLayeringOSLayer = $true
 				$GLobal:CTXAppLayerName = "OS-Layer"
 			}
-
 			4 {
 				$Global:CTXAppLayeringPFLayer = $true
 				$Global:CTXAppLayerName = "Platform/Application Layer"
 				IF ($DiskMode -eq "VDAPrivateAppLayering") { $Global:CTXAppLayeringPFLayer = $true; $Global:CTXAppLayerName = "Platform-Layer" }
 				IF ($DiskMode -eq "UnmanagedAppLayering") { $Global:CTXAppLayeringAppLayer = $true; $Global:CTXAppLayerName = "Application-Layer" }
-
 			}
-			Default { Write-BISFLog -Msg "Not defined - AppLayering RunMode is set to $CTXAppLayeringRunMode" -ShowConsole -Type W }
+			Default { Write-BISFLog -Msg "Not defined - $ProductName RunMode is set to $CTXAppLayeringRunMode" -ShowConsole -Type W }
 		}
-		Write-BISFLog -Msg "Citrix AppLayering - $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
-
+		Write-BISFLog -Msg "$ProductName - $CTXAppLayerName detected" -ShowConsole -SubMsg -Color DarkCyan
 	}
 	return $svc
 
