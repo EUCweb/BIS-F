@@ -1,4 +1,5 @@
-﻿18.06.2020 MS: HF 251 - Wrong Citrix AppLayering Layer detected with UPL and on Server OS
+﻿18.06.2020 MS: HF 249 - WEMCache folder will be reconfigured if UPL is installed (Use-PVSonfig/Use-MCSConfig)
+18.06.2020 MS: HF 251 - Wrong Citrix AppLayering Layer detected with UPL and on Server OS
 16.06.2020 MS: HF 250 - VDA SSL Wildcard Support (Line 177 - 179)
 15.06.2020 MS: HF 247 - function Test-AppLayeringSoftware - DomainMember output - missing $
 ---------------------------------
