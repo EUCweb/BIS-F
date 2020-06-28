@@ -1,3 +1,4 @@
+28.06.2020 MS: HF 257 - Azure WVD not detected
 ---------------------------------
 Version 7.1912.4.11038 -- 21/06/2020 20:57:02 PM:
 18.06.2020 MS: HF 249 - WEMCache folder will be reconfigured if UPL is installed (Use-PVSonfig/Use-MCSConfig)

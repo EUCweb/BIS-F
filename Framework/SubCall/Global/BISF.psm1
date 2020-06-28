@@ -3843,24 +3843,22 @@ function Test-WVDSoftware {
 		History:
 		  25.08.2019 MS: function created
 		  07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
+		  28.06.2020 MS: HF 257 - Azure WVD not detected
+
 
 	.LINK
 		https://eucweb.com
 #>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
-	$OSName = (Get-WMIObject Win32_OperatingSystem).Name
 	$product = "Microsoft Windows 10 Enterprise for Virtual Desktops"
 	IF ($OSName -eq $product) { $WVD = $true } ELSE { $WVD = $false }
 	IF ($WVD -eq $true) {
-		IF ($WVD -eq $true) {
-			Write-BISFlog -Msg "Product $product installed" -ShowConsole -Color Cyan
-			$Global:ImageSW = $true
-		} ELSE {
+		Write-BISFlog -Msg "Product $product installed" -ShowConsole -Color Cyan
+		$Global:ImageSW = $true
+	} ELSE {
 			Write-BISFlog -Msg "Product $product NOT installed"
-		}
 	}
 	return $WVD
-
 }
 
 function Set-LAPSExpirationTime{

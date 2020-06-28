@@ -62,6 +62,7 @@ param(
 		27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
 		18.02.2020 JK: Fixed Log output spelling
 		23.05.2020 MS: HF 229 - Shut Down after generalization is not completing if PVS image creation is skipped
+		28.06.2020 MS: HF 257 - Azure WVD not detected -> Update Platform info, if no Image Managemment is detected
 
 	.LINK
 		https://eucweb.com
@@ -362,7 +363,7 @@ Process {
 				}
 			}
 			ELSE {
-				Write-BISFLog -Msg "No Image Management Software detected [Citrix PVS Target Device Driver, XenDesktop VDA or VMware View Agent]" -Type W
+				Write-BISFLog -Msg "No Image Management Software detected [Citrix VDA, Citrix PVS Target Deivce Driver, VMware View Agent, Parallels RAS Agent, Nutanix Xi Frame, Azure WVD]" -Type W
 				Write-BISFLog -Msg "The system will not be shutdown by this script. Please run Sysprep or your prefered method manualy or install one of the software above and run the script again" -Type W
 				Start-Sleep -s 30
 			}
