@@ -12,6 +12,7 @@
 		  16.08.2019 MS: ENH 107 - integrated into BIS-F
 		  05.06.2020 DS: HF 240 - SSLVDA optimization with Certificate determination, Auto enrollment option, Skip certificate verification
 		  16.06.2020 MS: HF 250 - VDA SSL Wildcard Support (Line 177 - 179)
+		  28.06.2020 MS: HF 253 - VDA SSL Wildcard Cert Case Sensitive (Line 176 & 178)
 
             - Certificate determination
                 - Script is verifying if a certificate thumbprint has been specified. If a thumbprint has been configured but the respective certificate cannot be found within Local Machine Certificate Store the script fails.
@@ -172,10 +173,9 @@ Process {
 
         #If no certificate thumbprint has been specified, check for any valid certificate within Local Machine Certificate Store (Subject Alternative Name > Computername).
         else{
-
-            $Cert = $Store.Certificates | where { $_.Subject -like "$($env:COMPUTERNAME)*" } | sort NotAfter -Descending | Select -First 1
+            $Cert = $Store.Certificates | where { $_.DnsNameList.Unicode -like "$($env:COMPUTERNAME)*" } | sort NotAfter -Descending | Select -First 1
 			if (!$Cert){
-				$Cert = $Store.Certificates | where { ($_.Subject -like ("*." + "$([System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name)"))} | sort NotAfter -Descending | Select -First 1
+				$Cert = $Store.Certificates | where { ($_.DnsNameList.Unicode -like ("*." + "$([System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name)"))} | sort NotAfter -Descending | Select -First 1
 			}
 			$CertificateThumbPrint = $Cert.GetCertHashString()
 
