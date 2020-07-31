@@ -1,3 +1,4 @@
+31.07.2020 MS: HF 267 - Personalization action is running two times (Script 01_PersBISF_TimeAndGPO.ps1 removed)
 28.06.2020 MS: HF 253 - VDA SSL Wildcard Cert Case Sensitive (Line 176 & 178)
 28.06.2020 MS: HF 257 - Azure WVD not detected
 ---------------------------------
