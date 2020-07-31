@@ -115,6 +115,7 @@ param(
 		13.01.2019 MS: HF 186 - deletion of C:\Windows\temp without GPO control is not possible
 		18.02.2020 JK: Fixed Log output spelling
 		23.05.2020 MS: HF 220 - fix typo for DirtyShutdown Flag
+		31.07.2020 MS: HF 266 - fixing typo
 
 	.LINK
 		https://eucweb.com
@@ -853,7 +854,7 @@ Begin {
 						Invoke-Expression $($prepCommand.Command)
 					}
 					ELSE {
-						Write-BISFLog -Msg " Skipping Commannd $($prepCommand.Description)" -ShowConsole -Color DarkCyan -SubMsg
+						Write-BISFLog -Msg " Skipping Command $($prepCommand.Description)" -ShowConsole -Color DarkCyan -SubMsg
 					}
 				}
 				# these 2 variables must be cleared after each step, to not store the value in the variable and use them in the next $prepCommand
