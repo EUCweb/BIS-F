@@ -5,12 +5,13 @@
 		Delete RDS Timebomb Key for never ending grace Period
 	.EXAMPLE
 	.NOTES
-		Author: Benjamin Ruoff
+		Author: Matthias Schlimm
 		Company:  EUCWeb.com
 
 		History:
 		14.04.2016 BR: Script created
 		17.06.2016 BR: Added Filter for Operating System Type
+		31.07.2020 MS: HF 268 - Using SID to translate it to the real name to support MUI Systems
 
 	.LINK
 		https://eucweb.com
@@ -112,13 +113,17 @@ Process {
 		#Take Ownership of Registry Key
 		$key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("SYSTEM\CurrentControlSet\Control\Terminal Server\RCM\GracePeriod", [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]::takeownership)
 		$acl = $key.GetAccessControl([System.Security.AccessControl.AccessControlSections]::None)
-		$me = [System.Security.Principal.NTAccount]"Builtin\Administrators"
+		$SID = "S-1-5-32-544" #Builtin\Admnistrators
+		$objSID = New-Object System.Security.Principal.SecurityIdentifier($SID)
+		$objUser = $objSID.Translate([System.Security.Principal.NTAccount])
+		$localname = $objUser.Value
+		$me = [System.Security.Principal.NTAccount]$localname
 		$acl.SetOwner($me)
 		$key.SetAccessControl($acl)
 
 		#Read current ACL and add rule for Builtin\Admnistrators
 		$acl = $key.GetAccessControl()
-		$rule = New-Object System.Security.AccessControl.RegistryAccessRule ("Builtin\Administrators", "FullControl", "Allow")
+		$rule = New-Object System.Security.AccessControl.RegistryAccessRule ($localname, "FullControl", "Allow")
 		$acl.SetAccessRule($rule)
 		$key.SetAccessControl($acl)
 		$key.Close()
