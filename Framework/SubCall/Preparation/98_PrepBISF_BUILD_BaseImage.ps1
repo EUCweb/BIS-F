@@ -64,6 +64,7 @@ param(
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		23.12.2019 MS: ENH 98 - Skip execution of PVS Target OS Optimization
 		18.02.2020 JK: Fixed Log output spelling
+		01.08.2020 MS: HF 262 - UPL + PVS Target Device Driver doesn't convert VHDX
 
 	.LINK
 		https://eucweb.com
@@ -374,7 +375,7 @@ Process {
 		}
 
 		IF ($returnTestPVSSoftware -eq $true) {
-			IF ($returnTestAppLayeringSoftware -eq $false) {
+			IF (($returnTestAppLayeringSoftware -eq $false) -or ($UPL -eq $true)) {
 				IF ($DiskMode -notmatch "AndSkipImaging") {
 					$Global:SkipPVSImaging = $false
 					Set-P2VTool
