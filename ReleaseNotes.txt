@@ -1,3 +1,4 @@
+01.08.2020 MS: HF 258 - ADML: typo in Configure Personalization
 01.08.2020 MS: HF 260 - McAfee add support for 5.6.x
 01.08.2020 MS: HF 261 - CylanceProtect fix Errorhandling
 01.08.2020 MS: HF 262 - UPL + PVS Target Device Driver doesn't convert VHDX

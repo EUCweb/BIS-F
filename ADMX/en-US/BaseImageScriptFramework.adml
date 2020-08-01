@@ -51,7 +51,7 @@ The Optimizer Logfile is included in the BIS-F logfile, with this option you can
       <string id="POL_SDelete">Run SDelete</string>
       <string id="POL_SDelete_Help">Run SDelete depending on your environment:
 
-- During sealing on the BaseImage 
+- During sealing on the BaseImage
 - During sealing on the Citrix PVS parent Disk (vhd or vhdx)
 - During sealing with Citrix AppLayering outside ELM
 - Citrix PVS Image on the WriteCache Disk if the image is in shared image mode
@@ -418,7 +418,7 @@ During sealing a log file will be created:  C:\Windows\Logs\PREP_BISF_WPT_%Compu
 During personalization a log file will be created:  C:\Windows\Logs\PERS_BISF_WPT_%Computername%_DateTime.log
 
 The log rotation for the Windows PowerShell Transcript is hardcoded set to 5, so a maximum of 5 WPT logs will be kept.
- 
+
 </string>
       <string id="POL_FldCfg">Configure Folders</string>
       <string id="POL_FldCfg_Help">If Citrix PVS Target Device Driver is installed, some folders should be redirected to the write cache disk. You can specify those folders here:
@@ -452,7 +452,7 @@ If you enable this policy, you must enter a valid UNC path. The user account, wh
 The vDisk will be created in the VHDX Format with the name %ComputerName%-DateTime.vhdx, for example VM-XA7MASTER01-020817-1045.vhdx
 
 Custom arguments:
-If you enable this policy, depending on the above configuration you can enter custom arguments, like C: only, for example. 
+If you enable this policy, depending on the above configuration you can enter custom arguments, like C: only, for example.
 Note: If you entered incorrect arguments, the conversion of the PVS vDisk might fail!
 If you do not enable, the default arguments inside BIS-F will be used (C: /Autofit /L).
 
@@ -516,10 +516,10 @@ Active State Override (private Images only):
 During Startup, the personalization phase runs. If on the MasterImage a new seal job is runs, it will wait until the existing personalization phase is finished.
 
 Do not change and wait: Wait until the personalization is finished or the MaxExecutionTime is reached to run the sealing process (preparation phase) (preparation phase).
-Change and wait: Does not wait for the end of the personalization phase and immediately starts the sealing process (preparation phase). 
+Change and continue: Does not wait for the end of the personalization phase and immediately starts the sealing process (preparation phase).
 
 Maximum Execution Timeout (private Images only):
-You can specify the maximum execution timeout for the personalization process. Default is set to 60 minutes, min. 15, max 120. You can increase/decrease the value in increments of 5 minutes. If the value is reached the personalization phase is terminated and the sealing process (preparation phase) can be started 
+You can specify the maximum execution timeout for the personalization process. Default is set to 60 minutes, min. 15, max 120. You can increase/decrease the value in increments of 5 minutes. If the value is reached the personalization phase is terminated and the sealing process (preparation phase) can be started
 </string>
       <string id="POL_ExpCfg">Shared Configuration</string>
       <string id="POL_ExpCfg_Help">This policy setting allows you to export the BISF CLI commands that are set from a complete BIS-F policy to an JSON file. This can be used for computers that are running in Worker Groups (like Citrix AppLayering) or you have no access to modify the Active Directory Group Policies.
@@ -551,7 +551,7 @@ Additional delay (default 0)
 You can enter additional time in seconds, to start the Citrix Desktop Service after this delay. This time you entered here will be addition to the BIS-F personalization phase finishing.
 Max seconds: 1800
 
-Note: If you have configured the environment so that device personalization configuration is skipped on all disk modes or in Private Mode only, the Citrix Desktop Service will be started as per normal windows behavior. 
+Note: If you have configured the environment so that device personalization configuration is skipped on all disk modes or in Private Mode only, the Citrix Desktop Service will be started as per normal windows behavior.
 
 Enable NVIDIA GRID:
 If the NVIDIA Display Driver Service is detected, BIS-F will trigger the right command on the Base Image as follows:
@@ -602,7 +602,7 @@ You can specify the maximum execution timeout for the WinSxS Optimization. The d
 About WinSxS:
 The Windows component store (C:\Windows\winsxs) directory is used during servicing operations within Windows installations. Servicing operations include, but are not limited to, Windows Update, service pack, and hotfix installations.
 
-The component store contains all the files that are required for a Windows installation. And, any updates to those files are also held within the component store as the updates are installed. This causes the component store to grow over time as more updates, features, or roles are added to the installation. The component store uses NTFS hard links between itself and other Windows directories to increase the robustness of the Windows platform. 
+The component store contains all the files that are required for a Windows installation. And, any updates to those files are also held within the component store as the updates are installed. This causes the component store to grow over time as more updates, features, or roles are added to the installation. The component store uses NTFS hard links between itself and other Windows directories to increase the robustness of the Windows platform.
 </string>
       <string id="POL_WUAgent">Install Windows Updates using WUAgent</string>
       <string id="POL_WUAgent_Help">Install Windows Update using the native Windows Update Agent
@@ -645,11 +645,11 @@ Enter the name of the WEM Agent Cache folder, e.g. WEMCache
 If the folder doesn't exist, it will be created automatically
 Requirements: PVS Target Device driver or VDA 1903 or higer (MCSIO) must be installed to take effect.
 
-NOTE: Please specify the name of the folder only, without any drive letter! 
+NOTE: Please specify the name of the folder only, without any drive letter!
 The Cache Folder is created like %CachDisk Driveletter%\Citrix\%WEM Agent Cache folder name%
 The Citrix folder is created from BIS-F automatically.
 
- 
+
 </string>
       <string id="POL_AppLayCfg">Configure Citrix App Layering</string>
       <string id="POL_AppLayCfg_Help">This policy settings allows you to manage Citrix App Layering and inject different BIS-F shared configurations based on Layers
@@ -657,15 +657,15 @@ The Citrix folder is created from BIS-F automatically.
 If you enable this policy setting, you can enable different Shared Configurations
 
 Enable OS Layer config file:
-Configuration from BISFconfig_AppLay_OS.json is used 
+Configuration from BISFconfig_AppLay_OS.json is used
 
 Enable Platform Layer config file:
-If your Platform Layer is domain joined, you can enable this setting and Configuration from BISFconfig_AppLay_Plt.json is used 
+If your Platform Layer is domain joined, you can enable this setting and Configuration from BISFconfig_AppLay_Plt.json is used
 
-Enable App-/Platform Layer config file: 
-Configuration from BISFconfig_AppLay_AppPlt.json is used 
+Enable App-/Platform Layer config file:
+Configuration from BISFconfig_AppLay_AppPlt.json is used
 
-Enable outside of ELM config file: 
+Enable outside of ELM config file:
 Configuration from BISFconfig_AppLay_NoELM.json is used if you seal the Image outside of the ELM with PVS (https://support.citrix.com/article/CTX226062).
 
 
