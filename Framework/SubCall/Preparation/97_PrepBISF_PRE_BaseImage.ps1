@@ -116,6 +116,7 @@ param(
 		18.02.2020 JK: Fixed Log output spelling
 		23.05.2020 MS: HF 220 - fix typo for DirtyShutdown Flag
 		31.07.2020 MS: HF 266 - fixing typo
+		01.08.2020 MS: HF 252 - supporting new NVIDIA Drivers
 
 	.LINK
 		https://eucweb.com
@@ -761,34 +762,36 @@ Begin {
 	}
  ELSE {
 		IF ($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) {
-			$svc = Test-BISFService -ServiceName "nvsvc" -ProductName "nVIDIA Diplay Driver Service"
-			IF ($svc -eq $true) {
-				Write-BISFLog -Msg "VDA Version $VDAVersion" -ShowConsole
-				IF ($VDAVersion -le "7.11") {
-					$cmd = "$glbSVCImagePath\bin\Montereyenable.exe" # $glbSVCImagePath is getting from Test-BISFService
-					$args = "-enable -noreset"
+			$NvidiaServiceName = @("nvsvc","NVWMI")
+			Foreach ($ServiceName in $NvidiaServiceName) {
+				$ServiceDisplayName = $(Get-Service -Name $ServiceName).DisplayName
+				$svc = Test-BISFService -ServiceName $ServiceName -ProductName $ServiceDisplayName
+				IF ($svc -eq $true) {
+					Write-BISFLog -Msg "VDA Version $VDAVersion" -ShowConsole
+					IF ($VDAVersion -le "7.11") {
+						$cmd = "$glbSVCImagePath\bin\Montereyenable.exe" # $glbSVCImagePath is getting from Test-BISFService
+						$args = "-enable -noreset"
+					}
+
+					IF ($VDAVersion -ge "7.12") {
+						$cmd = "$glbSVCImagePath\bin\NVFBCEnable.exe" # $glbSVCImagePath is getting from Test-BISFService
+						$args = "-enable -noreset"
+					}
+
+					$PrepCommands += [pscustomobject]@{
+						Order       = "$ordercnt";
+						Enabled     = "$true";
+						showmessage = "N";
+						CLI         = "";
+						TestPath    = "$cmd";
+						Description = "Enable NVIDIA GRID with command $cmd $args";
+						Command     = "Start-BISFProcWithProgBar -ProcPath '$cmd' -Args '$args' -ActText 'Enable NVIDIA GRID for VDA Version $VDAVersion'"
+					};
+					$ordercnt += 1
 				}
-
-				IF ($VDAVersion -ge "7.12") {
-					$cmd = "$glbSVCImagePath\bin\NVFBCEnable.exe" # $glbSVCImagePath is getting from Test-BISFService
-					$args = "-enable -noreset"
+				ELSE {
+					Write-BISFLog -Msg "$ServiceDisplayName is not installed and can't be enabled" -ShowConsole -Type W
 				}
-
-				$PrepCommands += [pscustomobject]@{
-					Order       = "$ordercnt";
-					Enabled     = "$true";
-					showmessage = "N";
-					CLI         = "";
-					TestPath    = "$cmd";
-					Description = "Enable NVIDIA GRID with command $cmd $args";
-					Command     = "Start-BISFProcWithProgBar -ProcPath '$cmd' -Args '$args' -ActText 'Enable NVIDIA GRID for VDA Version $VDAVersion'"
-				};
-				$ordercnt += 1
-
-
-			}
-			ELSE {
-				Write-BISFLog -Msg "NVIDIA Display Driver is not installed and can't be enabled" -ShowConsole -Type W
 			}
 		}
 
