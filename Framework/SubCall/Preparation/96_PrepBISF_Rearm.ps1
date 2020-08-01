@@ -45,6 +45,8 @@ param(
 		07.01.2020 MS: HF 174 - Office detection general change
 		18.02.2020 JK: Fixed Log output spelling
 		01.08.2020 MS: HF 269 - Office detection takes too long, using reg instead of WMI
+		01.08.2020 MS: HF 265 - Office 2010 rearm is not performed
+
 
 	.LINK
 		https://eucweb.com
@@ -78,6 +80,7 @@ Begin {
 
 	$OfficeProducts = @("Microsoft Office Professional Plus","Microsoft Office Standard","Click-to-Run Licensing Component")
 	[array]$OfficeInstallRoot = $null
+	[array]$OSPPREARMInstallRoot = $null
 	$OSPPREARM = $null
 	ForEach ($OfficeProduct in $OfficeProducts) {
         $Office = (Get-BISFSoftwareInfo -Publisher "Microsoft" -Name "$OfficeProduct")[-1] | select DisplayVersion,DisplayName
@@ -103,6 +106,16 @@ Begin {
 			Write-BISFLog -Msg "Installpath $OfficeInstallRoot " -ShowConsole -Color DarkCyan -SubMsg
 			$OSPPREARM = Get-ChildItem -Path $OfficeInstallRoot -filter "OSPPREARM.EXE" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
 			$OSPP = Get-ChildItem -Path $OfficeInstallRoot -filter "OSPP.vbs" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
+			IF ($null -eq $OSPPREARM) {
+				Write-BISFLog -Msg "OSPPrearm can't be detected in $OfficeInstallRoot, fallback to get the data from the registry" -ShowConsole -Color DarkCyan -SubMsg
+ 				If ([Environment]::Is64BitOperatingSystem) {
+					$OSPPREARMInstallRoot += (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Wow6432Node\Microsoft\OfficeSoftwareProtectionPlatform -Name Path -ErrorAction SilentlyContinue).Path
+				}
+				If ($OSPPREARMInstallRoot -isnot [system.object]) {
+					$OSPPREARMInstallRoot += (Get-ItemProperty -Path Registry::HKLM\SOFTWARE\Microsoft\OfficeSoftwareProtectionPlatform -Name Path -ErrorAction SilentlyContinue).Path
+				}
+				$OSPPREARM = Get-ChildItem -Path $OSPPREARMInstallRoot -filter "OSPPREARM.EXE" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
+			}
 			Write-BISFLog -Msg "OSPPrearm is installed in $OSPPREARM"
 			Write-BISFLog -Msg "OSPP is installed in $OSPP"
 		} ELSE {

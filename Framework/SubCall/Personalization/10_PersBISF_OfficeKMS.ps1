@@ -4,7 +4,7 @@
 	.DESCRIPTION
     .EXAMPLE
     .NOTES
-		Author: Benjamin Ruoff
+		Author: Matthias Schlimm
       	Company:  EUCWeb.com
 
 		History:
