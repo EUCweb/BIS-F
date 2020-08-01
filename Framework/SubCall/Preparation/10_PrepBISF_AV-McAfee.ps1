@@ -28,6 +28,7 @@
 		15.08.2019 MS: Added .SYNOPSIS to all functions and using recommended POSH Verbs for functions too
 		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
 		23.05.2020 MS: HF 214 - McAfee MOVE Self Protection blocks the modification of the registry
+		01.08.2020 MS: HF 260 - Add support for 5.6.x
 
 
 	.LINK
@@ -202,6 +203,7 @@ Process {
 
 		History:
 			10.12.2014 MS: script created
+			01.08.2020 micswe: HF 260 - Add support for 5.6.x
 
 		#>
 
@@ -215,7 +217,7 @@ Process {
 				Remove-ItemProperty -Path $reg_product_string -Name $key -ErrorAction SilentlyContinue
 			}
 		}
-		If ($reg_agent_version -ge "5.0") {
+		If (($reg_agent_version -ge "5.0") -and ($reg_agent_version -lt "5.6")) {
 
 			$found = $false
 			Write-BISFLog -Msg "Searching for $PrepApp on the system" -ShowConsole -Color DarkCyan -SubMsg
@@ -232,6 +234,11 @@ Process {
 					& Start-Process -FilePath "$PrepAppExists" -ArgumentList "-enforce -noguid" -Wait
 				}
 			}
+		}
+
+		# https://docs.mcafee.com/bundle/agent-5.6.x-installation-guide/page/GUID-7264ED00-8FFC-49B8-9A21-07FF12D2EA88.html
+		If ($reg_agent_version -ge "5.6"){
+			Write-BISFLog -Msg "Version $reg_agent_version - No need to remove GUID"
 		}
 	}
 
