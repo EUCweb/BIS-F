@@ -1,3 +1,4 @@
+01.08.2020 MS: HF 261 - CylanceProtect fix Errorhandling
 01.08.2020 MS: HF 262 - UPL + PVS Target Device Driver doesn't convert VHDX
 31.07.2020 MS: HF 268 - Using SID to translate it to the real name to support MUI Systems
 31.07.2020 MS: HF 266 - Typo in 97_PrepBISF_PRE_BaseImage.ps1
