@@ -46,6 +46,7 @@ param(
 		18.02.2020 JK: Fixed Log output spelling
 		01.08.2020 MS: HF 269 - Office detection takes too long, using reg instead of WMI
 		01.08.2020 MS: HF 265 - Office 2010 rearm is not performed
+		02.08.2020 MS: HF 270 - PersBISF_Start.ps1 Script Causing all installed Applications to Reconfigure
 
 
 	.LINK

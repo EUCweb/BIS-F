@@ -18,6 +18,7 @@
 		07.01.2020 MS: HF 174 - Office detection general change
 		18.02.2020 JK: Fixed Log output spelling
 		01.08.2020 MS: HF 269 - Office detection takes too long, using reg instead of WMI
+		02.08.2020 MS: HF 270 - PersBISF_Start.ps1 Script Causing all installed Applications to Reconfigure
 
 	.LINK
         https://eucweb.com
