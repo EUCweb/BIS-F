@@ -89,6 +89,7 @@ param()
 		18.02.2020 JK: Fixed Log output spelling
 		25.03.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
 		18.06.2020 MS: HF 251 - switch the lines 356-357 -> $UPL muste be detected before Test-AppLayeringSoftware is used
+		04.08.2020 MS: HF 272 - Central PERS Logs are missing the beginning
 
       #>
 Begin {
@@ -155,6 +156,7 @@ Begin {
 		}
 		Try {
 			#Try to Create BISFLogsFolder
+			$ErrorActionPreference = "Stop"
 			$LogPath = "$PVSDiskDrive\$LogFolderName"
 			IF ($LIC_BISF_CLI_LSb -eq 1) {
 				Invoke-BISFLogShare -Verbose:$VerbosePreference
@@ -192,8 +194,9 @@ Begin {
 		}
 		Catch {
 			Write-BISFLog -Msg "Unhandled Exception occured" -Type W -SubMsg
-			$LogPath = "C:\Windows\Logs\$LogFolderName"
-			New-Item -Path $LogPath -ItemType Directory -Force
+			# 04.08.2020 MS: HF 272 - Central PERS Logs are missing the beginning
+			#$LogPath = "C:\Windows\Logs\$LogFolderName"
+			#New-Item -Path $LogPath -ItemType Directory -Force
 		}
 		Finally {
 

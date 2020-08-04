@@ -32,11 +32,13 @@
 	18.02.2020 JK: Fixed Log output spelling
 	24.02.2020 MS: ENH 200 - new Advanced Installer - change to get $InstallLocation and $BISFversion
 	04.08.2020 MS: HF 271 - 00_PersBISF_WriteCacheDisk.ps1 fails, due to timing issue with registry values
+	04.08.2020 MS: HF 272 - Central PERS Logs are missing the beginning
 
 .LINK
 	https://eucweb.com
 #>
 
+	Write-BISFLog -Msg "- - - Start Script - - - "
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	Write-BISFLog -Msg "Checking Prerequisites" -ShowConsole -color Cyan
 	$Global:computer = Get-Content env:computername
