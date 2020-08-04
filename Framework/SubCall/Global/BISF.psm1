@@ -31,6 +31,7 @@
 	07.01.2020 MS: HF 176 - $Global:ImageSW request is set one Time only
 	18.02.2020 JK: Fixed Log output spelling
 	24.02.2020 MS: ENH 200 - new Advanced Installer - change to get $InstallLocation and $BISFversion
+	04.08.2020 MS: HF 271 - 00_PersBISF_WriteCacheDisk.ps1 fails, due to timing issue with registry values
 
 .LINK
 	https://eucweb.com
@@ -68,6 +69,8 @@
 	$Global:AppLayNoELMCfg = "BISFconfig_AppLay_NoELM.json"
 	$Global:ImageSW = $false
 	Import-BISFSharedConfiguration -Verbose:$VerbosePreference
+	Write-BISFlog -Msg "Apply Computer GPO" -showConsole -Color Cyan
+	Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\gpupdate.exe" -Args "/Target:Computer /Force /Wait:0" -ActText "Apply Computer GPO" | Out-Null
 	Get-BISFCLIcmd -Verbose:$VerbosePreference #must be running before the $Global:PVSDiskDrive = $LIC_BISF_CLI_WCD is set
 
 	IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {

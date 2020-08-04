@@ -15,6 +15,7 @@
 		31.08.2017 MS: Change sleep timer from 60 to 5 seconds after time sync on startup
 		11.09.2017 MS: Change sleep timer from 5 to 20 seconds after time sync on startup
 		21.09.2019 MS: ENH 9 - LAPS Support for Non-Persistent VDI
+		04.08.2020 MS: HF 271 - 00_PersBISF_WriteCacheDisk.ps1 fails, due to timing issue with registry values
 
 	.LINK
 		https://eucweb.com
@@ -37,8 +38,8 @@ Process {
 		& "$env:SystemRoot\system32\w32tm.exe" /resync /nowait
 		sleep 30
 		# Reapply Computer GPO
-		Write-BISFLog "Apply Computer GPO"
-		& "$env:SystemRoot\system32\gpupdate.exe" /Target:Computer /Force /Wait:0
+		Write-BISFlog -Msg "Apply Computer GPO" -showConsole -Color Cyan
+	    Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\gpupdate.exe" -Args "/Target:Computer /Force /Wait:0" -ActText "Apply Computer GPO" | Out-Null
 	}
 	ELSE {
 		Write-BISFLog -Msg "Do nothing in AppLayering $CTXAppLayerName"

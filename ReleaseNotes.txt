@@ -1,3 +1,4 @@
+04.08.2020 MS: HF 271 - 00_PersBISF_WriteCacheDisk.ps1 fails, due to timing issue with registry values
 02.08.2020 MS: HF 270 - PersBISF_Start.ps1 Script Causing all installed Applications to Reconfigure
 01.08.2020 MS: HF 255 - MSI installer creates two entries under the Uninstall key
 01.08.2020 MS: HF 252 - supporting new NVIDIA Drivers
