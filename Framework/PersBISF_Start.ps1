@@ -35,6 +35,7 @@
 		21.09.2019 MS: ENH 127 - Personalization is in Active State Override
 		05.10.2019 MS: ENH 144 - Enable Powershell Transcript
 		18.02.2020 JK: Grammar fixup
+		09.08.2020 MS: HF 272 - Central PERS Logs are missing the beginning
 	.LINK
 		https://eucweb.com
 #>
@@ -46,6 +47,16 @@ Begin {
 	$computer = gc env:computername
 	$timestamp = Get-Date -Format yyyyMMdd-HHmmss
 
+	## HF 272 - Central PERS Logs are missing the beginning
+	$ERRORACTIONPREFERENCE = "STOP"
+    try {
+		$Global:LIC_BISF_LogShare = (Get-ItemProperty "HKLM:\SOFTWARE\Policies\Login Consultants\BISF" -Name "LIC_BISF_CLI_LS").LIC_BISF_CLI_LS
+	}
+	catch {$Global:LIC_BISF_LogShare = $null }
+
+	$ERRORACTIONPREFERENCE = "Continue"
+
+
 	## ENH 144 - Powershell Transcript
 	$ERRORACTIONPREFERENCE = "STOP"
 	try {
@@ -54,7 +65,7 @@ Begin {
 	catch { }
 
 	IF ($WPTEnabled -eq 1) {
-		$Global:WPTlog = "C:\Windows\Logs\PERS_BISF_WPT_$($computer)_$timestamp.log.log"
+		$Global:WPTlog = "C:\Windows\Logs\PERS_BISF_WPT_$($computer)_$timestamp.log"
 		Start-Transcript $WPTLog | Out-Null
 	}
 	$ERRORACTIONPREFERENCE = "Continue"

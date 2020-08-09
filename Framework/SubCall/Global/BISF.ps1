@@ -89,7 +89,7 @@ param()
 		18.02.2020 JK: Fixed Log output spelling
 		25.03.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
 		18.06.2020 MS: HF 251 - switch the lines 356-357 -> $UPL muste be detected before Test-AppLayeringSoftware is used
-		06.08.2020 MS: HF 272 - Central PERS Logs are missing the beginning
+		09.08.2020 MS: HF 272 - Central PERS Logs are missing the beginning
 
       #>
 Begin {
@@ -148,67 +148,61 @@ Begin {
 	####### functions #####
 	####################################################################
 
-	function Set-Logfile {
+	  function Set-Logfile {
 		IF (!(Test-Path "$env:windir\Logs")) {
 			Write-BISFLog -Msg "Folder $env:windir\Logs does NOT Exist, will be created now!" -Type W -ShowConsole
 			New-Item -ItemType Directory -path "$env:windir\Logs" | Out-Null
 		}
+        $LogShareReachable = $false
+		Invoke-BISFLogShare -Verbose:$VerbosePreference
+		$ErrorActionPreference = "Stop"
 
-		IF ($LIC_BISF_CLI_LSb -eq 1) {
-			Invoke-BISFLogShare -Verbose:$VerbosePreference
-			$LogShareReachable = $false
-			$ErrorActionPreference = "Stop"
-			Try {
-				IF (Test-Path $LIC_BISF_LogShare) {$LogShareReachable = $true}
-			}
-
-			Catch [System.IO.DirectoryNotFoundException] {
-				Write-BISFLog -Msg "Cannot create BISFLog folder, the volume is not formatted" -Type W -SubMsg
-				$LogPath = "C:\Windows\Logs\$LogFolderName"
-				New-Item -Path $LogPath -ItemType Directory -Force
-			}
-			Catch [System.IO.IOException] {
-				Write-BISFLog -Msg "BISFLog folder already exists"
-				$LogShareReachable = $true
-			}
-			Catch [System.UnauthorizedAccessException] {
-				Write-BISFLog -Msg "Cannot create BISFLog folder, the drive is not writeable" -Type W -SubMsg
-				$LogPath = "C:\Windows\Logs\$LogFolderName"
-				New-Item -Path $LogPath -ItemType Directory -Force
-			}
-
-			Catch {
-				Write-BISFLog -Msg "Unhandled Exception occured" -Type W -SubMsg
-				$LogPath = "C:\Windows\Logs\$LogFolderName"
-				New-Item -Path $LogPath -ItemType Directory -Force
-			}
-			Finally {
-				IF ($LogShareReachable -eq $true) {
-					$LogPath = "$LIC_BISF_LogShare\$computer"
-				} ELSE {
-					$LogPath = "$PVSDiskDrive\$LogFolderName"
-					Write-BISFLog -Msg "Fallback to logpath $LogPath" -Type W -ShowConsole -SubMSg
-				}
-				Write-BISFLog -Msg "Move BIS-F log to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
-				Get-ChildItem -Path "C:\Windows\Logs\*" -Include "PREP_BISF*.log","PERS_BISF*.log" -Exclude "*BISF_WPT*.log","*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
-				IF (($NewLogPath) -and ($NewLogPath -ne $LogPath)) {
-					Write-BISFLog -Msg "Move BIS-F log from $NewLogPath to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
-					Get-ChildItem -Path "$($NewLogPath)\*" -include "PREP_BISF*.log","PERS_BISF*.log" -Exclude "*BISF_WPT*.log","*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
-				}
-
-				$Global:Logfile = "$LogPath\$LogFileName"
-				$Global:LogFilePath = $LogPath
-				$Global:NewLogPath = $LogPath
-			}
-			$ErrorActionPreference = "Continue"
-			return $logfile
+		Try {
+			IF (($LIC_BISF_CLI_LSb -eq 1) -and (Test-Path $LIC_BISF_LogShare)) {$LogShareReachable = $true}
 		}
 
+		Catch [System.IO.DirectoryNotFoundException] {
+			Write-BISFLog -Msg "Cannot create BISFLog folder, the volume is not formatted" -Type W -SubMsg
+			$LogPath = "C:\Windows\Logs\$LogFolderName"
+			New-Item -Path $LogPath -ItemType Directory -Force
+		}
+		Catch [System.IO.IOException] {
+			Write-BISFLog -Msg "BISFLog folder already exists"
+			$LogShareReachable = $true
+		}
+		Catch [System.UnauthorizedAccessException] {
+			Write-BISFLog -Msg "Cannot create BISFLog folder, the drive is not writeable" -Type W -SubMsg
+            $LogPath = "C:\Windows\Logs\$LogFolderName"
+			New-Item -Path $LogPath -ItemType Directory -Force
+		}
 
+		Catch {
+			Write-BISFLog -Msg "Unhandled Exception occured" -Type W -SubMsg
+			$LogPath = "C:\Windows\Logs\$LogFolderName"
+			New-Item -Path $LogPath -ItemType Directory -Force
+		}
+		Finally {
+			IF ($LogShareReachable -eq $true) {
+				$LogPath = "$LIC_BISF_LogShare\$computer"
+			} ELSE {
+				$LogPath = "$PVSDiskDrive\$LogFolderName"
+			}
+			IF (!(Test-path $logpath -PathType Leaf)) {New-Item -Path $LogPath -ItemType Directory -Force}
+            Write-BISFLog -Msg "Move BIS-F log to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
+			Get-ChildItem -Path "C:\Windows\Logs\*" -Include "PREP_BISF*.log","PERS_BISF*.log" -Exclude "*BISF_WPT*.log","*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
+			IF (($NewLogPath) -and ($NewLogPath -ne $LogPath)) {
+				Write-BISFLog -Msg "Move BIS-F log from $NewLogPath to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
+				Get-ChildItem -Path "$($NewLogPath)\*" -include "PREP_BISF*.log","PERS_BISF*.log" -Exclude "*BISF_WPT*.log","*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
+			}
+
+			$Global:Logfile = "$LogPath\$LogFileName"
+			$Global:LogFilePath = $LogPath
+			$Global:NewLogPath = $LogPath
+		}
+		$ErrorActionPreference = "Continue"
+        return $logfile
 
 	}
-
-
 
 
 	function Get-ActualConfig {
