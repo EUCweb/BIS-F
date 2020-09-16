@@ -117,6 +117,7 @@ param(
 		23.05.2020 MS: HF 220 - fix typo for DirtyShutdown Flag
 		31.07.2020 MS: HF 266 - fixing typo
 		01.08.2020 MS: HF 252 - supporting new NVIDIA Drivers
+		16.08.2020 MS: HF 278 - Citrix AppLayering Finalize - Change NGEN Option
 
 	.LINK
 		https://eucweb.com
@@ -476,10 +477,22 @@ Begin {
 				showmessage = "N";
 				CLI         = "";
 				TestPath    = "";
-				Description = "Executing all queued .NET compilation jobs for $element";
-				Command     = "Start-BISFProcWithProgBar -ProcPath '$element' -Args 'ExecuteQueuedItems' -ActText 'Running .NET Optimization in $element'"
+				Description = "Executing all queued .NET compilation jobs - $element";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$element' -Args 'ExecuteQueuedItems' -ActText 'Execute all queued .NET compilation jobs - $element'"
 			};
 			$ordercnt += 1
+
+			$PrepCommands += [pscustomobject]@{
+				Order = "$ordercnt";
+				Enabled = "$true";
+				showmessage = "N";
+				CLI = "";
+				TestPath = "";
+				Description = "Update native images that have become invalid - $element";
+				Command = "Start-BISFProcWithProgBar -ProcPath '$element' -Args 'update /force' -ActText 'Update native images that have become invalid - $element'"
+			};
+			$ordercnt += 1
+
 		}
 	}
 	ELSE {
