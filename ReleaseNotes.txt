@@ -1,3 +1,5 @@
+---------------------------------
+Version 7.1912.5.11040 -- 16/09/2020 08:15:17 AM:
 16.08.2020 MS: HF 278 - Citrix AppLayering Finalize - Change NGEN Option
 09.08.2020 MS: HF 272 - Central PERS Logs are missing the beginning
 04.08.2020 MS: HF 271 - 00_PersBISF_WriteCacheDisk.ps1 fails, due to timing issue with registry values
