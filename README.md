@@ -1,4 +1,4 @@
-# BIS-F 7.1912
+# BIS-F Asterix
 
 
 Base Image Script Framework (BIS-F) - Asterix Release
