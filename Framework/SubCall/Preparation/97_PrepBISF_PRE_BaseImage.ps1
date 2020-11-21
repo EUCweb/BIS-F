@@ -465,33 +465,43 @@ Begin {
 	}
 
 
-	IF (!($LIC_BISF_CLI_DotNet -eq "NO")) {
+	IF ($LIC_BISF_CLI_DotNet -eq "YES") {
 
-		### Executing all queued .NET compilation jobs - Precompiling assemblies with Ngen.exe can improve the startup time for some applications.
-		$NgenPath = Get-ChildItem -Path 'C:\Windows\Microsoft.NET' -Recurse "ngen.exe" | % { $_.FullName }
-		foreach ($element in $NgenPath) {
-			Write-BISFLog -Msg  "Read Ngen Path: $element"
-			$PrepCommands += [pscustomobject]@{
-				Order       = "$ordercnt";
-				Enabled     = "$true";
-				showmessage = "N";
-				CLI         = "";
-				TestPath    = "";
-				Description = "Executing all queued .NET compilation jobs - $element";
-				Command     = "Start-BISFProcWithProgBar -ProcPath '$element' -Args 'ExecuteQueuedItems' -ActText 'Execute all queued .NET compilation jobs - $element'"
-			};
-			$ordercnt += 1
+		IF ($LIC_BISF_CLI_NET_OPT1b -eq 1) {
+			### Executing Optimization 1
+			$NgenPath = Get-ChildItem -Path 'C:\Windows\Microsoft.NET' -Recurse "ngen.exe" | % { $_.FullName }
+			foreach ($element in $NgenPath) {
+				Write-BISFLog -Msg  "Read Ngen Path: $element"
+				$PrepCommands += [pscustomobject]@{
+					Order       = "$ordercnt";
+					Enabled     = "$true";
+					showmessage = "N";
+					CLI         = "";
+					TestPath    = "";
+					Description = ".NET Optimization 1: $LIC_BISF_CLI_NET_OPT1txt - $element";
+					Command     = "Start-BISFProcWithProgBar -ProcPath '$element' -Args '$LIC_BISF_CLI_NET_OPT1args' -ActText '.NET Optimization 2: $LIC_BISF_CLI_NET_OPT2txt - $element'"
+				};
+				$ordercnt += 1
+			} ELSE {
+				Write-BISFLog -Msg "Skipping .NET Optimization 1" -ShowConsole -SubMsg -Color Cyan
+			}
 
-			$PrepCommands += [pscustomobject]@{
-				Order = "$ordercnt";
-				Enabled = "$true";
-				showmessage = "N";
-				CLI = "";
-				TestPath = "";
-				Description = "Update native images that have become invalid - $element";
-				Command = "Start-BISFProcWithProgBar -ProcPath '$element' -Args 'update /force' -ActText 'Update native images that have become invalid - $element'"
-			};
-			$ordercnt += 1
+			IF ($LIC_BISF_CLI_NET_OPT2b -eq 1) {
+
+				$PrepCommands += [pscustomobject]@{
+					Order = "$ordercnt";
+					Enabled = "$true";
+					showmessage = "N";
+					CLI = "";
+					TestPath = "";
+					Description = ".NET Optimization 2: $LIC_BISF_CLI_NET_OPT1txt - $element";
+					Command = "Start-BISFProcWithProgBar -ProcPath '$element' -Args '$LIC_BISF_CLI_NET_OPT2args' -ActText 'Update native images that have become invalid - $element'"
+				};
+				$ordercnt += 1
+			}
+			ELSE {
+				Write-BISFLog -Msg "Skipping .NET Optimization 2" -ShowConsole -SubMsg -Color Cyan
+			}
 
 		}
 	}

@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="BISF" namespace="BISF.Policies.AE307DBF_2C6B_4C79_9639_8BB5CA28D13E" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.4C68AC09_0CB7_414F_91CE_C4BA7A1DBCEE" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1085,7 +1085,7 @@
         <boolean id="CHK_VDA_INTELGRFX" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_VDA_INTELGRFX" />
       </elements>
     </policy>
-    <policy name="POL_DotNET" class="Machine" displayName="$(string.POL_DotNET)" explainText="$(string.POL_DotNET_Help)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DotNET">
+    <policy name="POL_DotNET" class="Machine" displayName="$(string.POL_DotNET)" explainText="$(string.POL_DotNET_Help)" presentation="$(presentation.POL_DotNET)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_DotNET">
       <parentCategory ref="CAT_MS" />
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <enabledList>
@@ -1102,6 +1102,14 @@
           </value>
         </item>
       </disabledList>
+      <elements>
+        <boolean id="CHK_NET_OPT1b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1b" />
+        <text id="TXT_NET_OPT1args" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1args" maxLength="100" />
+        <text id="TXT_NET_OPT1txt" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1txt" maxLength="200" />
+        <boolean id="CHK_NET_OPT2b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2b" />
+        <text id="TXT_NET_OPT2args" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2args" maxLength="100" />
+        <text id="TXT_NET_OPT2txt" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2txt" />
+      </elements>
     </policy>
     <policy name="POL_WinSxS" class="Machine" displayName="$(string.POL_WinSxS)" explainText="$(string.POL_WinSxS_Help)" presentation="$(presentation.POL_WinSxS)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_WinSxS">
       <parentCategory ref="CAT_MS" />
