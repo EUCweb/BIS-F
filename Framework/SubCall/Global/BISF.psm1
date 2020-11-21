@@ -947,17 +947,35 @@ Function Get-PendingReboot {
 	  dd.mm.yyy MS: script created
 	  27.05.2018 MS: Hotfix 40: new Script to get pending reboot state
 	  14.05.2019 JP: Improved Get-PendingReboot function, removed wmi commands
+	  21.11.2010 MS: HF 280 - Log Message for "pending reboot error"
 #>
 
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
-
-	If (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return $true }
-	If (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) { return $true }
-	If (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name PendingFileRenameOperations -EA Ignore) { return $true }
+	Write-BISFLog -"Test Pending Reboot State" -ShowConsole -Color Cyan
+	If (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) {
+		Write-BISFlog -Msg "Component Based Servicing: $true" -ShowConsole -Color DarkCyan -SubMsg
+		return $true
+	}
+	If (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) {
+		Write-BISFlog -Msg "Windows Update: $true" -ShowConsole -Color DarkCyan -SubMsg
+		return $true
+	}
+	If (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name PendingFileRenameOperations -EA Ignore) {
+		Write-BISFlog -Msg "Session Manager - PendingFileRenameOperations: $true" -ShowConsole -Color DarkCyan -SubMsg
+		return $true
+	}
 	try {
 		$RebootPending = Invoke-CimMethod -Namespace root\ccm\ClientSDK -ClassName CCM_ClientUtilities -Name DetermineIfRebootPending -ErrorAction SilentlyContinue | Select-Object "RebootPending"
+		If ($RebootPending -eq $true) {
+			Write-BISFlog -Msg "RebootPending: $RebootPending" -ShowConsole -Color DarkCyan -SubMsg
+		}
+
 		$IsHardRebootPending = Invoke-CimMethod -Namespace root\ccm\ClientSDK -ClassName CCM_ClientUtilities -Name DetermineIfRebootPending -ErrorAction SilentlyContinue | Select-Object "IsHardRebootPending"
+		If ($IsHardRebootPending -eq $true) {
+			Write-BISFlog -Msg "IsHardRebootPending: $IsHardRebootPending" -ShowConsole -Color DarkCyan -SubMsg
+		}
+
 		If (($RebootPending -eq $true) -or ($IsHardRebootPending -eq $true)) { return $true }
 	}
 	catch { }
