@@ -4559,6 +4559,36 @@ function Get-DSRegState {
 	For automation, you often need only the value
 	of one single key
 
+			+----------------------------------------------------------------------+
+		| Device State                                                         |
+		+----------------------------------------------------------------------+
+
+				AzureAdJoined : NO
+			EnterpriseJoined : NO
+				DomainJoined : YES
+				DomainName : EUClab
+
+		+----------------------------------------------------------------------+
+		| User State                                                           |
+		+----------------------------------------------------------------------+
+
+					NgcSet : NO
+			WorkplaceJoined : NO
+				WamDefaultSet : NO
+				AzureAdPrt : NO
+
+		+----------------------------------------------------------------------+
+		| Ngc Prerequisite Check                                               |
+		+----------------------------------------------------------------------+
+
+				IsUserAzureAD : NO
+				PolicyEnabled : NO
+			DeviceEligible : YES
+		SessionIsNotRemote : NO
+			X509CertRequired : NO
+				PreReqResult : WillNotProvision
+
+
 	.PARAMETER Key
 	The value of the entered key is sending back
 
