@@ -1076,7 +1076,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
           <defaultValue>ExecuteQueuedItems</defaultValue>
         </textBox>
         <textBox refId="TXT_NET_OPT1txt">
-          <label>Text Optimizatiion 1:</label>
+          <label>Text Optimization 1:</label>
           <defaultValue>Executing all queued .NET compilation jobs</defaultValue>
         </textBox>
 		 <text>
