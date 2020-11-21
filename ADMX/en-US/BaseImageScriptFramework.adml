@@ -584,8 +584,18 @@ If you enable both NVIDIA and INTEL, BIS-F will stop the sealing process (prepar
 
 If you enable this policy setting, .NET Optimization is run during sealing (Preparation phase)
 If you disable this policy setting, .NET Optimization is disabled during sealing (Preparation phase)
-If you do not configure this policy setting, .NET Optimization is run during sealing (Preparation phase)
-</string>
+If you do not configure this policy setting, .NET Optimization is NOT run during sealing (Preparation phase)
+
+You can run up to 2 .NET optimizations. Enter thr arguments only without ngen.exe. 
+The Text will be displayed during the BIS-F preparation and in the logfile too.
+
+Default Optimization 1:
+Text: Executing all queued .NET compilation jobs
+Arguments: ExecuteQueuedItems
+
+Default Optimization 2: 
+Text: Update native images that have become invalid
+Arguments: update /force</string>
       <string id="POL_WinSxS">WinSxS Optimization</string>
       <string id="POL_WinSxS_Help">Run WinSxS Optimization during sealing (preparation)
 
@@ -796,11 +806,13 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       <presentation id="POL_CTXOE">
         <textBox refId="TXT_CTXOE_TemplatePath">
           <label>(Optional) Template:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
         <textBox refId="TXT_CTXOE_Groups">
           <label>(Optional) List of enabled Groups:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
         <checkBox refId="CHK_CTXOE_Analyze">Mode: Analyze only</checkBox>
         <checkBox refId="CHK_CTXOE_SF">Enable custom search folder</checkBox>
@@ -835,13 +847,15 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       <presentation id="POL_GhostDeviceClass">
         <textBox refId="TXT_GhostDeviceClassBox">
           <label>Classes:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_GhostDeviceFriendlyName">
         <textBox refId="TXT_GhostDeviceFriendlyNameBox">
           <label>Devices:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_GhostDeviceRemoval">
@@ -902,7 +916,8 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         </text>
         <textBox refId="TXT_vmOSOT_Templ">
           <label>Template Name</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_CCleaner">
@@ -985,7 +1000,8 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       <presentation id="POL_VDASSL">
         <textBox refId="TXT_VDASSL_CertThumbprint">
           <label>(Optional) Certificate Thumbprint:</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
         <textBox refId="TXT_SSLPORT">
           <label>SSL Port:</label>
@@ -1041,14 +1057,38 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
         <checkBox refId="CHK_AV_VIE_CusScanArgsb">Enable Custom Scan Arguments</checkBox>
         <textBox refId="TXT_AV_VIE_CusScanArgs">
           <label>Custom Scan Arguments</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
         </textBox>
       </presentation>
       <presentation id="POL_Sysprep">
         <checkBox refId="CHK_SP_CusArgsb">Enable Custom Sysprep Arguments</checkBox>
         <textBox refId="TXT_SP_CusArgs">
           <label>Custom Sysprep Arguments</label>
-          <defaultValue></defaultValue>
+          <defaultValue>
+          </defaultValue>
+        </textBox>
+      </presentation>
+      <presentation id="POL_DotNET">
+        <checkBox refId="CHK_NET_OPT1b" defaultChecked="true">Enable Optimization 1:</checkBox>
+        <textBox refId="TXT_NET_OPT1args">
+          <label>Arguments Optimization 1:</label>
+          <defaultValue>ExecuteQueuedItems</defaultValue>
+        </textBox>
+        <textBox refId="TXT_NET_OPT1txt">
+          <label>Text Optimizatiion 1:</label>
+          <defaultValue>Executing all queued .NET compilation jobs</defaultValue>
+        </textBox>
+		 <text>
+        </text>
+        <checkBox refId="CHK_NET_OPT2b" defaultChecked="true">Enable Optimization 2:</checkBox>
+        <textBox refId="TXT_NET_OPT2args">
+          <label>Arguments Optimization 2:</label>
+          <defaultValue>update /force</defaultValue>
+        </textBox>
+        <textBox refId="TXT_NET_OPT2txt">
+          <label>Text Optimization 2:</label>
+          <defaultValue>Update native images that have become invalid</defaultValue>
         </textBox>
       </presentation>
     </presentationTable>
