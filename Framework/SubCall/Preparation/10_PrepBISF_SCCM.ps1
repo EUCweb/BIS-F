@@ -26,7 +26,7 @@
 		14.05.2019 JP: The CcmExec service is no longuer set to manual
 		08.12.2019:JP: Fixed error on line 74, thanks toBrian Timp
 		20.12.2019 MS/SF: HF 153 (PR) - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
-
+	    21.11.2020 MS: HF 289 - terminate ccmexec process before stopping the service
 	.LINK
 		https://eucweb.com
 #>
@@ -77,6 +77,7 @@ Process {
 	$svc = Test-BISFService -ServiceName $appService
 	IF ($svc -eq $true) {
 		Remove-CCMCache # 01.09.2015 MS: Remove-CCMCache must be run before stopping the service
+		Stop-BISFProcesses -processName $appService
 		Invoke-BISFService -ServiceName $appService -Action Stop
 		Remove-CCMData
 	}

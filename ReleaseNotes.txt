@@ -1,3 +1,4 @@
+21.11.2020 MS: HF 289 - terminate ccmexec process before stopping the service
 21.11.2020 MS: HF 288 - ngen executes extremely long -> ADMX Update to specify .NET Settings
 ---------------------------------
 Version 7.1912.5.11040 -- 16/09/2020 08:15:17 AM:
