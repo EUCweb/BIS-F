@@ -4548,3 +4548,38 @@ function Stop-Processes {
         Write-BISFLog -Msg "Process $processName is not running, nothing to do" -Color DarkCyan -ShowConsole -SubMsg
     }
 }
+
+function Get-DSRegState {
+	<#
+	.SYNOPSIS
+	Getting value back of an entered Key
+
+	.DESCRIPTION
+	dsregcmd / status will show you all available values.
+	For automation, you often need only the value
+	of one single key
+
+	.PARAMETER Key
+	The value of the entered key is sending back
+
+	.EXAMPLE
+	$DSRegValue = Get-BISFDSRegState -Key "AzureADjoined"
+
+	.NOTES
+	Author: Matthias Schlimm
+
+		History:
+		  21.11.2020 MS: HF 285 - function created
+	#>
+	param(
+		[parameter(Mandatory=$true)]
+		[string]$Key
+    )
+
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+
+	Write-BISFlog -Msg "Checking DSRegcmd State" -ShowConsole -Color Cyan
+	$valuedata = ((dsregcmd /status | select-string -pattern $Key) -split(":") | select-object -last 1).trim
+	Write-BISFlog -Msg "$Key : $valuedata" -ShowConsole -Color DarkCyan -SubMsg
+	return $valuedata
+}
