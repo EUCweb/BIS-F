@@ -25,6 +25,7 @@
 		20.10.2018 MS: Bugfix 55: Windows Defender -ArgumentList failing
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
+		21.11.2020 MS: HF 284 - MPCmdRun Process monitor with the current user only, exclude other accounts
 
 	.LINK
 		https://eucweb.com
@@ -60,7 +61,8 @@ Process {
 		If (($AVScan -eq "YES" ) -or ($varCLI -eq "YES")) {
 			Write-BISFLog -Msg "Updating virus signatures... please wait"
 			Start-Process -FilePath "$ProductPath\MpCMDrun.exe" -ArgumentList "-SignatureUpdate" -WindowStyle Hidden
-			Show-BISFProgressBar -CheckProcess "MpCMDrun" -ActivityText "$Product is updating the virus signatures...please wait"
+			$procID = (Get-Process -Name "MpCMDrun" | ? { $_.SI -eq (Get-Process -PID $PID).SessionId }),Id # get MPCmdRun for the current user only
+			Show-BISFProgressBar -CheckProcess "MpCMDrun" -CheckProcess -ActivityText "$Product is updating the virus signatures...please wait"
 
 			IF ($LIC_BISF_CLI_AV_VIE_CusScanArgsb -eq 1) {
 				Write-BISFLog -Msg "Enable Custom Scan Arguments"

@@ -816,7 +816,7 @@ function Show-ProgressBar {
 			}
 		}
 
-		if ($ProcessActive -eq $null) {
+		if ($null -eq $ProcessActive) {
 			$a = 100
 			Write-Progress -Activity "Finish...waiting for next operation in 3 seconds" -PercentComplete $a -Status "Finish."
 			IF ($State -eq "Preparation") { Start-Sleep 3 }
