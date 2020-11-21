@@ -467,27 +467,28 @@ Begin {
 
 	IF ($LIC_BISF_CLI_DotNet -eq "YES") {
 
-		IF ($LIC_BISF_CLI_NET_OPT1b -eq 1) {
-			### Executing Optimization 1
-			$NgenPath = Get-ChildItem -Path 'C:\Windows\Microsoft.NET' -Recurse "ngen.exe" | % { $_.FullName }
-			foreach ($element in $NgenPath) {
-				Write-BISFLog -Msg  "Read Ngen Path: $element"
+		$NgenPath = Get-ChildItem -Path 'C:\Windows\Microsoft.NET' -Recurse "ngen.exe" | % { $_.FullName }
+		foreach ($element in $NgenPath) {
+			Write-BISFLog -Msg  "Read Ngen Path: $element"
+			IF ($LIC_BISF_CLI_NET_OPT1b -eq 1) {
+				### Executing Optimization 1
 				$PrepCommands += [pscustomobject]@{
-					Order       = "$ordercnt";
-					Enabled     = "$true";
+					Order = "$ordercnt";
+					Enabled = "$true";
 					showmessage = "N";
-					CLI         = "";
-					TestPath    = "";
+					CLI = "";
+					TestPath = "";
 					Description = ".NET Optimization 1: $LIC_BISF_CLI_NET_OPT1txt - $element";
-					Command     = "Start-BISFProcWithProgBar -ProcPath '$element' -Args '$LIC_BISF_CLI_NET_OPT1args' -ActText '.NET Optimization 2: $LIC_BISF_CLI_NET_OPT2txt - $element'"
+					Command = "Start-BISFProcWithProgBar -ProcPath '$element' -Args '$LIC_BISF_CLI_NET_OPT1args' -ActText '.NET Optimization 2: $LIC_BISF_CLI_NET_OPT2txt - $element'"
 				};
 				$ordercnt += 1
+
 			} ELSE {
 				Write-BISFLog -Msg "Skipping .NET Optimization 1" -ShowConsole -SubMsg -Color Cyan
 			}
 
 			IF ($LIC_BISF_CLI_NET_OPT2b -eq 1) {
-
+				### Executing Optimization 2
 				$PrepCommands += [pscustomobject]@{
 					Order = "$ordercnt";
 					Enabled = "$true";
@@ -502,11 +503,10 @@ Begin {
 			ELSE {
 				Write-BISFLog -Msg "Skipping .NET Optimization 2" -ShowConsole -SubMsg -Color Cyan
 			}
-
 		}
-	}
-	ELSE {
-		Write-BISFLog -Msg "Microsoft .NET Optimization is disabled in ADMX"
+
+	} ELSE {
+		Write-BISFLog -Msg "Microsoft .NET Optimization not configured or disabled in ADMX"
 	}
 
 
