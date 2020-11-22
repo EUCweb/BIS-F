@@ -1,7 +1,7 @@
+22.11.2020 MS: HF 288 - ngen executes extremely long -> ADMX Update to specify .NET Settings
 21.11.2010 MS: HF 280 - Log Message for "pending reboot error"
 21.11.2020 MS: HF 284 - MPCmdRun Process monitor with the current user only, exclude other accounts
 21.11.2020 MS: HF 289 - terminate ccmexec process before stopping the service
-21.11.2020 MS: HF 288 - ngen executes extremely long -> ADMX Update to specify .NET Settings
 ---------------------------------
 Version 7.1912.5.11040 -- 16/09/2020 08:15:17 AM:
 16.08.2020 MS: HF 278 - Citrix AppLayering Finalize - Change NGEN Option
