@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.4C68AC09_0CB7_414F_91CE_C4BA7A1DBCEE" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.07E7F1B7_A0D4_4FB2_B633_31059377375D" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1103,24 +1103,24 @@
         </item>
       </disabledList>
       <elements>
-        <boolean id="CHK_NET_OPT1b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1b"> 
-			<trueValue>
-				<string>YES</string>
-			</trueValue>
-			<falseValue>
-				<string>NO</string>
-			</falseValue>
-		</boolean>
+        <boolean id="CHK_NET_OPT1b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1b">
+          <trueValue>
+            <string>YES</string>
+          </trueValue>
+          <falseValue>
+            <string>NO</string>
+          </falseValue>
+        </boolean>
         <text id="TXT_NET_OPT1args" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1args" maxLength="100" />
         <text id="TXT_NET_OPT1txt" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1txt" maxLength="200" />
         <boolean id="CHK_NET_OPT2b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2b">
-			<trueValue>
-				<string>YES</string>
-			</trueValue>
-			<falseValue>
-				<string>NO</string>
-			</falseValue>
-		</boolean>
+          <trueValue>
+            <string>YES</string>
+          </trueValue>
+          <falseValue>
+            <string>NO</string>
+          </falseValue>
+        </boolean>
         <text id="TXT_NET_OPT2args" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2args" maxLength="100" />
         <text id="TXT_NET_OPT2txt" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2txt" />
       </elements>
@@ -1540,6 +1540,20 @@
           </trueValue>
           <falseValue>
             <delete />
+          </falseValue>
+        </boolean>
+      </elements>
+    </policy>
+    <policy name="POL_MS_AAD" class="Machine" displayName="$(string.POL_MS_AAD)" explainText="$(string.POL_MS_AAD_Help)" presentation="$(presentation.POL_MS_AAD)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_MS_AAD">
+      <parentCategory ref="CAT_MS" />
+      <supportedOn ref="windows:SUPPORTED_WindowsVista" />
+      <elements>
+        <boolean id="CHK_MS_AAD_HybridJoinb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MS_AAD_HybridJoinb">
+          <trueValue>
+            <string>YES</string>
+          </trueValue>
+          <falseValue>
+            <string>NO</string>
           </falseValue>
         </boolean>
       </elements>
