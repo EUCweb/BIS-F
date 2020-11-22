@@ -119,6 +119,7 @@ param(
 		01.08.2020 MS: HF 252 - supporting new NVIDIA Drivers
 		16.08.2020 MS: HF 278 - Citrix AppLayering Finalize - Change NGEN Option
 		22.11.2020 MS: HF 288 - ngen executes extremely long -> ADMX Update to specify .NET Settings
+		22.11.2020 MS: HF 285 - Azure Active Directory (AAD) support to leave AAD during prepapration
 
 	.LINK
 		https://eucweb.com
@@ -465,6 +466,40 @@ Begin {
 		}
 	}
 
+	IF (LIC_BISF_POL_MS_AAD -eq 1) {
+		Write-BISFLog -Msg "Running Microsoft Azure Active Directory Tasks" -ShowConsole -Color Cyan
+		$DSRegValue = Get-BISFDSRegState -Key "AzureADjoined"
+		IF ($DSRegValue -eq "YES")  {
+			$PrepCommands += [pscustomobject]@{
+				Order       = "$ordercnt";
+				Enabled     = "$true";
+				showmessage = "N";
+				cli         = "LIC_BISF_CLI_MS_AAD_HybridJoinb";
+				TestPath    = "";
+				Description = "leave Azure AD Domain ";
+				Command     = "Start-BISFProcWithProgBar -ProcPath '$env:windir\system32\dsregcmd.exe' -Args '/leave' -ActText 'leave Azure AD Domain'"
+			};
+			$ordercnt += 1
+
+			$PrepCommands += [pscustomobject]@{
+				Order 		= "$ordercnt";
+				Enabled 	= "$true";
+				showmessage = "N";
+				cli 		= "LIC_BISF_CLI_MS_AAD_HybridJoinb";
+				TestPath 	= "";
+				Description = "leave Azure AD Domain ";
+				Command 	= "Start-BISFProcWithProgBar -ProcPath '$env:windir\system32\dsregcmd.exe' -Args '/status' -ActText 'Get Azure AD Domain status'"
+			};
+			$ordercnt += 1
+
+		} else {
+			Write-BISFLog -Msg "VM is NOT Azure Active Directory joined"
+		}
+
+	} else {
+		Write-BISFLog -Msg "Microsoft Azure Active Directory Task not configured or disabled in ADMX"
+	}
+
 
 	IF ($LIC_BISF_CLI_DotNet -eq "YES") {
 
@@ -501,6 +536,8 @@ Begin {
 	} ELSE {
 		Write-BISFLog -Msg "Microsoft .NET Optimization not configured or disabled in ADMX"
 	}
+
+
 
 
 		## Read language specified adapter name to support mui installations for each customer

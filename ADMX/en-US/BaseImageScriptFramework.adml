@@ -801,6 +801,16 @@ Note: If you configure it wrong, a reboot loop occurs!
 Disable Redirection:
 With a configured MCSIO Disk the event logs and spool directory is redirected to the persistent drive. With this setting you can disable the redirection
 </string>
+      <string id="POL_MS_AAD">Azure Active Directory (AAD)</string>
+      <string id="POL_MS_AAD_Help">Perform AAD Tasks:
+
+If you enable this policy setting, AAD Tasks are running if enabled 
+If you disable this policy setting, all AAD Tasks are not running
+If you do not configure this policy setting,  all AAD Tasks are not running
+
+Enable Azure Active Directory Hybrid Join:
+If you Enable this setting, during sealing (prepapration phase) the AAD Hybrid State is checked and run dsregcmd /leave.
+during computer startup (personalization) dsregcmd /join is running</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -1079,7 +1089,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
           <label>Text Optimization 1:</label>
           <defaultValue>Executing all queued .NET compilation jobs</defaultValue>
         </textBox>
-		 <text>
+        <text>
         </text>
         <checkBox refId="CHK_NET_OPT2b" defaultChecked="true">Enable Optimization 2:</checkBox>
         <textBox refId="TXT_NET_OPT2args">
@@ -1090,6 +1100,9 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
           <label>Text Optimization 2:</label>
           <defaultValue>Update native images that have become invalid</defaultValue>
         </textBox>
+      </presentation>
+      <presentation id="POL_MS_AAD">
+        <checkBox refId="CHK_MS_AAD_HybridJoinb">Enable Azure Active Directory Hybrid Join</checkBox>
       </presentation>
     </presentationTable>
   </resources>
