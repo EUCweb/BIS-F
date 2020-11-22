@@ -952,7 +952,6 @@ Function Get-PendingReboot {
 
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
-	Write-BISFLog -"Test Pending Reboot State" -ShowConsole -Color Cyan
 	If (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) {
 		Write-BISFlog -Msg "Component Based Servicing: $true" -ShowConsole -Color DarkCyan -SubMsg
 		return $true
