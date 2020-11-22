@@ -1103,10 +1103,24 @@
         </item>
       </disabledList>
       <elements>
-        <boolean id="CHK_NET_OPT1b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1b" />
+        <boolean id="CHK_NET_OPT1b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1b"> 
+			<trueValue>
+				<string>YES</string>
+			</trueValue>
+			<falseValue>
+				<string>NO</string>
+			</falseValue>
+		</boolean>
         <text id="TXT_NET_OPT1args" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1args" maxLength="100" />
         <text id="TXT_NET_OPT1txt" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT1txt" maxLength="200" />
-        <boolean id="CHK_NET_OPT2b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2b" />
+        <boolean id="CHK_NET_OPT2b" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2b">
+			<trueValue>
+				<string>YES</string>
+			</trueValue>
+			<falseValue>
+				<string>NO</string>
+			</falseValue>
+		</boolean>
         <text id="TXT_NET_OPT2args" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2args" maxLength="100" />
         <text id="TXT_NET_OPT2txt" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_NET_OPT2txt" />
       </elements>
