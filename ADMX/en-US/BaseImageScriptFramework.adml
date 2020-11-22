@@ -1102,7 +1102,12 @@ during computer startup (personalization) dsregcmd /join is running</string>
         </textBox>
       </presentation>
       <presentation id="POL_MS_AAD">
-        <checkBox refId="CHK_MS_AAD_HybridJoinb">Enable Azure Active Directory Hybrid Join</checkBox>
+        <text>Preparation Phase:</text>
+		<checkBox refId="CHK_MS_AAD_HybribLeaveb">Leave Azure Active Directory</checkBox>
+        <text> </text>
+       <text> ------------------------------- </text>
+         <text>Personalization Phase:</text>
+		<checkBox refId="CHK_MS_AAD_HybridJoinb">Join Azure Active Directory</checkBox>
       </presentation>
     </presentationTable>
   </resources>

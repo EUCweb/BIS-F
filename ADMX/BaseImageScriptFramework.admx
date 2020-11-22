@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.07E7F1B7_A0D4_4FB2_B633_31059377375D" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.AB36C73D_1BFF_4E6A_876C_5B76041C810A" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -1549,6 +1549,14 @@
       <supportedOn ref="windows:SUPPORTED_WindowsVista" />
       <elements>
         <boolean id="CHK_MS_AAD_HybridJoinb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MS_AAD_HybridJoinb">
+          <trueValue>
+            <string>YES</string>
+          </trueValue>
+          <falseValue>
+            <string>NO</string>
+          </falseValue>
+        </boolean>
+        <boolean id="CHK_MS_AAD_HybribLeaveb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MS_AAD_HybribLeaveb">
           <trueValue>
             <string>YES</string>
           </trueValue>
