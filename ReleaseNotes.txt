@@ -1,3 +1,4 @@
+24.11.2020 MS: HF 285 - AAD Hybrid Support to Leave / Join 
 22.11.2020 MS: HF 288 - ngen executes extremely long -> ADMX Update to specify .NET Settings
 21.11.2010 MS: HF 280 - Log Message for "pending reboot error"
 21.11.2020 MS: HF 284 - MPCmdRun Process monitor with the current user only, exclude other accounts
