@@ -119,7 +119,7 @@ param(
 		01.08.2020 MS: HF 252 - supporting new NVIDIA Drivers
 		16.08.2020 MS: HF 278 - Citrix AppLayering Finalize - Change NGEN Option
 		22.11.2020 MS: HF 288 - ngen executes extremely long -> ADMX Update to specify .NET Settings
-		22.11.2020 MS: HF 285 - Azure Active Directory (AAD) support to leave AAD during prepapration
+		22.11.2020 MS: HF 285 - Azure Active Directory (AAD) support to leave AAD during preparation
 
 	.LINK
 		https://eucweb.com
@@ -487,7 +487,7 @@ Begin {
 				showmessage = "N";
 				cli 		= "LIC_BISF_CLI_MS_AAD_HybridJoinb";
 				TestPath 	= "";
-				Description = "leave Azure AD Domain ";
+				Description = "Get Azure AD Domain Status";
 				Command 	= "Start-BISFProcWithProgBar -ProcPath '$env:windir\system32\dsregcmd.exe' -Args '/status' -ActText 'Get Azure AD Domain status'"
 			};
 			$ordercnt += 1

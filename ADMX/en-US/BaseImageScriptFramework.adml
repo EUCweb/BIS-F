@@ -808,9 +808,23 @@ If you enable this policy setting, AAD Tasks are running if enabled
 If you disable this policy setting, all AAD Tasks are not running
 If you do not configure this policy setting,  all AAD Tasks are not running
 
-Enable Azure Active Directory Hybrid Join:
-If you Enable this setting, during sealing (prepapration phase) the AAD Hybrid State is checked and run dsregcmd /leave.
-during computer startup (personalization) dsregcmd /join is running</string>
+Preparation Phase:
+Leave Azure Active Directory:
+If enable this setting, the AAD Hybrid State (AzureADjoined:YES) is checked and run dsregcmd /leave.
+
+
+Personalization Phase: 
+If enabled, dsregcmd /join is running
+
+Best Practices: 
+Using Windows Virtual Desktop with Intune
+https://docs.microsoft.com/en-us/mem/intune/fundamentals/windows-virtual-desktop
+
+Provision Hybrid AAD joined Virtual Machine on Azure to enable Intune
+https://support.citrix.com/article/CTX284738
+
+
+</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
