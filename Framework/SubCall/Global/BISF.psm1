@@ -4608,7 +4608,7 @@ function Get-DSRegState {
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 
 	Write-BISFlog -Msg "Checking DSRegcmd State" -ShowConsole -Color Cyan
-	$valuedata = ((dsregcmd /status | select-string -pattern $Key) -split(":") | select-object -last 1).trim
+	$valuedata = ((dsregcmd /status | select-string -pattern $Key) -split(":") | select-object -last 1).trim()
 	Write-BISFlog -Msg "$Key : $valuedata" -ShowConsole -Color DarkCyan -SubMsg
 	return $valuedata
 }
