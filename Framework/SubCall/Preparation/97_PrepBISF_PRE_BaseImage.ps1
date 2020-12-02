@@ -466,7 +466,7 @@ Begin {
 		}
 	}
 
-	IF (LIC_BISF_POL_MS_AAD -eq 1) {
+	IF ($LIC_BISF_POL_MS_AAD -eq 1) {
 		Write-BISFLog -Msg "Running Microsoft Azure Active Directory Tasks" -ShowConsole -Color Cyan
 		$DSRegValue = Get-BISFDSRegState -Key "AzureADjoined"
 		IF ($DSRegValue -eq "YES")  {
