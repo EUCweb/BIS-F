@@ -473,7 +473,7 @@ Begin {
 			$PrepCommands += [pscustomobject]@{
 				Order       = "$ordercnt";
 				Enabled     = "$true";
-				showmessage = "N";
+				showmessage = "Y";
 				cli         = "LIC_BISF_CLI_MS_AAD_HybridJoinb";
 				TestPath    = "";
 				Description = "leave Azure AD Domain ";
@@ -484,7 +484,7 @@ Begin {
 			$PrepCommands += [pscustomobject]@{
 				Order 		= "$ordercnt";
 				Enabled 	= "$true";
-				showmessage = "N";
+				showmessage = "Y";
 				cli 		= "LIC_BISF_CLI_MS_AAD_HybridJoinb";
 				TestPath 	= "";
 				Description = "Get Azure AD Domain Status";
@@ -511,7 +511,7 @@ Begin {
 			$PrepCommands += [pscustomobject]@{
 				Order = "$ordercnt";
 				Enabled = "$true";
-				showmessage = "N";
+				showmessage = "Y";
 				CLI = "LIC_BISF_CLI_NET_OPT1b";
 				TestPath = "";
 				Description = ".NET Optimization 1: $LIC_BISF_CLI_NET_OPT1txt - $element";
@@ -523,7 +523,7 @@ Begin {
 			$PrepCommands += [pscustomobject]@{
 				Order = "$ordercnt";
 				Enabled = "$true";
-				showmessage = "N";
+				showmessage = "Y";
 				CLI = "LIC_BISF_CLI_NET_OPT2b";
 				TestPath = "";
 				Description = ".NET Optimization 2: $LIC_BISF_CLI_NET_OPT2txt - $element";
