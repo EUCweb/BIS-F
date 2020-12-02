@@ -586,14 +586,14 @@ If you enable this policy setting, .NET Optimization is run during sealing (Prep
 If you disable this policy setting, .NET Optimization is disabled during sealing (Preparation phase)
 If you do not configure this policy setting, .NET Optimization is NOT run during sealing (Preparation phase)
 
-You can run up to 2 .NET optimizations. Enter thr arguments only without ngen.exe. 
+You can run up to 2 .NET optimizations. Enter thr arguments only without ngen.exe.
 The Text will be displayed during the BIS-F preparation and in the logfile too.
 
 Default Optimization 1:
 Text: Executing all queued .NET compilation jobs
 Arguments: ExecuteQueuedItems
 
-Default Optimization 2: 
+Default Optimization 2:
 Text: Update native images that have become invalid
 Arguments: update /force</string>
       <string id="POL_WinSxS">WinSxS Optimization</string>
@@ -804,7 +804,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       <string id="POL_MS_AAD">Azure Active Directory (AAD)</string>
       <string id="POL_MS_AAD_Help">Perform AAD Tasks:
 
-If you enable this policy setting, AAD Tasks are running if enabled 
+If you enable this policy setting, AAD Tasks are running if enabled
 If you disable this policy setting, all AAD Tasks are not running
 If you do not configure this policy setting,  all AAD Tasks are not running
 
@@ -813,10 +813,10 @@ Leave Azure Active Directory:
 If enable this setting, the AAD Hybrid State (AzureADjoined:YES) is checked and run dsregcmd /leave.
 
 
-Personalization Phase: 
+Personalization Phase:
 If enabled, dsregcmd /join is running
 
-Best Practices: 
+Best Practices:
 Using Windows Virtual Desktop with Intune
 https://docs.microsoft.com/en-us/mem/intune/fundamentals/windows-virtual-desktop
 
@@ -1105,7 +1105,7 @@ https://support.citrix.com/article/CTX284738
         </textBox>
         <text>
         </text>
-        <checkBox refId="CHK_NET_OPT2b" defaultChecked="true">Enable Optimization 2:</checkBox>
+        <checkBox refId="CHK_NET_OPT2b" defaultChecked="false">Enable Optimization 2:</checkBox>
         <textBox refId="TXT_NET_OPT2args">
           <label>Arguments Optimization 2:</label>
           <defaultValue>update /force</defaultValue>
