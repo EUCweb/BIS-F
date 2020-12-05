@@ -18,6 +18,7 @@
 		15.05.2019 JP: Fixed format and deleted junk lines
 		14.08.2019 MS: FRQ 3 - Remove Messagebox and using default setting if GPO is not configured
 		13.02.2020 JK: Fixed Grammar
+		05.12.2020 MS: HF 294 - function Set-RulesShare no longer required, RulesShare is set in registry policy path
 
 	.LINK
 		https://eucweb.com
@@ -55,37 +56,12 @@ Process {
 		}
 	}
 
-	function Set-RulesShare {
-		# Set the FSLogix central rules share in the BIS-F registry location, to get on BIS-F personalisation on each device
-		Write-BISFLog -Msg "$Product Rules Share - Checking GPO Configuration" -SubMsg -Color DarkCyan
-		$varCLIRS = $LIC_BISF_CLI_RSb
-		$varCLIRS = $LIC_BISF_CLI_RSb
-		$varCLIRS = $LIC_BISF_CLI_RSb
-		IF ($varCLIRS -ne "") {
-			Write-BISFLog -Msg "GPO value data: $varCLIRS"
-			$fslogixRulesShare = $LIC_BISF_CLI_RS
-		}
-		ELSE {
-			Write-BISFLog -Msg "$Product GPO not configured.. using default settings" -SubMsg -Color DarkCyan
-			$fslogixRulesShare = ""
-		}
-
-		if ($fslogixRulesShare -ne "") {
-			Write-BISFLog -Msg "The $Product Central Rules Share is set to $fslogixRulesShare" -ShowConsole -Color DarkCyan -SubMsg
-			Write-BISFLog -Msg "Set $Product Central Rules Share in the registry $hklm_software_LIC_CTX_BISF_SCRIPTS, Name LIC_BISF_FSXRulesShare, value $fslogixRulesShare"
-			Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_FSXRulesShare" -value "$fslogixRulesShare" -Force
-
-		}
-		ELSE {
-			Write-BISFLog -Msg "No $Product Central Rules Share defined"
-		}
-	}
 
 	$svc = Test-BISFService -ServiceName "$servicename" -ProductName "$product"
 	IF ($svc -eq $true) {
 		Invoke-BISFService -ServiceName "$servicename" -Action Stop
 		ClearConfig
-		Set-RulesShare
+
 	}
 }
 

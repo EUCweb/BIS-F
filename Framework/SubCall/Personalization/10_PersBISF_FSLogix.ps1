@@ -16,6 +16,7 @@
 		03.10.2019 MS: ENH 141 - FSLogix App Masking URL Rule Files
 		03.10.2019 MS: ENH 140 - cleanup redirected CloudCache empty directories
 		13.02.2020 JK: Fixed Log output spelling
+		05.12.2020 MS: HF 294 - using registry policy vlaue from $LIC_BISF_CLI_RS to get the central rules share
 
 	.LINK
 		https://eucweb.com
@@ -38,23 +39,22 @@ Process {
 
 	function Copy-FSXRules {
 		$ErrorActionPreference = "Stop"
-		$regval = (Get-ItemProperty $hklm_software_LIC_CTX_BISF_SCRIPTS -ErrorAction SilentlyContinue).LIC_BISF_FSXRulesShare
-		IF ($regval -ne $null) {
-			If (Test-Path -Path $regval) {
+		IF (!([string]::IsNullOrEmpty($LIC_BISF_CLI_RS))) {
+			If (Test-Path -Path $LIC_BISF_CLI_RS) {
 				Write-Log -Msg "Starting copy of $Product Rules & Assignment files" -showConsole -Color Cyan
 				ForEach ($FileCopy in $FSXfiles2Copy) {
 					Write-Log -Msg "Copy $Product $FileCopy files"
-					Copy-Item -Path "$regval\*" -Filter "$FileCopy" -Destination "$FSXrulesDest"
+					Copy-Item -Path "$LIC_BISF_CLI_RS\*" -Filter "$FileCopy" -Destination "$FSXrulesDest"
 				}
 			}
 			ELSE {
 				$ErrorActionPreference = "Continue"
-				Write-Log -Msg "$Product Central Rules Share '$regval' is not accessible or user '$cu_user' does not have enough rights!" -Type W -ShowConsole
+				Write-Log -Msg "$Product Central Rules Share '$LIC_BISF_CLI_RS' is not accessible or user '$cu_user' does not have enough rights!" -Type W -ShowConsole
 			}
 		}
 		ELSE {
 			$ErrorActionPreference = "Continue"
-			Write-Log -Msg "No $Product Central Rules Share defined, did not copy rules and assignment files!" -Type W
+			Write-Log -Msg "No $Product Central Rules Share defined, didn't copy files!" -Type W
 		}
 	}
 
