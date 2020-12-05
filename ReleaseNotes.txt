@@ -1,3 +1,5 @@
+05.12.2020 MS: HF 294 - 10_PersBISF_FSlogix.ps1 / using registry policy vlaue from $LIC_BISF_CLI_RS to get the central rules share
+05.12.2020 MS: HF 294 - 10_PrepBISF_FSlogix.ps1 / function Set-RulesShare no longer required, RulesShare is set in registry policy path
 02.12.2020 MS: HF 291 - Skipping Office 365 rearm/activation
 24.11.2020 MS: HF 285 - AAD Hybrid Support to Leave / Join
 22.11.2020 MS: HF 288 - ngen executes extremely long -> ADMX Update to specify .NET Settings
@@ -114,8 +116,6 @@ Version 7.1912.0.011023 -- 28.12.2019 00:38:37 :
 27.12.2019 MS/MN: HF 159 - C:\Windows\temp not deleted
 20.12.2019 MS/SF: FRQ 154 - Edjust for compositing engine change in AppLayering 1911 an higher
 20.12.2019 MS/SF: HF 153 - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
-05.12.2020 MS: HF 294 - 10_PersBISF_FSlogix.ps1 / using registry policy vlaue from $LIC_BISF_CLI_RS to get the central rules share
-05.12.2020 MS: HF 294 - 10_PrepBISF_FSlogix.ps1 / function Set-RulesShare no longer required, RulesShare is set in registry policy path
 31.10.2019 MS: ENH 15 - BugFix with Office 365 Implementation, overwrite the value for Office 2016 detection
 08.10.2019 MS: HF 20 - Installer - Scripts not in custom folders being kept during Update and fix to keep the content of the custom folder now
 08.10.2019 MS: ENH 93 - Detect Citrix Cloud Connector installation and prevent BIS-F to run
