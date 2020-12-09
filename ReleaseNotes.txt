@@ -1,6 +1,5 @@
 05.12.2020 MS: HF 294 - 10_PersBISF_FSlogix.ps1 / using registry policy vlaue from $LIC_BISF_CLI_RS to get the central rules share
 05.12.2020 MS: HF 294 - 10_PrepBISF_FSlogix.ps1 / function Set-RulesShare no longer required, RulesShare is set in registry policy path
-02.12.2020 MS: HF 291 - Skipping Office 365 rearm/activation
 24.11.2020 MS: HF 285 - AAD Hybrid Support to Leave / Join
 22.11.2020 MS: HF 288 - ngen executes extremely long -> ADMX Update to specify .NET Settings
 21.11.2010 MS: HF 280 - Log Message for "pending reboot error"
