@@ -1,3 +1,4 @@
+09.12.2020 MS: HF 296 - 10_PrepBISF_SCCM.ps1 - additional sealing steps equired
 05.12.2020 MS: HF 294 - 10_PersBISF_FSlogix.ps1 / using registry policy vlaue from $LIC_BISF_CLI_RS to get the central rules share
 05.12.2020 MS: HF 294 - 10_PrepBISF_FSlogix.ps1 / function Set-RulesShare no longer required, RulesShare is set in registry policy path
 24.11.2020 MS: HF 285 - AAD Hybrid Support to Leave / Join

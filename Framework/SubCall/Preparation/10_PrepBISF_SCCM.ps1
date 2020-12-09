@@ -26,7 +26,9 @@
 		14.05.2019 JP: The CcmExec service is no longuer set to manual
 		08.12.2019:JP: Fixed error on line 74, thanks toBrian Timp
 		20.12.2019 MS/SF: HF 153 (PR) - SCCM Agent preparation - fix Test-BISFService - parameter cannot be found
-	    21.11.2020 MS: HF 289 - terminate ccmexec process before stopping the service
+		21.11.2020 MS: HF 289 - terminate ccmexec process before stopping the service
+		09.12.2020 MS: HF 296 - additional sealing steps are required
+
 	.LINK
 		https://eucweb.com
 #>
@@ -40,6 +42,11 @@ Begin {
 	[string]$appInstallPath = "$env:windir\CCM"
 	[string]$appService = 'CcmExec'
 	[string]$appRegKey = "$hklm_software\Microsoft\SystemCertificates\SMS\Certificates"
+	$CryptoPath = "C:\ProgramData\Microsoft\Crypto"
+	$CryptoKey = "Key"
+	$OldCrpytoKey = "KeyOLD"
+	$CryptoKeyPath = $CryptoPath + "\" + $CryptoKey
+	$OldCrpytoKeyPath = $CryptoPath + "\" + $OldCrpytoKey
 }
 
 Process {
@@ -59,6 +66,23 @@ Process {
 
 		Write-BISFLog -Msg "$appVendor $appName scheduler history deleted"
 		Get-CimInstance -Namespace root\ccm\scheduler -Class CCM_Scheduler_History | Where-Object { $_.ScheduleID -eq "{00000000-0000-0000-0000-000000000001}" } | Remove-CimInstance
+
+		$DSRegValue = Get-BISFDSRegState -Key "AzureADjoined"
+		IF ($DSRegValue -eq "YES")  {
+			Write-BISFLog -Msg "Leaving AAD"
+			Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/leave" -ActText "leaving AAD"
+			Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/status" -ActText "Displays the device join status"
+		}
+
+		Write-BISFLog -Msg "Rename Folder $CryptoKeyPath to $OldCrpytoKey"
+		Rename-Item -Path $CryptoKeyPath -NewName $OldCrpytoKey -Force
+
+		Write-BISFLog -Msg "Create folder Rename $CryptoKeyPath"
+		New-Item -Path $CryptoKeyPath -ItemType Directory
+
+		Write-BISFLog -Msg "Set ACL to $CryptoKeyPath"
+		Get-Acl -Path $OldCrpytoKeyPath | Set-Acl -Path $CryptoKeyPath
+
 	}
 
 	# Original source http://www.david-obrien.net/2013/02/how-to-configure-the-configmgr-client
