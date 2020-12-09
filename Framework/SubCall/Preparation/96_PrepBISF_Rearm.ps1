@@ -47,7 +47,6 @@ param(
 		01.08.2020 MS: HF 269 - Office detection takes too long, using reg instead of WMI
 		01.08.2020 MS: HF 265 - Office 2010 rearm is not performed
 		02.08.2020 MS: HF 270 - PersBISF_Start.ps1 Script Causing all installed Applications to Reconfigure
-		02.12.2020 MS: HF 291 - skip rearm if O365 is detected
 
 
 	.LINK
@@ -87,8 +86,6 @@ Begin {
 	ForEach ($OfficeProduct in $OfficeProducts) {
         $Office = (Get-BISFSoftwareInfo -Publisher "Microsoft" -Name "$OfficeProduct")[-1] | select DisplayVersion,DisplayName
 		IF ($null -ne $Office) {
-
-
 			$OFName = $Office.DisplayName
 		    $OFVersion = $Office.DisplayVersion						#Version : 16.0.4266.1001
 		    $OFVersionShort = $OFVersion.substring(0, 4)  	#Version : 16.0
@@ -183,73 +180,67 @@ Begin {
 			Write-BISFLog -Msg "No Office Installation detected"
 		}
 
-
-		IF ($O365 -eq $true) {
-			$O365onAzure = Test-BISFAzureVM
-			IF ($O365onAzure -eq $true) {
-				Write-BISFLog -Msg "Office is hosted on a Microsoft Azure VM" -ShowConsole -Color DarkCyan -SubMsg
-				Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/leave" -ActText "Office - Performs Hybrid Unjoin"
-				Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/status" -ActText "Office - Displays the device join status"
-			}
-			ELSE {
-				Write-BISFLog -Msg "Office is NOT hosted on a Microsoft Azure VM" -Color DarkCyan -SubMsg
-			}
-
-		} else {
-			IF ($null -ne $OSPPREARM) {
-				IF (Test-Path -Path $OSPPREARM) {
-					$OSPPREARM_Path = [System.IO.Path]::GetDirectoryName($OSPPREARM)
-					Write-BISFLog -Msg "Office detected for rearm, check $OSPPREARM"
-					Write-BISFLog -Msg "Check Office rearm registry keys in $hklm_software_LIC_CTX_BISF_SCRIPTS"
-					Write-BISFLog -Msg "Get Office rearm Status [0=never run, 1=run] ..Status = $LIC_BISF_RearmOF_run"
-					IF ($LIC_BISF_RearmOF_run -ne 1) {
-						Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
-						$varCLI = $LIC_BISF_CLI_OF
-						IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-							Write-BISFLog -Msg "GPO Valuedata: $varCLI"
-						}
-						ELSE {
-							Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
-							$OFreamAnsw = "NO"
-						}
-						if (($OFreamAnsw -eq "YES" ) -or ($varCLI -eq "YES")) {
-							Write-BISFLog -Msg "Office will be rearmed now" -ShowConsole -Color DarkCyan -SubMsg
-							Write-BISFLog -Msg "Prepare Office for product activation - $OSPPREARM"
-							$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
-							$process = Start-Process -FilePath "$OSPPREARM" -Wait -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
-							$ProcessExitCode = $Process.ExitCode
-							Write-BISFLog -Msg  "ExitCode: $ProcessExitCode"
-							Get-BISFLogContent -GetLogFile "$tmpLogFile"
-							Remove-Item -Path "$tmpLogFile" -Force | Out-Null
-							Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\cscript.exe" -Args "//NoLogo ""$OSPP"" /dstatus" -ActText "Office - Get detailed license informations after rearm"
-
-						}
-						Write-BISFLog -Msg "Set specified registry keys in $hklm_software_LIC_CTX_BISF_SCRIPTS"
-						Write-BISFLog -Msg "Set Value = $RearmREG_name4 / ValueData = 1"
-						Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $RearmREG_name4 -value "1" #-ErrorAction SilentlyContinue
-						Write-BISFLog -Msg "Set Value = $RearmREG_name5 / ValueData = $cu_user"
-						Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $RearmREG_name5 -value $cu_user #-ErrorAction SilentlyContinue
-						Write-BISFLog -Msg "Set Value = $RearmREG_name6 / ValueData = $(Get-Date)"
-						Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $RearmREG_name6 -value $(Get-Date) #-ErrorAction SilentlyContinue
-					}
-					ELSE {
-						Write-BISFLog -Msg "Office already rearmed, no action needed" -ShowConsole -Color DarkCyan -SubMsg
-						Start-BISFProcWithProgBar -ProcPath "cscript.exe" -Args "//NoLogo ""$OSPP"" /dstatus" -ActText "Get detailed Office license informations"
-					}
-				}
-				ELSE {
-					Write-BISFLog -Msg "Office for rearm not found, check $OSPPREARM"
-					Write-BISFLog -Msg "Set Office rearm status to never run in $hklm_software_LIC_CTX_BISF_SCRIPTS"
-					Write-BISFLog -Msg "Set Value = $RearmREG_name4 / ValueData = 0"
-					Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $RearmREG_name4 -value "0" #-ErrorAction SilentlyContinue
-				}
-			}
-			ELSE {
-				Write-BISFLog -Msg "No Office installation detected, no rearm required !!" -Type W
-			}
+		$O365onAzure = Test-BISFAzureVM
+		IF ($O365onAzure -eq $true) {
+			Write-BISFLog -Msg "Office is hosted on a Microsoft Azure VM" -ShowConsole -Color DarkCyan -SubMsg
+			Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/leave" -ActText "Office - Performs Hybrid Unjoin"
+			Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/status" -ActText "Office - Displays the device join status"
+		}
+		ELSE {
+			Write-BISFLog -Msg "Office is NOT hosted on a Microsoft Azure VM" -Color DarkCyan -SubMsg
 		}
 
+		IF ($null -ne $OSPPREARM) {
+			IF (Test-Path -Path $OSPPREARM) {
+				$OSPPREARM_Path = [System.IO.Path]::GetDirectoryName($OSPPREARM)
+				Write-BISFLog -Msg "Office detected for rearm, check $OSPPREARM"
+				Write-BISFLog -Msg "Check Office rearm registry keys in $hklm_software_LIC_CTX_BISF_SCRIPTS"
+				Write-BISFLog -Msg "Get Office rearm Status [0=never run, 1=run] ..Status = $LIC_BISF_RearmOF_run"
+				IF ($LIC_BISF_RearmOF_run -ne 1) {
+					Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
+					$varCLI = $LIC_BISF_CLI_OF
+					IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
+						Write-BISFLog -Msg "GPO Valuedata: $varCLI"
+					}
+					ELSE {
+						Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+						$OFreamAnsw = "NO"
+					}
+					if (($OFreamAnsw -eq "YES" ) -or ($varCLI -eq "YES")) {
+						Write-BISFLog -Msg "Office will be rearmed now" -ShowConsole -Color DarkCyan -SubMsg
+						Write-BISFLog -Msg "Prepare Office for product activation - $OSPPREARM"
+						$tmpLogFile = "C:\Windows\logs\BISFtmpProcessLog.log"
+						$process = Start-Process -FilePath "$OSPPREARM" -Wait -NoNewWindow -RedirectStandardOutput "$tmpLogFile"
+						$ProcessExitCode = $Process.ExitCode
+						Write-BISFLog -Msg  "ExitCode: $ProcessExitCode"
+						Get-BISFLogContent -GetLogFile "$tmpLogFile"
+						Remove-Item -Path "$tmpLogFile" -Force | Out-Null
+						Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\cscript.exe" -Args "//NoLogo ""$OSPP"" /dstatus" -ActText "Office - Get detailed license informations after rearm"
 
+					}
+					Write-BISFLog -Msg "Set specified registry keys in $hklm_software_LIC_CTX_BISF_SCRIPTS"
+					Write-BISFLog -Msg "Set Value = $RearmREG_name4 / ValueData = 1"
+					Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $RearmREG_name4 -value "1" #-ErrorAction SilentlyContinue
+					Write-BISFLog -Msg "Set Value = $RearmREG_name5 / ValueData = $cu_user"
+					Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $RearmREG_name5 -value $cu_user #-ErrorAction SilentlyContinue
+					Write-BISFLog -Msg "Set Value = $RearmREG_name6 / ValueData = $(Get-Date)"
+					Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $RearmREG_name6 -value $(Get-Date) #-ErrorAction SilentlyContinue
+				}
+				ELSE {
+					Write-BISFLog -Msg "Office already rearmed, no action needed" -ShowConsole -Color DarkCyan -SubMsg
+					Start-BISFProcWithProgBar -ProcPath "cscript.exe" -Args "//NoLogo ""$OSPP"" /dstatus" -ActText "Get detailed Office license informations"
+				}
+			}
+			ELSE {
+				Write-BISFLog -Msg "Office for rearm not found, check $OSPPREARM"
+				Write-BISFLog -Msg "Set Office rearm status to never run in $hklm_software_LIC_CTX_BISF_SCRIPTS"
+				Write-BISFLog -Msg "Set Value = $RearmREG_name4 / ValueData = 0"
+				Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $RearmREG_name4 -value "0" #-ErrorAction SilentlyContinue
+			}
+		}
+		ELSE {
+			Write-BISFLog -Msg "No Office installation detected, no rearm required !!" -Type W
+		}
 	}
 	####################################################################
 }
