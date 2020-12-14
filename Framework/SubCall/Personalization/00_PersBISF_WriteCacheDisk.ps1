@@ -56,6 +56,7 @@
 		18.02.2020 JK: Fixed Log output spelling
 		17.02.2020 MS: HF 206 - Reboot loop if central logshare is configured
 		23.05.2020 MS: HF 232 - CacheDisk not formatted
+		14.12.2020 MS: HF 297 - MCS CacheDisk is not right formatted
 	.LINK
 		https://eucweb.com
 #>
@@ -140,7 +141,7 @@ Process {
 					"create partition primary" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
-					get-LogContent -GetLogFile "$DiskpartFile"
+					Get-BISFLogContent -GetLogFile "$DiskpartFile"
 					diskpart.exe /s $DiskpartFile
 					Write-BISFLog -Msg "CacheDisk partition is now formatted and the drive letter $PVSDiskDrive assigned"
 
@@ -148,7 +149,7 @@ Process {
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
 					"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
-					get-LogContent -GetLogFile "$DiskpartFile"
+					Get-BISFLogContent -GetLogFile "$DiskpartFile"
 					diskpart.exe /s $DiskpartFile
 					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 				}
@@ -160,13 +161,14 @@ Process {
 					$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
 					Set-CimInstance -InputObject $WriteCache  -Arguments @{DriveLetter = "$PVSDiskDrive" }
 
+					Write-BISFLog -Msg "BootDisk DiskID  $BootDiskID - CacheDisk DiskID $CachDiskID (Reporting only, not functional!)"
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 					"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
 					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
-					get-LogContent -GetLogFile "$DiskpartFile"
+					Get-BISFLogContent -GetLogFile "$DiskpartFile"
 					$result = diskpart.exe /s $DiskpartFile
 					Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 				}
@@ -205,17 +207,17 @@ Process {
 				# Construct Diskpart File to Format Disk
 
 				Write-BISFLog -Msg "CacheDisk partition is not formatted"
-				Write-BISFLog -Msg "BootDisk DiskID  $BootDiskID - CacheDisk DiskID $CachDiskID (Reporting only, not functional!)"
+				Write-BISFLog -Msg "BootDisk DiskID  $BootDiskID - CacheDisk DiskID $CachDiskID"
 
 				If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-				"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
+				"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 				"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 				"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 				"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 				"create partition primary" | Out-File -filepath $DiskpartFile -encoding Default -append
 				"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
 				"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
-				get-LogContent -GetLogFile "$DiskpartFile"
+				Get-BISFLogContent -GetLogFile "$DiskpartFile"
 				diskpart.exe /s $DiskpartFile
 				Write-BISFLog -Msg "CacheDisk partition is now formatted and the drive letter $PVSDiskDrive assigned"
 
@@ -223,7 +225,7 @@ Process {
 				If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 				"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
 				"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
-				get-LogContent -GetLogFile "$DiskpartFile"
+				Get-BISFLogContent -GetLogFile "$DiskpartFile"
 				diskpart.exe /s $DiskpartFile
 				Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 			}
@@ -231,18 +233,19 @@ Process {
 				# WriteCache Formatted, but No or Wrong Drive Letter Assigned
 				Write-BISFLog -Msg "CacheDisk is formatted, but no drive letter or the wrong drive letter is assigned"  -Type W -SubMsg
 
-				Write-BISFLog -Msg "Fixing drive letter assignemnt on CacheDisk"
-				$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
-				Set-CimInstance -InputObject $WriteCache  -Arguments @{DriveLetter = "$PVSDiskDrive" }
-
+				# HF 297: removed the follwoing lines, this will be done with Diskpart and the $CachDiskID
+				#Write-BISFLog -Msg "Fixing drive letter assignemnt on CacheDisk"
+				#$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
+				#Set-CimInstance -InputObject $WriteCache -Arguments @{DriveLetter = "$PVSDiskDrive" }
+				Write-BISFLog -Msg "BootDisk DiskID  $BootDiskID - CacheDisk DiskID $CachDiskID"
 				If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-				"select disk 0" | Out-File -filepath $DiskpartFile -encoding Default
+				"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 				"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 				"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 				"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 				"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
-				get-LogContent -GetLogFile "$DiskpartFile"
-				$result = diskpart.exe /s $DiskpartFile
+				Get-BISFLogContent-GetLogFile "$DiskpartFile"
+				$null = diskpart.exe /s $DiskpartFile
 				Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 			}
 
