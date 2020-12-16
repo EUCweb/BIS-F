@@ -1,3 +1,4 @@
+16.12.2020 MW: HF 299 - Not so fast reconnect in Windows Server 2019
 14.12.2020 MS: HF 297 - MCS CacheDisk is not right formatted
 09.12.2020 MS: HF 296 - 10_PrepBISF_SCCM.ps1 - additional sealing steps
 05.12.2020 MS: HF 294 - 10_PersBISF_FSlogix.ps1 / using registry policy vlaue from $LIC_BISF_CLI_RS to get the central rules share
