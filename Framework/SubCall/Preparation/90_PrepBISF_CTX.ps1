@@ -239,7 +239,6 @@ Begin {
 				Write-BISFLog -Msg "Write RegKey to Disable FastReconnect" -ShowConsole -Color DarkCyan -SubMsg
 				New-Item "$HKLM_Citrix"
 				New-ItemProperty -Path "$HKLM_Citrix" -Name "FastReconnect" -Value ”0”  -PropertyType "DWord"
-				Get-BISFLogContent "C:\Windows\Logs\CTX_NotSoFastReconnect.log"
 			}
 		}
 	}
