@@ -1,4 +1,4 @@
-﻿[CmdletBinding(SupportsShouldProcess = $true)]
+[CmdletBinding(SupportsShouldProcess = $true)]
 param(
 )
 <#
@@ -66,6 +66,7 @@ param(
 		03.10.2019 MS: ENH 65 - ADMX Extension to delete the log files for Citrix Optimizer
 		27.01.2020 MS: HF 167 - Moving AppLayering Layer Finalize to Post BIS-F script
 		18.02.2020 JK: Fixed Log output spelling
+		16.12.2020 MW: Registry Hack for Not so fast reconnect Bug in Windows Server 2019
 
 
 	.Link
@@ -106,6 +107,9 @@ Begin {
 
 	#Citrix EdgeSight Agent
 	$EdgeSight_Path = "$ProgramFilesx86\Citrix\System Monitoring\Agent\Core"
+
+	#Registry Citrix
+	$HKLM_Citrix = "HKLM:\SOFTWARE\Citrix\Reconnect"
 	####################################################################
 
 	####################################################################
@@ -224,6 +228,19 @@ Begin {
 			Write-BISFLog -Msg "Removing Citrix Streamed application cache" -ShowConsole -Color DarkCyan -SubMsg
 			Start-Process "$RadeCache_path\RadeCache.exe" -ArgumentList "/flushall" -NoNewWindow -Wait -RedirectStandardOutput "C:\Windows\Logs\CTX_RadeCache.log"
 			Get-BISFLogContent "C:\Windows\Logs\CTX_RadeCache.log"
+		}
+	}
+
+	#Not so fast Reconnect in Windows Server 2019
+	#https://www.mycugc.org/blogs/brandon-mitchell1/2019/09/22/not-so-fast-reconnect 
+	function NotSoFastReconnect {
+		IF ($Global:OSName -like "*Server 2019*") { #Windows Server 2019
+			IF (!(Test-Path ("$HKLM_Citrix"))) {
+				Write-BISFLog -Msg "Write RegKey to Disable FastReconnect" -ShowConsole -Color DarkCyan -SubMsg
+				New-Item "$HKLM_Citrix"
+				New-ItemProperty -Path "$HKLM_Citrix" -Name "FastReconnect" -Value ”0”  -PropertyType "DWord"
+				Get-BISFLogContent "C:\Windows\Logs\CTX_NotSoFastReconnect.log"
+			}
 		}
 	}
 
@@ -563,7 +580,7 @@ Process {
 		CleanUpCTXPolCache
 		CleanUpProfileManagement
 		CleanUpEdgeSight
-
+		NotSoFastReconnect
 	}
 
 	IF (($returnTestXDSoftware -eq "true") -or ($returnTestPVSSoftware -eq "true")) {
