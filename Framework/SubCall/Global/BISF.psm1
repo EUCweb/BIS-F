@@ -1,4 +1,4 @@
-﻿Function Initialize-Configuration {
+Function Initialize-Configuration {
 	<#
 .SYNOPSIS
 	define global environment
@@ -2848,7 +2848,8 @@ function Move-EvtLogs {
 		11.11.2017 MS: Bugfix, show the right Eventlog during move to the WCD
 		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
 		03.10.2019 MS: EHN 126 - added MCSIO redirection
-		27.12.2019 MS/MN: HF 161 - Quotation marks are different
+        	27.12.2019 MS/MN: HF 161 - Quotation marks are different
+        	16.12.2020 MW: Issue #42: New Move Event Log Function
 
 	.FUNCTIONALITY
 		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
@@ -2866,126 +2867,38 @@ function Move-EvtLogs {
 		Write-BISFLog -Msg "Create Eventlog directory $LIC_BISF_EvtPath"
 		New-Item -Path $LIC_BISF_EvtPath -ItemType Directory -Force
 	}
-	$appvlogs = Get-WinEvent -ListLog "*" -force -ErrorAction SilentlyContinue | Where-Object { $_.IsEnabled -eq $false }
+    $appvlogs = New-Object System.Diagnostics.Eventing.Reader.EventLogSession
 
-	foreach ($logitem in $appvlogs) {
-		$x = $logitem.LogName
-		Write-BISFLog -Msg "Eventlog enabled: $x"
-		#    $logitem.IsEnabled = $true
-		$LogfilePath = "$LIC_BISF_EvtPath\" + $logitem.logName + ".evtx"
-		$Logfilepath = $LogFilePath.Replace("/", "")
+	foreach ($LogName in $appvlogs.GetLogNames()) {
+		Write-BISFLog -Msg "Eventlog enabled: $LogName"
+        $Eventlogconfig = New-Object System.Diagnostics.Eventing.Reader.EventLogConfiguration -ArgumentList $LogName,$appvlogs 
+        $Logfilepath = $Eventlogconfig.LogFilePath 
+        $Logfile = Split-Path $Logfilepath -Leaf 
+        $NewLogFilePath = "$LIC_BISF_EvtPath\$Logfile" 
 
-		Write-BISFLog -Msg "Path:`t`t $LogfilePath" -ShowConsole -SubMsg -Color DarkCyan
-		$logitem.LogFilePath = $Logfilepath
-		Try {
-			$logitem.SaveChanges()
-		}
-		Catch [System.Management.Automation.MethodInvocationException] {
-			#$Error | Get-Member
-			#$Error.Data
-			#$Error.ErrorRecord
-			#$Error.Errors
-			$x = $_.Exception.Message
-			Write-BISFLog -Msg "Error:`t`t $x" -Type W
+        Write-BISFLog -Msg "Path:`t`t $LogfilePath" -ShowConsole -SubMsg -Color DarkCyan
+        
+        if (($Eventlogconfig.LogType -eq "Debug" -or $Eventlogconfig.LogType -eq " Analytical") -and $Eventlogconfig.IsEnabled) 
+        { 
+            $Eventlogconfig.IsEnabled = $false 
+            $Eventlogconfig.SaveChanges()  
+ 
+            $Eventlogconfig.LogFilePath = $NewLogFilePath 
+            $Eventlogconfig.SaveChanges()  
+ 
+            $Eventlogconfig.IsEnabled = $true 
+            $Eventlogconfig.SaveChanges() 
+            } 
+        else 
+        { 
+            $Eventlogconfig.LogFilePath = $NewLogFilePath 
+            $Eventlogconfig.SaveChanges() 
+            } 
+    }
 
-			#Exit
-		}
-		Catch {
-			$Error[0].Exception.GetType().fullname
-		}
-		# Write-BISFLog -Msg "`n`n"
-	}
-
-
-	$appvlogs = Get-WinEvent -ListLog "*" -force -ErrorAction SilentlyContinue | Where-Object { $_.IsEnabled -eq $true }
-
-	foreach ($logitem in $appvlogs) {
-		$x = $logitem.LogName
-		Write-BISFLog -Msg "Log enabled: $x"
-		#     $logitem.IsEnabled = $true
-		$LogfilePath = "$LIC_BISF_EvtPath\" + $logitem.logName + ".evtx"
-		$Logfilepath = $LogFilePath.Replace("/", "")
-
-		Write-BISFLog -Msg "Path:`t`t $LogfilePath" -ShowConsole -SubMsg -Color DarkCyan
-		$logitem.LogFilePath = $Logfilepath
-		Try {
-			$logitem.SaveChanges()
-		}
-		Catch [System.Management.Automation.MethodInvocationException] {
-			#$Error | Get-Member
-			#$Error.Data
-			#$Error.ErrorRecord
-			#$Error.Errors
-			$x = $_.Exception.Message
-			Write-BISFLog -Msg "Error:`t`t $x" -Type W
-
-			#Exit
-		}
-		Catch {
-			$Error[0].Exception.GetType().fullname
-		}
-		#Write-BISFLog -Msg "`n`n"
-	}
-
-	$appvlogs = Get-WinEvent -ListLog "Microsoft-Windows-TerminalServices-SessionBroker-*" -force -ErrorAction SilentlyContinue | Where-Object { $_.IsEnabled -eq $true }
-
-	foreach ($logitem in $appvlogs) {
-		$x = $logitem.LogName
-		Write-BISFLog -Msg "Log enabled: $x"
-		$logitem.IsEnabled = $false
-		$LogfilePath = "$LIC_BISF_EvtPath\" + $logitem.logName + ".evtx"
-		$Logfilepath = $LogFilePath.Replace("/", "")
-
-		Write-BISFLog -Msg "Path:`t`t $LogfilePath" -ShowConsole -SubMsg -Color DarkCyan
-		$logitem.LogFilePath = $Logfilepath
-		Try {
-			$logitem.SaveChanges()
-		}
-		Catch [System.Management.Automation.MethodInvocationException] {
-			#$Error | Get-Member
-			#$Error.Data
-			#$Error.ErrorRecord
-			#$Error.Errors
-			$x = $_.Exception.Message
-			Write-BISFLog -Msg "Error:`t`t $x" -Type W
-
-			#Exit
-		}
-		Catch {
-			$Error[0].Exception.GetType().fullname
-		}
-		#Write-BISFLog -Msg "`n`n"
-	}
-	$appvlogs = Get-WinEvent -ListLog "Microsoft-Windows-TerminalServices-SessionBroker-*" -force -ErrorAction SilentlyContinue | Where-Object { $_.IsEnabled -eq $false }
-
-	foreach ($logitem in $appvlogs) {
-		$x = $logitem.LogName
-		Write-BISFLog -Msg "Log enabled: $x"
-		$LogfilePath = "$LIC_BISF_EvtPath\" + $logitem.logName + ".evtx"
-		$Logfilepath = $LogFilePath.Replace("/", "")
-
-		Write-BISFLog -Msg "Path:`t`t $LogfilePath" -ShowConsole -SubMsg -Color DarkCyan
-		$logitem.LogFilePath = $Logfilepath
-		Try {
-			$logitem.SaveChanges()
-		}
-		Catch [System.Management.Automation.MethodInvocationException] {
-			#$Error | Get-Member
-			#$Error.Data
-			#$Error.ErrorRecord
-			#$Error.Errors
-			$x = $_.Exception.Message
-			Write-BISFLog -Msg "Error:`t`t $x" -Type W
-
-			#Exit
-		}
-		Catch {
-			$Error[0].Exception.GetType().fullname
-		}
-		#Write-BISFLog -Msg "`n`n"
-	}
 	Set-BISFACLrights -path $LIC_BISF_EvtPath
 }
+
 
 function Get-BootMode {
 	<#
