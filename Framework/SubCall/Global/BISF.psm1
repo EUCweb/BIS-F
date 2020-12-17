@@ -1,4 +1,4 @@
-Function Initialize-Configuration {
+﻿Function Initialize-Configuration {
 	<#
 .SYNOPSIS
 	define global environment
@@ -2848,8 +2848,8 @@ function Move-EvtLogs {
 		11.11.2017 MS: Bugfix, show the right Eventlog during move to the WCD
 		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
 		03.10.2019 MS: EHN 126 - added MCSIO redirection
-        	27.12.2019 MS/MN: HF 161 - Quotation marks are different
-        	16.12.2020 MW: Issue #42: New Move Event Log Function
+        27.12.2019 MS/MN: HF 161 - Quotation marks are different
+        16.12.2020 MW: Issue #42: New Move Event Log Function
 
 	.FUNCTIONALITY
 		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
@@ -2871,29 +2871,29 @@ function Move-EvtLogs {
 
 	foreach ($LogName in $appvlogs.GetLogNames()) {
 		Write-BISFLog -Msg "Eventlog enabled: $LogName"
-        $Eventlogconfig = New-Object System.Diagnostics.Eventing.Reader.EventLogConfiguration -ArgumentList $LogName,$appvlogs 
-        $Logfilepath = $Eventlogconfig.LogFilePath 
-        $Logfile = Split-Path $Logfilepath -Leaf 
-        $NewLogFilePath = "$LIC_BISF_EvtPath\$Logfile" 
+        $Eventlogconfig = New-Object System.Diagnostics.Eventing.Reader.EventLogConfiguration -ArgumentList $LogName,$appvlogs
+        $Logfilepath = $Eventlogconfig.LogFilePath
+        $Logfile = Split-Path $Logfilepath -Leaf
+        $NewLogFilePath = "$LIC_BISF_EvtPath\$Logfile"
 
         Write-BISFLog -Msg "Path:`t`t $LogfilePath" -ShowConsole -SubMsg -Color DarkCyan
-        
-        if (($Eventlogconfig.LogType -eq "Debug" -or $Eventlogconfig.LogType -eq " Analytical") -and $Eventlogconfig.IsEnabled) 
-        { 
-            $Eventlogconfig.IsEnabled = $false 
-            $Eventlogconfig.SaveChanges()  
- 
-            $Eventlogconfig.LogFilePath = $NewLogFilePath 
-            $Eventlogconfig.SaveChanges()  
- 
-            $Eventlogconfig.IsEnabled = $true 
-            $Eventlogconfig.SaveChanges() 
-            } 
-        else 
-        { 
-            $Eventlogconfig.LogFilePath = $NewLogFilePath 
-            $Eventlogconfig.SaveChanges() 
-            } 
+
+        if (($Eventlogconfig.LogType -eq "Debug" -or $Eventlogconfig.LogType -eq " Analytical") -and $Eventlogconfig.IsEnabled)
+        {
+            $Eventlogconfig.IsEnabled = $false
+            $Eventlogconfig.SaveChanges()
+
+            $Eventlogconfig.LogFilePath = $NewLogFilePath
+            $Eventlogconfig.SaveChanges()
+
+            $Eventlogconfig.IsEnabled = $true
+            $Eventlogconfig.SaveChanges()
+            }
+        else
+        {
+            $Eventlogconfig.LogFilePath = $NewLogFilePath
+            $Eventlogconfig.SaveChanges()
+            }
     }
 
 	Set-BISFACLrights -path $LIC_BISF_EvtPath
