@@ -197,7 +197,7 @@ Process {
 
 			$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
 			$WEMAgentVersion = $svc[1]  #HF 304: new Startup Options via BIS-F ADMX
-			IF ($WEMAgentVersion -gt "2009*" ) {
+			IF ($WEMAgentVersion -gt "2012*" ) {
 				$AgentArgs = $LIC_BISF_CLI_WEMCacheStartupOption
 			}
 

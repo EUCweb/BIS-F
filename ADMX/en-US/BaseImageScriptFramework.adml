@@ -661,8 +661,8 @@ The Citrix folder is created from BIS-F automatically.
 
 Configure the WEM Agent Startup Cache Option:
 Change this settings does not need a new seal process of your Image.
-For WEM Agent 2006 or lower this settings are ignored and the default value -RefreshCache is used.
-For WEM Agent 2009 or higher, you can set one of the following settings:
+For WEM Agent 2009 or lower this settings are ignored and the default value -RefreshCache is used.
+For WEM Agent 2012 or higher, you can set one of the following settings:
 
 -RefreshCache: Triggers a cache build or refresh
 -RefreshSettings: Refreshes agent host settings
