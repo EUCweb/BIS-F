@@ -1,4 +1,4 @@
-23.12.2020 MS: HF 304 - WEM Agent 2009, add new startup options to ADMX
+23.12.2020 MS: HF 304 - WEM Agent 2012, add new startup options to ADMX
 23.12.2020 JS: HF 303 - Updated CheckCDRom function to allow for builds where CDROM drive letter has already been removed
 23.12.2020 JS: HF 302 - WriteCache disk access validated in Set-Logfile function before log move
 17.12.2020 MW: HF 042 - EventLog is moved, but Path is never changed
