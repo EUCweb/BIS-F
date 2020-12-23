@@ -2711,7 +2711,7 @@ function Use-PVSConfig {
 
 		IF ($LIC_BISF_CLI_PVSDisableRedirection -eq 1) { $Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
-		IF ((Access-BISFValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF ((Test-BISFAccessValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
@@ -2812,7 +2812,7 @@ function Use-MCSConfig {
 
 		IF ($LIC_BISF_CLI_MCSIODisableRedirection -eq 1) {$Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
-		IF ((Access-BISFValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		IF ((Test-BISFAccessValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 
 		IF ($Redirection -eq $true) {
@@ -4547,16 +4547,16 @@ function Get-DSRegState {
 	return $valuedata
 }
 
-Function Access-Validated {
+Function Test-AccessValidated {
 	<#
 	.SYNOPSIS
 		Validate access to the WriteCache disk
 	.DESCRIPTION
 	  	Does a basic test to validate access to the WriteCache disk
 	.EXAMPLE
-		IsAccessAllowed = Access-BISFValidated -Folder "$PVSDiskDrive\"
+		IsAccessAllowed = Test-BISFAccessValidated -Folder "$PVSDiskDrive\"
 	.EXAMPLE
-		IF ((Access-BISFValidated -Folder "$PVSDiskDrive\") -eq $False) { #code for $false value } else { #code for $true value }
+		IF ((Test-BISFAccessValidated -Folder "$PVSDiskDrive\") -eq $False) { #code for $false value } else { #code for $true value }
 	.NOTES
 		Author: Jeremy Saunders
 	  	Company: jhouseconsulting.com

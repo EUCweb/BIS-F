@@ -202,7 +202,7 @@ Begin {
 				$LogPath = "$LIC_BISF_LogShare\$computer"
 			}
 			ELSE {
-				If (Access-BISFValidated -Folder "$PVSDiskDrive\") {
+				If (Test-BISFAccessValidated -Folder "$PVSDiskDrive\") {
 					$LogPath = "$PVSDiskDrive\$LogFolderName"
 				}
 				ELSE {
