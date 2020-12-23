@@ -199,9 +199,14 @@ Process {
 			$WEMAgentVersion = $svc[1]  #HF 304: new Startup Options via BIS-F ADMX
 			IF ($WEMAgentVersion -gt "2009*" ) {
 				$AgentArgs = $LIC_BISF_CLI_WEMCacheStartupOption
-			} else {
-				$AgentArgs = "-RefreshCache"
 			}
+
+			IF ([String]::IsNullOrEmpty($AgentArgs)) {
+				$AgentArgs = "-RefreshCache"
+				Write-BISFLog -Msg "WEM Agent Startup Options set to default value: $AgentArgs" -ShowConsole -Color Yellow -SubMsg -Type W
+			}
+
+
 			Write-BISFLog -Msg "WEM Agent Version $WEMAgentVersion detected, StartupOption: $AgentArgs used" -ShowConsole -Color DarkCyan -SubMsg
 
 			Write-BISFLog -Msg "Running Agent Cache Management Utility with $product BrokerName $WEMAgentHostBrokerName " -ShowConsole -Color DarkCyan -SubMsg
