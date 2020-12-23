@@ -586,14 +586,14 @@ If you enable this policy setting, .NET Optimization is run during sealing (Prep
 If you disable this policy setting, .NET Optimization is disabled during sealing (Preparation phase)
 If you do not configure this policy setting, .NET Optimization is NOT run during sealing (Preparation phase)
 
-You can run up to 2 .NET optimizations. Enter thr arguments only without ngen.exe. 
+You can run up to 2 .NET optimizations. Enter thr arguments only without ngen.exe.
 The Text will be displayed during the BIS-F preparation and in the logfile too.
 
 Default Optimization 1:
 Text: Executing all queued .NET compilation jobs
 Arguments: ExecuteQueuedItems
 
-Default Optimization 2: 
+Default Optimization 2:
 Text: Update native images that have become invalid
 Arguments: update /force</string>
       <string id="POL_WinSxS">WinSxS Optimization</string>
@@ -660,8 +660,9 @@ The Cache Folder is created like %CachDisk Driveletter%\Citrix\%WEM Agent Cache 
 The Citrix folder is created from BIS-F automatically.
 
 Configure the WEM Agent Startup Cache Option:
-Change this settings does not need a new seal process of your Image. 
-If WEM Agent 2009 or higher is used, you can set one of the following settings. WEM Agent 
+Change this settings does not need a new seal process of your Image.
+For WEM Agent 2006 or lower this settings are ignored and the default value -RefreshCache is used.
+For WEM Agent 2009 or higher, you can set one of the following settings:
 
 -RefreshCache: Triggers a cache build or refresh
 -RefreshSettings: Refreshes agent host settings
@@ -815,7 +816,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       <string id="POL_MS_AAD">Azure Active Directory (AAD)</string>
       <string id="POL_MS_AAD_Help">Perform AAD Tasks:
 
-If you enable this policy setting, AAD Tasks are running if enabled 
+If you enable this policy setting, AAD Tasks are running if enabled
 If you disable this policy setting, all AAD Tasks are not running
 If you do not configure this policy setting,  all AAD Tasks are not running
 
@@ -824,10 +825,10 @@ Leave Azure Active Directory:
 If enable this setting, the AAD Hybrid State (AzureADjoined:YES) is checked and run dsregcmd /leave.
 
 
-Personalization Phase: 
+Personalization Phase:
 If enabled, dsregcmd /join is running
 
-Best Practices: 
+Best Practices:
 Using Windows Virtual Desktop with Intune
 https://docs.microsoft.com/en-us/mem/intune/fundamentals/windows-virtual-desktop
 

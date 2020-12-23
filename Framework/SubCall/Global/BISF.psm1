@@ -1790,8 +1790,8 @@ function Get-DiskNameExtension {
 	Finally { $ErrorActionPreference = "Continue" }
 	write-BISFlog -Msg "vDisk Extension is $($ReturnValue)"
 	return $returnValue
-
 }
+
 
 function Test-Service {
 	<#
@@ -1813,6 +1813,7 @@ function Test-Service {
 		06.03.2017 MS: get FileVersion from ImagePath
 		28.02.2018 MS: Bugfix get Fileversion from Imagepath, without arguments of the service
 		20.10.2018 MS: Bugfix 74: The Version from the Service could not extracted
+		23.12.2020 MS: HF 304 - add switch RetrieveVersion
 	.LINK
 		https://eucweb.com
 #>
@@ -1824,7 +1825,11 @@ function Test-Service {
 
 		# specifies the Productname / Software
 		[parameter(Mandatory = $false)]
-		[ValidateNotNullOrEmpty()]$ProductName
+		[ValidateNotNullOrEmpty()]$ProductName,
+
+		# Retrieve ServiceVersion
+		[parameter(Mandatory = $false)]
+		[switch]$RetrieveVersion
 	)
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF (Get-Service $Servicename -ErrorAction SilentlyContinue) {
@@ -1837,7 +1842,7 @@ function Test-Service {
 			$SVCImagePath = $SVCImagePath -replace ('"', '')
 			$Global:glbSVCImagePath = "$SVCImagePath"
 			$SVCFileVersion = (Get-Item $($SVCImagePath) -ErrorAction SilentlyContinue).versioninfo.fileversion
-			IF (!($SVCFileVersion -eq $null)) {
+			IF (!([String]::IsNullOrEmpty($SVCFileVersion))) {
 				$ShowVersion = "(Version $SVCFileVersion)"
 				Write-BISFlog -Msg "Product $ProductName $ShowVersion installed" -ShowConsole -Color Cyan
 			}
@@ -1847,12 +1852,21 @@ function Test-Service {
 			}
 
 		}
-		return $true
+		if ($RetrieveVersion) {
+			return $true, $SVCFileVersion
+		} else {
+			return $true
+		}
+
 	}
 	ELSE {
 		write-BISFlog -Msg "Service $($ServiceName) does not exist"
 		IF ($ProductName) { write-BISFlog -Msg "Product $ProductName is NOT installed" }
-		return $false
+		if ($RetrieveVersion) {
+			return $false, 0
+		} else {
+			return $false
+		}
 	}
 
 }

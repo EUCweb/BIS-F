@@ -22,6 +22,7 @@
 		21.10.2028 MS: Bufix 47: MSMQ windows services will fail to start in App Layering
 		21.10.2028 MS: Bufix 18: XA/ XD 7.x Cache folder will be created
 		18.02.2020 JK: Fixed Log output spelling
+		23.12.2020 MS: HF 304: WEM Agent 2009 or greater, new startup Options can be used
 
 	.LINK
 		https://eucweb.com
@@ -163,9 +164,9 @@ Process {
 
 		else { $product = "Citrix Workspace Environment Management (WEM) Agent" }
 
-		$svc = Test-BISFService -ServiceName "$service" -ProductName "$product"
+		$svc = Test-BISFService -ServiceName "$service" -ProductName "$product" -RetrieveVersion
 
-		IF ($svc -eq $true) {
+		IF ($svc[0] -eq $true) {
 			$servicename = $service
 			Invoke-BISFService -ServiceName "$servicename" -Action Stop
 			Start-Sleep $Wait1
@@ -195,9 +196,16 @@ Process {
 			}
 
 			$WEMAgentCacheUtil = "$WEMAgentLocation" + "AgentCacheUtility.exe"
+			$WEMAgentVersion = $svc[1]  #HF 304: new Startup Options via BIS-F ADMX
+			IF ($WEMAgentVersion -gt "2009*" ) {
+				$AgentArgs = $LIC_BISF_CLI_WEMCacheStartupOption
+			} else {
+				$AgentArgs = "-RefreshCache"
+			}
+			Write-BISFLog -Msg "WEM Agent Version $WEMAgentVersion detected, StartupOption: $AgentArgs used" -ShowConsole -Color DarkCyan -SubMsg
 
 			Write-BISFLog -Msg "Running Agent Cache Management Utility with $product BrokerName $WEMAgentHostBrokerName " -ShowConsole -Color DarkCyan -SubMsg
-			Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args "-RefreshCache" -ActText "Running Agent Cache Management Utility" | Out-Null
+			Start-BISFProcWithProgBar -ProcPath "$WEMAgentCacheUtil" -Args $AgentArgs -ActText "Running Agent Cache Management Utility" | Out-Null
 		}
 	}
 
