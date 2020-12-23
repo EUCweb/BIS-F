@@ -2822,6 +2822,9 @@ function Use-MCSConfig {
 
 			# redirected eventlogs
 			Move-BISFEvtLogs
+           $CleanPath = $InstallLocation+"\*"
+           Remove-Item $CleanPath -include *.evtx -ErrorAction SilentlyContinue -force
+           Remove-Item $CleanPath -include *.etl -ErrorAction SilentlyContinue -force
 		}
 		ELSE {
 			Write-BISFLog -Msg "Redirection is disabled with code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan
@@ -2848,8 +2851,8 @@ function Move-EvtLogs {
 		11.11.2017 MS: Bugfix, show the right Eventlog during move to the WCD
 		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
 		03.10.2019 MS: EHN 126 - added MCSIO redirection
-        	27.12.2019 MS/MN: HF 161 - Quotation marks are different
-        	16.12.2020 MW: Issue #42: New Move Event Log Function
+        27.12.2019 MS/MN: HF 161 - Quotation marks are different
+        16.12.2020 MW: Issue #42: New Move Event Log Function
 
 	.FUNCTIONALITY
 		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
@@ -2867,33 +2870,39 @@ function Move-EvtLogs {
 		Write-BISFLog -Msg "Create Eventlog directory $LIC_BISF_EvtPath"
 		New-Item -Path $LIC_BISF_EvtPath -ItemType Directory -Force
 	}
-    $appvlogs = New-Object System.Diagnostics.Eventing.Reader.EventLogSession
-
-	foreach ($LogName in $appvlogs.GetLogNames()) {
+    $appvlog = New-Object System.Diagnostics.Eventing.Reader.EventLogSession
+    $appvlogs = $appvlog.GetLogNames()
+   
+	foreach ($LogName in $appvlogs) {
 		Write-BISFLog -Msg "Eventlog enabled: $LogName"
-        $Eventlogconfig = New-Object System.Diagnostics.Eventing.Reader.EventLogConfiguration -ArgumentList $LogName,$appvlogs 
+        $Eventlogconfig = New-Object System.Diagnostics.Eventing.Reader.EventLogConfiguration -ArgumentList $LogName,$appvlog 
         $Logfilepath = $Eventlogconfig.LogFilePath 
-        $Logfile = Split-Path $Logfilepath -Leaf 
+        $Logfile = Split-Path $Logfilepath -Leaf
+        $LogExtension = $Logfile -split "\.", 2
         $NewLogFilePath = "$LIC_BISF_EvtPath\$Logfile" 
 
         Write-BISFLog -Msg "Path:`t`t $LogfilePath" -ShowConsole -SubMsg -Color DarkCyan
-        
-        if (($Eventlogconfig.LogType -eq "Debug" -or $Eventlogconfig.LogType -eq " Analytical") -and $Eventlogconfig.IsEnabled) 
-        { 
-            $Eventlogconfig.IsEnabled = $false 
-            $Eventlogconfig.SaveChanges()  
+        if ($LogExtension[1] -eq "evtx")
+        {
+            if (($Eventlogconfig.LogType -eq "Debug" -or $Eventlogconfig.LogType -eq "Analytical") -and $Eventlogconfig.IsEnabled) 
+            { 
+                $Eventlogconfig.IsEnabled = $false 
+                $Eventlogconfig.SaveChanges()
  
-            $Eventlogconfig.LogFilePath = $NewLogFilePath 
-            $Eventlogconfig.SaveChanges()  
- 
-            $Eventlogconfig.IsEnabled = $true 
-            $Eventlogconfig.SaveChanges() 
-            } 
-        else 
-        { 
-            $Eventlogconfig.LogFilePath = $NewLogFilePath 
-            $Eventlogconfig.SaveChanges() 
-            } 
+                $Eventlogconfig.LogFilePath = $NewLogFilePath 
+                $Eventlogconfig.SaveChanges()
+
+                $Eventlogconfig.IsEnabled = $true 
+                $Eventlogconfig.SaveChanges() 
+                }
+            else
+            { 
+                $Eventlogconfig.LogFilePath = $NewLogFilePath 
+                $Eventlogconfig.SaveChanges()
+                }
+           Remove-Item $Logfilepath -ErrorAction SilentlyContinue -force
+           
+         }
     }
 
 	Set-BISFACLrights -path $LIC_BISF_EvtPath
