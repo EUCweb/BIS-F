@@ -2664,6 +2664,7 @@ function Use-PVSConfig {
 		25.08.2019 MS: ENH 128 - Disable redirection if WriteCacheDisk is set to NONE
 		08.10.2019 MS: ENH 145 - ADMX: Disable Redirection for Citrix PVS Target
 		18.06.2020 MS: HF 249 - WEMCache folder will be reconfigured if UPL is installed
+		22.12.2020 JS: HF 302 - WriteCache disk access validated before redirecting
 	.LINK
 		https://eucweb.com
 #>
@@ -2695,6 +2696,8 @@ function Use-PVSConfig {
 		IF ($LIC_BISF_CLI_WCD -eq "NONE") {$Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-No-WCD" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($LIC_BISF_CLI_PVSDisableRedirection -eq 1) { $Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+		IF ((Access-BISFValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
@@ -2758,6 +2761,7 @@ function Use-MCSConfig {
 		  03.10.2019 MS: EHN 126 - function created (coopy from Use-PVSConfig function and modifed for MCS)
 		  03.01.2020 MS: HF 169 - Disable redirection if MCS GPO is disabled
 		  18.06.2020 MS: HF 249 - WEMCache folder will be reconfigured if UPL is installed
+		  23.12.2020 MS: HF 302 - WriteCache disk access validated before redirecting
 
 	.LINK
 		https://eucweb.com
@@ -2793,6 +2797,9 @@ function Use-MCSConfig {
 		IF ($LIC_BISF_CLI_MCSIODriveLetter -eq "NONE") {$Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-No-WCD" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($LIC_BISF_CLI_MCSIODisableRedirection -eq 1) {$Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+		IF ((Access-BISFValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
 
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
@@ -4524,4 +4531,50 @@ function Get-DSRegState {
 	$valuedata = ((dsregcmd /status | select-string -pattern $Key) -split(":") | select-object -last 1).trim()
 	Write-BISFlog -Msg "$Key : $valuedata" -ShowConsole -Color DarkCyan -SubMsg
 	return $valuedata
+}
+
+Function Access-Validated {
+	<#
+	.SYNOPSIS
+		Validate access to the WriteCache disk
+	.DESCRIPTION
+	  	Does a basic test to validate access to the WriteCache disk
+	.EXAMPLE
+		IsAccessAllowed = Access-BISFValidated -Folder "$PVSDiskDrive\"
+	.EXAMPLE
+		IF ((Access-BISFValidated -Folder "$PVSDiskDrive\") -eq $False) { #code for $false value } else { #code for $true value }
+	.NOTES
+		Author: Jeremy Saunders
+	  	Company: jhouseconsulting.com
+
+		History:
+	  	22.12.2020 JS: HD 302 - function created
+
+	.LINK
+		https://www.jhouseconsulting.com
+	#>
+	param(
+		[string]$Folder
+	)
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	If (TEST-PATH $Folder) {
+		Write-BISFLog -Msg "Testing access to the WriteCache disk ($Folder)" -ShowConsole -SubMsg -Color DarkCyan
+		Get-ChildItem -path $Folder -EA SilentlyContinue -ErrorVariable ErrVar is
+		# The -ErrorVariable common parameter creates an ArrayList. This variable always initialized,
+		# which means it will never be $null. The proper way to test if an ArrayList is empty or not
+		# is to use the Count property. It should be empty or equal to 0 if there are no errors.
+		If ($ErrVar.count -eq 0) {
+			Write-BISFLog -Msg "Access to the WriteCache disk is good" -ShowConsole -SubMsg -Color DarkCyan
+			$return = $True
+		}
+		Else {
+			Write-BISFLog -Msg "Access to WriteCache disk is denied" -ShowConsole -SubMsg -Color DarkCyan
+			$return = $False
+		}
+	}
+ Else {
+		Write-BISFLog -Msg "The WriteCache disk ($Folder) does not exist" -ShowConsole -SubMsg -Color DarkCyan
+		$return = $False
+	}
+	return $return
 }

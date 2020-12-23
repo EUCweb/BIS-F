@@ -42,12 +42,8 @@ param()
 		15.05.2014 MS: Add get-Version to show current running version
 		11.08.2014 MS: remove $returnCheckPVSDriveLetter
 		12.08.2014 MS: remove to much entries for logging
-		12.08.2014 MS: move function set-logfie from 10_XX_LIB_Functions.psm1 to 10_XX_LIB_Config.ps1, this function would be run from this script only and no more from other scripts
-		13.08.2014 MS: add IF ($PVSDiskDrive -eq $null) {$PVSDiskDrive ="C:\Windows\Logs"}
-		14.08.2014 MS: change function Set-Logfile if the Drive is not reachable
 		15.08.2014 MS: add line 242: get-OSinfo
 		15.08.2014 MS: add line 245: CheckXDSoftware
-		18.08.2014 MS: move Logfilefolder PVSLogs to new Folder BISLogs\PVSLogs_old and remove the registry entry LIC_PVS_LogPath, their no longer needed
 		31.10.2014 MB: Renamed functions: CheckXDSoftware -> Test-XDSoftware / CheckPVSSoftware -> Test-PVSSoftware / CheckPVSDriveLetter -> Get-PVSDriveLetter / CheckRegHive -> Test-BISFRegHive
 		31.10.2014 MB: Renamed variables: returnCheckPVSSysVariable -> returnTestPVSEnvVariable
 		14.04.2015 MS: Get-TaskSequence to activate or suppress a SystemShutdown
@@ -64,14 +60,11 @@ param()
 	  	28.01.2016 MS: add Request-BISFsysprep
 	  	02.03.2016 MS: check PVS DiskMode at Prerequisites, to get an error on startup if Disk is in ReadOnly Mode
 	 	18.10.2016 MS: change LIC_BISF_MAIN_PersScript to new folderPath, remove wrong clip "}"
-      	19.10.2016 MS: add $Global:LogFilePath = "$LogPath"  to function Set-LogFile
 	  	27.07.2017 MS: replace redirection of spool and evt-logs with central function Use-BISFPVSConfig, if using Citrix AppLayering with PVS it's a complex matrix to redirect or not.
-	  	03.08.2017 MS: add $Gloabl:BootMode = Get-BISFBootMode to get UEFI or Legacy
+	  	03.08.2017 MS: add $Global:BootMode = Get-BISFBootMode to get UEFI or Legacy
 	  	14.08.2017 MS: add cli switch ExportSharedConfiguration to export BIS-F ADMX Reg Settings into an XML File
 	  	07.11.2017 MS: add $LIC_BISF_3RD_OPT = $false, if vmOSOT or CTXO is enabled and found, $LIC_BISF_3RD_OPT = $true and disable BIS-F own optimizations
-	  	11.11.2017 MS: Retry 30 times if Logshare on network path is not found with fallback after max. is reached
-		02.07.2018 MS: Bufix 50 - function Set-Logfile -> invoke-BISFLogShare   (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
-		20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
+	  	20.10.2018 MS: Feature 63 - Citrix AppLayering - Create C:\Windows\Logs folder automatically if it doesn't exist
 		13.08.2019 MS: ENH 97 - Nutanix Xi Frame Support
 		14.08.2019 MS: ENH 6 - Parallels RAS Support
 		25.08.2019 MS: ENH 132 - Windows 10 Enterprise for Virtual Desktops (WVD) Support
@@ -90,6 +83,7 @@ param()
 		25.03.2020 MS: ENH 241 - skip PVS UNC vDisk Size if PVS Master Image is skipped
 		18.06.2020 MS: HF 251 - switch the lines 356-357 -> $UPL muste be detected before Test-AppLayeringSoftware is used
 		09.08.2020 MS: HF 272 - Central PERS Logs are missing the beginning
+
 
       #>
 Begin {
@@ -148,17 +142,39 @@ Begin {
 	####### functions #####
 	####################################################################
 
-	  function Set-Logfile {
+	function Set-Logfile {
+		<#
+		.SYNOPSIS
+		Set the path for the BISF logfile
+
+		.EXAMPLE
+		Set-Logfile
+
+		.NOTES
+		Author: Matthias Schlimm
+	  	Company:  EUCWeb.com
+
+		History:
+		  10.09.2103 MS: function created
+		  12.08.2014 MS: move function set-logfie from 10_XX_LIB_Functions.psm1 to 10_XX_LIB_Config.ps1, this function would be run from this script only and no more from other scripts
+		  13.08.2014 MS: add IF ($PVSDiskDrive -eq $null) {$PVSDiskDrive ="C:\Windows\Logs"}
+		  14.08.2014 MS: change function Set-Logfile if the Drive is not reachable
+		  18.08.2014 MS: move Logfilefolder PVSLogs to new Folder BISLogs\PVSLogs_old and remove the registry entry LIC_PVS_LogPath, their no longer needed
+		  19.10.2016 MS: add $Global:LogFilePath = "$LogPath"  to function Set-LogFile
+		  11.11.2017 MS: Retry 30 times if Logshare on network path is not found with fallback after max. is reached
+		  02.07.2018 MS: Bufix 50 - function Set-Logfile -> invoke-BISFLogShare   (After LogShare is changed in ADMX, the old path will also be checked and skips execution)
+		  22.12.2020 JS: HF 302 - WriteCache disk access validated in Set-Logfile function before log move
+		#>
 		IF (!(Test-Path "$env:windir\Logs")) {
 			Write-BISFLog -Msg "Folder $env:windir\Logs does NOT Exist, will be created now!" -Type W -ShowConsole
 			New-Item -ItemType Directory -path "$env:windir\Logs" | Out-Null
 		}
-        $LogShareReachable = $false
+		$LogShareReachable = $false
 		Invoke-BISFLogShare -Verbose:$VerbosePreference
 		$ErrorActionPreference = "Stop"
 
 		Try {
-			IF (($LIC_BISF_CLI_LSb -eq 1) -and (Test-Path $LIC_BISF_LogShare)) {$LogShareReachable = $true}
+			IF (($LIC_BISF_CLI_LSb -eq 1) -and (Test-Path $LIC_BISF_LogShare)) { $LogShareReachable = $true }
 		}
 
 		Catch [System.IO.DirectoryNotFoundException] {
@@ -172,7 +188,7 @@ Begin {
 		}
 		Catch [System.UnauthorizedAccessException] {
 			Write-BISFLog -Msg "Cannot create BISFLog folder, the drive is not writeable" -Type W -SubMsg
-            $LogPath = "C:\Windows\Logs\$LogFolderName"
+			$LogPath = "C:\Windows\Logs\$LogFolderName"
 			New-Item -Path $LogPath -ItemType Directory -Force
 		}
 
@@ -184,15 +200,23 @@ Begin {
 		Finally {
 			IF ($LogShareReachable -eq $true) {
 				$LogPath = "$LIC_BISF_LogShare\$computer"
-			} ELSE {
-				$LogPath = "$PVSDiskDrive\$LogFolderName"
 			}
-			IF (!(Test-path $logpath -PathType Leaf)) {New-Item -Path $LogPath -ItemType Directory -Force}
-            Write-BISFLog -Msg "Move BIS-F log to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
-			Get-ChildItem -Path "C:\Windows\Logs\*" -Include "PREP_BISF*.log","PERS_BISF*.log" -Exclude "*BISF_WPT*.log","*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
-			IF (($NewLogPath) -and ($NewLogPath -ne $LogPath)) {
-				Write-BISFLog -Msg "Move BIS-F log from $NewLogPath to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
-				Get-ChildItem -Path "$($NewLogPath)\*" -include "PREP_BISF*.log","PERS_BISF*.log" -Exclude "*BISF_WPT*.log","*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
+			ELSE {
+				If (Access-BISFValidated -Folder "$PVSDiskDrive\") {
+					$LogPath = "$PVSDiskDrive\$LogFolderName"
+				}
+				ELSE {
+					$LogPath = "C:\Windows\Logs\$LogFolderName"
+				}
+			}
+			If ($LogPath.StartsWith("C:\Windows\Logs\", 'CurrentCultureIgnoreCase') -eq $False) {
+				IF (!(Test-path $logpath -PathType Leaf)) { New-Item -Path $LogPath -ItemType Directory -Force }
+				Write-BISFLog -Msg "Move BIS-F log to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
+				Get-ChildItem -Path "C:\Windows\Logs\*" -Include "PREP_BISF*.log", "PERS_BISF*.log" -Exclude "*BISF_WPT*.log", "*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
+				IF (($NewLogPath) -and ($NewLogPath -ne $LogPath)) {
+					Write-BISFLog -Msg "Move BIS-F log from $NewLogPath to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
+					Get-ChildItem -Path "$($NewLogPath)\*" -include "PREP_BISF*.log", "PERS_BISF*.log" -Exclude "*BISF_WPT*.log", "*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
+				}
 			}
 
 			$Global:Logfile = "$LogPath\$LogFileName"
@@ -200,7 +224,7 @@ Begin {
 			$Global:NewLogPath = $LogPath
 		}
 		$ErrorActionPreference = "Continue"
-        return $logfile
+		return $logfile
 
 	}
 
