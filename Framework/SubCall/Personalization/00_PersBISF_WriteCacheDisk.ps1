@@ -22,15 +22,12 @@
 		18.09.2013 MS: Replaced $date with $(Get-date) to get current timestamp at running scriptlines write to the logfile
 		01.10.2013 MS: Added function GetRefSrv - Get Reference Server Hostname in registry to detect it and skip reboot
 		01.10.2013 MS: Fixed syntax error
-		04.03.2014 BR: Added function CheckCDRom
-		13.03.2014 MS: Changed optical Driveletter a variable $OptDrive="B:"
-		21.03.2014 MS: Read optical driveletter from registry that would be set with Base-Image during PVS preperation
 		05.06.2014 BR: Added WriteCache Option Check for PVS Device RAM with Overflow to Device HardDisk
 		05.06.2014 BR: Use Write-BISFLog function for Logging
 		30.06.2014 MS: Changed to $LOGfile = Set-Logfile
 		13.08.2014 MS: Removed $logfile = Set-logFile, it would be used in the 10_XX_LIB_Config.ps1 Script on1ly
 		13.08.2014 MS: Check if $returnCheckPVSSysVariable exists, then set uniqueID for persitend drive
-		13.08.2014 MS. Removed hrdcoded Logpath D:\PVSLogs, change it to $LIC_PVS_LogPath
+		13.08.2014 MS. Removed hardcoded Logpath D:\PVSLogs, change it to $LIC_PVS_LogPath
 		14.08.2014 MS: Check PVSWriteCache environment variable to format Disk. Check SkipReboot, Remove Get-LogData funcrion
 		15.08.2014 MS: Check if Citrix PVS software installed, before check and format the WriteCacheDisk
 		19.08.2014 MS: Prevent reboot loop, check log file folder if exist and reboot
@@ -57,6 +54,7 @@
 		17.02.2020 MS: HF 206 - Reboot loop if central logshare is configured
 		23.05.2020 MS: HF 232 - CacheDisk not formatted
 		14.12.2020 MS: HF 297 - MCS CacheDisk is not right formatted
+
 	.LINK
 		https://eucweb.com
 #>
@@ -88,8 +86,32 @@ Process {
 	}
 
 	function CheckCDRom {
+		<#
+		.SYNOPSIS
+		Test optical drive availablity
+
+		.DESCRIPTION
+		Test optical drive availablity and
+		set the same driveletter as on the catptured
+		masterimage
+		Driveletter is stored in registry in variable LIC_BISF_OptDrive
+
+		.EXAMPLE
+		CheckCDRom
+
+		.NOTES
+		Author: Matthias Schlimm
+	  	Company:  EUCWeb.com
+
+		History:
+			04.03.2014 BR: Added function CheckCDRom
+			13.03.2014 MS: Changed optical Driveletter a variable $OptDrive="B:"
+			21.03.2014 MS: Read optical driveletter from registry that would be set with Base-Image during PVS preperation
+			14.12.2020 JS: HF 303 - Updated CheckCDRom function to allow for builds where CDROM drive letter has already been removed.
+		#>
+
 		$CDrom = Get-CimInstance -ClassName Win32_volume -Filter "DriveType = 5"
-		If ($CDrom.DriveLetter -ne "$LIC_BISF_OptDrive") {
+		If ((!([String]::IsNullOrEmpty($CDrom.DriveLetter))) -and ($CDrom.DriveLetter -ne "$LIC_BISF_OptDrive")) {
 			Set-CimInstance -InputObject $CDRom -Arguments @{DriveLetter = "$LIC_BISF_OptDrive" }
 			Write-BISFLog -Msg "Set optical drive letter to $LIC_BISF_OptDrive"
 		}
