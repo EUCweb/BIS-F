@@ -586,14 +586,14 @@ If you enable this policy setting, .NET Optimization is run during sealing (Prep
 If you disable this policy setting, .NET Optimization is disabled during sealing (Preparation phase)
 If you do not configure this policy setting, .NET Optimization is NOT run during sealing (Preparation phase)
 
-You can run up to 2 .NET optimizations. Enter thr arguments only without ngen.exe.
+You can run up to 2 .NET optimizations. Enter thr arguments only without ngen.exe. 
 The Text will be displayed during the BIS-F preparation and in the logfile too.
 
 Default Optimization 1:
 Text: Executing all queued .NET compilation jobs
 Arguments: ExecuteQueuedItems
 
-Default Optimization 2:
+Default Optimization 2: 
 Text: Update native images that have become invalid
 Arguments: update /force</string>
       <string id="POL_WinSxS">WinSxS Optimization</string>
@@ -659,6 +659,17 @@ NOTE: Please specify the name of the folder only, without any drive letter!
 The Cache Folder is created like %CachDisk Driveletter%\Citrix\%WEM Agent Cache folder name%
 The Citrix folder is created from BIS-F automatically.
 
+Configure the WEM Agent Startup Cache Option:
+Change this settings does not need a new seal process of your Image. 
+If WEM Agent 2009 or higher is used, you can set one of the following settings. WEM Agent 
+
+-RefreshCache: Triggers a cache build or refresh
+-RefreshSettings: Refreshes agent host settings
+-RefreshSettings &amp; RefreshCache: Refresh agent host settings and agent cache simultaneously
+-RefreshCache &amp; Reinitialize: Reinitialize the agent cache
+
+Citrix documentation:
+https://docs.citrix.com/en-us/workspace-environment-management/service/install-and-configure.html#agent-cache-utility-options
 
 </string>
       <string id="POL_AppLayCfg">Configure Citrix App Layering</string>
@@ -804,7 +815,7 @@ With a configured MCSIO Disk the event logs and spool directory is redirected to
       <string id="POL_MS_AAD">Azure Active Directory (AAD)</string>
       <string id="POL_MS_AAD_Help">Perform AAD Tasks:
 
-If you enable this policy setting, AAD Tasks are running if enabled
+If you enable this policy setting, AAD Tasks are running if enabled 
 If you disable this policy setting, all AAD Tasks are not running
 If you do not configure this policy setting,  all AAD Tasks are not running
 
@@ -813,10 +824,10 @@ Leave Azure Active Directory:
 If enable this setting, the AAD Hybrid State (AzureADjoined:YES) is checked and run dsregcmd /leave.
 
 
-Personalization Phase:
+Personalization Phase: 
 If enabled, dsregcmd /join is running
 
-Best Practices:
+Best Practices: 
 Using Windows Virtual Desktop with Intune
 https://docs.microsoft.com/en-us/mem/intune/fundamentals/windows-virtual-desktop
 
@@ -825,6 +836,14 @@ https://support.citrix.com/article/CTX284738
 
 
 </string>
+      <string id="ITM_E4D2F2AF_77BD_438D_9471_9F5D3AF17B7D">RefreshSettings</string>
+      <string id="ITM_C1699501_230F_4DCD_8220_5378C1193ED5">RefreshSettings &amp; RefreshCache</string>
+      <string id="ITM_7585ADF2_6992_44CF_8FF5_7CBEB328353D">RefreshCache &amp; Reinitialize</string>
+      <string id="ITM_86649331_4664_4AD0_A925_DC80900E47B0">RefreshCache</string>
+      <string id="ITM_RefreshCache">RefreshCache</string>
+      <string id="ITM_RefreshSettings">RefreshSettings</string>
+      <string id="ITM_RefreshSettings-RefreshCache">RefreshSettings &amp; RefreshCache</string>
+      <string id="ITM_RefreshCache-Reinitialize">RefreshCache &amp; Reinitialize</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -1065,6 +1084,7 @@ https://support.citrix.com/article/CTX284738
           <label>WEM Agent Cache folder name</label>
           <defaultValue>WEMCache</defaultValue>
         </textBox>
+        <dropdownList refId="DST_WEMCacheStartupOption" defaultItem="0">Configure the WEM Agent Startup Cache Option</dropdownList>
       </presentation>
       <presentation id="POL_AppLayCfg">
         <checkBox refId="CHK_AppLayOScfg">Enable OS Layer config file</checkBox>
@@ -1105,7 +1125,7 @@ https://support.citrix.com/article/CTX284738
         </textBox>
         <text>
         </text>
-        <checkBox refId="CHK_NET_OPT2b" defaultChecked="false">Enable Optimization 2:</checkBox>
+        <checkBox refId="CHK_NET_OPT2b" defaultChecked="true">Enable Optimization 2:</checkBox>
         <textBox refId="TXT_NET_OPT2args">
           <label>Arguments Optimization 2:</label>
           <defaultValue>update /force</defaultValue>
@@ -1117,11 +1137,12 @@ https://support.citrix.com/article/CTX284738
       </presentation>
       <presentation id="POL_MS_AAD">
         <text>Preparation Phase:</text>
-		<checkBox refId="CHK_MS_AAD_HybribLeaveb">Leave Azure Active Directory</checkBox>
-        <text> </text>
-       <text> ------------------------------- </text>
-         <text>Personalization Phase:</text>
-		<checkBox refId="CHK_MS_AAD_HybridJoinb">Join Azure Active Directory</checkBox>
+        <checkBox refId="CHK_MS_AAD_HybribLeaveb">Leave Azure Active Directory</checkBox>
+        <text>
+        </text>
+        <text> ------------------------------- </text>
+        <text>Personalization Phase:</text>
+        <checkBox refId="CHK_MS_AAD_HybridJoinb">Join Azure Active Directory</checkBox>
       </presentation>
     </presentationTable>
   </resources>
