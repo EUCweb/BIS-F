@@ -1079,7 +1079,7 @@ https://support.citrix.com/article/CTX284738
         <decimalTextBox refId="DXT_MET" defaultValue="60">MaxExecution timeout in minutes (default: 60)</decimalTextBox>
       </presentation>
       <presentation id="POL_WEMCfg">
-        <checkBox refId="CHK_CLI_WEMCache">Move WEM Agent Cache to the PVS write cache ddisk</checkBox>
+        <checkBox refId="CHK_CLI_WEMCache">Move WEM Agent Cache to the persistent Cache disk</checkBox>
         <checkBox refId="CHK_CLI_WEMb">Enable custom WEM Agent Cache folder name</checkBox>
         <textBox refId="TXT_CLI_WEMFolder">
           <label>WEM Agent Cache folder name</label>
