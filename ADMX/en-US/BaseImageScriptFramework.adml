@@ -461,16 +461,20 @@ If you enable this policy setting, master image creation will be skipped even if
 If you disable this policy setting, the master image creation will run (default).
 
 Number of Partitions:
-Enter the Number of Partitions that you have on the Target Device. If you have no PVS Write Cache Disk you can ignore this setting.
-This is relevant to format the WriteCacheDisk only.
+Enter the Number of Partitions that you have on the Target Device. If you have no PVS Cache Disk you can ignore this setting.
+This is relevant to format the Cache Disk only.
 
--  If you have C Drive for OS (streamed vDisk) and a Write Cache Disk use 2 Partitions (default)
- - If you have a System Reserved Partition, C drive for OS (streamed vDisk) and a Write Cache Disk use 3 Partitions
+-  If you have C Drive for OS (streamed vDisk) and a Cache Disk use 2 Partitions (default)
+ - If you have a System Reserved Partition, C drive for OS (streamed vDisk) and a Cache Disk use 3 Partitions
 
 Note: If you configure this incorrectly, a reboot loop will occur!
 
 Disable Redirection:
 With a configured Cache Disk the eventlogs and spool directory is redirected to the persistent drive. With this setting, you can disable the redirection.
+
+Enable manually Configuration of the Cache Disk ID:
+If the persistent Drive is not right formatted with BIS-F, this is mostly an issue with the Cache Disk ID. With this setting you can manually override the Disk ID for the persistent Drive and select the ID drom the Drop Down Box between 0-5.
+run 'diskpart' from an administrative command prompt and enter 'list disk' to get se Disk ID and compare it with the BIS-F Log and conifure the GPO if required.
 </string>
       <string id="ITM_0"> NONE</string>
       <string id="ITM_B">B:</string>
@@ -812,7 +816,10 @@ Note: If you configure it wrong, a reboot loop occurs!
 
 Disable Redirection:
 With a configured MCSIO Disk the event logs and spool directory is redirected to the persistent drive. With this setting you can disable the redirection
-</string>
+
+Enable manually Configuration of the Cache Disk ID:
+If the persistent Drive is not right formatted with BIS-F, this is mostly an issue with the Cache Disk ID. With this setting you can manually override the Disk ID for the persistent Drive and select the ID drom the Drop Down Box between 0-5.
+run 'diskpart' from an administrative command prompt and enter 'list disk' to get se Disk ID and compare it with the BIS-F Log and conifure the GPO if required.</string>
       <string id="POL_MS_AAD">Azure Active Directory (AAD)</string>
       <string id="POL_MS_AAD_Help">Perform AAD Tasks:
 
@@ -845,6 +852,30 @@ https://support.citrix.com/article/CTX284738
       <string id="ITM_RefreshSettings">RefreshSettings</string>
       <string id="ITM_RefreshSettings-RefreshCache">RefreshSettings &amp; RefreshCache</string>
       <string id="ITM_RefreshCache-Reinitialize">RefreshCache &amp; Reinitialize</string>
+      <string id="ITM_00B468A5_89AF_4E78_9AF6_86A609CAB2CA">0</string>
+      <string id="ITM_F9973187_EBA5_465D_B59A_4082F0EF9CAB">1</string>
+      <string id="ITM_D125EBF7_677F_4AED_802B_8832FC5FD484">2</string>
+      <string id="ITM_090C445C_A64F_4D25_BA7C_24F8BC476653">3</string>
+      <string id="ITM_1B35D1D5_DD56_4784_AE10_CDDB3BB312B6">4</string>
+      <string id="ITM_00610A12_81DC_4598_958F_D9D93B93B247">5</string>
+      <string id="ITM_MCSCacheDiskID0">0</string>
+      <string id="ITM_MCSCacheDiskID1">1</string>
+      <string id="ITM_MCSCacheDiskID2">2</string>
+      <string id="ITM_MCSCacheDiskID3">3</string>
+      <string id="ITM_MCSCacheDiskID4">4</string>
+      <string id="ITM_MCSCacheDiskID5">5</string>
+      <string id="ITM_E35FAA81_B26A_4C80_994C_BEA2B1B11829">0</string>
+      <string id="ITM_C0037C07_44DA_4982_87B3_52FE11A10AFC">1</string>
+      <string id="ITM_2E3673E1_A992_4220_BFAB_05770787D02E">2</string>
+      <string id="ITM_84FCB019_B523_482D_9583_1E9E0A12B392">3</string>
+      <string id="ITM_CCC42921_F23F_4678_929E_FFE28C6AD5E0">4</string>
+      <string id="ITM_25310E7B_9C1C_42BC_B5AF_0CCCBE3271EA">5</string>
+      <string id="ITM_PVSCacheDiskID0">0</string>
+      <string id="ITM_PVSCacheDiskID1">1</string>
+      <string id="ITM_PVSCacheDiskID2">2</string>
+      <string id="ITM_PVSCacheDiskID3">3</string>
+      <string id="ITM_PVSCacheDiskID4">4</string>
+      <string id="ITM_PVSCacheDiskID5">5</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -1017,6 +1048,8 @@ https://support.citrix.com/article/CTX284738
         </textBox>
         <dropdownList refId="DST_CLI_NumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
         <checkBox refId="CHK_PVSDisableRedirection">Disable Redirection</checkBox>
+        <checkBox refId="CHK_PVSCacheDiskIDb">Enable manually Configuration of the Cache Disk ID</checkBox>
+        <dropdownList refId="DST_PVSCacheDiskID" defaultItem="0">Cache Disk ID</dropdownList>
       </presentation>
       <presentation id="POL_PersCfg">
         <dropdownList refId="DST_CLI_DM" defaultItem="0">Skip Personalization based on DiskMode</dropdownList>
@@ -1079,7 +1112,7 @@ https://support.citrix.com/article/CTX284738
         <decimalTextBox refId="DXT_MET" defaultValue="60">MaxExecution timeout in minutes (default: 60)</decimalTextBox>
       </presentation>
       <presentation id="POL_WEMCfg">
-        <checkBox refId="CHK_CLI_WEMCache">Move WEM Agent Cache to the persistent Cache disk</checkBox>
+        <checkBox refId="CHK_CLI_WEMCache">Move WEM Agent Cache to the PVS write cache ddisk</checkBox>
         <checkBox refId="CHK_CLI_WEMb">Enable custom WEM Agent Cache folder name</checkBox>
         <textBox refId="TXT_CLI_WEMFolder">
           <label>WEM Agent Cache folder name</label>
@@ -1097,6 +1130,8 @@ https://support.citrix.com/article/CTX284738
         <dropdownList refId="DST_MCSIODriveLetter" defaultItem="0">MCSIO Disk Drive Letter</dropdownList>
         <dropdownList refId="DST_MCSIONumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
         <checkBox refId="CHK_MCSIODisableRedirection">Disable Redirection</checkBox>
+        <checkBox refId="CHK_MCSCacheDiskIDb">Enable manually Configuration of the Cache Disk ID</checkBox>
+        <dropdownList refId="DST_MCSCacheDiskID" defaultItem="0">Cache Disk ID</dropdownList>
       </presentation>
       <presentation id="POL_AVFullScan">
         <checkBox refId="CHK_AV_VIE_CusScanArgsb">Enable Custom Scan Arguments</checkBox>
