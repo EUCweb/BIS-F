@@ -145,11 +145,11 @@ Process {
 			Write-BISFLog -Msg "Cache Disk ID is manually configured through PVS GPO: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
 		}
 		if ([String]::IsNullOrEmpty($CachDiskID)) {
-			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, configure it manually with the PVS GPO." -Type E
+			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, skipping Cache Disk configuration. Configure it manually with the PVS GPO." -ShowConsole -Color Yellow -SubMSg -Type W
 		} else {
 			Write-BISFLog -Msg "Using Cache Disk ID: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
 			if ($TestCache -eq $false) {
-				Write-BISFLog -Msg "CacheDisk partition is NOT properly configured" -Type W
+				Write-BISFLog -Msg "Cache Disk partition is NOT properly configured" -Type W
 				$WriteCacheType = Get-BISFPVSWriteCacheType
 				if (($WriteCacheType -eq 4) -or ($WriteCacheType -eq 9) -or ($WriteCacheType -eq 12)) {   # 4:Cache on Device Hard Disk // 9:Cache in Device RAM with Overflow on Hard Disk // 12:Cache in Device RAM with Overflow on Hard Disk async
 					Write-BISFLog -Msg "vDisk is set to Cache on Device Hard Drive Mode"
@@ -172,7 +172,7 @@ Process {
 						"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
 						Get-BISFLogContent -GetLogFile "$DiskpartFile"
 						$null = diskpart.exe /s $DiskpartFile
-						Write-BISFLog -Msg "CacheDisk partition is now formatted and the drive letter $PVSDiskDrive assigned"
+						Write-BISFLog -Msg "Cache Disk partition is now formatted and the drive letter $PVSDiskDrive assigned"
 
 						# Get WriteCache Volume and Restore Unique ID
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
@@ -184,8 +184,8 @@ Process {
 					}
 					else {
 						# CacheDisk Formatted, but No or Wrong Drive Letter Assigned
-						Write-BISFLog -Msg "CacheDisk is formatted, but no drive letter or the wrong drive letter is assigned"  -Type W -SubMsg
-						Write-BISFLog -Msg "Fixing drive letter assignemnt on CacheDisk"
+						Write-BISFLog -Msg "Cache Disk is formatted, but no drive letter or the wrong drive letter is assigned"  -Type W -SubMsg
+						Write-BISFLog -Msg "Fixing drive letter assignemnt on Cache Disk"
 						$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
 						Set-CimInstance -InputObject $WriteCache  -Arguments @{DriveLetter = "$PVSDiskDrive" }
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
@@ -200,22 +200,22 @@ Process {
 					}
 				}
 				else {
-					Write-BISFLog -Msg "vDisk is not in Read Only Mode, skipping CacheDisk preparation"
+					Write-BISFLog -Msg "vDisk is not in Read Only Mode, skipping Cache Disk configuration."
 					$SkipReboot = $true
 				}
 
 				IF (!($SkipReboot -eq $true)) {
 					Write-BISFLog -Msg "Wait 60 seconds before system restart" -Type W
 					Write-BISFLog -Msg "Reboot needed for config changes"
-					Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare CacheDisk - reboot in 60 seconds.."" " -Wait
+					Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare Cache Disk - reboot in 60 seconds.."" " -Wait
 					Start-Sleep 120
 				}
 				ELSE {
-					Write-BISFLog -Msg "Skip Reboot is set to $SkipReboot on this computer $computer"
+					Write-BISFLog -Msg "Skip Reboot is set to $SkipReboot"
 				}
 			}
 			else {
-				Write-BISFLog -Msg "CacheDisk partition is properly configured"
+				Write-BISFLog -Msg "Cache Disk partition is properly configured"
 			}
 		}
 	}
@@ -228,11 +228,11 @@ Process {
 			Write-BISFLog -Msg "Cache Disk ID is manually configured through MCS GPO: CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
 		}
 		if ([String]::IsNullOrEmpty($CachDiskID)) {
-			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, configure it manually with the MCS GPO." -Type E
+			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, skipping Cache Disk configuration. Configure it manually with the MCS GPO." -ShowConsole -Color Yellow -SubMSg -Type W
 		} else {
 			Write-BISFLog -Msg "Using Cache Disk ID: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
 			if ($TestCache -eq $false) {
-				Write-BISFLog -Msg "CacheDisk partition is NOT properly configured" -Type W
+				Write-BISFLog -Msg "Cache Disk partition is NOT properly configured" -Type W
 				#grab the numbers of Partitions from the BIS-F ADMX
 				Write-BISFLog -Msg "Number of Partitions from ADMX: $LIC_BISF_CLI_MCSIONumberOfPartitions"
 				$SystemPartitions = (Get-CimInstance -ClassName Win32_volume).count
@@ -241,7 +241,7 @@ Process {
 					# WriteCache Disk not Formatted
 					# Construct Diskpart File to Format Disk
 
-					Write-BISFLog -Msg "CacheDisk partition is not formatted"
+					Write-BISFLog -Msg "Cache Disk partition is not formatted"
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 					"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
@@ -252,10 +252,10 @@ Process {
 					"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
 					Get-BISFLogContent -GetLogFile "$DiskpartFile"
 					$null = diskpart.exe /s $DiskpartFile
-					Write-BISFLog -Msg "CacheDisk partition is now formatted and the drive letter $PVSDiskDrive assigned"
+					Write-BISFLog -Msg "Cache Disk partition is now formatted and the drive letter $PVSDiskDrive assigned"
 
 					if (!([String]::IsNullOrEmpty($uniqueid_REG))) {
-						# Get CacheDisk Volume and Restore Unique ID
+						# Get Cache Disk Volume and Restore Unique ID
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 						"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 						"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
@@ -266,10 +266,10 @@ Process {
 				}
 				else {
 					# WriteCache Formatted, but No or Wrong Drive Letter Assigned
-					Write-BISFLog -Msg "CacheDisk is formatted, but no drive letter or the wrong drive letter is assigned"  -Type W -SubMsg
+					Write-BISFLog -Msg "Cache Disk is formatted, but no drive letter or the wrong drive letter is assigned"  -Type W -SubMsg
 
 					if ([String]::IsNullOrEmpty($uniqueid_REG)) {
-						Write-BISFLog -Msg "Fixing drive letter assignemnt on CacheDisk"
+						Write-BISFLog -Msg "Fixing drive letter assignemnt on Cache Disk"
 						$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
 						Set-CimInstance -InputObject $WriteCache -Arguments @{DriveLetter = "$PVSDiskDrive" }
 					}
@@ -292,15 +292,15 @@ Process {
 				IF (!($SkipReboot -eq $true)) {
 					Write-BISFLog -Msg "Wait 60 seconds before system restart" -Type W
 					Write-BISFLog -Msg "Reboot needed for config changes"
-					Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare CacheDisk - reboot in 60 seconds.."" " -Wait
+					Start-Process "$($env:windir)\system32\shutdown.exe" -ArgumentList "/r /t 60 /d p:2:4 /c ""BIS-F prepare Cache Disk - reboot in 60 seconds.."" " -Wait
 					Start-Sleep 120
 				}
 				ELSE {
-					Write-BISFLog -Msg "Skip Reboot is set to $SkipReboot on this computer $computer"
+					Write-BISFLog -Msg "Skip Reboot is set to $SkipReboot"
 				}
 			}
 			else {
-				Write-BISFLog -Msg "CacheDisk partition is properly configured"
+				Write-BISFLog -Msg "Cache Disk partition is properly configured"
 			}
 		}
 	}
@@ -331,18 +331,18 @@ Process {
 
 	$DiskMode = Get-BISFDiskMode
 	IF ( ($DiskMode -match "ReadOnly*") -or ($DiskMode -match "VDAShared*") ) {
-		Write-BISFLog -Msg "CacheDisk will be configured now for Disk Mode $DiskMode"
+		Write-BISFLog -Msg "Cache Disk will be configured now for Disk Mode $DiskMode"
 		IF (!($null -eq $LIC_BISF_CLI_WCD) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
 			IF ($returnTestPVSSoftware -eq $true) {
 				$uniqueid_REG = Get-UniqueIDreg
 				Test-PVSCacheDisk
 			}
 			ELSE {
-				Write-BISFLog -Msg "CacheDisk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
+				Write-BISFLog -Msg "Cache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
 			}
 		}
 		ELSE {
-			Write-BISFLog -Msg "PVS CacheDisk is not configured or is set to 'NONE', skipping configuration"
+			Write-BISFLog -Msg "PVS Cache Disk will NOT be configured or is set to 'NONE', skipping configuration"
 		}
 
 		IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
@@ -356,12 +356,12 @@ Process {
 				}
 			}
 			ELSE {
-				Write-BISFLog -Msg "MCSIO CacheDisk is not configured or is set to 'NONE', skipping configuration"
+				Write-BISFLog -Msg "MCSIO Cache Disk is not configured or is set to 'NONE', skipping configuration"
 			}
 		}
 	}
  ELSE {
-		Write-BISFLog -Msg "CacheDisk is NOT configured for DiskMode $DiskMode" -Type W
+		Write-BISFLog -Msg "Cache Disk will NOT be configured for DiskMode $DiskMode" -Type W
 	}
 }
 
