@@ -461,16 +461,20 @@ If you enable this policy setting, master image creation will be skipped even if
 If you disable this policy setting, the master image creation will run (default).
 
 Number of Partitions:
-Enter the Number of Partitions that you have on the Target Device. If you have no PVS Write Cache Disk you can ignore this setting.
-This is relevant to format the WriteCacheDisk only.
+Enter the Number of Partitions that you have on the Target Device. If you have no PVS Cache Disk you can ignore this setting.
+This is relevant to format the Cache Disk only.
 
--  If you have C Drive for OS (streamed vDisk) and a Write Cache Disk use 2 Partitions (default)
- - If you have a System Reserved Partition, C drive for OS (streamed vDisk) and a Write Cache Disk use 3 Partitions
+-  If you have C Drive for OS (streamed vDisk) and a Cache Disk use 2 Partitions (default)
+ - If you have a System Reserved Partition, C drive for OS (streamed vDisk) and a Cache Disk use 3 Partitions
 
 Note: If you configure this incorrectly, a reboot loop will occur!
 
 Disable Redirection:
 With a configured Cache Disk the eventlogs and spool directory is redirected to the persistent drive. With this setting, you can disable the redirection.
+
+Enable manually Configuration of the Cache Disk ID:
+If the persistent Drive is not right formatted with BIS-F, this is mostly an issue with the Cache Disk ID. With this setting you can manually override the Disk ID for the persistent Drive and select the ID drom the Drop Down Box between 0-5.
+run 'diskpart' from an administrative command prompt and enter 'list disk' to get se Disk ID and compare it with the BIS-F Log and conifure the GPO if required.
 </string>
       <string id="ITM_0"> NONE</string>
       <string id="ITM_B">B:</string>
@@ -659,6 +663,18 @@ NOTE: Please specify the name of the folder only, without any drive letter!
 The Cache Folder is created like %CachDisk Driveletter%\Citrix\%WEM Agent Cache folder name%
 The Citrix folder is created from BIS-F automatically.
 
+Configure the WEM Agent Startup Cache Option:
+Change this settings does not need a new seal process of your Image.
+For WEM Agent 2009 or lower this settings are ignored and the default value -RefreshCache is used.
+For WEM Agent 2012 or higher, you can set one of the following settings:
+
+-RefreshCache: Triggers a cache build or refresh
+-RefreshSettings: Refreshes agent host settings
+-RefreshSettings &amp; RefreshCache: Refresh agent host settings and agent cache simultaneously
+-RefreshCache &amp; Reinitialize: Reinitialize the agent cache
+
+Citrix documentation:
+https://docs.citrix.com/en-us/workspace-environment-management/service/install-and-configure.html#agent-cache-utility-options
 
 </string>
       <string id="POL_AppLayCfg">Configure Citrix App Layering</string>
@@ -800,7 +816,10 @@ Note: If you configure it wrong, a reboot loop occurs!
 
 Disable Redirection:
 With a configured MCSIO Disk the event logs and spool directory is redirected to the persistent drive. With this setting you can disable the redirection
-</string>
+
+Enable manually Configuration of the Cache Disk ID:
+If the persistent Drive is not right formatted with BIS-F, this is mostly an issue with the Cache Disk ID. With this setting you can manually override the Disk ID for the persistent Drive and select the ID drom the Drop Down Box between 0-5.
+run 'diskpart' from an administrative command prompt and enter 'list disk' to get se Disk ID and compare it with the BIS-F Log and conifure the GPO if required.</string>
       <string id="POL_MS_AAD">Azure Active Directory (AAD)</string>
       <string id="POL_MS_AAD_Help">Perform AAD Tasks:
 
@@ -825,6 +844,38 @@ https://support.citrix.com/article/CTX284738
 
 
 </string>
+      <string id="ITM_E4D2F2AF_77BD_438D_9471_9F5D3AF17B7D">RefreshSettings</string>
+      <string id="ITM_C1699501_230F_4DCD_8220_5378C1193ED5">RefreshSettings &amp; RefreshCache</string>
+      <string id="ITM_7585ADF2_6992_44CF_8FF5_7CBEB328353D">RefreshCache &amp; Reinitialize</string>
+      <string id="ITM_86649331_4664_4AD0_A925_DC80900E47B0">RefreshCache</string>
+      <string id="ITM_RefreshCache">RefreshCache</string>
+      <string id="ITM_RefreshSettings">RefreshSettings</string>
+      <string id="ITM_RefreshSettings-RefreshCache">RefreshSettings &amp; RefreshCache</string>
+      <string id="ITM_RefreshCache-Reinitialize">RefreshCache &amp; Reinitialize</string>
+      <string id="ITM_00B468A5_89AF_4E78_9AF6_86A609CAB2CA">0</string>
+      <string id="ITM_F9973187_EBA5_465D_B59A_4082F0EF9CAB">1</string>
+      <string id="ITM_D125EBF7_677F_4AED_802B_8832FC5FD484">2</string>
+      <string id="ITM_090C445C_A64F_4D25_BA7C_24F8BC476653">3</string>
+      <string id="ITM_1B35D1D5_DD56_4784_AE10_CDDB3BB312B6">4</string>
+      <string id="ITM_00610A12_81DC_4598_958F_D9D93B93B247">5</string>
+      <string id="ITM_MCSCacheDiskID0">0</string>
+      <string id="ITM_MCSCacheDiskID1">1</string>
+      <string id="ITM_MCSCacheDiskID2">2</string>
+      <string id="ITM_MCSCacheDiskID3">3</string>
+      <string id="ITM_MCSCacheDiskID4">4</string>
+      <string id="ITM_MCSCacheDiskID5">5</string>
+      <string id="ITM_E35FAA81_B26A_4C80_994C_BEA2B1B11829">0</string>
+      <string id="ITM_C0037C07_44DA_4982_87B3_52FE11A10AFC">1</string>
+      <string id="ITM_2E3673E1_A992_4220_BFAB_05770787D02E">2</string>
+      <string id="ITM_84FCB019_B523_482D_9583_1E9E0A12B392">3</string>
+      <string id="ITM_CCC42921_F23F_4678_929E_FFE28C6AD5E0">4</string>
+      <string id="ITM_25310E7B_9C1C_42BC_B5AF_0CCCBE3271EA">5</string>
+      <string id="ITM_PVSCacheDiskID0">0</string>
+      <string id="ITM_PVSCacheDiskID1">1</string>
+      <string id="ITM_PVSCacheDiskID2">2</string>
+      <string id="ITM_PVSCacheDiskID3">3</string>
+      <string id="ITM_PVSCacheDiskID4">4</string>
+      <string id="ITM_PVSCacheDiskID5">5</string>
     </stringTable>
     <presentationTable>
       <presentation id="POL_CTXOE">
@@ -997,6 +1048,8 @@ https://support.citrix.com/article/CTX284738
         </textBox>
         <dropdownList refId="DST_CLI_NumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
         <checkBox refId="CHK_PVSDisableRedirection">Disable Redirection</checkBox>
+        <checkBox refId="CHK_PVSCacheDiskIDb">Enable manually Configuration of the Cache Disk ID</checkBox>
+        <dropdownList refId="DST_PVSCacheDiskID" defaultItem="0">Cache Disk ID</dropdownList>
       </presentation>
       <presentation id="POL_PersCfg">
         <dropdownList refId="DST_CLI_DM" defaultItem="0">Skip Personalization based on DiskMode</dropdownList>
@@ -1065,6 +1118,7 @@ https://support.citrix.com/article/CTX284738
           <label>WEM Agent Cache folder name</label>
           <defaultValue>WEMCache</defaultValue>
         </textBox>
+        <dropdownList refId="DST_WEMCacheStartupOption" defaultItem="0">Configure the WEM Agent Startup Cache Option</dropdownList>
       </presentation>
       <presentation id="POL_AppLayCfg">
         <checkBox refId="CHK_AppLayOScfg">Enable OS Layer config file</checkBox>
@@ -1076,6 +1130,8 @@ https://support.citrix.com/article/CTX284738
         <dropdownList refId="DST_MCSIODriveLetter" defaultItem="0">MCSIO Disk Drive Letter</dropdownList>
         <dropdownList refId="DST_MCSIONumberOfPartitions" defaultItem="0">Number of Partitions</dropdownList>
         <checkBox refId="CHK_MCSIODisableRedirection">Disable Redirection</checkBox>
+        <checkBox refId="CHK_MCSCacheDiskIDb">Enable manually Configuration of the Cache Disk ID</checkBox>
+        <dropdownList refId="DST_MCSCacheDiskID" defaultItem="0">Cache Disk ID</dropdownList>
       </presentation>
       <presentation id="POL_AVFullScan">
         <checkBox refId="CHK_AV_VIE_CusScanArgsb">Enable Custom Scan Arguments</checkBox>
@@ -1105,7 +1161,7 @@ https://support.citrix.com/article/CTX284738
         </textBox>
         <text>
         </text>
-        <checkBox refId="CHK_NET_OPT2b" defaultChecked="false">Enable Optimization 2:</checkBox>
+        <checkBox refId="CHK_NET_OPT2b" defaultChecked="true">Enable Optimization 2:</checkBox>
         <textBox refId="TXT_NET_OPT2args">
           <label>Arguments Optimization 2:</label>
           <defaultValue>update /force</defaultValue>
@@ -1117,11 +1173,12 @@ https://support.citrix.com/article/CTX284738
       </presentation>
       <presentation id="POL_MS_AAD">
         <text>Preparation Phase:</text>
-		<checkBox refId="CHK_MS_AAD_HybribLeaveb">Leave Azure Active Directory</checkBox>
-        <text> </text>
-       <text> ------------------------------- </text>
-         <text>Personalization Phase:</text>
-		<checkBox refId="CHK_MS_AAD_HybridJoinb">Join Azure Active Directory</checkBox>
+        <checkBox refId="CHK_MS_AAD_HybribLeaveb">Leave Azure Active Directory</checkBox>
+        <text>
+        </text>
+        <text> ------------------------------- </text>
+        <text>Personalization Phase:</text>
+        <checkBox refId="CHK_MS_AAD_HybridJoinb">Join Azure Active Directory</checkBox>
       </presentation>
     </presentationTable>
   </resources>

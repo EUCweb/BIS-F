@@ -1,6 +1,6 @@
 <policyDefinitions revision="1.0" schemaVersion="1.0">
   <policyNamespaces>
-    <target prefix="fullarmor" namespace="FullArmor.Policies.AB36C73D_1BFF_4E6A_876C_5B76041C810A" />
+    <target prefix="fullarmor" namespace="FullArmor.Policies.8792664D_EBD1_45F9_815F_65014D0224E7" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
@@ -897,6 +897,48 @@
           </item>
         </enum>
         <boolean id="CHK_PVSDisableRedirection" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PVSDisableRedirection" />
+        <boolean id="CHK_PVSCacheDiskIDb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PVSCacheDiskIDb">
+          <trueValue>
+            <string>
+            </string>
+          </trueValue>
+          <falseValue>
+            <string>
+            </string>
+          </falseValue>
+        </boolean>
+        <enum id="DST_PVSCacheDiskID" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_PVSCacheDiskID">
+          <item displayName="$(string.ITM_PVSCacheDiskID0)">
+            <value>
+              <string>0</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_PVSCacheDiskID1)">
+            <value>
+              <string>1</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_PVSCacheDiskID2)">
+            <value>
+              <string>2</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_PVSCacheDiskID3)">
+            <value>
+              <string>3</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_PVSCacheDiskID4)">
+            <value>
+              <string>4</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_PVSCacheDiskID5)">
+            <value>
+              <string>5</string>
+            </value>
+          </item>
+        </enum>
       </elements>
     </policy>
     <policy name="POL_PersCfg" class="Machine" displayName="$(string.POL_PersCfg)" explainText="$(string.POL_PersCfg_Help)" presentation="$(presentation.POL_PersCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_PersCfg">
@@ -1323,6 +1365,28 @@
         <boolean id="CHK_CLI_WEMCache" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMCache" />
         <boolean id="CHK_CLI_WEMb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMb" />
         <text id="TXT_CLI_WEMFolder" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMFolder" maxLength="20" />
+        <enum id="DST_WEMCacheStartupOption" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_WEMCacheStartupOption">
+          <item displayName="$(string.ITM_RefreshCache)">
+            <value>
+              <string>-RefreshCache</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_RefreshSettings)">
+            <value>
+              <string>-RefreshSettings</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_RefreshSettings-RefreshCache)">
+            <value>
+              <string>-RefreshSettings -RefreshCache</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_RefreshCache-Reinitialize)">
+            <value>
+              <string>-RefreshCache -Reinitialize</string>
+            </value>
+          </item>
+        </enum>
       </elements>
     </policy>
     <policy name="POL_AppLayCfg" class="Machine" displayName="$(string.POL_AppLayCfg)" explainText="$(string.POL_AppLayCfg_Help)" presentation="$(presentation.POL_AppLayCfg)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_AppLayCfg">
@@ -1542,6 +1606,46 @@
             <delete />
           </falseValue>
         </boolean>
+        <boolean id="CHK_MCSCacheDiskIDb" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSCacheDiskIDb">
+          <trueValue>
+            <string>YES</string>
+          </trueValue>
+          <falseValue>
+            <string>NO</string>
+          </falseValue>
+        </boolean>
+        <enum id="DST_MCSCacheDiskID" key="Software\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MCSCacheDiskID">
+          <item displayName="$(string.ITM_MCSCacheDiskID0)">
+            <value>
+              <string>0</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSCacheDiskID1)">
+            <value>
+              <string>1</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSCacheDiskID2)">
+            <value>
+              <string>2</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSCacheDiskID3)">
+            <value>
+              <string>3</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSCacheDiskID4)">
+            <value>
+              <string>4</string>
+            </value>
+          </item>
+          <item displayName="$(string.ITM_MCSCacheDiskID5)">
+            <value>
+              <string>5</string>
+            </value>
+          </item>
+        </enum>
       </elements>
     </policy>
     <policy name="POL_MS_AAD" class="Machine" displayName="$(string.POL_MS_AAD)" explainText="$(string.POL_MS_AAD_Help)" presentation="$(presentation.POL_MS_AAD)" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_POL_MS_AAD">

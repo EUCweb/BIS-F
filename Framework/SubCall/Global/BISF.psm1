@@ -1,4 +1,4 @@
-Function Initialize-Configuration {
+﻿Function Initialize-Configuration {
 	<#
 .SYNOPSIS
 	define global environment
@@ -1790,8 +1790,8 @@ function Get-DiskNameExtension {
 	Finally { $ErrorActionPreference = "Continue" }
 	write-BISFlog -Msg "vDisk Extension is $($ReturnValue)"
 	return $returnValue
-
 }
+
 
 function Test-Service {
 	<#
@@ -1813,6 +1813,7 @@ function Test-Service {
 		06.03.2017 MS: get FileVersion from ImagePath
 		28.02.2018 MS: Bugfix get Fileversion from Imagepath, without arguments of the service
 		20.10.2018 MS: Bugfix 74: The Version from the Service could not extracted
+		23.12.2020 MS: HF 304 - add switch RetrieveVersion
 	.LINK
 		https://eucweb.com
 #>
@@ -1824,7 +1825,11 @@ function Test-Service {
 
 		# specifies the Productname / Software
 		[parameter(Mandatory = $false)]
-		[ValidateNotNullOrEmpty()]$ProductName
+		[ValidateNotNullOrEmpty()]$ProductName,
+
+		# Retrieve ServiceVersion
+		[parameter(Mandatory = $false)]
+		[switch]$RetrieveVersion
 	)
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	IF (Get-Service $Servicename -ErrorAction SilentlyContinue) {
@@ -1837,7 +1842,7 @@ function Test-Service {
 			$SVCImagePath = $SVCImagePath -replace ('"', '')
 			$Global:glbSVCImagePath = "$SVCImagePath"
 			$SVCFileVersion = (Get-Item $($SVCImagePath) -ErrorAction SilentlyContinue).versioninfo.fileversion
-			IF (!($SVCFileVersion -eq $null)) {
+			IF (!([String]::IsNullOrEmpty($SVCFileVersion))) {
 				$ShowVersion = "(Version $SVCFileVersion)"
 				Write-BISFlog -Msg "Product $ProductName $ShowVersion installed" -ShowConsole -Color Cyan
 			}
@@ -1847,12 +1852,21 @@ function Test-Service {
 			}
 
 		}
-		return $true
+		if ($RetrieveVersion) {
+			return $true, $SVCFileVersion
+		} else {
+			return $true
+		}
+
 	}
 	ELSE {
 		write-BISFlog -Msg "Service $($ServiceName) does not exist"
 		IF ($ProductName) { write-BISFlog -Msg "Product $ProductName is NOT installed" }
-		return $false
+		if ($RetrieveVersion) {
+			return $false, 0
+		} else {
+			return $false
+		}
 	}
 
 }
@@ -2664,6 +2678,7 @@ function Use-PVSConfig {
 		25.08.2019 MS: ENH 128 - Disable redirection if WriteCacheDisk is set to NONE
 		08.10.2019 MS: ENH 145 - ADMX: Disable Redirection for Citrix PVS Target
 		18.06.2020 MS: HF 249 - WEMCache folder will be reconfigured if UPL is installed
+		22.12.2020 JS: HF 302 - WriteCache disk access validated before redirecting
 	.LINK
 		https://eucweb.com
 #>
@@ -2695,6 +2710,8 @@ function Use-PVSConfig {
 		IF ($LIC_BISF_CLI_WCD -eq "NONE") {$Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-No-WCD" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($LIC_BISF_CLI_PVSDisableRedirection -eq 1) { $Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+		IF ((Test-BISFAccessValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
@@ -2758,6 +2775,7 @@ function Use-MCSConfig {
 		  03.10.2019 MS: EHN 126 - function created (coopy from Use-PVSConfig function and modifed for MCS)
 		  03.01.2020 MS: HF 169 - Disable redirection if MCS GPO is disabled
 		  18.06.2020 MS: HF 249 - WEMCache folder will be reconfigured if UPL is installed
+		  23.12.2020 MS: HF 302 - WriteCache disk access validated before redirecting
 
 	.LINK
 		https://eucweb.com
@@ -2794,6 +2812,9 @@ function Use-MCSConfig {
 
 		IF ($LIC_BISF_CLI_MCSIODisableRedirection -eq 1) {$Global:Redirection = $false; $Global:RedirectionCode = "MCS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
+		IF ((Test-BISFAccessValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+
+
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
 
@@ -2822,9 +2843,6 @@ function Use-MCSConfig {
 
 			# redirected eventlogs
 			Move-BISFEvtLogs
-           $CleanPath = $InstallLocation+"\*"
-           Remove-Item $CleanPath -include *.evtx -ErrorAction SilentlyContinue -force
-           Remove-Item $CleanPath -include *.etl -ErrorAction SilentlyContinue -force
 		}
 		ELSE {
 			Write-BISFLog -Msg "Redirection is disabled with code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan
@@ -2852,13 +2870,16 @@ function Move-EvtLogs {
 		14.08.2019 MS: ENH 108 - set NTFS Rights for Eventlog directory
 		03.10.2019 MS: EHN 126 - added MCSIO redirection
         27.12.2019 MS/MN: HF 161 - Quotation marks are different
-        16.12.2020 MW: Issue #42: New Move Event Log Function
+		16.12.2020 MW: HF 42 - New Move Event Log Function
+		24.12.2020 MS: HF 42 - fixing 1 KB evtx and etl files in the BISF installationfolder
 
 	.FUNCTIONALITY
 		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
 			or
 		Enable all Eventlog and move Eventlogs to the MCSIO CacheDisk if Redirection is enabled function Use-BISFMCSConfig
 
+	.Link
+		https://gallery.technet.microsoft.com/scriptcenter/Change-the-path-of-the-f86d2427
 
 	#>
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
@@ -2870,39 +2891,35 @@ function Move-EvtLogs {
 		Write-BISFLog -Msg "Create Eventlog directory $LIC_BISF_EvtPath"
 		New-Item -Path $LIC_BISF_EvtPath -ItemType Directory -Force
 	}
-    $appvlog = New-Object System.Diagnostics.Eventing.Reader.EventLogSession
-    $appvlogs = $appvlog.GetLogNames()
-   
-	foreach ($LogName in $appvlogs) {
-		Write-BISFLog -Msg "Eventlog enabled: $LogName"
-        $Eventlogconfig = New-Object System.Diagnostics.Eventing.Reader.EventLogConfiguration -ArgumentList $LogName,$appvlog 
-        $Logfilepath = $Eventlogconfig.LogFilePath 
-        $Logfile = Split-Path $Logfilepath -Leaf
-        $LogExtension = $Logfile -split "\.", 2
-        $NewLogFilePath = "$LIC_BISF_EvtPath\$Logfile" 
+	[reflection.assembly]::loadwithpartialname("System.Diagnostics.Eventing.Reader")
+	$EventLogSessions = New-Object System.Diagnostics.Eventing.Reader.EventLogSession
 
-        Write-BISFLog -Msg "Path:`t`t $LogfilePath" -ShowConsole -SubMsg -Color DarkCyan
-        if ($LogExtension[1] -eq "evtx")
-        {
-            if (($Eventlogconfig.LogType -eq "Debug" -or $Eventlogconfig.LogType -eq "Analytical") -and $Eventlogconfig.IsEnabled) 
-            { 
-                $Eventlogconfig.IsEnabled = $false 
-                $Eventlogconfig.SaveChanges()
- 
-                $Eventlogconfig.LogFilePath = $NewLogFilePath 
-                $Eventlogconfig.SaveChanges()
+	foreach ($LogName in $EventLogSessions.GetLogNames()) {
+		Write-BISFLog -Msg "Processing EventLog: $LogName" -ShowConsole -SubMsg -Color DarkCyan
+        $Eventlogconfig = New-Object System.Diagnostics.Eventing.Reader.EventLogConfiguration -ArgumentList $LogName,$EventLogSessions
+        $Logfilepath = $Eventlogconfig.LogFilePath
+		Write-BISFLog -Msg "Current Path: $Logfilepath" -ShowConsole -SubMsg -Color DarkCyan
+		$Logfile = Split-Path $Logfilepath -Leaf | out-null
+        $NewLogFilePath = "$LIC_BISF_EvtPath\$Logfile"
 
-                $Eventlogconfig.IsEnabled = $true 
-                $Eventlogconfig.SaveChanges() 
-                }
-            else
-            { 
-                $Eventlogconfig.LogFilePath = $NewLogFilePath 
-                $Eventlogconfig.SaveChanges()
-                }
-           Remove-Item $Logfilepath -ErrorAction SilentlyContinue -force
-           
-         }
+		if ($Logfilepath -eq $NewLogFilePath) {
+			Write-BISFLog -Msg "New and Current Path are equal - skipping configuration change" -ShowConsole -SubMsg -Color Green
+		} else {
+			Write-BISFLog -Msg "New Path: $NewLogFilePath" -ShowConsole -SubMsg -Color DarkCyan
+			if (($Eventlogconfig.LogType -eq "Debug" -or $Eventlogconfig.LogType -eq " Analytical") -and $Eventlogconfig.IsEnabled) {
+				$Eventlogconfig.IsEnabled = $false
+				$Eventlogconfig.SaveChanges()
+
+				$Eventlogconfig.LogFilePath = $NewLogFilePath
+				$Eventlogconfig.SaveChanges()
+
+				$Eventlogconfig.IsEnabled = $true
+				$Eventlogconfig.SaveChanges()
+			} else {
+				$Eventlogconfig.LogFilePath = $NewLogFilePath
+				$Eventlogconfig.SaveChanges()
+			}
+		}
     }
 
 	Set-BISFACLrights -path $LIC_BISF_EvtPath
@@ -4533,4 +4550,50 @@ function Get-DSRegState {
 	$valuedata = ((dsregcmd /status | select-string -pattern $Key) -split(":") | select-object -last 1).trim()
 	Write-BISFlog -Msg "$Key : $valuedata" -ShowConsole -Color DarkCyan -SubMsg
 	return $valuedata
+}
+
+Function Test-AccessValidated {
+	<#
+	.SYNOPSIS
+		Validate access to the WriteCache disk
+	.DESCRIPTION
+	  	Does a basic test to validate access to the WriteCache disk
+	.EXAMPLE
+		IsAccessAllowed = Test-BISFAccessValidated -Folder "$PVSDiskDrive\"
+	.EXAMPLE
+		IF ((Test-BISFAccessValidated -Folder "$PVSDiskDrive\") -eq $False) { #code for $false value } else { #code for $true value }
+	.NOTES
+		Author: Jeremy Saunders
+	  	Company: jhouseconsulting.com
+
+		History:
+	  	22.12.2020 JS: HD 302 - function created
+
+	.LINK
+		https://www.jhouseconsulting.com
+	#>
+	param(
+		[string]$Folder
+	)
+	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
+	If (TEST-PATH $Folder) {
+		Write-BISFLog -Msg "Testing access to the WriteCache disk ($Folder)" -ShowConsole -SubMsg -Color DarkCyan
+		Get-ChildItem -path $Folder -EA SilentlyContinue -ErrorVariable ErrVar is
+		# The -ErrorVariable common parameter creates an ArrayList. This variable always initialized,
+		# which means it will never be $null. The proper way to test if an ArrayList is empty or not
+		# is to use the Count property. It should be empty or equal to 0 if there are no errors.
+		If ($ErrVar.count -eq 0) {
+			Write-BISFLog -Msg "Access to the WriteCache disk is good" -ShowConsole -SubMsg -Color DarkCyan
+			$return = $True
+		}
+		Else {
+			Write-BISFLog -Msg "Access to WriteCache disk is denied" -ShowConsole -SubMsg -Color DarkCyan
+			$return = $False
+		}
+	}
+ Else {
+		Write-BISFLog -Msg "The WriteCache disk ($Folder) does not exist" -ShowConsole -SubMsg -Color DarkCyan
+		$return = $False
+	}
+	return $return
 }
