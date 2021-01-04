@@ -209,14 +209,13 @@ Begin {
 					$LogPath = "C:\Windows\Logs\$LogFolderName"
 				}
 			}
-			If ($LogPath.StartsWith("C:\Windows\Logs\", 'CurrentCultureIgnoreCase') -eq $False) {
-				IF (!(Test-path $logpath -PathType Leaf)) { New-Item -Path $LogPath -ItemType Directory -Force }
-				Write-BISFLog -Msg "Move BIS-F log to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
-				Get-ChildItem -Path "C:\Windows\Logs\*" -Include "PREP_BISF*.log", "PERS_BISF*.log" -Exclude "*BISF_WPT*.log", "*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
-				IF (($NewLogPath) -and ($NewLogPath -ne $LogPath)) {
-					Write-BISFLog -Msg "Move BIS-F log from $NewLogPath to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
-					Get-ChildItem -Path "$($NewLogPath)\*" -include "PREP_BISF*.log", "PERS_BISF*.log" -Exclude "*BISF_WPT*.log", "*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
-				}
+
+			IF (!(Test-path $logpath -PathType Leaf)) { New-Item -Path $LogPath -ItemType Directory -Force }
+			Write-BISFLog -Msg "Move BIS-F log to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
+			Get-ChildItem -Path "C:\Windows\Logs\*" -Include "PREP_BISF*.log", "PERS_BISF*.log" -Exclude "*BISF_WPT*.log", "*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
+			IF (($NewLogPath) -and ($NewLogPath -ne $LogPath)) {
+				Write-BISFLog -Msg "Move BIS-F log from $NewLogPath to $LogPath" -ShowConsole -Color DarkCyan -SubMsg
+				Get-ChildItem -Path "$($NewLogPath)\*" -include "PREP_BISF*.log", "PERS_BISF*.log" -Exclude "*BISF_WPT*.log", "*dism_bisf*" -Recurse | Move-Item -Destination $LogPath -Force
 			}
 
 			$Global:Logfile = "$LogPath\$LogFileName"
