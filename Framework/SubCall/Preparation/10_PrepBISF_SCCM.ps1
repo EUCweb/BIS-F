@@ -43,8 +43,8 @@ Begin {
 	[string]$appService = 'CcmExec'
 	[string]$appRegKey = "$hklm_software\Microsoft\SystemCertificates\SMS\Certificates"
 	$CryptoPath = "C:\ProgramData\Microsoft\Crypto"
-	$CryptoKey = "Key"
-	$OldCrpytoKey = "KeyOLD"
+	$CryptoKey = "Keys"
+	$OldCrpytoKey = "KeysOLD"
 	$CryptoKeyPath = $CryptoPath + "\" + $CryptoKey
 	$OldCrpytoKeyPath = $CryptoPath + "\" + $OldCrpytoKey
 }
@@ -68,7 +68,7 @@ Process {
 		Get-CimInstance -Namespace root\ccm\scheduler -Class CCM_Scheduler_History | Where-Object { $_.ScheduleID -eq "{00000000-0000-0000-0000-000000000001}" } | Remove-CimInstance
 
 		$DSRegValue = Get-BISFDSRegState -Key "AzureADjoined"
-		IF ($DSRegValue -eq "YES")  {
+		IF ($DSRegValue -eq "YES") {
 			Write-BISFLog -Msg "Leaving AAD"
 			Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/leave" -ActText "leaving AAD"
 			Start-BISFProcWithProgBar -ProcPath "$env:windir\system32\dsregcmd.exe" -Args "/status" -ActText "Displays the device join status"
