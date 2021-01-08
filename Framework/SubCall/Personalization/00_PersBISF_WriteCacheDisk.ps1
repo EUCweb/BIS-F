@@ -55,6 +55,8 @@
 		23.05.2020 MS: HF 232 - CacheDisk not formatted
 		14.12.2020 MS: HF 297 - MCS CacheDisk is not right formatted
 		25.12.2020 MS: HF 302 - manually configuration of the Cache Disk ID in GPO will override BIS-F automatic detection of the $CacheDiskID
+		08.01.2021 MS: HF 302 - using $DiskIdentifier instead DiskID, DiskID is for another Global variable
+
 
 	.LINK
 		https://eucweb.com
@@ -138,13 +140,14 @@ Process {
 
 	# Check WriteCacheDrive Driveletter and Check UniqueID
 	function Test-PVSCacheDisk {
+		$CacheDiskID = "0" # for PVS it can be set hardcoded, but can be overwrite with GPO PVS
 		# test checkfile on CacheDisk
 		$TestCache = Test-WriteableCacheDisk
 		if ($LIC_BISF_CLI_PVSCacheDiskIDb -eq "YES") { #HF 302
-			$CachDiskID = $LIC_BISF_CLI_PVSCacheDiskID
+			$CacheDiskID = $LIC_BISF_CLI_PVSCacheDiskID
 			Write-BISFLog -Msg "Cache Disk ID is manually configured through PVS GPO: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
 		}
-		if ([String]::IsNullOrEmpty($CachDiskID)) {
+		if ([String]::IsNullOrEmpty($CacheDiskID)) {
 			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, skipping Cache Disk configuration. Configure it manually with the PVS GPO." -ShowConsole -Color Yellow -SubMSg -Type W
 		} else {
 			Write-BISFLog -Msg "Using Cache Disk ID: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
@@ -221,13 +224,14 @@ Process {
 	}
 
 	function Test-MCSIOCacheDisk {
+		$CacheDiskID = DiskIdentifier[1]
 		# test checkfile on CacheDisk
 		$TestCache = Test-WriteableCacheDisk
 		if ($LIC_BISF_CLI_MCSCacheDiskIDb -eq "YES") { #HF 302
-			$CachDiskID = $LIC_BISF_CLI_MCSCacheDiskID
+			$CacheDiskID = $LIC_BISF_CLI_MCSCacheDiskID
 			Write-BISFLog -Msg "Cache Disk ID is manually configured through MCS GPO: CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
 		}
-		if ([String]::IsNullOrEmpty($CachDiskID)) {
+		if ([String]::IsNullOrEmpty($CacheDiskID)) {
 			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, skipping Cache Disk configuration. Configure it manually with the MCS GPO." -ShowConsole -Color Yellow -SubMSg -Type W
 		} else {
 			Write-BISFLog -Msg "Using Cache Disk ID: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
@@ -328,7 +332,6 @@ Process {
 	####################################################################
 	$SkipReboot = Get-RefSrv
 	Test-OpticalDrive
-
 	$DiskMode = Get-BISFDiskMode
 	IF ( ($DiskMode -match "ReadOnly*") -or ($DiskMode -match "VDAShared*") ) {
 		Write-BISFLog -Msg "Cache Disk will be configured now for Disk Mode $DiskMode"

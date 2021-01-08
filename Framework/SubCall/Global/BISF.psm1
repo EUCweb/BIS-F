@@ -4199,9 +4199,9 @@ Function Get-CacheDiskID {
 	use get-help <functionname> -full to see full help
 
 	.EXAMPLE
-		$DiskID = Get-BISFCacheDiskID
-		$BootDiskID = $DiskID[0]
-		$CachDiskID = $DiskID[1]
+		$DiskIdentifier = Get-BISFCacheDiskID
+		$BootDiskID = DiskIdentifier[0]
+		$CachDiskID = DiskIdentifier[1]
 
 	.NOTES
 		Author: Matthias Schlimm
@@ -4209,7 +4209,8 @@ Function Get-CacheDiskID {
 		History:
 		  05.10.2019 MS: function created
 		  05.10.2019 MS: HF 22 - Endless Reboot with VMware Paravirtual SCSI disk need to get the DiskID
-          10.10.2019 MS: fixing errorhandling
+		  10.10.2019 MS: fixing errorhandling
+		  08.01.2021 MS: HF 302 - using $DiskIdentifier instead DiskID, DiskID is for another Global variable
 
 	.LINK
 		https://eucweb.com
