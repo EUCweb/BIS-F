@@ -2872,7 +2872,8 @@ function Move-EvtLogs {
         27.12.2019 MS/MN: HF 161 - Quotation marks are different
 		16.12.2020 MW: HF 42 - New Move Event Log Function
 		24.12.2020 MS: HF 42 - fixing 1 KB evtx and etl files in the BISF installationfolder
-        04.01.2021 MS: HF 42 - rename variable $logfile to $newLogfile, $logfile is used for the BIS-F Log
+		04.01.2021 MS: HF 42 - rename variable $logfile to $newLogfile, $logfile is used for the BIS-F Log
+		08.01.2021 MS: HF 42 - coding issue at line '$newLogfile = Split-Path $Logfilepath -Leaf | out-null' -> remove '| out-null' to clear the variable itself
 
 	.FUNCTIONALITY
 		Enable all Eventlog and move Eventlogs to the PVS WriteCacheDisk if Redirection is enabled function Use-BISFPVSConfig
@@ -2900,7 +2901,7 @@ function Move-EvtLogs {
         $Eventlogconfig = New-Object System.Diagnostics.Eventing.Reader.EventLogConfiguration -ArgumentList $LogName,$EventLogSessions
         $Logfilepath = $Eventlogconfig.LogFilePath
 		Write-BISFLog -Msg "Current Path: $Logfilepath" -ShowConsole -SubMsg -Color DarkCyan
-		$newLogfile = Split-Path $Logfilepath -Leaf | out-null
+		$newLogfile = Split-Path $Logfilepath -Leaf
         $NewLogFilePath = "$LIC_BISF_EvtPath\$newLogfile"
 
 		if ($Logfilepath -eq $NewLogFilePath) {
