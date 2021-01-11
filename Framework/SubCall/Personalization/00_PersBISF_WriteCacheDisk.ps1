@@ -145,12 +145,12 @@ Process {
 		$TestCache = Test-WriteableCacheDisk
 		if ($LIC_BISF_CLI_PVSCacheDiskIDb -eq "YES") { #HF 302
 			$CacheDiskID = $LIC_BISF_CLI_PVSCacheDiskID
-			Write-BISFLog -Msg "Cache Disk ID is manually configured through PVS GPO: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
+			Write-BISFLog -Msg "Cache Disk ID is manually configured through PVS GPO: $CacheDiskID" -ShowConsole -Color DarkCyan -SubMSg
 		}
 		if ([String]::IsNullOrEmpty($CacheDiskID)) {
 			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, skipping Cache Disk configuration. Configure it manually with the PVS GPO." -ShowConsole -Color Yellow -SubMSg -Type W
 		} else {
-			Write-BISFLog -Msg "Using Cache Disk ID: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
+			Write-BISFLog -Msg "Using Cache Disk ID: $CacheDiskID" -ShowConsole -Color DarkCyan -SubMSg
 			if ($TestCache -eq $false) {
 				Write-BISFLog -Msg "Cache Disk partition is NOT properly configured" -Type W
 				$WriteCacheType = Get-BISFPVSWriteCacheType
@@ -166,7 +166,7 @@ Process {
 
 						Write-BISFLog -Msg "CacheDisk partition is not formatted"
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-						"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
+						"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 						"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 						"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 						"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
@@ -179,7 +179,7 @@ Process {
 
 						# Get WriteCache Volume and Restore Unique ID
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-						"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
+						"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 						"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
 						Get-BISFLogContent -GetLogFile "$DiskpartFile"
 						$null = diskpart.exe /s $DiskpartFile
@@ -192,7 +192,7 @@ Process {
 						$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
 						Set-CimInstance -InputObject $WriteCache  -Arguments @{DriveLetter = "$PVSDiskDrive" }
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-						"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
+						"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 						"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 						"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 						"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
@@ -229,12 +229,12 @@ Process {
 		$TestCache = Test-WriteableCacheDisk
 		if ($LIC_BISF_CLI_MCSCacheDiskIDb -eq "YES") { #HF 302
 			$CacheDiskID = $LIC_BISF_CLI_MCSCacheDiskID
-			Write-BISFLog -Msg "Cache Disk ID is manually configured through MCS GPO: CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
+			Write-BISFLog -Msg "Cache Disk ID is manually configured through MCS GPO: CacheDiskID" -ShowConsole -Color DarkCyan -SubMSg
 		}
 		if ([String]::IsNullOrEmpty($CacheDiskID)) {
 			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, skipping Cache Disk configuration. Configure it manually with the MCS GPO." -ShowConsole -Color Yellow -SubMSg -Type W
 		} else {
-			Write-BISFLog -Msg "Using Cache Disk ID: $CachDiskID" -ShowConsole -Color DarkCyan -SubMSg
+			Write-BISFLog -Msg "Using Cache Disk ID: $CacheDiskID" -ShowConsole -Color DarkCyan -SubMSg
 			if ($TestCache -eq $false) {
 				Write-BISFLog -Msg "Cache Disk partition is NOT properly configured" -Type W
 				#grab the numbers of Partitions from the BIS-F ADMX
@@ -247,7 +247,7 @@ Process {
 
 					Write-BISFLog -Msg "Cache Disk partition is not formatted"
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-					"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
+					"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
@@ -261,7 +261,7 @@ Process {
 					if (!([String]::IsNullOrEmpty($uniqueid_REG))) {
 						# Get Cache Disk Volume and Restore Unique ID
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-						"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
+						"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 						"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
 						Get-BISFLogContent -GetLogFile "$DiskpartFile"
 						$null = diskpart.exe /s $DiskpartFile
@@ -280,7 +280,7 @@ Process {
 
 
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
-					"select disk $CachDiskID" | Out-File -filepath $DiskpartFile -encoding Default
+					"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
