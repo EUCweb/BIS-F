@@ -224,7 +224,7 @@ Process {
 	}
 
 	function Test-MCSIOCacheDisk {
-		$CacheDiskID = DiskIdentifier[1]
+		$CacheDiskID = $DiskIdentifier[1]
 		# test checkfile on CacheDisk
 		$TestCache = Test-WriteableCacheDisk
 		if ($LIC_BISF_CLI_MCSCacheDiskIDb -eq "YES") { #HF 302
