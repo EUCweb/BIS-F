@@ -342,12 +342,14 @@ Process {
 					Test-PVSCacheDisk
 				}
 				ELSE {
-					Write-BISFLog -Msg "Cache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
+					Write-BISFLog -Msg "PVS Cache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
 				}
 			}
 			ELSE {
 				Write-BISFLog -Msg "PVS Cache Disk will NOT be configured or is set to 'NONE', skipping configuration"
 			}
+		} else {
+			Write-BISFLog -Msg "PVS Cache Disk Configuration are not set in GPO"
 		}
 
 		IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
@@ -363,6 +365,9 @@ Process {
 			ELSE {
 				Write-BISFLog -Msg "MCSIO Cache Disk is not configured or is set to 'NONE', skipping configuration"
 			}
+		}
+		else {
+			Write-BISFLog -Msg "MCS Cache Disk Configuration are not set in GPO"
 		}
 	} ELSE {
 		Write-BISFLog -Msg "Cache Disk will NOT be configured for DiskMode $DiskMode" -Type W
