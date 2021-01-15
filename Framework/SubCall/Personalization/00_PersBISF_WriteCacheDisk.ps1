@@ -335,17 +335,19 @@ Process {
 	$DiskMode = Get-BISFDiskMode
 	IF ( ($DiskMode -match "ReadOnly*") -or ($DiskMode -match "VDAShared*") ) {
 		Write-BISFLog -Msg "Cache Disk will be configured now for Disk Mode $DiskMode"
-		IF (!($null -eq $LIC_BISF_CLI_WCD) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
-			IF ($returnTestPVSSoftware -eq $true) {
-				$uniqueid_REG = Get-UniqueIDreg
-				Test-PVSCacheDisk
+		IF ($LIC_BISF_CLI_PVSCfg -eq "YES") {
+			IF (!($null -eq $LIC_BISF_CLI_WCD) -or (!($LIC_BISF_CLI_WCD -eq "NONE")) ) {
+				IF ($returnTestPVSSoftware -eq $true) {
+					$uniqueid_REG = Get-UniqueIDreg
+					Test-PVSCacheDisk
+				}
+				ELSE {
+					Write-BISFLog -Msg "Cache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
+				}
 			}
 			ELSE {
-				Write-BISFLog -Msg "Cache Disk not checked or formatted, Citrix Provisioning Services software is not installed on this system!" -Type W
+				Write-BISFLog -Msg "PVS Cache Disk will NOT be configured or is set to 'NONE', skipping configuration"
 			}
-		}
-		ELSE {
-			Write-BISFLog -Msg "PVS Cache Disk will NOT be configured or is set to 'NONE', skipping configuration"
 		}
 
 		IF ($LIC_BISF_CLI_MCSCfg -eq "YES") {
@@ -355,15 +357,14 @@ Process {
 					Test-MCSIOCacheDisk
 				}
 				ELSE {
-					Write-BISFLog -Msg "Citrix MCSIO with persistent Drive can't be used on this system!" -Type W
+					Write-BISFLog -Msg "MCSIO with persistent Drive can't be used on this system!" -Type W
 				}
 			}
 			ELSE {
 				Write-BISFLog -Msg "MCSIO Cache Disk is not configured or is set to 'NONE', skipping configuration"
 			}
 		}
-	}
- ELSE {
+	} ELSE {
 		Write-BISFLog -Msg "Cache Disk will NOT be configured for DiskMode $DiskMode" -Type W
 	}
 }
