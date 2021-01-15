@@ -359,7 +359,7 @@ Process {
 					Test-MCSIOCacheDisk
 				}
 				ELSE {
-					Write-BISFLog -Msg "MCSIO with persistent Drive can't be used on this system!" -Type W
+					Write-BISFLog -Msg "MCSIO Cache Disk can't be used on this system!" -Type W
 				}
 			}
 			ELSE {
@@ -367,7 +367,7 @@ Process {
 			}
 		}
 		else {
-			Write-BISFLog -Msg "MCS Cache Disk Configuration are not set in GPO"
+			Write-BISFLog -Msg "MCSIO Cache Disk Configuration are not set in GPO"
 		}
 	} ELSE {
 		Write-BISFLog -Msg "Cache Disk will NOT be configured for DiskMode $DiskMode" -Type W
