@@ -229,7 +229,7 @@ Process {
 		$TestCache = Test-WriteableCacheDisk
 		if ($LIC_BISF_CLI_MCSCacheDiskIDb -eq "YES") { #HF 302
 			$CacheDiskID = $LIC_BISF_CLI_MCSCacheDiskID
-			Write-BISFLog -Msg "Cache Disk ID is manually configured through MCS GPO: CacheDiskID" -ShowConsole -Color DarkCyan -SubMSg
+			Write-BISFLog -Msg "Cache Disk ID is manually configured through MCS GPO: $CacheDiskID" -ShowConsole -Color DarkCyan -SubMSg
 		}
 		if ([String]::IsNullOrEmpty($CacheDiskID)) {
 			Write-BISFLog -Msg "Cache Disk ID can't retrieved from BIS-F, skipping Cache Disk configuration. Configure it manually with the MCS GPO." -ShowConsole -Color Yellow -SubMSg -Type W
