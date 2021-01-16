@@ -279,7 +279,7 @@ Process {
 
 					$VolumeDriveletter = $volumedata.DriveLetter + ":"
 					$VolumeNumber = $volumedata.VolumeNumber
-					Write-BISFLog -Msg "Cache Disk ID $CacheDiskID has DrivLetter $VolumeDriveletter assigned / Volume $VolumeNumber"
+					Write-BISFLog -Msg "Cache Disk ID $CacheDiskID has DriveLetter $VolumeDriveletter assigned / Volume $VolumeNumber"
 					IF ($VolumeDriveletter -ne $PVSDiskDrive) {
 						Write-BISFLog -Msg "VolumeDriveLetter $VolumeDriveletter must be changed to $PVSDiskDrive" -Type W
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
