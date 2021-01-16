@@ -56,7 +56,6 @@
 		14.12.2020 MS: HF 297 - MCS CacheDisk is not right formatted
 		25.12.2020 MS: HF 302 - manually configuration of the Cache Disk ID in GPO will override BIS-F automatic detection of the $CacheDiskID
 		08.01.2021 MS: HF 302 - using $DiskIdentifier instead DiskID, DiskID is for another Global variable
-		16.01.2021 MS: HF 302 - MCS: Test Volume DriveLetter before Proceed
 
 
 	.LINK
@@ -293,8 +292,6 @@ Process {
 						Write-BISFLog -Msg "VolumeDriveLetter $VolumeDriveletter is equal to your assigned configuration $PVSDiskDrive"
 					}
 
-
-
 					if (!([String]::IsNullOrEmpty($uniqueid_REG))) {
 						# Get Cache Disk Volume and Restore Unique ID
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
@@ -308,14 +305,6 @@ Process {
 				else {
 					# WriteCache Formatted, but No or Wrong Drive Letter Assigned
 					Write-BISFLog -Msg "Cache Disk is formatted, but no drive letter or the wrong drive letter is assigned"  -Type W -SubMsg
-
-					if ([String]::IsNullOrEmpty($uniqueid_REG)) {
-						Write-BISFLog -Msg "Fixing drive letter assignemnt on Cache Disk"
-						$WriteCache = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 3 and BootVolume = False"
-						Set-CimInstance -InputObject $WriteCache -Arguments @{DriveLetter = "$PVSDiskDrive" }
-					}
-
-
 					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 					"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
@@ -325,9 +314,11 @@ Process {
 						"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
 						Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 					}
+					"create partition primary" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
+					"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
 					Get-BISFLogContent -GetLogFile "$DiskpartFile"
 					Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\diskpart.exe" -Args "/s $DiskpartFile" -ActText "Running Diskpart" | Out-Null
-
 				}
 
 				IF (!($SkipReboot -eq $true)) {
