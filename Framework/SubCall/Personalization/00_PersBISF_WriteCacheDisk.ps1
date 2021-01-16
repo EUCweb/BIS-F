@@ -269,6 +269,7 @@ Process {
 					"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
 					"detail disk" | Out-File -filepath $DiskpartFile -encoding Default -append
 					Get-BISFLogContent -GetLogFile "$DiskpartFile"
+					Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\diskpart.exe" -Args "/s $DiskpartFile" -ActText "Running Diskpart" | Out-Null
 					$volumedata = diskpart.exe /S $DiskpartFile  | Where-Object { $_ -match 'Volume (\d+)\s+([a-z])\s+' }
 					$volumedata = $volumedata | ForEach-Object {
 						New-Object -Type PSObject -Property @{
