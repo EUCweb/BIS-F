@@ -325,7 +325,7 @@ Process {
 						"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
 						Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
 					}
-					Get-BISFLogContent-GetLogFile "$DiskpartFile"
+					Get-BISFLogContent -GetLogFile "$DiskpartFile"
 					Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\diskpart.exe" -Args "/s $DiskpartFile" -ActText "Running Diskpart" | Out-Null
 
 				}
