@@ -310,15 +310,20 @@ Process {
 					"online disk noerr" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"rescan" | Out-File -filepath $DiskpartFile -encoding Default -append
-					if (!([String]::IsNullOrEmpty($uniqueid_REG))) {
-						"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
-						Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
-					}
 					"create partition primary" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
 					"Format FS=NTFS LABEL=$DiskLabel QUICK" | Out-File -filepath $DiskpartFile -encoding Default -append
 					Get-BISFLogContent -GetLogFile "$DiskpartFile"
 					Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\diskpart.exe" -Args "/s $DiskpartFile" -ActText "Running Diskpart" | Out-Null
+
+					if (!([String]::IsNullOrEmpty($uniqueid_REG))) {
+						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
+						"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
+						"uniqueid disk ID=$uniqueid_REG" | Out-File -filepath $DiskpartFile -encoding Default -append
+						Write-BISFLog -Msg "Disk ID $uniqueid_REG is set on $PVSDiskDrive"
+						Get-BISFLogContent -GetLogFile "$DiskpartFile"
+						Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\diskpart.exe" -Args "/s $DiskpartFile" -ActText "Running Diskpart" | Out-Null
+					}
 				}
 
 				IF (!($SkipReboot -eq $true)) {
