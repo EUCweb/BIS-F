@@ -316,6 +316,35 @@ Process {
 					Get-BISFLogContent -GetLogFile "$DiskpartFile"
 					Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\diskpart.exe" -Args "/s $DiskpartFile" -ActText "Running Diskpart" | Out-Null
 
+					##18.01.2021 HF 302: Test if the correct DriveLetter is assigned before proceeed
+					If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
+					"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default
+					"detail disk" | Out-File -filepath $DiskpartFile -encoding Default -append
+					Get-BISFLogContent -GetLogFile "$DiskpartFile"
+					Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\diskpart.exe" -Args "/s $DiskpartFile" -ActText "Running Diskpart" | Out-Null
+					$volumedata = diskpart.exe /S $DiskpartFile  | Where-Object { $_ -match 'Volume (\d+)\s+([a-z])\s+' }
+					$volumedata = $volumedata | ForEach-Object {
+						New-Object -Type PSObject -Property @{
+							'DriveLetter' = $matches[2]
+							'VolumeNumber' = [int]$matches[1]
+						}
+					}
+
+					$VolumeDriveletter = $volumedata.DriveLetter + ":"
+					$VolumeNumber = $volumedata.VolumeNumber
+					Write-BISFLog -Msg "Cache Disk ID $CacheDiskID has DriveLetter $VolumeDriveletter assigned / Volume $VolumeNumber"
+					IF ($VolumeDriveletter -ne $PVSDiskDrive) {
+						Write-BISFLog -Msg "VolumeDriveLetter $VolumeDriveletter must be changed to $PVSDiskDrive" -Type W
+						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
+						"select volume $VolumeNumber" | Out-File -filepath $DiskpartFile -encoding Default
+						"assign letter $PVSDiskDrive" | Out-File -filepath $DiskpartFile -encoding Default -append
+						Get-BISFLogContent -GetLogFile "$DiskpartFile"
+						Start-BISFProcWithProgBar -ProcPath "$env:SystemRoot\system32\diskpart.exe" -Args "/s $DiskpartFile" -ActText "Running Diskpart" | Out-Null
+					}
+					else {
+						Write-BISFLog -Msg "VolumeDriveLetter $VolumeDriveletter is equal to your assigned configuration $PVSDiskDrive"
+					}
+
 					if (!([String]::IsNullOrEmpty($uniqueid_REG))) {
 						If (Test-Path $DiskpartFile) { Remove-Item $DiskpartFile -Force }
 						"select disk $CacheDiskID" | Out-File -filepath $DiskpartFile -encoding Default

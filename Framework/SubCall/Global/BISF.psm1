@@ -2679,6 +2679,7 @@ function Use-PVSConfig {
 		08.10.2019 MS: ENH 145 - ADMX: Disable Redirection for Citrix PVS Target
 		18.06.2020 MS: HF 249 - WEMCache folder will be reconfigured if UPL is installed
 		22.12.2020 JS: HF 302 - WriteCache disk access validated before redirecting
+		18.01.2021 MS: HF 302 - moving Test-BISFWriteCacheDiskDriveLetter outside of redirection, Returnvalue muste be used for Formatting the CacheDsik if the redirection is enabled/disabled
 	.LINK
 		https://eucweb.com
 #>
@@ -2712,12 +2713,12 @@ function Use-PVSConfig {
 		IF ($LIC_BISF_CLI_PVSDisableRedirection -eq 1) { $Global:Redirection = $false; $Global:RedirectionCode = "PVS-Global-Disabled-Redirection" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
 		IF ((Test-BISFAccessValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
+		$Global:returnTestPVSEnvVariable = Test-BISFWriteCacheDiskDriveLetter -Verbose:$VerbosePreference
 
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
 
 			#Check redirection
-			$Global:returnTestPVSEnvVariable = Test-BISFWriteCacheDiskDriveLetter -Verbose:$VerbosePreference
 			IF ($State -eq "Preparation") {
 				IF ($DiskMode -eq "ReadOnly") { Write-BISFLog -Msg "Mode $DiskMode - vDisk in Standard Mode, read access only!" -Type E -SubMsg }
 				IF ($DiskMode -eq "Unmanaged") {
@@ -2776,6 +2777,7 @@ function Use-MCSConfig {
 		  03.01.2020 MS: HF 169 - Disable redirection if MCS GPO is disabled
 		  18.06.2020 MS: HF 249 - WEMCache folder will be reconfigured if UPL is installed
 		  23.12.2020 MS: HF 302 - WriteCache disk access validated before redirecting
+		  18.01.2021 MS: HF 302 - moving Test-BISFWriteCacheDiskDriveLetter outside of redirection, Returnvalue muste be used for Formatting the CacheDsik if the redirection is enabled/disabled
 
 	.LINK
 		https://eucweb.com
@@ -2814,12 +2816,11 @@ function Use-MCSConfig {
 
 		IF ((Test-BISFAccessValidated -Folder "$PVSDiskDrive\") -eq $False) { $Global:Redirection = $false; $Global:RedirectionCode = "WCD-To-Be-Formatted" ; Write-BISFLog -Msg "disable redirection - Code $RedirectionCode" -ShowConsole -SubMsg -Color DarkCyan }
 
-
+		$Global:returnTestPVSEnvVariable = Test-BISFWriteCacheDiskDriveLetter -Verbose:$VerbosePreference
 		IF ($Redirection -eq $true) {
 			Write-BISFLog -Msg "Redirection is enabled with Code $RedirectionCode, configuring it now" -ShowConsole -SubMsg -Color DarkCyan
 
 			#Check redirection
-			$Global:returnTestPVSEnvVariable = Test-BISFWriteCacheDiskDriveLetter -Verbose:$VerbosePreference
 			IF ($State -eq "Preparation") {
 				IF ($DiskMode -eq "VDAShared") { Write-BISFLog -Msg "Mode $DiskMode - Image is in shared Mode, read access only!" -Type E -SubMsg }
 
