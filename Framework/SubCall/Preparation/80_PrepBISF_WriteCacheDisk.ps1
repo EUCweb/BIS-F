@@ -33,6 +33,7 @@ param(
 		25.08.2019 MS: ENH 128 - Disable any command if WriteCacheDisk is set to NONE
 		05.10.2019 MS: HF 69 - If WriteCache disk on master is GPT-partiton then uniqueid doesn't match
 		18.02.2020 JK: Fixed Log output spelling
+		18.01.2021 MS: using PoSh standard verbs for functions
 
 	.LINK
 		https://eucweb.com
@@ -64,50 +65,38 @@ Begin {
 	####################################################################
 	####### functions #####
 	####################################################################
-	function GetUniqueID {
-		# Get uniqueid WriteCacheDisk
-		Write-BISFLog -Msg "Get UniqueID from WriteCacheDisk" -ShowConsole -Color Cyan
-		$DriveLetter = $PVSDiskDrive.substring(0, 1)
-		Write-BISFLog -Msg "use Diskpart, searching for Drive letter $DriveLetter"
+	function Get-UniqueDiskID {
+		<#
+		.SYNOPSIS
+		GetUniqueID
 
-		$Searchvol = "list volume" | diskpart.exe | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
-		Write-BISFLog -Msg "$Searchvol"
+		.DESCRIPTION
+		Write the UnqiueID of the CacheDisk to the registry
+		to use it later on the cloned devices
 
-		$getvolNbr = $Searchvol.substring(11, 1)   # get Volumenumber from DiskLabel
-		Write-BISFLog -Msg "Get Volumenumber $getvolNbr from Disklabel $DriveLetter"
 
-		Remove-Item $DiskpartFile -recurse -ErrorAction SilentlyContinue
-		# Write Diskpart File
-		"select volume $getvolNbr" | Out-File -filepath $DiskpartFile -encoding Default
-		"uniqueid disk" | Out-File -filepath $DiskpartFile -encoding Default -append
-		$result = diskpart.exe /s $DiskpartFile
-		get-BISFLogContent -GetLogFile "$DiskpartFile"
-		$getid = $result | Select-String -pattern "ID" -casesensitive | Out-String
-		$getid = $getid.Split(":")  #split string on ":"
-		$getid = $getid[1] #get the first string after ":" to get the Disk ID only without the Text
-		$getid = $getid.trim() #remove empty spaces on the right and left
-		$start = $getid.length
-		IF ($start -eq "8") {
-			Write-BISFLog -Msg "MBR Disk with $start characters identfied"
+		.NOTES
+		Author: Matthias Schlimm
 
-		}
-		ELSE {
-			Write-BISFLog -Msg "GPT Disk with $start characters identfied"
-			$getid = $getid -replace '[{}]'
-			Write-BISFLog -Msg "Reformatting uniqueID for GPT - removing brackets"
-		}
-		Write-BISFLog -Msg "UniqueID Disk: $getid"
-		Write-BISFLog -Msg "Set uniqueID $getid for volume $getvolNbr / Driveletter $DriveLetter to Registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
-		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $reg_value_UniqueID -value $getid -ErrorAction SilentlyContinue
+		Company:  EUCWeb.com
+
+		History:
+		dd.mm.yyyy MS: Script created
+		18.01.2021 MS: HF 302 using function Get-BISFDiskID instead of the same code here
+
+		#>
+		Get-BISFDiskID -Driveletter $PVSDiskDrive
+		Write-BISFLog -Msg "Set uniqueID $getid for volume $VolNbr / Driveletter $PVSDiskDrive to Registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
+		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $reg_value_UniqueID -value DiskID -ErrorAction SilentlyContinue
 	}
 
-	function SetRefSrv {
+	function Set-ReferenceServer {
 		# Set Reference Server Hostname in registry to detect it in the personalize script to skip reboot
 		Write-BISFLog -Msg "Write Reference Server Hostname $computer to Registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
 		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $reg_value_RefSrv_Hostname -value $computer -ErrorAction SilentlyContinue
 	}
 
-	function SetCDRom {
+	function Set-OpticalDrive {
 		$CDrom = Get-CimInstance -ClassName Win32_Volume -Filter "DriveType = 5"
 		$CDromDriveletter = $CDrom.Driveletter
 		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name "LIC_BISF_OptDrive" -Value $CDromDriveletter
@@ -122,18 +111,18 @@ Process {
 
 	#### Main Program
 	IF (!($LIC_BISF_CLI_WCD -eq "NONE")) {
-		IF ($returnTestPVSEnvVariable -eq "true") {
-			GetUniqueID
+		IF ($returnTestPVSEnvVariable -eq $true) {
+			Get-UniqueDiskID
 		}
 		ELSE {
-			Write-BISFLog -Msg "WriteCacheDisk environment variable not defined, skipping configuration"
+			Write-BISFLog -Msg "CacheDisk environment variable not defined, skipping configuration"
 		}
 	}
  ELSE {
-		Write-BISFLog -Msg "WriteCacheDisk is set to 'NONE', skipping configuration"
+		Write-BISFLog -Msg "CacheDisk is set to 'NONE', skipping configuration"
 	}
-	SetCDRom
-	SetRefSrv
+	Set-OpticalDrive
+	Set-ReferenceServer
 }
 END {
 	Add-BISFFinishLine
