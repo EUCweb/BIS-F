@@ -87,7 +87,7 @@ Begin {
 		#>
 		Get-BISFDiskID -Driveletter $PVSDiskDrive
 		Write-BISFLog -Msg "Set uniqueID $getid for volume $VolNbr / Driveletter $PVSDiskDrive to Registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
-		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $reg_value_UniqueID -value DiskID -ErrorAction SilentlyContinue
+		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $reg_value_UniqueID -value $DiskID -ErrorAction SilentlyContinue
 	}
 
 	function Set-ReferenceServer {
