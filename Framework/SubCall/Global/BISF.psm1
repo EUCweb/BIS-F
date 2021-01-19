@@ -4212,6 +4212,7 @@ Function Get-CacheDiskID {
 		  05.10.2019 MS: HF 22 - Endless Reboot with VMware Paravirtual SCSI disk need to get the DiskID
 		  10.10.2019 MS: fixing errorhandling
 		  08.01.2021 MS: HF 302 - using $DiskIdentifier instead DiskID, DiskID is for another Global variable
+		  19.01.2021 MS: HF 302 - fixing BootDisk to get the correct DiskID (Line 4223 and 4230)
 
 	.LINK
 		https://eucweb.com
@@ -4219,17 +4220,17 @@ Function Get-CacheDiskID {
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	Write-BISFLog -Msg "Retrieving Disk ID's" -ShowConsole -Color Cyan
     try {
-        [string]$BootDisk = (Get-WmiObject Win32_DiskPartition |Where-Object {$_.BootPartition -eq "true"}).DiskID
+        [string]$BootDisk = (Get-WmiObject Win32_DiskPartition | Where-Object {$_.BootPartition -eq "true"}).DeviceID
     }
     catch {
         Write-BISFLog "BootDisk can't be retrieved from the System!" -ShowConsole -Type W
     }
 
-    IF (($BootDisk -ne "") -or ($null -ne $BootDisk)) {
-        $BootDisk = $BootDisk.split(",");$BootDisk = $BootDisk[0];$BootDisk = $BootDisk.Length -1
+    IF (-not [String]::IsNullOrEmpty($BootDisk)) {
+        $BootDisk = ([regex]::matches($BootDisk, "Disk #\d")).value;$BootDisk = $BootDisk.Substring($Bootdisk.length -1)
 	    Write-BISFLog -Msg "BootDisk has Disk ID $BootDisk assigned" -ShowConsole -Color DarkCyan -SubMSg
 
-	    $disks = "list disk" | diskpart | where {$_ -match "online"}
+	    $disks = "list disk" | diskpart | where-Object {$_ -match "online"}
 	    $i=0
 	    ForEach ($disk in $disks) {
 		    $i++
