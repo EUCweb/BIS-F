@@ -474,7 +474,7 @@ Begin {
 				Order       = "$ordercnt";
 				Enabled     = "$true";
 				showmessage = "Y";
-				cli         = "LIC_BISF_CLI_MS_AAD_HybridJoinb";
+				cli         = "LIC_BISF_CLI_MS_AAD_HybridLeaveb";
 				TestPath    = "";
 				Description = "leave Azure AD Domain ";
 				Command     = "Start-BISFProcWithProgBar -ProcPath '$env:windir\system32\dsregcmd.exe' -Args '/leave' -ActText 'leave Azure AD Domain'"
@@ -485,7 +485,7 @@ Begin {
 				Order 		= "$ordercnt";
 				Enabled 	= "$true";
 				showmessage = "Y";
-				cli 		= "LIC_BISF_CLI_MS_AAD_HybridJoinb";
+				cli 		= "LIC_BISF_CLI_MS_AAD_HybridLeaveb";
 				TestPath 	= "";
 				Description = "Get Azure AD Domain Status";
 				Command 	= "Start-BISFProcWithProgBar -ProcPath '$env:windir\system32\dsregcmd.exe' -Args '/status' -ActText 'Get Azure AD Domain status'"
