@@ -173,9 +173,10 @@ Process {
 
         #If no certificate thumbprint has been specified, check for any valid certificate within Local Machine Certificate Store (Subject Alternative Name > Computername).
         else{
-            $Cert = $Store.Certificates | where { $_.DnsNameList.Unicode -like "$($env:COMPUTERNAME)*" } | sort NotAfter -Descending | Select -First 1
+            $Cert = $Store.Certificates | where { ($_.DnsNameList.Unicode -like "$($env:COMPUTERNAME)*") } | sort NotAfter -Descending | Select -First 1
 			if (!$Cert){
-				$Cert = $Store.Certificates | where { ($_.DnsNameList.Unicode -like ("*." + "$([System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name)"))} | sort NotAfter -Descending | Select -First 1
+				$WildcardDNSName = "*." + [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
+				$Cert = $Store.Certificates | where { ($_.DnsNameList.Unicode -like $WildcardDNSName) } | sort NotAfter -Descending | Select -First 1
 			}
 			$CertificateThumbPrint = $Cert.GetCertHashString()
 
