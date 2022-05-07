@@ -173,10 +173,10 @@ Process {
 
         #If no certificate thumbprint has been specified, check for any valid certificate within Local Machine Certificate Store (Subject Alternative Name > Computername).
         else{
-            $Cert = $Store.Certificates | where { ($_.DnsNameList.Unicode -like "$($env:COMPUTERNAME)*") } | sort NotAfter -Descending | Select -First 1
+            $Cert = $Store.Certificates | where { ($_.DnsNameList.Unicode -like "$($env:COMPUTERNAME)*") -and ($_.EnhancedKeyUsageList -like "*Server Authentication*") } | sort NotAfter -Descending | Select -First 1
 			if (!$Cert){
 				$WildcardDNSName = "*." + [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
-				$Cert = $Store.Certificates | where { ($_.DnsNameList.Unicode -like $WildcardDNSName) } | sort NotAfter -Descending | Select -First 1
+				$Cert = $Store.Certificates | where { ($_.DnsNameList.Unicode -like $WildcardDNSName) -and ($_.EnhancedKeyUsageList -like "*Server Authentication*") } | sort NotAfter -Descending | Select -First 1
 			}
 			$CertificateThumbPrint = $Cert.GetCertHashString()
 
