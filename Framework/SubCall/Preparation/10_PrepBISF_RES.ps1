@@ -155,7 +155,7 @@ Process {
 			$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Agent" -Value "DispatcherListKGC"
 			IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "DispatcherListKGC" }
 
-			Set-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "Prepared4Image" -Value "$computer"
+			Set-ItemProperty -Path "$HKLM_REG_ROA\Agent" -Name "Prepared4Image" -Value "BISFStaging"
 
 			$TestROAValue = Test-BISFRegistryValue -Path "$HKLM_REG_ROA\Preferences" -Value "WUID"
 			IF ($TestROAValue) { Remove-ItemProperty -Path "$HKLM_REG_ROA\Preferences" -Name "WUID" }
