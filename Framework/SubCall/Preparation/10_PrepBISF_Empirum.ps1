@@ -50,6 +50,7 @@ Process {
 		Remove-Item "$cachelocation\Values\MachineValues\*" -Force -Recurse
 		Remove-Item "$cachelocation\Values\UserValues\*" -Force -Recurse
 		Remove-Item "$cachelocation\Packages\*" -Force -Recurse
+		Remove-Item "$cachelocation\PatchManagement\Repository\Patches*" -Force -Recurse
 
 		Write-Log -Msg "remove Empirum Agent specified registry entries" -Color Cyan
 		Remove-Item "$hklm_sw\MATRIX42\AGENT" -Force -ErrorAction SilentlyContinue
