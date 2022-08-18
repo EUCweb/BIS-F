@@ -81,7 +81,7 @@ Begin {
 		$VIESearchFolders = $LIC_BISF_CLI_AV_VIE_SF_CUS
 	}
 	ELSE {
-		$VIESearchFolders = @("C:\Windows", "C:\Windows\system32", "$env:ProgramFiles", "$(${env:Programfiles(x86)})", "$SEP_path")
+		$VIESearchFolders = @("C:\Windows", "C:\Windows\system32", "$env:ProgramFiles", "$(${env:Programfiles(x86)})", "${env:Programfiles(x86)}\Symantec" , "$SEP_path")
 	}
 
 	[array]$reg_SEP_name = "HardwareID"
