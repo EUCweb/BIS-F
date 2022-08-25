@@ -20,44 +20,61 @@
 #>
 
 Begin {
-	$Empirum_path = "C:\Windows\System32\Empirum"
+	$EmpirumPaths = @("C:\Windows\System32\Empirum", "C:\Program Files\Matrix42\Universal Agent Framework")
 	$script_path = $MyInvocation.MyCommand.Path
 	$script_dir = Split-Path -Parent $script_path
 	$script_name = [System.IO.Path]::GetFileName($script_path)
-	$ServiceNames = @("Eris", "MATRIXAUT")
+	$Svc1 = "Eris"
+	$Svc2 = "MATRIXAUT"
+	$Svc3 = "Matrix42UAF"
 	$product = "Matrix42 Empirum"
 }
 
 Process {
 
 	function StopService {
-		ForEach ($ServiceName in $ServiceNames) {
-			$svc = Test-BISFService -ServiceName "$ServiceName"
-			IF ($svc -eq $true) { Invoke-BISFService -ServiceName "$($ServiceName)" -Action Stop }
+		$svc = Test-BISFService -ServiceName "$Svc1"
+		IF ($svc -eq $true) {
+			Invoke-BISFService -ServiceName "$Svc1" -Action Stop 
+		}
+		
+		$svc = Test-BISFService -ServiceName "$Svc2"
+		IF ($svc -eq $true) {
+			Invoke-BISFService -ServiceName "$Svc2" -Action Stop 
+		}
+		
+		$svc = Test-BISFService -ServiceName "$Svc3"
+		IF ($svc -eq $true) {
+			Invoke-BISFService -ServiceName "$Svc3" -Action Stop 
 		}
 	}
 	function deleteAgentData {
-		[xml]$xmlfile = Get-Content "$Empirum_path\AgentConfig.xml"
-		$cachelocation = Select-Xml "//Transport/Protocols/CommonParameters/LocalCache[@Platform='Windows']" $xmlfile | % { $_.Node.'#text' }
-		Write-Log -Msg "get cachelocation from XML-File $xmlfile $cachelocation"
-		if ($cachelocation -match "(%.*%)\\") {
-			$cachelocation = $cachelocation -replace "%(.*%)\\", "$(cmd /C echo $matches[0])"
-		}
+		ForEach ($EmpirumPath in $EmpirumPaths) {
+			$ErrorActionPreference = 'SilentlyContinue'
+			[xml]$xmlfile = Get-Content "$EmpirumPath\AgentConfig.xml"
+			$cachelocation = Select-Xml "//Transport/Protocols/CommonParameters/LocalCache[@Platform='Windows']" $xmlfile | % { $_.Node.'#text' }
+			Write-Log -Msg "get cachelocation from XML-File $xmlfile $cachelocation"
+			IF ($cachelocation -match "(%.*%)\\") {
+				$cachelocation = $cachelocation -replace "%(.*%)\\", "$(cmd /C echo $matches[0])"
+			}
+
 		Write-Log -Msg "remove Empirum Agent LocalCache in path $cachelocation" -Color Cyan
-		Remove-Item "$cachelocation\DDC\Machine\*" -Force -Recurse
-		Remove-Item "$cachelocation\DDC\User\*" -Force -Recurse
-		Remove-Item "$cachelocation\DDS\*" -Force -Recurse
-		Remove-Item "$cachelocation\Values\MachineValues\*" -Force -Recurse
-		Remove-Item "$cachelocation\Values\UserValues\*" -Force -Recurse
-		Remove-Item "$cachelocation\Packages\*" -Force -Recurse
+		Remove-Item "$cachelocation\DDC\Machine\*" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "$cachelocation\DDC\User\*" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "$cachelocation\DDS\*" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "$cachelocation\Values\MachineValues\*" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "$cachelocation\Values\UserValues\*" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "$cachelocation\Packages\*" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "$cachelocation\PatchManagement\Repository\Patches*" -Force -Recurse
+		}
 
 		Write-Log -Msg "remove Empirum Agent specified registry entries" -Color Cyan
-		Remove-Item "$hklm_sw\MATRIX42\AGENT" -Force -ErrorAction SilentlyContinue
-		Remove-Item "$hklm_sw\MATRIX42\ApplicationUsageTracking" -Force -ErrorAction SilentlyContinue
-		Remove-Item "$hklm_sw\MATRIX42\ComManager\CACHE\Items" -Force -ErrorAction SilentlyContinue
-		Remove-Item "$hklm_sw\MATRIX42\EmpInv" -Force -ErrorAction SilentlyContinue
-		Remove-Item "$hklm_sw\MATRIX42\Empirum Installer" -Force -ErrorAction SilentlyContinue
-		Remove-Item "$hklm_sw\MATRIX42\RebootPackagesPending" -Force -ErrorAction SilentlyContinue
+		Remove-Item "HKLM:\Software\MATRIX42\AGENT" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "HKLM:\Software\MATRIX42\ApplicationUsageTracking" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "HKLM:\Software\MATRIX42\ComManager\CACHE\Items" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "HKLM:\Software\MATRIX42\EmpInv" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "HKLM:\Software\MATRIX42\Empirum Installer" -Force -Recurse -ErrorAction SilentlyContinue
+		Remove-Item "HKLM:\Software\MATRIX42\RebootPackagesPending" -Force -Recurse -ErrorAction SilentlyContinue
 	}
 
 	####################################################################
@@ -65,8 +82,20 @@ Process {
 	####################################################################
 
 	#### Main Program
-	$svc = Test-BISFService -ServiceName $ServiceNames[0] -ProductName "$product"
-	if ($svc -eq $true) {
+	$svc = Test-BISFService -ServiceName "$Svc1" -ProductName "$product"
+	IF ($svc -eq $true) {
+		StopService
+		DeleteAgentData
+	}
+	
+	$svc = Test-BISFService -ServiceName "$Svc2" -ProductName "$product"
+	IF ($svc -eq $true) {
+		StopService
+		DeleteAgentData
+	}
+	
+	$svc = Test-BISFService -ServiceName "$Svc3" -ProductName "$product"
+	IF ($svc -eq $true) {
 		StopService
 		DeleteAgentData
 	}
