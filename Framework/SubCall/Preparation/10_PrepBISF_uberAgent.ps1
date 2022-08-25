@@ -27,7 +27,7 @@ Begin {
 
 	$Product = "uberAgent"
 	$servicename = "uberAgentSvc"
-	$reg_Product_Key = "$HKLM_sw\vast limits\uberAgent"
+	$reg_Product_Key = "HKLM:\Software\vast limits\uberAgent"
 }
 
 Process {
