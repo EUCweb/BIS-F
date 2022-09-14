@@ -62,7 +62,7 @@ Process {
 			Write-BISFLog -Msg "Updating virus signatures... please wait"
 			Start-Process -FilePath "$ProductPath\MpCMDrun.exe" -ArgumentList "-SignatureUpdate" -WindowStyle Hidden
 			$procID = (Get-Process -Name "MpCMDrun" | ? { $_.SI -eq (Get-Process -PID $PID).SessionId }).Id # get MPCmdRun for the current user only
-			Show-BISFProgressBar -$CheckProcessId $procID -ActivityText "$Product is updating the virus signatures...please wait"
+			Show-BISFProgressBar -CheckProcessId $procID -ActivityText "$Product is updating the virus signatures...please wait"
 
 			IF ($LIC_BISF_CLI_AV_VIE_CusScanArgsb -eq 1) {
 				Write-BISFLog -Msg "Enable Custom Scan Arguments"
