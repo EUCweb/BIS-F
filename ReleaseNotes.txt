@@ -1,3 +1,4 @@
+19.11.2022 MS: HF 347 - Add cleanup Empirum patch cache location 
 19.11.2022 MS: HF 353 - AV-WinDefender fix typo to use the right procID for the progressBar
 19.11.2022 MS: HF 340 - Multiple FQDN Machine Certificates breaks EnableSSLVDA.ps1
 19.11.2022 MS: HF 310 - Update readme.txt 
