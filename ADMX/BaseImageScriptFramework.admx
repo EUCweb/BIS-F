@@ -1660,7 +1660,7 @@
             <string>NO</string>
           </falseValue>
         </boolean>
-        <boolean id="CHK_MS_AAD_HybribLeaveb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MS_AAD_HybribLeaveb">
+        <boolean id="CHK_MS_AAD_HybridLeaveb" key="SOFTWARE\Policies\Login Consultants\BISF" valueName="LIC_BISF_CLI_MS_AAD_HybridLeaveb">
           <trueValue>
             <string>YES</string>
           </trueValue>

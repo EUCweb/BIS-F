@@ -1165,7 +1165,7 @@ https://support.citrix.com/article/CTX284738
       </presentation>
       <presentation id="POL_MS_AAD">
         <text>Preparation Phase:</text>
-        <checkBox refId="CHK_MS_AAD_HybribLeaveb">Leave Azure Active Directory</checkBox>
+        <checkBox refId="CHK_MS_AAD_HybridLeaveb">Leave Azure Active Directory</checkBox>
         <text>
         </text>
         <text> ------------------------------- </text>
