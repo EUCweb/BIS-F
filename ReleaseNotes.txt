@@ -1,3 +1,5 @@
+---------------------------------
+Version 7.1912.7.11042 -- 19/11/2022 15:44:31 PM:
 19.11.2022 MS: HF 345 - Fixes RES One AM agent from not being registered
 19.11.2022 MS: HF 348 - Add Symantec to VIE search folders
 19.11.2022 MS: HF 347 - Add cleanup Empirum patch cache location 
