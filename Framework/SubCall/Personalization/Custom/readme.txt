@@ -1,1 +1,1 @@
-Put your custom scripts for the personalization phase here. These will run during domputer startup (triggered from BIS-F scheduled task)
+Put your custom scripts for the personalization phase here. These scripts will run during сomputer startup (triggered from BIS-F scheduled task)
