@@ -418,7 +418,7 @@ Begin {
 					Write-BISFLog -Msg "Looking in $SearchFolder"
 					$FileExists = Get-ChildItem -Path "$SearchFolder" -filter "CtxOptimizerEngine.ps1" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
 
-					IF (($FileExists -ne $null) -and ($found -ne $true)) 
+					IF (($FileExists -ne $null) -and ($found -ne $true)) {
 						$CTXOEnginePath = $FileExists.FullName
 						$CTXOTemplatePath = $FileExists.DirectoryName + "\Templates"
 						$CTXOLogPath = $FileExists.DirectoryName + "\Logs"
