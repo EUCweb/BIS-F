@@ -416,10 +416,12 @@ Begin {
 			ForEach ($SearchFolder in $SearchFolders) {
 				If ($found -eq $false) {
 					Write-BISFLog -Msg "Looking in $SearchFolder"
-					$FileExists = Get-ChildItem -Path "$SearchFolder" -filter "CtxOptimizerEngine.ps1" -Recurse -ErrorAction SilentlyContinue | % { $_.FullName }
-					$CTXOTemplatePath = (Get-ChildItem -Path "$SearchFolder" -filter "CtxOptimizerEngine.ps1" -Recurse -ErrorAction SilentlyContinue | % { $_.DirectoryName }) + "\Templates"
+					$FileExists = Get-ChildItem -Path "$SearchFolder" -filter "CtxOptimizerEngine.ps1" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
 
 					IF (($FileExists -ne $null) -and ($found -ne $true)) {
+						$CTXOEnginePath = $FileExists.FullName
+						$CTXOTemplatePath = $FileExists.DirectoryName + "\Templates"
+						$CTXOLogPath = $FileExists.DirectoryName + "\Logs"
 
 						Write-BISFLog -Msg "Product $($AppName) installed" -ShowConsole -Color Cyan
 						$found = $true
@@ -502,16 +504,16 @@ Begin {
 									IF ($CTXAutoSelect -eq $true) {
 										IF ($null -eq $templateprefix) {
 											Write-BISFLog "Using AutoSelect for OS Optimization " -ShowConsole -SubMsg -Color DarkCyan
-											"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
+											"& ""$CTXOEnginePath"" $groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
 										}
 										ELSE {
 											Write-BISFLog "Using AutoSelect for OS Optimization with Templateprefix" -ShowConsole -SubMsg -Color DarkCyan
-											"& ""$fileExists"" $groups -mode $mode -OutputXml ""$output_xml"" -Templateprefix ""$templateprefix""" | Out-File $tmpPS1 -Encoding default
+											"& ""$CTXOEnginePath"" $groups -mode $mode -OutputXml ""$output_xml"" -Templateprefix ""$templateprefix""" | Out-File $tmpPS1 -Encoding default
 										}
 									}
 									ELSE {
 										Write-BISFlog -Msg "Using Template $CTXOTemplatePath\$template with Tem" -ShowConsole -SubMsg -Color DarkCyan
-										"& ""$fileExists"" -Source ""$template""$groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
+										"& ""$CTXOEnginePath"" -Source ""$template""$groups -mode $mode -OutputXml ""$output_xml""" | Out-File $tmpPS1 -Encoding default
 									}
 
 
@@ -521,9 +523,7 @@ Begin {
 									Remove-Item $tmpPS1 -Force
 
 									#CTXOE Logfile
-									$scriptfolder = (Get-Item -Path $FileExists | Select-Object -ExpandProperty Directory).FullName
-									$logfolder = "$scriptfolder\Logs"
-									$logfile_path = Get-ChildItem -Path "$logfolder" -filter "Log_Debug_CTXOE.log" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Select-Object -Last 1
+									$logfile_path = Get-ChildItem -Path "$CTXOLogPath" -filter "Log_Debug_CTXOE.log" -Recurse -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Select-Object -Last 1
 									Write-BISFLog -Msg "Add $AppName logfile from $logfile_path to BIS-F logfile"
 									Get-BISFLogContent -GetLogFile $logfile_path
 									IF ($LIC_BISF_CLI_CTXOE_LogDelete -eq 1) {
