@@ -73,8 +73,9 @@ Process {
 			}
 
 			Write-BISFLog -Msg "Running Scan with arguments: $args"
-			Start-Process -FilePath "$ProductPath\MpCMDrun.exe" -ArgumentList $args -WindowStyle Hidden
-			Show-BISFProgressBar -CheckProcess "MpCMDrun" -ActivityText "$Product is scanning the system...please wait"
+			#Gather process info for the MpCmdRun process so we can pass the correct ID to Show-BISFProgressBar
+			$MpCmdRunProc = Start-Process -FilePath "$ProductPath\MpCMDrun.exe" -ArgumentList $args -WindowStyle Hidden -PassThru
+			Show-BISFProgressBar -CheckProcessId $MpCmdRunProc.Id -ActivityText "$Product is scanning the system...please wait"
 		}
 		Else {
 			Write-BISFLog -Msg "No Scan will be performed"
