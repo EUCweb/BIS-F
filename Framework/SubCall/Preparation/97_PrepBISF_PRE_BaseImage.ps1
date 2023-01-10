@@ -816,8 +816,14 @@ Begin {
  ELSE {
 		IF ($LIC_BISF_CLI_VDA_NVDIAGRID -eq 1) {
 			$NvidiaServiceName = @("nvsvc","NVWMI")
+			$NvidiaServiceTaskCreated = $false
 			Foreach ($ServiceName in $NvidiaServiceName) {
 				$ServiceDisplayName = $(Get-Service -Name $ServiceName).DisplayName
+				if($null -eq $ServiceDisplayName) {
+					continue;
+				} else {
+					$NvidiaServiceTaskCreated = $true
+				}
 				$svc = Test-BISFService -ServiceName $ServiceName -ProductName $ServiceDisplayName
 				IF ($svc -eq $true) {
 					Write-BISFLog -Msg "VDA Version $VDAVersion" -ShowConsole
@@ -831,6 +837,11 @@ Begin {
 						$args = "-enable -noreset"
 					}
 
+					IF ($VDAVersion -ge "7.33") {
+						$cmd = "C:\Program Files\Citrix\HDX\bin\NVFBCEnable.exe"
+						$args = "-enable -noreset"
+					}
+
 					$PrepCommands += [pscustomobject]@{
 						Order       = "$ordercnt";
 						Enabled     = "$true";
@@ -841,9 +852,13 @@ Begin {
 						Command     = "Start-BISFProcWithProgBar -ProcPath '$cmd' -Args '$args' -ActText 'Enable NVIDIA GRID for VDA Version $VDAVersion'"
 					};
 					$ordercnt += 1
+					break;
 				}
 				ELSE {
 					Write-BISFLog -Msg "$ServiceDisplayName is not installed and can't be enabled" -ShowConsole -Type W
+				}
+				if($NvidiaServiceTaskCreated -eq $false) {
+					Write-BISFLog -Msg "Could not enable NVIDIA GRID" -ShowConsole -Type E
 				}
 			}
 		}
