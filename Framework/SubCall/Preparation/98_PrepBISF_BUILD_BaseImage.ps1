@@ -350,14 +350,11 @@ Process {
 			ELSE {
 				Write-BISFLog -Msg "Skipping Citrix Personal vDisk Inventory"
 			}
-			ELSE {
-				Write-BISFLog -Msg "Citrix Personal vDisk could be run on Client-OS (ProductType=1) only"
-			}
-
 		}
-		ELSE {
-			Write-BISFLog -Msg "Skip personal vDisk Inventory Update, Citrix Virtual Desktop Agent is not installed"
+		ELSE { #Not sure what this else belongs to, maybe a leftover?
+			Write-BISFLog -Msg "Citrix Personal vDisk could be run on Client-OS (ProductType=1) only"
 		}
+		
 
 		IF ($runPvd -eq "true") {
 			$CheckPvdLog = Test-BISFLog -CheckLogFile "$Pvd_LOGFile" -SearchString "$Pvd_LOGFile_search"
@@ -423,6 +420,9 @@ Process {
 		ELSE {
 			Write-BISFLog -Msg "Skip convert System to vDisk, Citrix Provisioning Services Software not installed"
 		}
+	}
+	ELSE {
+		Write-BISFLog -Msg "Skip personal vDisk Inventory Update, Citrix Virtual Desktop Agent is not installed"
 	}
 }
 
