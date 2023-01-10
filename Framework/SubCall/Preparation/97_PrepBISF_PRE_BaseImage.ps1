@@ -944,14 +944,10 @@ Begin {
 		$SysDrive = $env:SystemDrive
 		$Sysdrvlabel = Get-CimInstance -ClassName Win32_Volume -Filter "Driveletter = '$SysDrive' " | % { $_.Label }
 		$DriveLabel = "OSDisk"
-		IF ($Sysdrvlabel -eq $null) {
+		IF ($null -eq $Sysdrvlabel) {
 			Write-BISFLog -Msg "DriveLabel for $SysDrive would be set to $DriveLabel" -ShowConsole -Color Cyan
-			$drive = Get-CimInstance -ClassName Win32_Volume -Filter "DriveLetter = '$SysDrive'"
-			$drive.Label = "$DriveLabel"
-			$drive.put() | Ou-Null
+			Get-Volume | Where-Object {$_.DriveLetter -eq $SysDrive.Substring(0,1)} | Set-Volume -NewFileSystemLabel "$DriveLabel"   
 		}
-
-
 	}
 
 
