@@ -3320,6 +3320,7 @@ function Remove-FolderAndContents {
 		History:
 	  	22.08.2017 MS: function created
 		27.12.2019 NM: HF 159 - added begin section
+		19.01.2023 JG: ISSUE 362 - Add Error handling
 
 	.LINK
 		https://eucweb.com
@@ -3336,11 +3337,16 @@ function Remove-FolderAndContents {
 
 
 	process {
-		$child_items = ([array] (Get-ChildItem -Path $folder_path -Recurse -Force))
-		if ($child_items) {
-			$null = $child_items | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue -Confirm:$False
+		if(Test-Path -Path $folder_path) {
+			$child_items = ([array] (Get-ChildItem -Path $folder_path -Recurse -Force))
+			if ($child_items) {
+				$null = $child_items | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue -Confirm:$False
+			}
+			$null = Remove-Item $folder_path -Force -Recurse -Confirm:$False -ErrorAction SilentlyContinue
 		}
-		$null = Remove-Item $folder_path -Force -Recurse -Confirm:$False -ErrorAction SilentlyContinue
+		else {
+			Write-BISFLog -Msg "'$folder_path' does not exist"
+		}
 	} #close process
 }
 
