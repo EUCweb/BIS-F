@@ -3320,7 +3320,7 @@ function Remove-FolderAndContents {
 		History:
 	  	22.08.2017 MS: function created
 		27.12.2019 NM: HF 159 - added begin section
-		19.01.2023 JG: ISSUE 362 - Add Error handling
+		19.01.2023 JG: ENH 362 - Add Error handling
 
 	.LINK
 		https://eucweb.com
