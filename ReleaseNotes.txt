@@ -1,11 +1,12 @@
+08.05.2023 MS: HF 374 - 02_PersBISF_CTX.ps1 never finishes on Azure AD only Azure VMs
 ---------------------------------
 Version 7.1912.7.11042 -- 19/11/2022 15:44:31 PM:
 19.11.2022 MS: HF 345 - Fixes RES One AM agent from not being registered
 19.11.2022 MS: HF 348 - Add Symantec to VIE search folders
-19.11.2022 MS: HF 347 - Add cleanup Empirum patch cache location 
+19.11.2022 MS: HF 347 - Add cleanup Empirum patch cache location
 19.11.2022 MS: HF 353 - AV-WinDefender fix typo to use the right procID for the progressBar
 19.11.2022 MS: HF 340 - Multiple FQDN Machine Certificates breaks EnableSSLVDA.ps1
-19.11.2022 MS: HF 310 - Update readme.txt 
+19.11.2022 MS: HF 310 - Update readme.txt
 19.11.2022 MS: HF 330 - Fix for MS_AAD_HybribLeave
 ---------------------------------
 Version 7.1912.6.11041 -- 19/01/2021 23:36:39 PM:

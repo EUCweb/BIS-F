@@ -23,6 +23,7 @@
 		21.10.2028 MS: Bufix 18: XA/ XD 7.x Cache folder will be created
 		18.02.2020 JK: Fixed Log output spelling
 		23.12.2020 MS: HF 304: WEM Agent 2009 or greater, new startup Options can be used
+		08.05.2023 MS: HF 374 - 02_PersBISF_CTX.ps1 never finishes on Azure AD only Azure VMs
 
 	.LINK
 		https://eucweb.com
@@ -150,6 +151,7 @@ Process {
 			24.08.2017 MS: HF: after restart WEM Agentservice, Netlogon must be started also
 			11.09.2017 MS: WEM AgentCacheRefresh can be using without the WEM Brokername specified from WEM ADMX
 			03.10.2019 MS: ENH 139 - WEM 1909 detection (tx to citrixguyblog / chezzer64)
+			08.05.2023 MS: HF 374 - 02_PersBISF_CTX.ps1 never finishes on Azure AD only Azure VMs
 
 	.LINK
 		https://eucweb.com
@@ -171,8 +173,14 @@ Process {
 			Invoke-BISFService -ServiceName "$servicename" -Action Stop
 			Start-Sleep $Wait1
 			Invoke-BISFService -ServiceName "$servicename" -Action Start
-			Invoke-BISFService -ServiceName "Netlogon" -Action Start
-			Start-Sleep $Wait1
+			IF ((Get-BISFDSRegState -Key "AzureAdJoined" -eq "YES") -and (Get-BISFDSRegState -Key "DomainJoined" -eq "NO")) {
+				Write-BISFLog -Msg "VM is AAD joined only, Netlogon Service will not be started."
+			} else {
+				Write-BISFLog -Msg "VM is Hybrid joined (AAD + AD), Netlogon Service will be started now."
+				Invoke-BISFService -ServiceName "Netlogon" -Action Start
+				Start-Sleep $Wait1
+			}
+
 
 			#read WEM AgentAlternateCacheLocation from registry
 			$REG_WEMAgent = "HKLM:\SYSTEM\CurrentControlSet\Control\Norskale\Agent Host"
