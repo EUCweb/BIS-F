@@ -270,7 +270,7 @@ Process {
 		deleteSEPData
 		Set-BISFNetworkProviderOrder -SearchProvOrder "SnacNp"
 		Write-BISFLog -Msg "Write GpNetworkStartTimeoutPolicyValue to registry from http://www.symantec.com/business/support/index?page=content&id=TECH200321"
-		New-ItemProperty -Path "$hklm_sw\Microsoft\Windows NT\CurrentVersion\Winlogon"-Name "GpNetworkStartTimeoutPolicyValue" -PropertyType DWORD -value 60 -ErrorAction SilentlyContinue | Out-Null
+		New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon"-Name "GpNetworkStartTimeoutPolicyValue" -PropertyType DWORD -value 60 -ErrorAction SilentlyContinue | Out-Null
 	}
 	ELSE {
 		Write-BISFLog -msg "Product $Product is not installed"

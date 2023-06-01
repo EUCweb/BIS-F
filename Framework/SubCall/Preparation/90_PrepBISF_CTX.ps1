@@ -100,7 +100,7 @@ Begin {
 
 	#Citrix User profile Manager
 	$CPM_path = "${env:ProgramFiles}\Citrix\User Profile Manager"
-	$REG_CPM_Pol = "$hklm_sw\Policies\Citrix\UserProfileManager"
+	$REG_CPM_Pol = "HKLM:\Software\Policies\Citrix\UserProfileManager"
 
 	#Citrix Streaming
 	$RadeCache_path = "$ProgramFilesx86\Citrix\Streaming Client"
