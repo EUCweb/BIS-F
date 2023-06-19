@@ -97,7 +97,7 @@ Process {
 		$regPathExists = ($null -ne $regPath)
 		Write-Verbose "RegPathExists ('$regPath'): $regPathExists"
 		$smcExe = Get-SepSmcExePath
-		$smcExeExists = (Test-Path -Path $smcExe -PathType Leaf)
+		$smcExeExists = ($null -ne $smcExe) -and (Test-Path -Path $smcExe -PathType Leaf)
 		Write-Verbose "smcExeExists ('$smcExe'): $smcExeExists"
 		$regPathExists -and $smcExeExists
 	}
