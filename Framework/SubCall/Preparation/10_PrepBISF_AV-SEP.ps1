@@ -51,37 +51,320 @@
 		03.10.2019 MS: ENH 51 - ADMX Extension: select AnitVirus full scan or custom Scan arguments
 		11.10.2019 MS: fix typo in SearchProvOrder
 		18.02.2020 JK: Fixed Log output spelling
+		14.04.2023 TR: HF 371 - Support both 32 bit and 64 bit locations. Reduce usage of global variables in functions. Use approved verbs. Refactoring. Code cleanup.
 
 	.LINK
 		https://eucweb.com
 #>
 
 Begin {
-
-	####################################################################
 	# define environment
 	$PSScriptFullName = $MyInvocation.MyCommand.Path
 	$PSScriptRoot = Split-Path -Parent $PSScriptFullName
 	$PSScriptName = [System.IO.Path]::GetFileName($PSScriptFullName)
 
+	####################################################################
+	####### functions #####
+	####################################################################
+	function Get-SepPath
+	{
+		if(Test-Path -Path "C:\Program Files\Symantec\Symantec Endpoint Protection")
+		{
+			"C:\Program Files\Symantec\Symantec Endpoint Protection"
+		}
+		elseif (Test-Path -Path "C:\Program Files (x86)\Symantec\Symantec Endpoint Protection") {
+			"C:\Program Files (x86)\Symantec\Symantec Endpoint Protection"
+		}
+		else {
+			$null
+		}
+	}
+
+	function Get-SepSmcExePath
+	{
+		$sepPath = Get-SepPath
+		if($null -ne $sepPath)
+		{
+			"$sepPath\smc.exe"
+		}
+		else {
+			$null
+		}
+	}
+
+	function Get-SepDoScanExePath
+	{
+		$sepPath = Get-SepPath
+		if($null -ne $sepPath)
+		{
+			"$sepPath\DoScan.exe"
+		}
+		else {
+			$null
+		}
+	}
+
+	function Get-SepRegPath
+	{
+		if(Test-Path -Path "HKLM:\SOFTWARE\$reg_SEP_string")
+		{
+			"HKLM:\SOFTWARE\$reg_SEP_string"
+		}
+		elseif (Test-Path -Path "HKLM:\WOW6432Node\$reg_SEP_string") {
+			"HKLM:\WOW6432Node\$reg_SEP_string"
+		}
+		else
+		{
+			$null
+		}		
+	}
+
+	function Test-SepIsInstalled
+	{
+		$regPath = Get-SepRegPath
+		$regPathExists = ($null -ne $regPath)
+		Write-Verbose "RegPathExists ('$regPath'): $regPathExists"
+		$smcExe = Get-SepSmcExePath
+		$smcExeExists = ($null -ne $smcExe) -and (Test-Path -Path $smcExe -PathType Leaf)
+		Write-Verbose "smcExeExists ('$smcExe'): $smcExeExists"
+		$regPathExists -and $smcExeExists
+	}
+
+
+	function Invoke-SepFullScan {
+		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
+		$varCLI = $LIC_BISF_CLI_AV
+		IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
+			Write-BISFLog -Msg "GPO Valuedata: $varCLI"
+		}
+		ELSE {
+			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+			$AVScan = "YES"
+		}
+
+		If (($AVScan -eq "YES" ) -or ($varCLI -eq "YES")) {
+			IF ($LIC_BISF_CLI_AV_VIE_CusScanArgsb -eq 1) {
+				Write-BISFLog -Msg "Enable Custom Scan Arguments"
+				$DoScanArguments = $LIC_BISF_CLI_AV_VIE_CusScanArgs
+			}
+			ELSE {
+				$DoScanArguments = "/C /ScanDrive C"
+			}
+
+			Write-BISFLog -Msg "Running Scan with arguments: $DoScanArguments"
+			Start-Process -FilePath "$(Get-SepDoScanExePath)" -ArgumentList $DoScanArguments -noNewWindow
+			Show-BISFProgressBar -CheckProcess "DoScan" -ActivityText "$Product is scanning the system"
+		}
+		ELSE {
+			Write-BISFLog -Msg "No Scan will be performed"
+		}
+	}
+	<#
+	TEST:
+	$LIC_BISF_CLI_AV = "NO"
+	$global:AVScan = "YES"
+	$LIC_BISF_CLI_AV_VIE_CusScanArgsb = ""
+	Invoke-SepFullScan
+	#>
+
+	function Test-SepIsX86
+	{
+		$sepPath = Get-SepPath
+		if($sepPath -like "*x86*")
+		{
+			$true
+		}
+		else {
+			$false
+		}
+	}
+
+	function Get-VieToolExeName
+	{
+		if(Test-SepIsX86)
+		{
+			"vietool.exe"
+		}
+		else {
+			"vietool64.exe"
+		}
+	}
+
+	function Get-VieToolExeProcessName
+	{
+		if(Test-SepIsX86)
+		{
+			"vietool"
+		}
+		else {
+			"vietool64"
+		}
+	}
+
+	function Find-SepVieTool
+	{
+		param(
+			[Parameter(Mandatory=$true)]
+			[string[]]
+			$SearchPaths
+		)
+		$vietoolExeFilter = Get-VieToolExeName		
+		Write-BISFLog -Msg "Searching for $VIEProduct - $vietoolExeFilter"
+		ForEach ($VIESearchFolder in $SearchPaths) 
+		{			
+			Write-BISFLog -Msg "Looking in $VIESearchFolder"
+			$vieToolExe = Get-ChildItem -Path "$VIESearchFolder" -filter "$vietoolExeFilter" -ErrorAction SilentlyContinue | Foreach-Object { $_.FullName } | Select-Object -First 1			
+			if ($null -ne $vieToolExe) {				
+				Write-BISFLog -Msg "Product $VIEProduct installed : '$vieToolExe'" -ShowConsole -Color Cyan					
+				return $vieToolExe
+			}
+		}
+		#Vietool not found, return null
+		return $null			
+	}
+	<#TEST
+	#$VIESearchFolders = @("C:\Temp\SEP vietool")
+	#Find-SepVieTool
+	#>
+	function Invoke-SepVieTool 
+	{
+		param(
+			[Parameter(Mandatory=$true)]
+			[string[]]
+			$SearchPaths
+		)
+		$vieToolExe = Find-SepVieTool -SearchPaths $SearchPaths
+		If ($null -ne $vieToolExe) {
+			Write-BISFLog "Copy $vieToolExe to $VIEtmpFolder"
+			Copy-Item "$vieToolExe" -Destination "$VIEtmpFolder" -Force | Out-Null
+			$tempVietoolExe = "$VIEtmpFolder\$(Get-VieToolExeName)"
+
+			Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
+			$varCLIVIE = $LIC_BISF_CLI_AV_VIE
+			IF (($varCLIVIE -eq "YES") -or ($varCLIVIE -eq "NO")) {
+				Write-BISFLog -Msg "GPO Valuedata: $varCLIVIE"
+			}
+			ELSE {
+				Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
+				$MPVIE = "YES"
+			}
+
+			If (($MPVIE -eq "YES" ) -or ($varCLIVIE -eq "YES")) {
+				Write-BISFLog -Msg "Running VIETool... please Wait"
+				Start-Process -FilePath "$tempVietoolExe" -ArgumentList "c: --generate --log $VIELog" -RedirectStandardOutput "$VIEConsoleLog" -NoNewWindow				
+				Show-BISFProgressBar -CheckProcess "$(Get-VieToolExeProcessName)" -ActivityText "$VIEProduct is flagging out the scanned files"
+				Remove-Item -Path "$tempVietoolExe" -Force | Out-Null
+				#Get-LogContent "$VIELog" # 18.05.2015 MS deactivate to see, VIETool is not running a long time
+			}
+			ELSE {
+				Write-BISFLog -Msg "No VIE preparation performed"
+			}
+		}
+		ELSE {
+			Write-BISFLog -Msg "Product $VIEProduct is not installed, get it from the SEP iso and save it on your Image (Symantec KB TECH172218) and then configure the path in the BIS-F ADMX" -Type W -SubMsg
+		}
+	}
+	<#TEST
+	$global:logFile = "c:\temp\bisf.log"
+	Import-Module ".\Framework\SubCall\Global\BISF.psd1"
+	$LIC_BISF_CLI_AV_VIE = "YES"
+	$MPVIE = "YES"
+	Invoke-SepVieTool -SearchPath @("C:\Temp\SEP Vietool")
+	#>
+
+	function Remove-SepData {
+		# Delete specified Data
+		foreach ($path in $search_path) {
+			if (Test-Path -Path $path) {
+				Write-BISFLog -Msg "Search path $path"
+				foreach ($file in $search_file) {
+					Write-BISFLog -Msg "Search for file  $file"
+					Get-ChildItem -Path $path -filter $file -ErrorAction SilentlyContinue | Foreach-Object ($_) { 
+						Write-BISFLog -Msg "Remove file: '$($_.FullName)'"
+						Remove-Item $_.FullName
+					}
+				}
+			}
+		}
+
+		foreach ($path in $search_path_recursive) {
+			if (Test-Path -Path $path) {
+				Write-BISFLog -Msg "Search path $path"
+				foreach ($file in $search_file) {
+					Write-BISFLog -Msg "Search for file  $file"
+					Get-ChildItem -Path $path -filter $file -Recurse -ErrorAction SilentlyContinue | Foreach-Object ($_) { 
+						Write-BISFLog -Msg "Remove file: '$($_.FullName)'"
+						Remove-Item $_.FullName -ErrorAction SilentlyContinue }
+				}
+			}
+		}
+
+		foreach ($RegHive in ("HKLM:\SOFTWARE", "HKLM:\SOFTWARE\Wow6432Node")) {
+			foreach ($key in $reg_SEP_name) {
+				if (Test-BISFRegistryValue -Path $RegHive\$reg_sep_string -Value $key) {
+					Write-BISFLog -Msg "delete specified registry items in $RegHive\$reg_sep_string..."
+					Write-BISFLog -Msg "delete $key"
+					Try {
+						Remove-ItemProperty -Path "$RegHive\$reg_sep_string" -Name $key -ErrorAction Stop
+					}
+					catch {
+						Write-Bisflog -type "E" -Msg "Cannot Delete Registry Key $($Key)"
+						Show-MessageBox -Title "Error" -Msg "Cannot Delete Registry Key $($Key)" -Critical
+					}
+				}
+			}
+		}
+	}
+
+	function Rename-SepFiles {
+		#HF87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
+
+		if (Test-SepIsInstalled) {
+			$sepPath = Get-SepPath
+			Write-BISFLog -Msg "Search path '$sepPath'"
+			foreach ($file in $rename_file) {
+				Write-BISFLog -Msg "Search for file $file and rename it to $file.old"
+				Get-ChildItem -Path $sepPath -filter $file -recurse -ErrorAction SilentlyContinue | Foreach-Object { Rename-Item -Path "$($_.fullname)" -NewName "$($_.fullname).old" }
+			}
+		}
+		else {
+			Write-BISFLog -Msg "Sep is not installed."
+		}
+	}
+
+	function Stop-SepService {
+		# Stop SEP
+		Write-BISFLog -Msg "Preparing $product for Imaging" -ShowConsole -Color DarkCyan -SubMsg
+		Write-BISFLog -Msg "Stop $Product Service"
+		& "$(Get-SepSmcExePath)" "-stop"
+		$ServiceName = "SepMasterService"
+		Test-BISFServiceState -ServiceName $ServiceName -Status "Stopped" | Out-Null
+		IF ($ImageSW -eq $false) {
+			write-BISFlog -Msg "No Image Management Software detected, Service $ServiceName would not be changed to StartupType $StartType" -Type W
+		}
+		ELSE {
+			Write-BISFLog -Msg "Set SepMasterService Starttype to Manual"
+			Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SepMasterService"  -Name "Start" -Value 3
+		}
+	}
+
+	####################################################################
+	####### end functions #####
+	####################################################################
+
 	#product specified
 	$Product = "Symantec Enterprise Protection"
-	$reg_SEP_string = "Symantec\Symantec Endpoint Protection\SMC\SYLINK\SyLink"
-	$HKLM_reg_SEP_string = "$HKLM_sw_x86\$reg_SEP_string"
-	$SEP_path = "$ProgramFilesx86\Symantec\Symantec Endpoint Protection"
-	$ident = "HardwareID"
-	$VIEApp = "vietool.exe"
+	$reg_SEP_string = "Symantec\Symantec Endpoint Protection\SMC\SYLINK\SyLink"		
 	$VIEProduct = "Symantec Virtual Image Exception (VIE) Tool"
 	$VIELog = "$env:WinDir\Logs\VIEtool.log"
 	$VIEtmpFolder = "C:\Windows\temp"
-	$VIEConsoleLog = "$env:WinDir\Logs\VIEtoolConsole.log"
-	$found = $false
+	$VIEConsoleLog = "$env:WinDir\Logs\VIEtoolConsole.log"	
 
 	IF ($LIC_BISF_CLI_AV_VIE_SF -eq "1") {
 		$VIESearchFolders = $LIC_BISF_CLI_AV_VIE_SF_CUS
 	}
 	ELSE {
-		$VIESearchFolders = @("C:\Windows", "C:\Windows\system32", "$env:ProgramFiles", "$(${env:Programfiles(x86)})", "${env:Programfiles(x86)}\Symantec" , "$SEP_path")
+		$VIESearchFolders = @("C:\Windows", "C:\Windows\system32", "$env:ProgramFiles", "$(${env:Programfiles(x86)})", "${env:Programfiles(x86)}\Symantec","${env:Programfiles}\Symantec" , "$(Get-SepPath)")
 	}
 
 	[array]$reg_SEP_name = "HardwareID"
@@ -110,164 +393,15 @@ Begin {
 }
 
 Process {
-
-	####################################################################
-	####### functions #####
-	####################################################################
-
-	function RunFullScan {
-		Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
-		$varCLI = $LIC_BISF_CLI_AV
-		IF (($varCLI -eq "YES") -or ($varCLI -eq "NO")) {
-			Write-BISFLog -Msg "GPO Valuedata: $varCLI"
-		}
-		ELSE {
-			Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
-			$AVScan = "YES"
-		}
-
-		If (($AVScan -eq "YES" ) -or ($varCLI -eq "YES")) {
-			IF ($LIC_BISF_CLI_AV_VIE_CusScanArgsb -eq 1) {
-				Write-BISFLog -Msg "Enable Custom Scan Arguments"
-				$args = $LIC_BISF_CLI_AV_VIE_CusScanArgs
-			}
-			ELSE {
-				$args = "/C /ScanDrive C"
-			}
-
-			Write-BISFLog -Msg "Running Scan with arguments: $args"
-			Start-Process -FilePath "$SEP_path\DoScan.exe" -ArgumentList $args -noNewWindow
-			Show-BISFProgressBar -CheckProcess "DoScan" -ActivityText "$Product is scanning the system"
-		}
-		ELSE {
-			Write-BISFLog -Msg "No Scan will be performed"
-		}
-	}
-
-	function RunVIE {
-		Write-BISFLog -Msg "Searching for $VIEProduct - $VIEApp "
-		ForEach ($VIESearchFolder in $VIESearchFolders) {
-			If ($found -eq $false) {
-				Write-BISFLog -Msg "Looking in $VIESearchFolder"
-				$VIEExists = Get-ChildItem -Path "$VIESearchFolder" -filter "$VIEApp" -ErrorAction SilentlyContinue | % { $_.FullName }
-			}
-			IF (($VIEExists -ne $null) -and ($found -ne $true)) {
-				$VIEappDestination = $VIEExists
-				Write-BISFLog -Msg "Product $VIEProduct installed" -ShowConsole -Color Cyan
-				$found = $true
-				Write-BISFLog "Copy $VIEappDestination to $VIEtmpFolder"
-				Copy-Item "$VIEappDestination" -Destination "$VIEtmpFolder" -Force | Out-Null
-				$VIEappDestination = "$VIEtmpFolder\$VIEApp"
-
-			}
-		}
-
-		If ($found -eq $true) {
-
-			Write-BISFLog -Msg "Check GPO Configuration" -SubMsg -Color DarkCyan
-			$varCLIVIE = $LIC_BISF_CLI_AV_VIE
-			IF (($varCLIVIE -eq "YES") -or ($varCLIVIE -eq "NO")) {
-				Write-BISFLog -Msg "GPO Valuedata: $varCLIVIE"
-			}
-			ELSE {
-				Write-BISFLog -Msg "GPO not configured.. using default setting" -SubMsg -Color DarkCyan
-				$MPVIE = "YES"
-			}
-
-			If (($MPVIE -eq "YES" ) -or ($varCLIVIE -eq "YES")) {
-				Write-BISFLog -Msg "Running VIETool... please Wait"
-				Start-Process -FilePath "$VIEappDestination" -ArgumentList "c: --generate --log $VIELog" -RedirectStandardOutput "$VIEConsoleLog" -NoNewWindow
-				Show-BISFProgressBar -CheckProcess "VIETool" -ActivityText "$VIEProduct is flagging out the scanned files"
-				Remove-Item -Path "$VIEappDestination" -Force | Out-Null
-				#get-LogContent "$VIELog" # 18.05.2015 MS deactivate to see, VIETool is not running a long time
-			}
-			ELSE {
-				Write-BISFLog -Msg "No VIE preparation performed"
-			}
-		}
-		ELSE {
-			Write-BISFLog -Msg "Product $VIEProduct is not installed, get it from the SEP iso and save it on your Image (Symantec KB TECH172218) and then configure the path in the BIS-F ADMX" -Type W -SubMsg
-		}
-	}
-
-	function deleteSEPData {
-		# Delete specified Data
-		foreach ($path in $search_path) {
-			if (Test-Path -Path $path) {
-				Write-BISFLog -Msg "Search path $path"
-				foreach ($file in $search_file) {
-					Write-BISFLog -Msg "Search for file  $file"
-					Get-ChildItem -Path $path -filter $file -ErrorAction SilentlyContinue | foreach ($_) { Remove-Item $_.fullname }
-				}
-			}
-		}
-
-		foreach ($path in $search_path_recursive) {
-			if (Test-Path -Path $path) {
-				Write-BISFLog -Msg "Search path $path"
-				foreach ($file in $search_file) {
-					Write-BISFLog -Msg "Search for file  $file"
-					Get-ChildItem -Path $path -filter $file -Recurse -ErrorAction SilentlyContinue | foreach ($_) { Remove-Item $_.fullname -ErrorAction SilentlyContinue }
-				}
-			}
-		}
-
-		foreach ($RegHive in ("HKLM:\SOFTWARE", "HKLM:\SOFTWARE\Wow6432Node")) {
-			foreach ($key in $reg_SEP_name) {
-				if (Test-BISFRegistryValue -Path $RegHive\$reg_sep_string -Value $key) {
-					Write-BISFLog -Msg "delete specified registry items in $HKLM_reg_SEP_string..."
-					Write-BISFLog -Msg "delete $key"
-					Try {
-						Remove-ItemProperty -Path $HKLM_reg_SEP_string -Name $key -ErrorAction Stop
-					}
-					catch {
-						Write-Bisflog -type "E" -Msg "Cannot Delete Registry Key $($Key)"
-						Show-MessageBox -Title "Error" -Msg "Cannot Delete Registry Key $($Key)" -Critical
-					}
-				}
-			}
-		}
-	}
-
-	function Rename-SEPFiles {
-		#HF87: Symantec Endpoint Protection 14.0 MP2 prevents graceful Citrix session logoff
-
-		if (Test-Path -Path $SEP_path) {
-			Write-BISFLog -Msg "Search path $SEP_path"
-			foreach ($file in $rename_file) {
-				Write-BISFLog -Msg "Search for file $file and rename it to $file.old"
-				Get-ChildItem -Path $SEP_path -filter $file -recurse -ErrorAction SilentlyContinue | % { Rename-Item -Path "$($_.fullname)" -NewName "$($_.fullname).old" }
-			}
-		}
-	}
-
-	function Configure-SepService {
-		# Stop SEP
-		Write-BISFLog -Msg "Preparing $product for Imaging" -ShowConsole -Color DarkCyan -SubMsg
-		Write-BISFLog -Msg "Stop $Product Service"
-		& $ProgramFilesx86'\Symantec\Symantec Endpoint Protection\smc.exe' "-stop"
-		IF ($ImageSW -eq $false) {
-			write-BISFlog -Msg "No Image Management Software detected, Service $ServiceName would not be changed to StartupType $StartType" -Type W
-		}
-		ELSE {
-			Write-BISFLog -Msg "Set SepMasterService Starttype to Manual"
-			Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\SepMasterService"  -Name "Start" -Value 3
-		}
-	}
-
-	####################################################################
-	####### end functions #####
-	####################################################################
-
 	#### Main Program
 
-	If (Test-Path ("$SEP_path\smc.exe") -PathType Leaf) {
+	If (Test-SepIsInstalled) {
 		Write-BISFLog -Msg "Product $Product installed" -ShowConsole -Color Cyan
-		RunFullScan
-		RunVIE
-		Rename-SEPFiles
-		Configure-SepService
-		deleteSEPData
+		Invoke-SepFullScan
+		Invoke-SepVieTool -SearchPaths $VIESearchFolders
+		Rename-SepFiles
+		Stop-SepService
+		Remove-SepData
 		Set-BISFNetworkProviderOrder -SearchProvOrder "SnacNp"
 		Write-BISFLog -Msg "Write GpNetworkStartTimeoutPolicyValue to registry from http://www.symantec.com/business/support/index?page=content&id=TECH200321"
 		New-ItemProperty -Path "$hklm_sw\Microsoft\Windows NT\CurrentVersion\Winlogon"-Name "GpNetworkStartTimeoutPolicyValue" -PropertyType DWORD -value 60 -ErrorAction SilentlyContinue | Out-Null
