@@ -112,6 +112,10 @@ Process {
 
 		#Take Ownership of Registry Key
 		$key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("SYSTEM\CurrentControlSet\Control\Terminal Server\RCM\GracePeriod", [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]::takeownership)
+		if($null -eq $key) {
+			Write-BISFLog "Registry key SYSTEM\CurrentControlSet\Control\Terminal Server\RCM\GracePeriod was not yet created. It will be created as soon as a user logs on. Reset will not be required."
+			return
+		}
 		$acl = $key.GetAccessControl([System.Security.AccessControl.AccessControlSections]::None)
 		$SID = "S-1-5-32-544" #Builtin\Admnistrators
 		$objSID = New-Object System.Security.Principal.SecurityIdentifier($SID)

@@ -3515,7 +3515,7 @@ function Start-VHDOfflineDefrag {
 
 	#fixfing DiskID before unmount
 	# Get uniqueid SystemDrive
-	Get-BISFDiskID -Driveletter C:
+	Get-BISFDiskID -Driveletter C: -ThrowWhenNotFound $true
 	$DiskIDOSDisk = $DiskID
 
 	#Set same UniqueID from SystemDrive on mounted VHD(X)
@@ -3574,39 +3574,51 @@ Function Get-DiskID {
 #>
 
 	PARAM(
-		[parameter(Mandatory = $True)][string]$Driveletter
+		[parameter(Mandatory = $True)][string]$Driveletter,
+		[parameter(Mandatory = $False)][bool]$ThrowWhenNotFound
 	)
+	if($false -eq $PSBoundParameters.ContainsKey('ThrowWhenNotFound')) {
+		$ThrowWhenNotFound = $false;
+	}
 	Write-BISFFunctionName2Log -FunctionName ($MyInvocation.MyCommand | ForEach-Object { $_.Name })  #must be added at the begin to each function
 	$DiskpartFile = "$env:TEMP\$computer-DiskpartFile.txt"
 	Write-BISFLog -Msg "Get UniqueID from Drive $DriveLetter" -ShowConsole -Color DarkCyan -SubMsg
 	$DriveLetter = $DriveLetter.substring(0, 1)
 	Write-BISFLog -Msg "Using Diskpart and searching for Drive letter $DriveLetter"
 
-	$Searchvol = "list volume" | diskpart.exe | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
-	Write-BISFLog -Msg "$Searchvol"
+	$Searchvol = "list volume" | C:\windows\system32\diskpart.exe | Select-String -pattern "Volume" | Select-String -pattern "$DriveLetter " -casesensitive | Select-String -pattern NTFS | Out-String
+	$DiskID = "";
+    $getvolnbr = "";
+    if($Searchvol.length -gt 0) {
+        Write-BISFLog -Msg "$Searchvol"
 
-	$getvolNbr = $Searchvol.substring(11, 1)   # get Volumenumber from DiskLabel
-	Write-BISFLog -Msg "Get Volumenumber $getvolNbr from Disklabel $DriveLetter"
+	    $getvolNbr = $Searchvol.substring(11, 1)   # get Volumenumber from DiskLabel
+	    Write-BISFLog -Msg "Get Volumenumber $getvolNbr from Disklabel $DriveLetter"
 
-	Remove-Item $DiskpartFile -recurse -ErrorAction SilentlyContinue
-	# Write Diskpart File
-	"select volume $getvolNbr" | Out-File -filepath $DiskpartFile -encoding Default
-	"uniqueid disk" | Out-File -filepath $DiskpartFile -encoding Default -append
-	$result = diskpart.exe /s $DiskpartFile
-	get-BISFLogContent -GetLogFile "$DiskpartFile"
-	$DiskID = $result | Select-String -pattern "ID" -casesensitive | Out-String
-	$DiskID = $DiskID.Split(":")  #split string on ":"
-	$DiskID = $DiskID[1] #get the first string after ":" to get the Disk ID only without the Text
-	$DiskID = $DiskID.trim() #remove empty spaces on the right and left
-	$start = $DiskID.length
-	IF ($start -eq "8") {
-		Write-BISFLog -Msg "MBR Disk with $start characters identfied"
+	    Remove-Item $DiskpartFile -recurse -ErrorAction SilentlyContinue
+	    # Write Diskpart File
+	    "select volume $getvolNbr" | Out-File -filepath $DiskpartFile -encoding Default
+	    "uniqueid disk" | Out-File -filepath $DiskpartFile -encoding Default -append
+	    $result = diskpart.exe /s $DiskpartFile
+	    get-BISFLogContent -GetLogFile "$DiskpartFile"
+	    $DiskID = $result | Select-String -pattern "ID" -casesensitive | Out-String
+	    $DiskID = $DiskID.Split(":")  #split string on ":"
+	    $DiskID = $DiskID[1] #get the first string after ":" to get the Disk ID only without the Text
+	    $DiskID = $DiskID.trim() #remove empty spaces on the right and left
+	    $start = $DiskID.length
+	    IF ($start -eq "8") {
+		    Write-BISFLog -Msg "MBR Disk with $start characters identfied"
 
+	    }
+	    ELSE {
+		    Write-BISFLog -Msg "GPT Disk with $start characters identfied"
+	    }
+	    Write-BISFLog -Msg "UniqueID Disk of Drive $Driveletter is $DiskID"
+    } else {
+		if($ThrowWhenNotFound){ 
+			throw "Could not find volume $Drive"
+		}
 	}
-	ELSE {
-		Write-BISFLog -Msg "GPT Disk with $start characters identfied"
-	}
-	Write-BISFLog -Msg "UniqueID Disk of Drive $Driveletter is $DiskID"
 	$Global:DiskID = $DiskID
 	$Global:VolNbr = $getvolNbr
 }

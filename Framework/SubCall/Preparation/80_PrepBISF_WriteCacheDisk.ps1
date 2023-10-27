@@ -85,7 +85,7 @@ Begin {
 		18.01.2021 MS: HF 302 using function Get-BISFDiskID instead of the same code here
 
 		#>
-		Get-BISFDiskID -Driveletter $PVSDiskDrive
+		Get-BISFDiskID -Driveletter $PVSDiskDrive -ThrowWhenNotFound $False
 		Write-BISFLog -Msg "Set uniqueID $getid for volume $VolNbr / Driveletter $PVSDiskDrive to Registry $hklm_software_LIC_CTX_BISF_SCRIPTS"
 		Set-ItemProperty -Path $hklm_software_LIC_CTX_BISF_SCRIPTS -Name $reg_value_UniqueID -value $DiskID -ErrorAction SilentlyContinue
 	}
